@@ -1,0 +1,30 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      XRPL AccountSet
+    </mat-panel-title>
+    <mat-panel-description>
+      You can change your XRPL account settings here.
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <form fxLayout="column" fxLayoutGap="0.5em">
+    <mat-form-field>
+      <input #inpdomain matInput type="url" name="domain" matInput placeholder="Domain" [(ngModel)]="domainInput" (ngModelChange)="checkChanges()">
+    </mat-form-field>
+    <mat-form-field>
+      <input #inpemail matInput type="email" name="email" matInput placeholder="Email (cannot be displayed, only changed){{originalAccountInfo && originalAccountInfo.EmailHash ? ' - current EmailHash: ' : ''}}{{originalAccountInfo && originalAccountInfo.EmailHash}}" [(ngModel)]="emailInput" (ngModelChange)="checkChanges()">
+    </mat-form-field>
+  </form>
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="0.5em">
+    <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!changesDetected">
+      Send {{originalAccountInfo ? 'changes' : 'request'}} to Xumm
+    </button>
+    <button mat-raised-button color="primary" (click)="deleteDomain()" [disabled]="!originalAccountInfo || !originalAccountInfo.Domain">
+      Delete Domain
+    </button>
+    <button mat-raised-button color="primary" (click)="deleteEmailHash()" [disabled]="!originalAccountInfo || !originalAccountInfo.EmailHash">
+      Delete EmailHash
+    </button>
+  </div>
+</mat-expansion-panel>

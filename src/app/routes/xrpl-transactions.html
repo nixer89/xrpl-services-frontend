@@ -1,0 +1,19 @@
+<mat-card fxFlex fxLayout="column" fxLayoutGap="0.1em">
+    <div fxLayout="row" fxLayout.xs="column" style="align-items: center;">
+        <button mat-button class="sign-in-button" matTooltip="Login with Xumm to load your account data." matTooltipPosition="below" (click)="openSignInDialog()">
+            <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with Xumm">
+        </button>
+        <div style="padding-left: 25px; padding-right: 25px;" *ngIf="!xrplAccount">Login with Xumm to load your account data. Please use the account you want to see the info for to sign the SignIn request.</div>
+        <div style="padding-left: 25px; padding-right: 25px;" *ngIf="xrplAccount">You are currently logged in with the XRPL account: <b>{{xrplAccount}}</b></div>
+    </div>
+    <div *ngIf="lastTrxLink">
+        View your last transaction on the XRPL ledger:
+        <a [href]="lastTrxLink" target="_blank;">Last transaction</a>
+    </div>
+    <mat-card style="padding-top: 2em;">
+        <mat-accordion fxLayout="column" fxLayoutGap="0.5em">
+            <accountset [accountInfoChanged]="accountInfoChanged.asObservable()" (onPayload)="onPayloadReceived($event)"></accountset>
+            <escrowcreate (onPayload)="onPayloadReceived($event)"></escrowcreate>
+        </mat-accordion>
+    </mat-card>
+</mat-card>

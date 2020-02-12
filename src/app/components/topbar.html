@@ -1,0 +1,37 @@
+<mat-toolbar fxFlex fxLayout="row" fxLayout.xs="column" color="primary" class="mat-elevation-z4">  
+  <mat-toolbar-row fxLayout="row">
+    <div>
+      <span>Xumm Community</span>
+      <span fxHide.xs>
+        <button mat-button [routerLink]="['/xrpl-transactions']" matTooltip="XRPL Transactions">
+          XRPL Transactions
+        </button>
+      </span>
+    </div>
+      <!-- This fills the remaining space of the current row -->
+    <span style="flex: 1 1 auto;"></span>
+    <div fxHide.xs style="text-align: center;">
+      <span fxLayout="row" fxLayoutGap="5em" style="align-items: center;">
+        Support this project:&nbsp;
+        <button mat-button pTooltip="Donate to this project." tooltipPosition="bottom" (click)="supportViaXumm()" style="padding:0px;">
+          <img src="../../assets/xummPay.svg" style="width: 150px; height: 45px;" alt="Support via Xumm">
+        </button>
+      </span>
+    </div>
+  </mat-toolbar-row>
+  <mat-toolbar-row fxHide fxShow.xs>
+    <span>
+      Support this project:&nbsp;
+      <button mat-button pTooltip="Donate to this project." tooltipPosition="bottom" (click)="supportViaXumm()" style="padding:0px;">
+        <img src="../../assets/xummPay.svg" style="width: 150px; height: 45px;" alt="Support via Xumm">
+      </button>
+    </span>
+  </mat-toolbar-row>
+  <mat-toolbar-row fxHide fxShow.xs>
+    <div>
+      <button mat-button [routerLink]="['/xrpl-transactions']" matTooltip="XRPL Transactions">
+        XRPL Transactions
+      </button>
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>

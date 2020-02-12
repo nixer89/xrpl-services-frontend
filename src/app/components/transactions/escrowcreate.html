@@ -1,0 +1,33 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      XRPL EscrowCreate
+    </mat-panel-title>
+    <mat-panel-description>
+      Create an Escrow on the XRPL Ledger.
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <form fxLayout="column" fxLayoutGap="0.5em">
+    <mat-form-field>
+      <input #inpamount matInput name="amount" type="number" matInput placeholder="Amount in XRP (required)" [(ngModel)]="amountInput" (ngModelChange)="checkChanges()">
+    </mat-form-field>
+    <mat-form-field>
+      <input #inpdestination matInput name="destination" matInput placeholder="Destination (required)" [(ngModel)]="destinationInput" (ngModelChange)="checkChanges()">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput name="cancelafter" type="date" placeholder="Choose a CancelAfter date (optional)" [(ngModel)]="cancelafterInput" (ngModelChange)="checkChanges()">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput name="finishafter" type="time" placeholder="Choose a FinishAfter date (optional)" [(ngModel)]="finishafterInput" (ngModelChange)="checkChanges()">
+    </mat-form-field>
+    <mat-form-field>
+      <input #inppassword matInput name="password" type="password" matInput placeholder="Password to secure your escrow (nobody without the password can send an EscrowFinish transaction)" [(ngModel)]="passwordInput" (ngModelChange)="checkChanges()">
+    </mat-form-field>
+  </form>
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="0.5em">
+    <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrow">
+      Send EscrowCreate to Xumm
+    </button>
+  </div>
+</mat-expansion-panel>

@@ -1,0 +1,59 @@
+<mat-dialog-content class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
+    <div *ngIf="loading && !showError && !waitingForPayment" class="floatcenter" style="width:300px; height: 200px;">
+        <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
+    </div>
+    <div *ngIf="!loading && !showError && waitingForPayment" fxLayout="column" fxLayoutGap="1.5em">
+        <div *ngIf="qrLink" fxLayout="column" fxLayoutGap="0.5em" class="floatcenter">
+            <span>Scan QR code to show the Xumm Sign Request in your Xumm App:</span>
+            <mat-progress-spinner *ngIf="!showQR" color="primary" mode="indeterminate"></mat-progress-spinner>
+            <img (load)="QRLoaded()" [src]="qrLink" width="150" height="150" style="vertical-align: middle;">
+        </div>
+        <div class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
+            <span>Waiting for you to sign the request...</span>
+            <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
+            <span style="flex: 1 1 auto;"></span>
+        </div>
+        <div class="floatcenter">
+            <button mat-button pTooltip="Cancel" tooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
+                <b>Cancel </b>
+                <i class="material-icons" style="color: red">
+                    cancel
+                </i>
+            </button>
+        </div>
+    </div>
+    <div *ngIf="showError && !waitingForPayment && !loading" class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
+        <div *ngIf="!requestExpired && backendNotAvailable" style="color: red;">
+            Sorry, there was an error contacting the backend. Please try again later.
+        </div>
+        <div *ngIf="!requestExpired && !backendNotAvailable" style="color: red;">
+            Sorry, your transaction could not be verified on the XRP Ledger. Please try again.
+        </div>
+        <div *ngIf="requestExpired && !backendNotAvailable" style="color: red;">
+            Sorry, your request has been expired. Please reload the page and try again!
+        </div>
+        <div>
+            <mat-dialog-actions>
+                <button mat-button mat-dialog-close pTooltip="Close" tooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
+                    <b>Close </b>
+                    <i class="material-icons">
+                        cancel
+                    </i>
+                </button>
+            </mat-dialog-actions>
+        </div>
+    </div>
+
+    <div *ngIf="transactionSigned">
+        <div>
+            <i class="material-icons" style="color: green; font-size: 3em;">
+                check_circle_outline
+            </i>
+        </div>
+        <div>
+            <h4 style="color: green;">Your transaction was signed and submitted.</h4>
+            Please check the transaction on the ledger.
+            <br><br>You will be redirected back shortly and a link will be provided.
+        </div>
+    </div>
+</mat-dialog-content>
