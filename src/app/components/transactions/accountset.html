@@ -8,22 +8,30 @@
     </mat-panel-description>
   </mat-expansion-panel-header>
 
-  <form fxLayout="column" fxLayoutGap="0.5em">
+  <form fxLayout="column" fxLayoutGap="0.5em" style="padding-bottom: 1em;">
     <mat-form-field>
       <input #inpdomain matInput type="url" name="domain" matInput placeholder="Domain" [(ngModel)]="domainInput" (ngModelChange)="checkChanges()">
+      <mat-hint *ngIf="domainChangeDetected && !validDomain" style="color: crimson;">Not a valid domain</mat-hint>
     </mat-form-field>
     <mat-form-field>
-      <input #inpemail matInput type="email" name="email" matInput placeholder="Email (cannot be displayed, only changed){{originalAccountInfo && originalAccountInfo.EmailHash ? ' - current EmailHash: ' : ''}}{{originalAccountInfo && originalAccountInfo.EmailHash}}" [(ngModel)]="emailInput" (ngModelChange)="checkChanges()">
+      <input #inpemail matInput type="email" name="email" matInput placeholder="Email (cannot be displayed, only changed)" [(ngModel)]="emailInput" (ngModelChange)="checkChanges()">
+      <mat-hint *ngIf="emailChangeDetected && !validEmail" style="color: crimson;">Not a valid email</mat-hint>
     </mat-form-field>
+    <div *ngIf="originalAccountInfo && originalAccountInfo.EmailHash && originalAccountInfo.urlgravatar" fxLayout="column">
+      <label >Your current <a href="https://en.gravatar.com/support/what-is-gravatar/" target="_blank">Gravatar</a> URL: </label>
+      <a href="{{originalAccountInfo.urlgravatar}}.replace('http','https')" target="_blank">
+        {{originalAccountInfo.urlgravatar}}
+      </a>
+    </div>
   </form>
   <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="0.5em">
-    <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!changesDetected">
+    <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!domainChangeDetected && !emailChangeDetected || domainChangeDetected && !validDomain || emailChangeDetected && !validEmail">
       Send {{originalAccountInfo ? 'changes' : 'request'}} to Xumm
     </button>
-    <button mat-raised-button color="primary" (click)="deleteDomain()" [disabled]="!originalAccountInfo || !originalAccountInfo.Domain">
+    <button mat-raised-button color="primary" (click)="deleteDomain()" matTooltip="{{originalAccountInfo && originalAccountInfo.EmailHash ? 'Delete Domain: ' : ''}}{{hexToString(originalAccountInfo && originalAccountInfo.Domain)}}" [disabled]="!originalAccountInfo || !originalAccountInfo.Domain">
       Delete Domain
     </button>
-    <button mat-raised-button color="primary" (click)="deleteEmailHash()" [disabled]="!originalAccountInfo || !originalAccountInfo.EmailHash">
+    <button mat-raised-button color="primary" (click)="deleteEmailHash()" matTooltip="{{originalAccountInfo && originalAccountInfo.EmailHash ? 'Delete EmailHash: ' : ''}}{{originalAccountInfo && originalAccountInfo.EmailHash}}" [disabled]="!originalAccountInfo || !originalAccountInfo.EmailHash">
       Delete EmailHash
     </button>
   </div>

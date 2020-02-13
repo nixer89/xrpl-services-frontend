@@ -31,3 +31,17 @@ a.footerlink {
     padding-left: 0px;
     padding-right: 0px;
 }
+
+body .snackbar-success {
+    background: #ffffff;
+    color: green;
+    display: flex;
+    justify-content: center;
+  }
+  
+  body .snackbar-failed {
+    background: #ffffff;
+    color: #EB0000;
+    display: flex;
+    justify-content: center;
+  }

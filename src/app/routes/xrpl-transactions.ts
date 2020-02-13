@@ -4,7 +4,9 @@ import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Subject } from 'rxjs'
-import { XummService } from '../services/xumm.service';
+import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { XummService } from '../services/xumm.service'
 
 @Component({
   selector: 'app-xrpl-transactions',
@@ -20,18 +22,38 @@ export class XrplTransactionsComponent implements OnInit {
   accountInfoChanged: Subject<void> = new Subject<void>();
   websocket: WebSocketSubject<any>;
 
+  isTestMode:boolean = true;
+
   constructor(
     private signDialog: MatDialog,
-    private xumm: XummService) { }
+    private route: ActivatedRoute,
+    private xummApi: XummService,
+    private snackBar: MatSnackBar) { }
 
   async ngOnInit() {
-    this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
-    await this.loadAccountData();
+    //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
+    //await this.loadAccountData();
+
+    this.route.queryParams.subscribe(async params => {
+      let payloadId = params.payloadId;
+      if(payloadId) {
+        //check if transaction was successfull and redirect user to stats page right away:
+        let payloadInfo = await this.xummApi.getPayloadInfo(payloadId);
+        console.log(payloadInfo);
+        if(payloadInfo && payloadInfo.response && payloadInfo.response.account) {
+            this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+            this.xrplAccount = payloadInfo.response.account;
+            this.loadAccountData();
+        } else {
+            this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+        }
+      }
+    });
   }
 
   async loadAccountData() {
     if(this.xrplAccount) {
-      this.websocket = webSocket('wss://testnet.xrpl-labs.com');
+      this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://s1.ripple.com');
 
       this.websocket.asObservable().subscribe(async message => {
         console.log("websocket message: " + JSON.stringify(message));
@@ -40,6 +62,9 @@ export class XrplTransactionsComponent implements OnInit {
             this.xrplAccountData = message.result.account_data;
             console.log("xrplAccountData");
             this.emitAccountInfoChanged();
+        } else {
+          this.xrplAccountData = null;
+          this.emitAccountInfoChanged();
         }
       });
 
@@ -79,10 +104,17 @@ export class XrplTransactionsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((transactionInfo:any) => {
-      console.log('The generic dialog was closed');
-      if(transactionInfo) {
+      console.log('The generic dialog was closed: ' + JSON.stringify(transactionInfo));
+
+      if(transactionInfo && transactionInfo.success) {
         this.xrplAccount = transactionInfo.xrplAccount;
-        this.lastTrxLink = transactionInfo.txLink;
+
+        this.isTestMode = transactionInfo.testnet;
+
+        if(transactionInfo.testnet)
+          this.lastTrxLink = "https://test.bithomp.com/explorer/"+this.xrplAccount;
+        else
+          this.lastTrxLink = "https://bithomp.com/explorer/"+this.xrplAccount;
       } else {
         this.xrplAccount = null;
         this.lastTrxLink = null;
@@ -101,6 +133,26 @@ export class XrplTransactionsComponent implements OnInit {
 
   async onPayloadReceived(payload:any) {
     console.log("received payload: " + JSON.stringify(payload));
+    if(this.xrplAccount)
+      payload.xrplAccount = this.xrplAccount;
+
     this.openGenericDialog(payload);
   }
+
+  getAccountBalance(): number {
+    if(this.xrplAccountData && this.xrplAccountData.Balance) {
+      let balance:number = Number(this.xrplAccountData.Balance);
+      return balance/1000000;
+    } else {
+      return 0;
+    }
+  }
+
+  logoutAccount() {
+    this.xrplAccount = null;
+    this.xrplAccountData = null;
+    this.lastTrxLink = null;
+    this.emitAccountInfoChanged();
+  }
+
 }

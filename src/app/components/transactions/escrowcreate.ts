@@ -1,4 +1,6 @@
 import { Component, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Encode } from 'xrpl-tagged-address-codec';
+import * as cryptoCondition from 'five-bells-condition'
 
 @Component({
   selector: 'escrowcreate',
@@ -15,16 +17,32 @@ export class EscrowCreateComponent {
   @ViewChild('inpdestination', {static: false}) inpdestination;
   destinationInput: string;
 
-  @ViewChild('inpcancelafter', {static: false}) inpcancelafter;
-  cancelafterInput: Date;
+  @ViewChild('inpcancelafterdate', {static: false}) inpcancelafterdate;
+  cancelafterDateInput: any;
 
-  @ViewChild('inpfinishafter', {static: false}) finishafter;
-  finishafterInput: Date;
+  @ViewChild('inpcancelaftertime', {static: false}) inpcancelaftertime;
+  cancelafterTimeInput: any;
+
+  @ViewChild('inpfinishafterdate', {static: false}) inpfinishafterdate;
+  finishafterDateInput: any;
+
+  @ViewChild('inpfinishaftertime', {static: false}) inpfinishaftertime;
+  finishafterTimeInput: any;
 
   @ViewChild('inppassword', {static: false}) password;
   passwordInput: string;
 
   isValidEscrow = false;
+  validAmount = false;
+  validAddress = false;
+  validCancelAfter = false;
+  validFinishAfter = false;
+  validCondition = false;
+
+  cancelAfterDateTime:Date;
+  finishAfterDateTime:Date;
+
+  hidePw = true;
 
   private payload:any = {
     options: {
@@ -59,29 +77,83 @@ export class EscrowCreateComponent {
 
   sendPayloadToXumm() {
 
-    if(this.amountInput && this.amountInput > 0)
+    if(this.amountInput && this.amountInput >= 0.000001)
       this.payload.txjson.Amount = this.amountInput*1000000+"";
 
-    if(this.destinationInput && this.destinationInput.trim().length>0)
+    if(this.destinationInput && this.destinationInput.trim().length>0 && this.isValidXRPAddress(this.destinationInput))
       this.payload.txjson.Destination = this.destinationInput.trim();
 
-    if(this.cancelafterInput)
-      this.payload.txjson.FinishAfter = (new Date(this.cancelafterInput).getTime()/1000)-946684800;
+    if(this.validCancelAfter)
+      this.payload.txjson.CancelAfter = (this.cancelAfterDateTime.getTime()/1000)-946684800;
 
-    if(this.finishafter)
-      this.payload.txjson.FinishAfter = (new Date(this.finishafter).getTime()/1000)-946684800;
+    if(this.validFinishAfter)
+      this.payload.txjson.FinishAfter = (this.finishAfterDateTime.getTime()/1000)-946684800;
+
+    if(this.validCondition) {
+      let fulfillment_bytes:Buffer = Buffer.from(this.passwordInput.trim(), 'utf-8');
+
+      let myFulfillment = new cryptoCondition.PreimageSha256()
+      myFulfillment.setPreimage(fulfillment_bytes);
+
+      let fulfillment = myFulfillment.serializeBinary().toString('hex').toUpperCase()
+      console.log('Fulfillment: ', fulfillment)
+      console.log('             ', myFulfillment.serializeUri())
+
+      var condition = myFulfillment.getConditionBinary().toString('hex').toUpperCase()
+      console.log('Condition  : ', condition)
+        // 'A0258020' + sha256(fulfillment_bytes) + '810102'
+      console.log('             ', myFulfillment.getCondition().serializeUri())
+
+      console.log()
+
+      console.log(
+        'Fulfillment valid for Condition?      ',
+          cryptoCondition.validateFulfillment(
+          cryptoCondition.Fulfillment.fromBinary(Buffer.from(fulfillment, 'hex')).serializeUri(), 
+          cryptoCondition.Condition.fromBinary(Buffer.from(condition, 'hex')).serializeUri()
+        )
+      )
+
+      this.payload.txjson.Condition = condition
+    }
 
     this.onPayload.emit(this.payload);
   }
 
   checkChanges() {
-    console.log("amountInput: " + this.amountInput);
-    console.log("destinationInput: " + this.destinationInput);
-    console.log("cancelafterInput: " + this.cancelafterInput);
-    console.log("finishafterInput: " + this.finishafterInput);
-    console.log("passwordInput: " + this.passwordInput);
+    //console.log("amountInput: " + this.amountInput);
+    //console.log("destinationInput: " + this.destinationInput);
+    
+    if(this.cancelafterDateInput && this.cancelafterTimeInput)
+      this.cancelAfterDateTime = new Date(this.cancelafterDateInput + " " + this.cancelafterTimeInput)
 
-    this.isValidEscrow = this.amountInput && this.amountInput > 0 && this.destinationInput && this.destinationInput.trim().length > 0;
+    this.validCancelAfter = this.cancelAfterDateTime != null;
+
+    if(this.finishafterDateInput && this.finishafterTimeInput)
+      this.finishAfterDateTime = new Date(this.finishafterDateInput + " " + this.finishafterTimeInput)
+    
+    this.validFinishAfter = this.finishAfterDateTime != null;
+
+    this.validAmount = this.amountInput && this.amountInput >= 0.000001;
+    this.validAddress = this.destinationInput && this.destinationInput.trim().length > 0 && this.isValidXRPAddress(this.destinationInput.trim());
+
+    this.validCondition = this.passwordInput && this.passwordInput.trim().length > 0;
+
+    this.isValidEscrow = this.validAmount && this.validAddress && (this.validFinishAfter || this.validCancelAfter);
+
+    console.log("isValidEscrow: " + this.isValidEscrow);
   }
 
+  isValidXRPAddress(address: string): boolean {
+    try {
+      console.log("encoding address: " + address);
+      let xAddress = Encode({account: address});
+      console.log("xAddress: " + xAddress);
+      return xAddress && xAddress.length > 0;
+    } catch(err) {
+      //no valid address
+      console.log("err encoding " + err);
+      return false;
+    }
+  }
 }

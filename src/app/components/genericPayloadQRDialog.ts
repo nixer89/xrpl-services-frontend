@@ -49,9 +49,8 @@ export class GenericPayloadQRDialog implements OnInit {
 
         let xummResponse:any;
         try {
-            console.log("sending xumm payload: " + JSON.stringify(this.payload));
             xummResponse = await this.xummApi.submitPayload(this.payload);
-            console.log(JSON.stringify(xummResponse)); 
+            console.log("xummResponse: " + JSON.stringify(xummResponse)); 
         } catch (err) {
             console.log(JSON.stringify(err));
             this.loading = false;
@@ -83,19 +82,12 @@ export class GenericPayloadQRDialog implements OnInit {
                 //get xrpl account
                 let txInfo:any = await this.xummApi.validateTransaction(message.payload_uuidv4);
                 
-                if(txInfo && txInfo.success) {
-                    this.transactionInfo = {};
-                    this.transactionInfo.xrplAccount = txInfo.xrplAccoun;
-
-                    if(txInfo.testnet)
-                        this.transactionInfo.link = "https://test.bithomp.com/explorer/"+txInfo.xrplAccount;
-                    else
-                        this.transactionInfo.link = "https://bithomp.com/explorer/"+txInfo.xrplAccount;
-                }
+                console.log("txInfo: " + JSON.stringify(txInfo));
                 this.waitingForPayment = false;
 
-                if(txInfo.success) {
+                if(txInfo && txInfo.success) {
                     this.transactionSigned = true;
+                    this.transactionInfo = txInfo;
 
                     setTimeout(() => this.handleSuccessfullSignedAndSubmitted(), 3000);
                 } else {

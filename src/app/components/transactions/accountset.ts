@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Subscription, Observable} from 'rxjs';
 import * as md5 from 'md5';
+import * as emailValidator from 'email-validator'
 
 @Component({
   selector: 'accountset',
@@ -22,7 +23,12 @@ export class AccountSetComponent implements OnInit {
 
   private accountInfoChangedSubscription: Subscription;
   originalAccountInfo:any;
-  changesDetected = false;
+  domainChangeDetected:boolean = false;
+  emailChangeDetected:boolean = false;
+
+  validAccountSet:boolean = false;
+  validDomain:boolean = false;
+  validEmail:boolean = false;
 
   payload:any = {
     options: {
@@ -62,6 +68,8 @@ export class AccountSetComponent implements OnInit {
     console.log(JSON.stringify(this.originalAccountInfo));
     if(this.originalAccountInfo)
         this.domainInput = this.hexToString(this.originalAccountInfo.Domain)
+    else
+      this.domainInput = null;
   
     this.emailInput = "";
   }
@@ -95,13 +103,14 @@ export class AccountSetComponent implements OnInit {
     console.log("domain hex: " + this.stringToHex(this.domainInput.trim()));
     console.log("email: " + this.emailInput);
 
+    if(this.originalAccountInfo && this.originalAccountInfo.Account)
+      this.payload.xrplAccount = this.originalAccountInfo.Account;
+
     if(this.domainInput && (!this.originalAccountInfo || this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain))
       this.payload.txjson.Domain = this.stringToHex(this.domainInput.trim());
 
     if(this.emailInput && (!this.originalAccountInfo || md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash))
       this.payload.txjson.EmailHash = md5(this.emailInput.trim()).toUpperCase();
-
-    console.log("submitting payload: " + JSON.stringify(this.payload));
 
     this.onPayload.emit(this.payload);
     this.initializePayload();
@@ -109,21 +118,35 @@ export class AccountSetComponent implements OnInit {
 
   deleteDomain() {
     this.payload.txjson.Domain = '';
+
+    if(this.originalAccountInfo && this.originalAccountInfo.Account)
+      this.payload.xrplAccount = this.originalAccountInfo.Account;
+
     this.onPayload.emit(this.payload);
     this.initializePayload();
   }
 
   deleteEmailHash() {
     this.payload.txjson.EmailHash = '';
+
+    if(this.originalAccountInfo && this.originalAccountInfo.Account)
+      this.payload.xrplAccount = this.originalAccountInfo.Account;
+
     this.onPayload.emit(this.payload);
     this.initializePayload();
   }
 
   checkChanges() {
-    this.changesDetected = this.domainInput && this.domainInput.trim().length > 0 && (!this.originalAccountInfo || (!this.originalAccountInfo.Domain || (this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain)));
+    this.domainChangeDetected = this.domainInput != null && this.domainInput.trim().length > 0 && (!this.originalAccountInfo || (!this.originalAccountInfo.Domain || (this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain)));
+    this.validDomain = !this.domainChangeDetected || this.domainInput && this.domainInput.trim().length > 0;
 
-    if(!this.changesDetected)
-      this.changesDetected = this.emailInput && this.emailInput.trim().length > 0 && (!this.originalAccountInfo || (md5(this.emailInput.trim()) != this.originalAccountInfo.EmailHash));
+    this.emailChangeDetected = this.emailInput != null && this.emailInput.trim().length > 0 && (!this.originalAccountInfo || (md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash));
+    this.validEmail = !this.emailChangeDetected || emailValidator.validate(this.emailInput);
+
+    console.log("domainChangeDetected: " + this.domainChangeDetected);
+    console.log("validDomain: " + this.validDomain);
+    console.log("emailChangeDetected: " + this.emailChangeDetected);
+    console.log("validEmail: " + this.validEmail);
   }
 
 }

@@ -1,5 +1,5 @@
 <mat-dialog-content class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
-    <div *ngIf="loading && !showError && !waitingForPayment" class="floatcenter" style="width:300px; height: 200px;">
+    <div *ngIf="loading && !showError && !waitingForPayment" fxLayout="column" class="floatcenter" style="width:300px; height: 200px;">
         <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
     </div>
     <div *ngIf="!loading && !showError && waitingForPayment" fxLayout="column" fxLayoutGap="1.5em">
@@ -14,7 +14,7 @@
             <span style="flex: 1 1 auto;"></span>
         </div>
         <div class="floatcenter">
-            <button mat-button pTooltip="Cancel" tooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
+            <button mat-button matTooltip="Cancel" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
                 <b>Cancel </b>
                 <i class="material-icons" style="color: red">
                     cancel
@@ -34,7 +34,7 @@
         </div>
         <div>
             <mat-dialog-actions>
-                <button mat-button mat-dialog-close pTooltip="Close" tooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
+                <button mat-button mat-dialog-close matTooltip="Close" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
                     <b>Close </b>
                     <i class="material-icons">
                         cancel

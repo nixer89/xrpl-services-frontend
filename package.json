@@ -1,6 +1,6 @@
 {
   "name": "xumm-community",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
@@ -24,11 +24,16 @@
     "@angular/platform-browser": "~8.2.14",
     "@angular/platform-browser-dynamic": "~8.2.14",
     "@angular/router": "~8.2.14",
+    "@ng-bootstrap/ng-bootstrap": "^5.2.2",
+    "buffer": "^5.4.3",
+    "email-validator": "^2.0.4",
+    "five-bells-condition": "^5.0.1",
     "hammerjs": "^2.0.8",
     "md5": "^2.2.1",
     "ngx-device-detector": "^1.3.20",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
+    "xrpl-tagged-address-codec": "^0.2.1",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {

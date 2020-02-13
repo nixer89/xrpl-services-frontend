@@ -5,11 +5,12 @@ import { AppService } from './app.service';
 export class XummService {
     constructor(private app: AppService) {}
 
-    isTestMode = true;
+    isTestMode = false;
     xummBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://api.xumm.community';
 
     async submitPayload(payload:any): Promise<any> {
         try {
+            console.log("submitting payload: " + JSON.stringify(payload));
             return this.app.post(this.xummBackendURL+"/api/v1/platform/payload", payload);
         } catch(err) {
             console.log(JSON.stringify(err))
