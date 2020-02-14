@@ -23,6 +23,7 @@ export class GenericPayloadQRDialog implements OnInit {
     backendNotAvailable:boolean = false;
     loading:boolean = false;
     transactionSigned:boolean = false;
+    pushed:boolean = false;
 
     constructor(
         private xummApi: XummService,
@@ -51,15 +52,22 @@ export class GenericPayloadQRDialog implements OnInit {
         try {
             xummResponse = await this.xummApi.submitPayload(this.payload);
             console.log("xummResponse: " + JSON.stringify(xummResponse)); 
+            if(!xummResponse || xummResponse.error) {
+                this.loading = false;
+                this.backendNotAvailable = true;
+                this.showError = true;
+                setTimeout(() => this.handleFailedTransaction(), 3000);
+            }
         } catch (err) {
             console.log(JSON.stringify(err));
             this.loading = false;
             this.backendNotAvailable = true;
             this.showError = true;
-            return;
+            setTimeout(() => this.handleFailedTransaction(), 3000);
         }
 
         this.payloadUUID = xummResponse.uuid;
+        this.pushed = xummResponse.pushed;
 
         if(!this.deviceDetector.isDesktop() && xummResponse.next.always)
             window.location.href = xummResponse.next.always;
@@ -71,12 +79,11 @@ export class GenericPayloadQRDialog implements OnInit {
 
     initSocket(url:string) {
         // register socket for receiving data:
-        console.log("connecting socket to: " + url);
         this.websocket = webSocket(url);
         this.loading = false;
         this.waitingForPayment = true;
         this.websocket.asObservable().subscribe(async message => {
-            console.log("message received: " + JSON.stringify(message));
+//            console.log("message received: " + JSON.stringify(message));
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
                 //get xrpl account
@@ -89,10 +96,10 @@ export class GenericPayloadQRDialog implements OnInit {
                     this.transactionSigned = true;
                     this.transactionInfo = txInfo;
 
-                    setTimeout(() => this.handleSuccessfullSignedAndSubmitted(), 3000);
+                    setTimeout(() => this.handleSuccessfullTransaction(), 3000);
                 } else {
                     this.showError = true;
-                    setTimeout(() => this.handleFailedSignIn(), 3000);
+                    setTimeout(() => this.handleFailedTransaction(), 3000);
                 }
 
                 this.websocket.unsubscribe();
@@ -110,11 +117,11 @@ export class GenericPayloadQRDialog implements OnInit {
         });
     }
     
-    handleSuccessfullSignedAndSubmitted() {
+    handleSuccessfullTransaction() {
         this.dialogRef.close(this.transactionInfo);
     }
 
-    handleFailedSignIn() {
+    handleFailedTransaction() {
         if(this.websocket) {
             this.websocket.unsubscribe();
             this.websocket.complete();

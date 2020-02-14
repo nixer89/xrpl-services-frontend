@@ -39,7 +39,7 @@ export class XrplTransactionsComponent implements OnInit {
       if(payloadId) {
         //check if transaction was successfull and redirect user to stats page right away:
         let payloadInfo = await this.xummApi.getPayloadInfo(payloadId);
-        console.log(payloadInfo);
+        console.log(JSON.stringify(payloadInfo));
         if(payloadInfo && payloadInfo.response && payloadInfo.response.account) {
             this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
             this.xrplAccount = payloadInfo.response.account;
@@ -60,7 +60,7 @@ export class XrplTransactionsComponent implements OnInit {
         if(message.status && message.status === 'success' && message.type && message.type === 'response') {
           if(message.result && message.result.account_data)
             this.xrplAccountData = message.result.account_data;
-            console.log("xrplAccountData");
+            //console.log("xrplAccountData");
             this.emitAccountInfoChanged();
         } else {
           this.xrplAccountData = null;
@@ -111,10 +111,12 @@ export class XrplTransactionsComponent implements OnInit {
 
         this.isTestMode = transactionInfo.testnet;
 
-        if(transactionInfo.testnet)
-          this.lastTrxLink = "https://test.bithomp.com/explorer/"+this.xrplAccount;
-        else
-          this.lastTrxLink = "https://bithomp.com/explorer/"+this.xrplAccount;
+        if(transactionInfo.txid) {
+          if(transactionInfo.testnet)
+            this.lastTrxLink = "https://test.bithomp.com/explorer/"+transactionInfo.txid;
+          else
+            this.lastTrxLink = "https://bithomp.com/explorer/"+transactionInfo.txid;
+        }
       } else {
         this.xrplAccount = null;
         this.lastTrxLink = null;

@@ -24,6 +24,14 @@ a.footerlink {
     vertical-align: middle;
 }
 
+.floatleft {
+    float: left;
+}
+  
+.floatright {
+    float: right;
+}
+
 .mat-button.sign-in-button {
     width: 230;
     min-width: 230px;

@@ -58,13 +58,18 @@ export class XummSignDialogComponent implements OnInit{
         try {
             console.log("sending xumm payload: " + JSON.stringify(xummPayload));
             xummResponse = await this.xummApi.submitPayload(xummPayload);
-            console.log(JSON.stringify(xummResponse)); 
+            console.log(JSON.stringify(xummResponse));
+            if(!xummResponse || xummResponse.error) {
+                this.loading = false;
+                this.showError = true;
+                setTimeout(() => this.handleFailedSignIn(), 3000);
+            }
         } catch (err) {
             console.log(JSON.stringify(err));
             this.loading = false;
             this.backendNotAvailable = true;
             this.showError = true;
-            return;
+            setTimeout(() => this.handleFailedSignIn(), 3000);
         }
 
         this.payloadUUID = xummResponse.uuid;
@@ -79,12 +84,12 @@ export class XummSignDialogComponent implements OnInit{
 
     initSocket(url:string) {
         // register socket for receiving data:
-        console.log("connecting socket to: " + url);
+        //console.log("connecting socket to: " + url);
         this.websocket = webSocket(url);
         this.loading = false;
         this.waitingForPayment = true;
         this.websocket.asObservable().subscribe(async message => {
-            console.log("message received: " + JSON.stringify(message));
+            //console.log("message received: " + JSON.stringify(message));
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
                 let transactionResult = await this.xummApi.checkSignIn(message.payload_uuidv4);

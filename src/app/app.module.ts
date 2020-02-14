@@ -2,12 +2,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FlexLayoutModule } from '@angular/flex-layout';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {AppRoutes} from './app.routes';
 
 //my components
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TermsComponent } from './routes/specific/terms';
+import { PrivacyComponent } from './routes/specific/privacy'
 import { XrplTransactionsComponent } from './routes/xrpl-transactions';
 import { TopbarComponent } from './components/topbar';
 import { FooterComponent } from './components/footer';
@@ -44,6 +45,8 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
 @NgModule({
   declarations: [
     AppComponent,
+    TermsComponent,
+    PrivacyComponent,
     XrplTransactionsComponent,
     TopbarComponent,
     FooterComponent,

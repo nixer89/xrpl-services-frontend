@@ -1,27 +1,35 @@
 <mat-card fxFlex fxLayout="column" fxLayoutGap="0.1em">
-    <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="0.3em" style="align-items: center;">
-        <button *ngIf="!xrplAccount" mat-button class="sign-in-button" matTooltip="Login with Xumm to load your account data." matTooltipPosition="below" (click)="openSignInDialog()">
-            <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with Xumm">
-        </button>
-        <div style="padding-left: 25px; padding-right: 25px;" *ngIf="!xrplAccount">Login with Xumm to load your account data.</div>
-        <button *ngIf="xrplAccount" mat-raised-button color="primary" matTooltip="Logout" matTooltipPosition="below" (click)="logoutAccount()">
-            Logout
-        </button>
-        <div style="padding-left: 25px; padding-right: 25px;" *ngIf="xrplAccount" fxLayout="row" fxLayout.xs="column" class="floatcenter" fxLayoutGap="0.3em">
-            <label fxHide.xs>You are currently logged in with the XRPL account:</label>
-            <b> {{xrplAccount}} </b>
-            <label fxHide.xs>and balance:</label>
-            <b> {{getAccountBalance()}} XRP. </b></div>
-        <span style="flex: 1 1 auto;"></span>
-        <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()">{{!isTestMode ? 'Live net' : 'Test net'}}</mat-slide-toggle>
+    <div fxLayout="row">
+        <div fxLayout="column" fxLayoutAlign="start center" style="width: 100%;">
+            <div *ngIf="!xrplAccount">
+                <button mat-raised-button style="height: 50px; border-radius: 10px; padding: 5px;" matTooltip="Login with Xumm to load your account data." matTooltipPosition="right" (click)="openSignInDialog()">
+                    <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with Xumm">
+                </button>
+            </div>
+            <div *ngIf="xrplAccount" style="align-self: start;">
+                <button  mat-raised-button color="primary" matTooltip="Logout" matTooltipPosition="below" (click)="logoutAccount()">
+                    Logout
+                </button>
+                <span style="flex: 1 1 auto;"></span>
+            </div>
+            <div style="padding-top: 0.2em;" class="floatcenter">
+                <div *ngIf="!xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
+                    <label>Login with Xumm to load your account data.</label>
+                </div>
+                <div *ngIf="xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
+                    <label fxHide.xs>You are currently logged in with the XRPL account:</label>
+                    <b> {{xrplAccount}} </b>
+                    <label fxHide.xs>and balance:</label>
+                    <b> {{getAccountBalance()}} XRP. </b>
+                </div>
+            </div>
+        </div>
+        <mat-slide-toggle fxShow fxHide.xs [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()">{{!isTestMode ? 'Live net' : 'Test net'}}</mat-slide-toggle>
     </div>
-    <div class="floatcenter">
-        <label *ngIf="isTestMode" style="color: crimson"><b>You are connected to the <b>Test</b> net.</b></label>
-        <label *ngIf="!isTestMode" style="color: green"><b>You are connected to the <b>Live</b> net.</b></label>
-    </div>
-    <div *ngIf="lastTrxLink">
+    <mat-slide-toggle class="floatcenter" style="padding-top: 1em;" fxShow.xs fxHide [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()">{{!isTestMode ? 'Live net' : 'Test net'}}</mat-slide-toggle>
+    <div *ngIf="lastTrxLink" style="padding-top: 1em;">
         View your transaction on the XRPL ledger:
-        <a [href]="lastTrxLink" target="_blank;">XRPL Account link</a>
+        <a [href]="lastTrxLink" target="_blank;">XRPL Transaction Link</a>
     </div>
     <mat-card style="padding-top: 2em;">
         <mat-accordion fxLayout="column" fxLayoutGap="0.5em">

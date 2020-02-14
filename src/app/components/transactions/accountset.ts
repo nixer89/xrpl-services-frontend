@@ -72,6 +72,8 @@ export class AccountSetComponent implements OnInit {
       this.domainInput = null;
   
     this.emailInput = "";
+
+    this.checkChanges();
   }
 
   hexToString(hexValue: string):string {
@@ -127,7 +129,7 @@ export class AccountSetComponent implements OnInit {
   }
 
   deleteEmailHash() {
-    this.payload.txjson.EmailHash = '';
+    this.payload.txjson.EmailHash = md5('invalid@xumm.community').toUpperCase();
 
     if(this.originalAccountInfo && this.originalAccountInfo.Account)
       this.payload.xrplAccount = this.originalAccountInfo.Account;
@@ -143,10 +145,10 @@ export class AccountSetComponent implements OnInit {
     this.emailChangeDetected = this.emailInput != null && this.emailInput.trim().length > 0 && (!this.originalAccountInfo || (md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash));
     this.validEmail = !this.emailChangeDetected || emailValidator.validate(this.emailInput);
 
-    console.log("domainChangeDetected: " + this.domainChangeDetected);
-    console.log("validDomain: " + this.validDomain);
-    console.log("emailChangeDetected: " + this.emailChangeDetected);
-    console.log("validEmail: " + this.validEmail);
+    //console.log("domainChangeDetected: " + this.domainChangeDetected);
+    //console.log("validDomain: " + this.validDomain);
+    //console.log("emailChangeDetected: " + this.emailChangeDetected);
+    //console.log("validEmail: " + this.validEmail);
   }
 
 }

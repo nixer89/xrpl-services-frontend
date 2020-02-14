@@ -1,12 +1,21 @@
 <mat-expansion-panel>
-  <mat-expansion-panel-header>
+  <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
       XRPL EscrowCreate
     </mat-panel-title>
     <mat-panel-description>
-      Create an Escrow on the XRPL Ledger.
+      Create an Escrow on the XRP Ledger.
     </mat-panel-description>
   </mat-expansion-panel-header>
+  <mat-expansion-panel-header  fxShow.xs fxHide>
+    <mat-panel-title style="align-items: center;">
+      EscrowCreate
+    </mat-panel-title>
+    <mat-panel-description>
+      Create an Escrow on the XRPL.
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
   <label style="color: crimson;"><b>Be careful. You could lock away your funds for years!</b><br/></label>
   <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
     <mat-form-field>
@@ -47,7 +56,7 @@
       </button>
     </mat-form-field>
   </form>
-  <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="center center" fxLayoutGap="0.5em" style="padding-top: 2em;">
     <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrow">
       Send EscrowCreate to Xumm
     </button>
