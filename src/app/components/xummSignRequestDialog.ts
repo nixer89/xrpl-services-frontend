@@ -75,7 +75,8 @@ export class XummSignDialogComponent implements OnInit{
         this.payloadUUID = xummResponse.uuid;
 
         if(!this.deviceDetector.isDesktop() && xummResponse.next.always) {
-            this.dialogRef.close({redirect: xummResponse.next.always});
+            window.location.href = xummResponse.next.always;
+            this.dialogRef.close({redirect: true});
         }
         else {
             this.qrLink = xummResponse.refs.qr_png;

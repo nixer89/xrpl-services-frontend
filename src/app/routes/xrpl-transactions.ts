@@ -88,11 +88,11 @@ export class XrplTransactionsComponent implements OnInit {
     dialogRef.afterClosed().subscribe((info:any) => {
       console.log('The dialog was closed');
       console.log(info);
-      if(info && info.redirect)
-        window.location.href = info.redirect;
-
-      
-      this.xrplAccount = info;
+      if(info && info.redirect) {
+        //nothing to do
+      } else {
+        this.xrplAccount = info;
+      }
 
       if(this.xrplAccount) {
         this.loadAccountData();
@@ -110,23 +110,24 @@ export class XrplTransactionsComponent implements OnInit {
     dialogRef.afterClosed().subscribe((info:any) => {
       console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
-      if(info && info.redirect)
-        window.location.href = info.redirect;
-
-      if(info && info.success) {
-        this.xrplAccount = info.xrplAccount;
-
-        this.isTestMode = info.testnet;
-
-        if(info.txid) {
-          if(info.testnet)
-            this.lastTrxLink = "https://test.bithomp.com/explorer/"+info.txid;
-          else
-            this.lastTrxLink = "https://bithomp.com/explorer/"+info.txid;
-        }
+      if(info && info.redirect) {
+        //nothing to do
       } else {
-        this.xrplAccount = null;
-        this.lastTrxLink = null;
+        if(info && info.success) {
+          this.xrplAccount = info.xrplAccount;
+  
+          this.isTestMode = info.testnet;
+  
+          if(info.txid) {
+            if(info.testnet)
+              this.lastTrxLink = "https://test.bithomp.com/explorer/"+info.txid;
+            else
+              this.lastTrxLink = "https://bithomp.com/explorer/"+info.txid;
+          }
+        } else {
+          this.xrplAccount = null;
+          this.lastTrxLink = null;
+        }
       }
 
       if(this.xrplAccount) {
