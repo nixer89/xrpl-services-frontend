@@ -126,11 +126,15 @@ export class EscrowCreateComponent {
     
     if(this.cancelafterDateInput && this.cancelafterTimeInput)
       this.cancelAfterDateTime = new Date(this.cancelafterDateInput + " " + this.cancelafterTimeInput)
+    else
+      this.cancelAfterDateTime = null;
 
     this.validCancelAfter = this.cancelAfterDateTime != null;
 
     if(this.finishafterDateInput && this.finishafterTimeInput)
       this.finishAfterDateTime = new Date(this.finishafterDateInput + " " + this.finishafterTimeInput)
+    else
+      this.finishAfterDateTime = null;
     
     this.validFinishAfter = this.finishAfterDateTime != null;
 
@@ -139,7 +143,17 @@ export class EscrowCreateComponent {
 
     this.validCondition = this.passwordInput && this.passwordInput.trim().length > 0;
 
-    this.isValidEscrow = this.validAmount && this.validAddress && (this.validFinishAfter || this.validCancelAfter);
+    if(this.validAmount && this.validAddress && (this.validFinishAfter || this.validCondition)) {
+      if(this.validCondition)
+        this.isValidEscrow = this.validFinishAfter || this.validCancelAfter
+      else
+        this.isValidEscrow = this.validFinishAfter 
+    }
+    else
+      this.isValidEscrow = false;
+
+    if(this.isValidEscrow && this.validFinishAfter && this.validCancelAfter)
+      this.isValidEscrow = this.finishAfterDateTime.getTime() < this.cancelAfterDateTime.getTime();
 
     console.log("isValidEscrow: " + this.isValidEscrow);
   }
@@ -155,5 +169,12 @@ export class EscrowCreateComponent {
       //console.log("err encoding " + err);
       return false;
     }
+  }
+
+  isValidDateCombination() {
+    if(!this.validCancelAfter || !this.validFinishAfter)
+      return true;
+    else
+      return this.validAmount && this.validAddress && (this.validFinishAfter && this.validCancelAfter && ((this.finishAfterDateTime.getTime() - this.cancelAfterDateTime.getTime()) < 0));
   }
 }

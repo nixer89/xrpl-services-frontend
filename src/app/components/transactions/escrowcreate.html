@@ -12,7 +12,7 @@
       EscrowCreate
     </mat-panel-title>
     <mat-panel-description>
-      Create an Escrow on the XRPL.
+      Create an Escrow.
     </mat-panel-description>
   </mat-expansion-panel-header>
 
@@ -62,6 +62,8 @@
     </button>
     <label *ngIf="!amountInput || !validAmount">Please enter a valid amount.</label>
     <label *ngIf="validAmount && ( !destinationInput || !validAddress )">Please enter a valid destination.</label>
-    <label *ngIf="validAmount && validAddress && (!validFinishAfter && !validCancelAfter)">Please provide a FinishAfter or CancelAfter time.</label>
+    <label *ngIf="validAmount && validAddress && (!validFinishAfter && !validCondition)">Please provide a FinishAfter or Condition (password).</label>
+    <label *ngIf="validAmount && validAddress && validCondition && (!validFinishAfter && !validCancelAfter)">Please provide a FinishAfter or CancelAfter time.</label>
+    <label *ngIf="!isValidDateCombination()">FinishAfter must be before CancelAfter.</label>
   </div>
 </mat-expansion-panel>

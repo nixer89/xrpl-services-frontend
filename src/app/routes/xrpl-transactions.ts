@@ -22,7 +22,7 @@ export class XrplTransactionsComponent implements OnInit {
   accountInfoChanged: Subject<void> = new Subject<void>();
   websocket: WebSocketSubject<any>;
 
-  isTestMode:boolean = true;
+  isTestMode:boolean = false;
 
   constructor(
     private signDialog: MatDialog,

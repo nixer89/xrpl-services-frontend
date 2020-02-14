@@ -105,6 +105,9 @@ export class AccountSetComponent implements OnInit {
     console.log("domain hex: " + this.stringToHex(this.domainInput.trim()));
     console.log("email: " + this.emailInput);
 
+    this.payload.custom_meta = {};
+    this.payload.custom_meta.instructions = "";
+
     if(this.originalAccountInfo && this.originalAccountInfo.Account)
       this.payload.xrplAccount = this.originalAccountInfo.Account;
 
@@ -114,12 +117,26 @@ export class AccountSetComponent implements OnInit {
     if(this.emailInput && (!this.originalAccountInfo || md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash))
       this.payload.txjson.EmailHash = md5(this.emailInput.trim()).toUpperCase();
 
+    if(this.payload.txjson.Domain)
+      this.payload.custom_meta.instructions+= "Set a new Domain"
+
+    if(this.payload.txjson.EmailHash)
+    this.payload.custom_meta.instructions+= "Set a new Domain"
+
     this.onPayload.emit(this.payload);
     this.initializePayload();
   }
 
   deleteDomain() {
     this.payload.txjson.Domain = '';
+
+    this.payload.custom_meta = {};
+    this.payload.custom_meta.instructions = "Delete your Domain attached to this account";
+
+    if(this.originalAccountInfo && this.originalAccountInfo.Domain)
+      this.payload.custom_meta.instructions+= ": " + this.hexToString(this.originalAccountInfo.Domain);
+    else
+      this.payload.custom_meta.instructions+= ".";
 
     if(this.originalAccountInfo && this.originalAccountInfo.Account)
       this.payload.xrplAccount = this.originalAccountInfo.Account;
