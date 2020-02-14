@@ -27,8 +27,11 @@
     </mat-form-field>
     <div *ngIf="originalAccountInfo && originalAccountInfo.EmailHash && originalAccountInfo.urlgravatar" fxLayout="column">
       <label >Your current <a href="https://en.gravatar.com/support/what-is-gravatar/" target="_blank">Gravatar</a> URL: </label>
-      <a href="{{originalAccountInfo.urlgravatar}}.replace('http','https')" target="_blank">
+      <a fxShow fxHide.xs href="{{originalAccountInfo.urlgravatar}}.replace('http','https')" target="_blank">
         {{originalAccountInfo.urlgravatar}}
+      </a>
+      <a fxShow.xs fxHide href="{{originalAccountInfo.urlgravatar}}.replace('http','https')" target="_blank">
+        Gravatar Link
       </a>
     </div>
   </form>

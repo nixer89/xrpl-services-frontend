@@ -28,7 +28,7 @@
     </div>
     <mat-slide-toggle class="floatcenter" style="padding-top: 1em;" fxShow.xs fxHide [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()">{{!isTestMode ? 'Live net' : 'Test net'}}</mat-slide-toggle>
     <div *ngIf="lastTrxLink" style="padding-top: 1em;">
-        View your transaction on the XRPL ledger:
+        View your transaction on the XRP Ledger:
         <a [href]="lastTrxLink" target="_blank;">XRPL Transaction Link</a>
     </div>
     <mat-card style="padding-top: 2em;">
