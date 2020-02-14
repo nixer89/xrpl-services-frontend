@@ -27,7 +27,7 @@
       <mat-hint *ngIf="destinationInput && !validAddress" style="color: crimson;">Not a valid XRP address</mat-hint>
     </mat-form-field>
     <mat-card>
-      <label>CancelAfter in UTC (optional)</label>
+      <label>CancelAfter (optional)</label>
       <mat-card-content style="padding-top:1em;">
         <mat-form-field>
           <input matInput name="cancelafterdate" type="date" placeholder="Choose a Date" [(ngModel)]="cancelafterDateInput" (ngModelChange)="checkChanges()">
@@ -38,7 +38,7 @@
       </mat-card-content>
     </mat-card>
     <mat-card>
-      <label>FinishAfter in UTC (optional)</label>
+      <label>FinishAfter (optional)</label>
       <mat-card-content style="padding-top:1em;">
         <mat-form-field>
           <input matInput name="finishafterdate" type="date" placeholder="Choose a Date" [(ngModel)]="finishafterDateInput" (ngModelChange)="checkChanges()">
