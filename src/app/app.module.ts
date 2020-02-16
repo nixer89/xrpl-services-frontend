@@ -33,7 +33,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBarModule } from '@angular/material/snack-bar'; 
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox'; 
 
 //my services
 import {AppService} from './services/app.service';
@@ -76,6 +77,7 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
     MatSlideToggleModule,
     MatIconModule,
     MatSnackBarModule,
+    MatCheckboxModule,
     //Special
     DeviceDetectorModule.forRoot(),
   ],

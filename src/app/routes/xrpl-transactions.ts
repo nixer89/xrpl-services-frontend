@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
@@ -12,7 +12,7 @@ import { XummService } from '../services/xumm.service'
   selector: 'app-xrpl-transactions',
   templateUrl: './xrpl-transactions.html',
 })
-export class XrplTransactionsComponent implements OnInit {
+export class XrplTransactionsComponent implements OnInit, OnDestroy {
   
   xrplAccount:string;
   xrplAccountData:any;
@@ -31,24 +31,36 @@ export class XrplTransactionsComponent implements OnInit {
     private snackBar: MatSnackBar) { }
 
   async ngOnInit() {
-    //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
-    //await this.loadAccountData();
+    this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
+    await this.loadAccountData();
 
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;
+      let signinToValidate = params.signinToValidate;
       if(payloadId) {
         //check if transaction was successfull and redirect user to stats page right away:
         let payloadInfo = await this.xummApi.getPayloadInfo(payloadId);
         console.log(JSON.stringify(payloadInfo));
-        if(payloadInfo && payloadInfo.response && payloadInfo.response.account) {
+        if(payloadInfo && payloadInfo.response && payloadInfo.response.account && signinToValidate) {
             this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
             this.xrplAccount = payloadInfo.response.account;
             this.loadAccountData();
-        } else {
+        } else if (signinToValidate) {
             this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+        } else {
+          let transactionResult = await this.xummApi.validateTransaction(payloadId);
+          if(transactionResult && transactionResult.success) {
+            this.snackBar.open("Your transaction was successfull on " + (transactionResult.testnet ? 'test net.' : 'live net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+          } else {
+            this.snackBar.open("Your transaction was not successfull. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
+          }
         }
       }
     });
+  }
+
+  ngOnDestroy() {
+    
   }
 
   async loadAccountData() {

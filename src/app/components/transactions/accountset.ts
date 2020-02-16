@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Subscription, Observable} from 'rxjs';
 import * as md5 from 'md5';
 import * as emailValidator from 'email-validator'
@@ -7,7 +7,7 @@ import * as emailValidator from 'email-validator'
   selector: 'accountset',
   templateUrl: './accountset.html'
 })
-export class AccountSetComponent implements OnInit {
+export class AccountSetComponent implements OnInit, OnDestroy {
 
   @Input()
   accountInfoChanged: Observable<void>;
@@ -21,10 +21,14 @@ export class AccountSetComponent implements OnInit {
   @ViewChild('inpemail', {static: false}) inpemail;
   emailInput: string = "";
 
+  @ViewChild('inprequiredesttag', {static: false}) inprequiredesttag;
+  requireDestTagInput: boolean = false;
+
   private accountInfoChangedSubscription: Subscription;
   originalAccountInfo:any;
   domainChangeDetected:boolean = false;
   emailChangeDetected:boolean = false;
+  requireDestTagChangeDetected:boolean = false;
 
   validAccountSet:boolean = false;
   validDomain:boolean = false;
@@ -49,8 +53,11 @@ export class AccountSetComponent implements OnInit {
     this.initializePayload();    
   }
 
+  
+
   ngOnDestroy() {
-    this.accountInfoChangedSubscription.unsubscribe();
+    if(this.accountInfoChangedSubscription)
+      this.accountInfoChangedSubscription.unsubscribe();
   }
 
   initializePayload() {
@@ -72,6 +79,8 @@ export class AccountSetComponent implements OnInit {
       this.domainInput = null;
   
     this.emailInput = "";
+
+    this.requireDestTagInput = false;
 
     this.checkChanges();
   }
@@ -111,11 +120,14 @@ export class AccountSetComponent implements OnInit {
     if(this.originalAccountInfo && this.originalAccountInfo.Account)
       this.payload.xrplAccount = this.originalAccountInfo.Account;
 
-    if(this.domainInput && (!this.originalAccountInfo || this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain))
+    if(this.domainInput && this.validDomain && (!this.originalAccountInfo || this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain))
       this.payload.txjson.Domain = this.stringToHex(this.domainInput.trim());
 
-    if(this.emailInput && (!this.originalAccountInfo || md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash))
+    if(this.emailInput && this.validEmail && (!this.originalAccountInfo || md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash))
       this.payload.txjson.EmailHash = md5(this.emailInput.trim()).toUpperCase();
+
+    if(this.requireDestTagInput)
+      this.payload.txjson.SetFlag = 1;
 
     if(this.payload.txjson.Domain)
       this.payload.custom_meta.instructions+= "Set a new Domain"
@@ -146,7 +158,7 @@ export class AccountSetComponent implements OnInit {
   }
 
   deleteEmailHash() {
-    this.payload.txjson.EmailHash = md5('invalid@xumm.community').toUpperCase();
+    this.payload.txjson.EmailHash = "00000000000000000000000000000000";
 
     if(this.originalAccountInfo && this.originalAccountInfo.Account)
       this.payload.xrplAccount = this.originalAccountInfo.Account;
@@ -161,6 +173,8 @@ export class AccountSetComponent implements OnInit {
 
     this.emailChangeDetected = this.emailInput != null && this.emailInput.trim().length > 0 && (!this.originalAccountInfo || (md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash));
     this.validEmail = !this.emailChangeDetected || emailValidator.validate(this.emailInput);
+
+    this.requireDestTagChangeDetected = true;
 
     //console.log("domainChangeDetected: " + this.domainChangeDetected);
     //console.log("validDomain: " + this.validDomain);

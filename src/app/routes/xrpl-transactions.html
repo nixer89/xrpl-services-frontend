@@ -1,4 +1,4 @@
-<mat-card fxFlex fxLayout="column" fxLayoutGap="0.1em">
+<mat-card fxFlex fxLayout="column" fxLayoutGap="0.1em" class="margin-5">
     <div fxLayout="row">
         <div fxLayout="column" fxLayoutAlign="start center" style="width: 100%;">
             <div *ngIf="!xrplAccount">
@@ -18,9 +18,11 @@
                 </div>
                 <div *ngIf="xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
                     <label fxHide.xs>You are currently logged in with the XRPL account:</label>
-                    <b> {{xrplAccount}} </b>
+                    <b fxShow fxHide.xs> {{xrplAccount}} </b>
+                    <b fxShow.xs fxHide style="font-size: 0.8em;"> {{xrplAccount}} </b>
                     <label fxHide.xs>and balance:</label>
-                    <b> {{getAccountBalance()}} XRP. </b>
+                    <b fxShow fxHide.xs> {{getAccountBalance()}} XRP. </b>
+                    <b fxShow.xs fxHide style="font-size: 0.8em;"> {{getAccountBalance()}} XRP. </b>
                 </div>
             </div>
         </div>
@@ -31,10 +33,8 @@
         View your transaction on the XRP Ledger:
         <a [href]="lastTrxLink" target="_blank;">XRPL Transaction Link</a>
     </div>
-    <mat-card style="padding-top: 2em;">
-        <mat-accordion fxLayout="column" fxLayoutGap="0.5em">
-            <accountset [accountInfoChanged]="accountInfoChanged.asObservable()" (onPayload)="onPayloadReceived($event)"></accountset>
-            <escrowcreate (onPayload)="onPayloadReceived($event)"></escrowcreate>
-        </mat-accordion>
-    </mat-card>
+    <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+        <accountset [accountInfoChanged]="accountInfoChanged.asObservable()" (onPayload)="onPayloadReceived($event)"></accountset>
+        <escrowcreate (onPayload)="onPayloadReceived($event)"></escrowcreate>
+    </mat-accordion>
 </mat-card>

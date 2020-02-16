@@ -47,9 +47,13 @@ body .snackbar-success {
     justify-content: center;
   }
   
-  body .snackbar-failed {
-    background: #ffffff;
-    color: #EB0000;
-    display: flex;
-    justify-content: center;
-  }
+body .snackbar-failed {
+background: #ffffff;
+color: #EB0000;
+display: flex;
+justify-content: center;
+}
+
+.mat-card.margin-5 {
+    margin: 5px;
+}

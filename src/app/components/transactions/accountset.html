@@ -12,7 +12,7 @@
       AccountSet
     </mat-panel-title>
     <mat-panel-description>
-      Change your account settings.
+      Change settings.
     </mat-panel-description>
   </mat-expansion-panel-header>
 
@@ -34,9 +34,10 @@
         Gravatar Link
       </a>
     </div>
+    <mat-checkbox name="requireDestTag" [(ngModel)]="requireDestTagInput">Require Destination Tag</mat-checkbox>
   </form>
   <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="0.5em">
-    <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!domainChangeDetected && !emailChangeDetected || domainChangeDetected && !validDomain || emailChangeDetected && !validEmail">
+    <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!requireDestTagChangeDetected && !domainChangeDetected && !emailChangeDetected || domainChangeDetected && !validDomain || emailChangeDetected && !validEmail">
       Send {{originalAccountInfo ? 'changes' : 'request'}} to Xumm
     </button>
     <button mat-raised-button color="primary" (click)="deleteDomain()" matTooltip="{{originalAccountInfo && originalAccountInfo.EmailHash ? 'Delete Domain: ' : ''}}{{hexToString(originalAccountInfo && originalAccountInfo.Domain)}}" [disabled]="!originalAccountInfo || !originalAccountInfo.Domain">

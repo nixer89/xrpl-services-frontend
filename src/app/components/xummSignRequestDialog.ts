@@ -53,6 +53,7 @@ export class XummSignDialogComponent implements OnInit{
         }
 
         xummPayload.referer = refererURL;
+        xummPayload.signinToValidate = true;
 
         let xummResponse:any;
         try {
