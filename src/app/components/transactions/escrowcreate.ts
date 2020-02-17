@@ -2,6 +2,7 @@ import { Component, ViewChild, Output, EventEmitter, OnInit, OnDestroy, Input } 
 import { Encode } from 'xrpl-tagged-address-codec';
 import * as cryptoCondition from 'five-bells-condition'
 import { Subscription, Observable } from 'rxjs';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'escrowcreate',
@@ -38,15 +39,21 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
 
   private transactionSuccessfullSubscription: Subscription;
 
-  isValidEscrow = false;
-  validAmount = false;
-  validAddress = false;
-  validCancelAfter = false;
-  validFinishAfter = false;
-  validCondition = false;
+  isValidEscrow:boolean = false;
+  validAmount:boolean = false;
+  validAddress:boolean = false;
+  validCancelAfter:boolean = false;
+  validFinishAfter:boolean = false;
+  validCondition:boolean = false;
 
   cancelAfterDateTime:Date;
   finishAfterDateTime:Date;
+
+  cancelDateInFuture:boolean = false;
+  finishDateInFuture:boolean = false;
+  cancelDateAfterFinishDate:boolean = false;
+
+  dateTimePickerSupported:boolean = true;
 
   hidePw = true;
 
@@ -59,11 +66,15 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     }
   }
 
+  constructor(private device:DeviceDetectorService) {}
+
   ngOnInit() {
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
       console.log("transaction was successfull")
       this.clearInputs()
     });
+
+    this.dateTimePickerSupported = !(this.device && this.device.getDeviceInfo() && this.device.getDeviceInfo().os_version && (this.device.getDeviceInfo().os_version.toLowerCase().includes('ios') || this.device.getDeviceInfo().browser.toLowerCase().includes('safari') || this.device.getDeviceInfo().browser.toLowerCase().includes('edge')));
   }
 
   ngOnDestroy() {
@@ -147,14 +158,21 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     else
       this.cancelAfterDateTime = null;
 
-    this.validCancelAfter = this.cancelAfterDateTime != null;
+    this.cancelDateInFuture = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime() < Date.now();
+    this.validCancelAfter = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime() > Date.now();
 
     if(this.finishafterDateInput && this.finishafterTimeInput)
       this.finishAfterDateTime = new Date(this.finishafterDateInput + " " + this.finishafterTimeInput)
     else
       this.finishAfterDateTime = null;
     
-    this.validFinishAfter = this.finishAfterDateTime != null;
+    this.finishDateInFuture = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() < Date.now();
+    this.validFinishAfter = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() > Date.now();
+    
+
+    if(this.validCancelAfter && this.validFinishAfter)
+      this.cancelDateAfterFinishDate = this.finishAfterDateTime.getTime() > this.cancelAfterDateTime.getTime();
+
 
     this.validAmount = this.amountInput && this.amountInput >= 0.000001;
     this.validAddress = this.destinationInput && this.destinationInput.trim().length > 0 && this.isValidXRPAddress(this.destinationInput.trim());
@@ -170,8 +188,9 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     else
       this.isValidEscrow = false;
 
-    if(this.isValidEscrow && this.validFinishAfter && this.validCancelAfter)
-      this.isValidEscrow = this.finishAfterDateTime.getTime() < this.cancelAfterDateTime.getTime();
+    if(this.isValidEscrow && this.validFinishAfter && this.validCancelAfter) {
+      this.isValidEscrow = !this.cancelDateAfterFinishDate
+    }
 
     console.log("isValidEscrow: " + this.isValidEscrow);
   }
@@ -189,17 +208,12 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     }
   }
 
-  isValidDateCombination() {
-    if(!this.validCancelAfter || !this.validFinishAfter)
-      return true;
-    else
-      return this.validAmount && this.validAddress && (this.validFinishAfter && this.validCancelAfter && ((this.finishAfterDateTime.getTime() - this.cancelAfterDateTime.getTime()) < 0));
-  }
-
   clearInputs() {
     this.destinationInput = this.amountInput = null;
     this.cancelafterDateInput = this.cancelafterTimeInput = this.cancelAfterDateTime = null;
     this.finishafterDateInput = this.finishafterTimeInput = this.finishAfterDateTime = null;
+
+    this.cancelDateInFuture =  this.finishDateInFuture = this.cancelDateAfterFinishDate = false;
 
     this.isValidEscrow = this.validAddress = this.validAmount = this.validCancelAfter = this.validFinishAfter = this.validCondition = false;
   }

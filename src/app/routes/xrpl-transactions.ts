@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
@@ -12,7 +12,7 @@ import { XummService } from '../services/xumm.service'
   selector: 'app-xrpl-transactions',
   templateUrl: './xrpl-transactions.html',
 })
-export class XrplTransactionsComponent implements OnInit, OnDestroy {
+export class XrplTransactionsComponent implements OnInit {
   
   xrplAccount:string;
   xrplAccountData:any;
@@ -58,10 +58,6 @@ export class XrplTransactionsComponent implements OnInit, OnDestroy {
         }
       }
     });
-  }
-
-  ngOnDestroy() {
-    
   }
 
   async loadAccountData() {

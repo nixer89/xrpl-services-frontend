@@ -9,13 +9,13 @@
   </mat-expansion-panel-header>
   <mat-expansion-panel-header  fxShow.xs fxHide>
     <mat-panel-title>
-      EscrowCreate
+      Escrow Create
     </mat-panel-title>
     <mat-panel-description>
-      Create Escrow.
+      Create an Escrow.
     </mat-panel-description>
   </mat-expansion-panel-header>
-  <a href="https://xrpl.org/escrowcreate.html" target="_blank">EscrowCreate Documentation</a><br/>
+  <a href="https://xrpl.org/escrowcreate.html" target="_blank">Escrow Create Documentation</a><br/>
 
   <label style="color: crimson;padding-top: 1em;"><b>Be careful. You could lock away your funds for years!</b><br/></label>
   <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
@@ -28,43 +28,49 @@
       <mat-hint *ngIf="amountInput && !validAmount" style="color: crimson;">Not a valid amount</mat-hint>
     </mat-form-field>
     <mat-card>
-      <label>CancelAfter (optional)</label>
+      <label>Cancel After (optional)</label>
       <mat-card-content style="padding-top:1em;">
         <mat-form-field>
-          <input matInput name="cancelafterdate" type="date" placeholder="Choose a Date" [(ngModel)]="cancelafterDateInput" (ngModelChange)="checkChanges()">
+          <input *ngIf="dateTimePickerSupported" matInput name="cancelafterdate" type="date" placeholder="Choose a Date" [(ngModel)]="cancelafterDateInput" (ngModelChange)="checkChanges()">
+          <input *ngIf="!dateTimePickerSupported" matInput name="cancelafterdate" placeholder="yyyy-mm-dd" [(ngModel)]="cancelafterDateInput" (ngModelChange)="checkChanges()">
         </mat-form-field>
         <mat-form-field>
-          <input matInput name="cancelaftertime" type="time" step="2" placeholder="Choose a Time" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
+          <input *ngIf="dateTimePickerSupported" matInput name="cancelaftertime" type="time" step="2" placeholder="Choose a Time" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
+          <input *ngIf="!dateTimePickerSupported" matInput name="cancelaftertime"  step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
         </mat-form-field>
       </mat-card-content>
+      <mat-hint *ngIf="cancelDateInFuture" style="color: crimson;">Cancel After needs to be in the future.</mat-hint>
+      <mat-hint *ngIf="cancelDateAfterFinishDate" style="color: crimson;">Cancel After needs to be after Finish After.</mat-hint>
     </mat-card>
     <mat-card>
-      <label>FinishAfter (optional)</label>
+      <label>Finish After (optional)</label>
       <mat-card-content style="padding-top:1em;">
         <mat-form-field>
-          <input matInput name="finishafterdate" type="date" placeholder="Choose a Date" [(ngModel)]="finishafterDateInput" (ngModelChange)="checkChanges()">
+          <input *ngIf="dateTimePickerSupported" matInput name="finishafterdate" type="date" placeholder="Choose a Date" [(ngModel)]="finishafterDateInput" (ngModelChange)="checkChanges()">
+          <input *ngIf="!dateTimePickerSupported" matInput name="finishafterdate" placeholder="yyyy-mm-dd" [(ngModel)]="finishafterDateInput" (ngModelChange)="checkChanges()">
         </mat-form-field>
         <mat-form-field>
-          <input matInput name="finishaftertime" type="time" step="2" placeholder="Choose a Time" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
+          <input *ngIf="dateTimePickerSupported" matInput name="finishaftertime" type="time" step="2" placeholder="Choose a Time" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
+          <input *ngIf="!dateTimePickerSupported" matInput name="finishaftertime" step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
         </mat-form-field>
       </mat-card-content>
+      <mat-hint *ngIf="finishDateInFuture" style="color: crimson;">Finish After needs to be in the future.</mat-hint>
     </mat-card>
     <mat-form-field>
       <input #inppassword matInput name="password" [type]="hidePw ? 'password' : 'text'" matInput placeholder="Password to secure your escrow (optional)" [(ngModel)]="passwordInput" (ngModelChange)="checkChanges()">
-      <mat-hint style="color: orangered;">Optional, but if set, you need this password to execute the EscrowFinish transaction!</mat-hint>
+      <mat-hint style="color: orangered;">Optional, but if set, you need this password to execute the Escrow Finish transaction!</mat-hint>
       <button mat-icon-button matSuffix (click)="hidePw = !hidePw" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePw">
         <mat-icon>{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
       </button>
     </mat-form-field>
   </form>
-  <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="0.5em" style="padding-top: 2em;">
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap="0.5em" style="padding-top: 2em;">
     <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrow">
-      Send EscrowCreate to Xumm
+      Send Escrow Create to Xumm
     </button>
-    <label *ngIf="!amountInput || !validAmount">Please enter a valid amount.</label>
-    <label *ngIf="validAmount && ( !destinationInput || !validAddress )">Please enter a valid destination.</label>
-    <label *ngIf="validAmount && validAddress && (!validFinishAfter && !validCondition)">Please provide a FinishAfter or Condition (password).</label>
-    <label *ngIf="validAmount && validAddress && validCondition && (!validFinishAfter && !validCancelAfter)">Please provide a FinishAfter or CancelAfter time.</label>
-    <label *ngIf="!isValidDateCombination()">FinishAfter must be before CancelAfter.</label>
+    <label *ngIf="!destinationInput || !validAddress">Please enter a valid amount.</label>
+    <label *ngIf="validAddress && ( !amountInput || !validAmount )">Please enter a valid destination.</label>
+    <label *ngIf="validAddress && validAmount && (!validFinishAfter && !validCondition)">Please provide a Finish After or Condition (password).</label>
+    <label *ngIf="validAddress &&validAmount &&  validCondition && (!validFinishAfter && !validCancelAfter)">Please provide a Finish After or Cancel After time.</label>
   </div>
 </mat-expansion-panel>

@@ -9,14 +9,14 @@
   </mat-expansion-panel-header>
   <mat-expansion-panel-header  fxShow.xs fxHide>
     <mat-panel-title>
-      EscrowCancel
+      Escrow Cancel
     </mat-panel-title>
     <mat-panel-description>
-     Cancel Escrow.
+     Cancel an Escrow.
     </mat-panel-description>
   </mat-expansion-panel-header>
 
-  <a href="https://xrpl.org/escrowcancel.html" target="_blank">EscrowCancel Documentation</a><br/>
+  <a href="https://xrpl.org/escrowcancel.html" target="_blank">Escrow Cancel Documentation</a><br/>
   <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;padding-top: 1em;">
     <mat-form-field>
       <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="checkChanges()">
@@ -27,9 +27,9 @@
       <mat-hint *ngIf="escrowSequenceInput && !validSequence" style="color: crimson;">Not a valid Escrow Sequence</mat-hint>
     </mat-form-field>
   </form>
-  <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="0.5em" style="padding-top: 2em;">
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap="0.5em" style="padding-top: 2em;">
     <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowCancel">
-      Send EscrowCancel to Xumm
+      Send Escrow Cancel to Xumm
     </button>
     <label *ngIf="!escrowOwnerInput || !validAddress">Please enter a valid XRPL address.</label>
     <label *ngIf="validAddress && ( !escrowSequenceInput || !validSequence )">Please enter a valid Escrow Sequence.</label>

@@ -1,15 +1,15 @@
-<mat-toolbar fxFlex fxLayout="row" fxLayout.xs="column" color="primary" class="mat-elevation-z4" style="padding-top: 0.1em;">  
+<mat-toolbar fxFlex fxLayout="row" fxLayout.xs="column" color="primary" class="mat-elevation-z4">  
   <mat-toolbar-row fxLayout="row">
     <div fxLayout="row" fxLayoutGap="0.5em" style="align-items: center;">
-      <a [routerLink]="['/']">
+      <a [routerLink]="['/']" fxLayoutAlign="center center">
         <img src="../../assets/topbar_logo.png" width="50px" height="50px">
       </a>
       <span>Xumm Community</span>
     </div>
       <!-- This fills the remaining space of the current row -->
     <span style="flex: 1 1 auto;"></span>
-    <div fxHide.xs style="text-align: center;">
-      <span fxLayout="row" fxLayoutGap="5em" style="align-items: center;">
+    <div fxHide.xs>
+      <span fxLayout="row" fxLayoutGap="5em" fxLayoutAlign="center center">
         Support this project:&nbsp;
         <button mat-button matTooltip="Donate to this project." matTooltipPosition="below" (click)="supportViaXumm()" style="padding:0px;">
           <img src="../../assets/xummPay.svg" style="width: 150px; height: 45px;" alt="Support via Xumm">
@@ -18,7 +18,7 @@
     </div>
   </mat-toolbar-row>
   <mat-toolbar-row fxHide fxShow.xs>
-    <span style="font-size: 0.8em;">
+    <span style="font-size: 0.8em;" fxLayoutAlign="center center">
       Support this project:&nbsp;
       <button mat-button matTooltip="Donate to this project." matTooltipPosition="below" (click)="supportViaXumm()" style="padding:0px;">
         <img src="../../assets/xummPay.svg" style="width: 120px; height: 36px;" alt="Support via Xumm">
