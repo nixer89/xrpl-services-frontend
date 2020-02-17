@@ -87,26 +87,18 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.checkChanges();
   }
 
-  hexToString(hexValue: string):string {
-    if(hexValue) {
-      let str = '';
-      for (var i = 0; (i < hexValue.length && hexValue.substr(i, 2) !== '00'); i += 2)
-          str += String.fromCharCode(parseInt(hexValue.substr(i, 2), 16));
-
-      return str;
-    }
-
-    return "";
+  hexToString(hexValue: string): string {
+    if(hexValue)
+      return Buffer.from(hexValue, 'hex').toString('utf8');
+    else
+      return "";
   }
 
   stringToHex(stringValue: string): string {
-    let arr = [];
-
-    for (var i = 0, l = stringValue.length; i < l; i ++) {
-      var hex = Number(stringValue.charCodeAt(i)).toString(16);
-      arr.push(hex);
-    }
-    return arr.join('').toUpperCase();
+    if(stringValue)
+      return Buffer.from(stringValue, 'utf8').toString('hex').toUpperCase();
+    else
+      return "";
   }
 
   sendToXumm() {

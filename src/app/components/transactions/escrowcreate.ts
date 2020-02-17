@@ -82,26 +82,50 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       this.transactionSuccessfullSubscription.unsubscribe();
   }
 
-  hexToString(hexValue: string):string {
-    if(hexValue) {
-      let str = '';
-      for (var i = 0; (i < hexValue.length && hexValue.substr(i, 2) !== '00'); i += 2)
-          str += String.fromCharCode(parseInt(hexValue.substr(i, 2), 16));
+  checkChanges() {
+    //console.log("amountInput: " + this.amountInput);
+    //console.log("destinationInput: " + this.destinationInput);
+    
+    if(this.cancelafterDateInput && this.cancelafterTimeInput)
+      this.cancelAfterDateTime = new Date(this.cancelafterDateInput + " " + this.cancelafterTimeInput)
+    else
+      this.cancelAfterDateTime = null;
 
-      return str;
+    this.cancelDateInFuture = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime() < Date.now();
+    this.validCancelAfter = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime() > Date.now();
+
+    if(this.finishafterDateInput && this.finishafterTimeInput)
+      this.finishAfterDateTime = new Date(this.finishafterDateInput + " " + this.finishafterTimeInput)
+    else
+      this.finishAfterDateTime = null;
+    
+    this.finishDateInFuture = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() < Date.now();
+    this.validFinishAfter = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() > Date.now();
+    
+
+    if(this.validCancelAfter && this.validFinishAfter)
+      this.cancelDateAfterFinishDate = this.finishAfterDateTime.getTime() > this.cancelAfterDateTime.getTime();
+
+
+    this.validAmount = this.amountInput && this.amountInput >= 0.000001;
+    this.validAddress = this.destinationInput && this.destinationInput.trim().length > 0 && this.isValidXRPAddress(this.destinationInput.trim());
+
+    this.validCondition = this.passwordInput && this.passwordInput.trim().length > 0;
+
+    if(this.validAmount && this.validAddress && (this.validFinishAfter || this.validCondition)) {
+      if(this.validCondition)
+        this.isValidEscrow = this.validFinishAfter || this.validCancelAfter
+      else
+        this.isValidEscrow = this.validFinishAfter 
+    }
+    else
+      this.isValidEscrow = false;
+
+    if(this.isValidEscrow && this.validFinishAfter && this.validCancelAfter) {
+      this.isValidEscrow = !this.cancelDateAfterFinishDate
     }
 
-    return "";
-  }
-
-  stringToHex(stringValue: string): string {
-    let arr = [];
-
-    for (var i = 0, l = stringValue.length; i < l; i ++) {
-      var hex = Number(stringValue.charCodeAt(i)).toString(16);
-      arr.push(hex);
-    }
-    return arr.join('').toUpperCase();
+    console.log("isValidEscrow: " + this.isValidEscrow);
   }
 
   sendPayloadToXumm() {
@@ -147,52 +171,6 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     }
 
     this.onPayload.emit(this.payload);
-  }
-
-  checkChanges() {
-    //console.log("amountInput: " + this.amountInput);
-    //console.log("destinationInput: " + this.destinationInput);
-    
-    if(this.cancelafterDateInput && this.cancelafterTimeInput)
-      this.cancelAfterDateTime = new Date(this.cancelafterDateInput + " " + this.cancelafterTimeInput)
-    else
-      this.cancelAfterDateTime = null;
-
-    this.cancelDateInFuture = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime() < Date.now();
-    this.validCancelAfter = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime() > Date.now();
-
-    if(this.finishafterDateInput && this.finishafterTimeInput)
-      this.finishAfterDateTime = new Date(this.finishafterDateInput + " " + this.finishafterTimeInput)
-    else
-      this.finishAfterDateTime = null;
-    
-    this.finishDateInFuture = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() < Date.now();
-    this.validFinishAfter = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() > Date.now();
-    
-
-    if(this.validCancelAfter && this.validFinishAfter)
-      this.cancelDateAfterFinishDate = this.finishAfterDateTime.getTime() > this.cancelAfterDateTime.getTime();
-
-
-    this.validAmount = this.amountInput && this.amountInput >= 0.000001;
-    this.validAddress = this.destinationInput && this.destinationInput.trim().length > 0 && this.isValidXRPAddress(this.destinationInput.trim());
-
-    this.validCondition = this.passwordInput && this.passwordInput.trim().length > 0;
-
-    if(this.validAmount && this.validAddress && (this.validFinishAfter || this.validCondition)) {
-      if(this.validCondition)
-        this.isValidEscrow = this.validFinishAfter || this.validCancelAfter
-      else
-        this.isValidEscrow = this.validFinishAfter 
-    }
-    else
-      this.isValidEscrow = false;
-
-    if(this.isValidEscrow && this.validFinishAfter && this.validCancelAfter) {
-      this.isValidEscrow = !this.cancelDateAfterFinishDate
-    }
-
-    console.log("isValidEscrow: " + this.isValidEscrow);
   }
 
   isValidXRPAddress(address: string): boolean {

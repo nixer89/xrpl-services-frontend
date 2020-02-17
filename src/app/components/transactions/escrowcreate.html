@@ -39,8 +39,10 @@
           <input *ngIf="!dateTimePickerSupported" matInput name="cancelaftertime"  step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
         </mat-form-field>
       </mat-card-content>
+      <mat-hint *ngIf="(cancelafterTimeInput || cancelafterDateInput) && !validCancelAfter && !cancelDateInFuture" style="color: crimson;">Invalid date/time.</mat-hint>
       <mat-hint *ngIf="cancelDateInFuture" style="color: crimson;">Cancel After needs to be in the future.</mat-hint>
       <mat-hint *ngIf="cancelDateAfterFinishDate" style="color: crimson;">Cancel After needs to be after Finish After.</mat-hint>
+      <mat-hint *ngIf="validCancelAfter && !cancelDateInFuture">UTC time: <b>{{cancelAfterDateTime.toUTCString()}}</b></mat-hint>
     </mat-card>
     <mat-card>
       <label>Finish After (optional)</label>
@@ -54,7 +56,9 @@
           <input *ngIf="!dateTimePickerSupported" matInput name="finishaftertime" step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
         </mat-form-field>
       </mat-card-content>
+      <mat-hint *ngIf="(finishafterTimeInput || finishafterDateInput) && !validFinishAfter && !finishDateInFuture" style="color: crimson;">Invalid date/time.</mat-hint>
       <mat-hint *ngIf="finishDateInFuture" style="color: crimson;">Finish After needs to be in the future.</mat-hint>
+      <mat-hint *ngIf="validFinishAfter && !finishDateInFuture">UTC time: <b>{{finishAfterDateTime.toUTCString()}}</b></mat-hint>
     </mat-card>
     <mat-form-field>
       <input #inppassword matInput name="password" [type]="hidePw ? 'password' : 'text'" matInput placeholder="Password to secure your escrow (optional)" [(ngModel)]="passwordInput" (ngModelChange)="checkChanges()">

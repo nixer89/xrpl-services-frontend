@@ -34,7 +34,7 @@
         Gravatar Link
       </a>
     </div>
-    <mat-checkbox name="requireDestTag" [(ngModel)]="requireDestTagInput" (change)="checkChanges()">Require Destination Tag</mat-checkbox>
+    <mat-checkbox name="requireDestTag" style="padding-top: 1em;" [(ngModel)]="requireDestTagInput" (change)="checkChanges()">Require Destination Tag</mat-checkbox>
     <mat-hint *ngIf="requireDestTagChangeDetected && requireDestTagInput" style="color: crimson;">Attention! Transactions without <b>Destination Tag</b> will be rejected!</mat-hint>
     <mat-hint *ngIf="requireDestTagChangeDetected && !requireDestTagInput" style="color: crimson;">Attention! Users are able to send transactions without <b>Destination Tag</b>!</mat-hint>
   </form>
