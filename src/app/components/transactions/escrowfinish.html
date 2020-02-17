@@ -28,7 +28,7 @@
     </mat-form-field>
     <mat-form-field>
       <input #inppassword matInput name="password" [type]="hidePw ? 'password' : 'text'" matInput placeholder="Password which secures the Escrow (optional)" [(ngModel)]="passwordInput" (ngModelChange)="checkChanges()">
-      <mat-hint style="color: orangered;">Optional. The the password you choose when creating the Escrow.</mat-hint>
+      <mat-hint style="color: orangered;">Optional. The password you choose when creating the Escrow.</mat-hint>
       <button mat-icon-button matSuffix (click)="hidePw = !hidePw" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePw">
         <mat-icon>{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
       </button>
