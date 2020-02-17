@@ -32,8 +32,8 @@ export class XrplTransactionsComponent implements OnInit {
     private snackBar: MatSnackBar) { }
 
   async ngOnInit() {
-    //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
-    //await this.loadAccountData();
+    this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
+    await this.loadAccountData();
 
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;
@@ -83,7 +83,15 @@ export class XrplTransactionsComponent implements OnInit {
         "strict": true,
       }
 
+      let account_objects_request:any = {
+        command: "account_objects",
+        account: this.xrplAccount,
+        type: "escrow",
+        ledger_index: "validated",
+      }
+
       this.websocket.next(account_info_request);
+      this.websocket.next(account_objects_request);
     }
   }
 

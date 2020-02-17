@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from "@angular/core";
 import { XummService } from '../services/xumm.service';
-import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
@@ -34,9 +34,6 @@ export class GenericPayloadQRDialog implements OnInit {
 
     async ngOnInit() {
         this.loading = true;
-
-        //setting up xumm payload and waiting for websocket
-
 
         let refererURL:string;
 

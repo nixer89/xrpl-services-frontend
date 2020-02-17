@@ -2,6 +2,8 @@ import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } 
 import { Encode } from 'xrpl-tagged-address-codec';
 import * as cryptoCondition from 'five-bells-condition'
 import { Observable, Subscription } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { EscrowListDialog } from '../escrowListDialog';
 
 @Component({
   selector: 'escrowfinish',
@@ -41,6 +43,8 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
       TransactionType: "EscrowFinish"
     }
   }
+
+  constructor(private escrowDialog: MatDialog) {}
 
   ngOnInit() {
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
@@ -129,5 +133,24 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   clearInputs() {
     this.escrowOwnerInput = this.escrowSequenceInput = null;
     this.isValidEscrowFinish = this.validAddress = this.validSequence = false;
+  }
+
+  openEscrowList() {
+    const dialogRef = this.escrowDialog.open(EscrowListDialog, {
+      width: '80%',
+      height: '80%;',
+      data: {xrplAccount: this.escrowOwnerInput, testMode: true}
+    });
+
+    dialogRef.afterClosed().subscribe((escrow:any) => {
+      console.log('The dialog was closed');
+      console.log(escrow);
+      if(escrow && escrow.escrowSequence) {
+        //nothing to do
+        this.escrowSequenceInput = escrow.escrowSequence;
+      }
+
+      this.checkChanges();
+    });
   }
 }
