@@ -16,8 +16,10 @@ import { XummSignDialogComponent } from './components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from './components/genericPayloadQRDialog';
 
 //XRPL transactions
-import { AccountSetComponent } from './components/transactions/accountset'
-import { EscrowCreateComponent } from './components/transactions/escrowcreate'
+import { AccountSetComponent } from './components/transactions/accountset';
+import { EscrowCreateComponent } from './components/transactions/escrowcreate';
+import { EscrowFinishComponent } from './components/transactions/escrowfinish';
+import { EscrowCancelComponent } from './components/transactions/escrowcancel';
 
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -55,6 +57,8 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
     GenericPayloadQRDialog,
     AccountSetComponent,
     EscrowCreateComponent,
+    EscrowFinishComponent,
+    EscrowCancelComponent
   ],
   imports: [
     BrowserModule,
@@ -79,7 +83,7 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
     MatSnackBarModule,
     MatCheckboxModule,
     //Special
-    DeviceDetectorModule.forRoot(),
+    DeviceDetectorModule.forRoot()
   ],
   entryComponents: [
     XummSignDialogComponent,

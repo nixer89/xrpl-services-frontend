@@ -20,6 +20,7 @@ export class XrplTransactionsComponent implements OnInit, OnDestroy {
   lastTrxLink:string;
 
   accountInfoChanged: Subject<void> = new Subject<void>();
+  transactionSuccessfull: Subject<void> = new Subject<void>();
   websocket: WebSocketSubject<any>;
 
   isTestMode:boolean = false;
@@ -31,8 +32,8 @@ export class XrplTransactionsComponent implements OnInit, OnDestroy {
     private snackBar: MatSnackBar) { }
 
   async ngOnInit() {
-    this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
-    await this.loadAccountData();
+    //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
+    //await this.loadAccountData();
 
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;
@@ -136,6 +137,8 @@ export class XrplTransactionsComponent implements OnInit, OnDestroy {
             else
               this.lastTrxLink = "https://bithomp.com/explorer/"+info.txid;
           }
+
+          this.transactionSuccessfull.next();
         } else {
           this.xrplAccount = null;
           this.lastTrxLink = null;

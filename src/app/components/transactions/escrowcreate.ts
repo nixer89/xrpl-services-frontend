@@ -1,12 +1,16 @@
-import { Component, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, ViewChild, Output, EventEmitter, OnInit, OnDestroy, Input } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import * as cryptoCondition from 'five-bells-condition'
+import { Subscription, Observable } from 'rxjs';
 
 @Component({
   selector: 'escrowcreate',
   templateUrl: './escrowcreate.html'
 })
-export class EscrowCreateComponent {
+export class EscrowCreateComponent implements OnInit, OnDestroy{
+
+  @Input()
+  transactionSuccessfull: Observable<void>;
 
   @Output()
   onPayload: EventEmitter<any> = new EventEmitter();
@@ -32,6 +36,8 @@ export class EscrowCreateComponent {
   @ViewChild('inppassword', {static: false}) password;
   passwordInput: string;
 
+  private transactionSuccessfullSubscription: Subscription;
+
   isValidEscrow = false;
   validAmount = false;
   validAddress = false;
@@ -51,6 +57,18 @@ export class EscrowCreateComponent {
     txjson: {
       TransactionType: "EscrowCreate"
     }
+  }
+
+  ngOnInit() {
+    this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
+      console.log("transaction was successfull")
+      this.clearInputs()
+    });
+  }
+
+  ngOnDestroy() {
+    if(this.transactionSuccessfullSubscription)
+      this.transactionSuccessfullSubscription.unsubscribe();
   }
 
   hexToString(hexValue: string):string {
@@ -96,15 +114,15 @@ export class EscrowCreateComponent {
       myFulfillment.setPreimage(fulfillment_bytes);
 
       let fulfillment = myFulfillment.serializeBinary().toString('hex').toUpperCase()
-      console.log('Fulfillment: ', fulfillment)
-      console.log('             ', myFulfillment.serializeUri())
+      //console.log('Fulfillment: ', fulfillment)
+      //console.log('             ', myFulfillment.serializeUri())
 
       var condition = myFulfillment.getConditionBinary().toString('hex').toUpperCase()
       console.log('Condition  : ', condition)
         // 'A0258020' + sha256(fulfillment_bytes) + '810102'
-      console.log('             ', myFulfillment.getCondition().serializeUri())
+      //console.log('             ', myFulfillment.getCondition().serializeUri())
 
-      console.log()
+      //console.log()
 
       console.log(
         'Fulfillment valid for Condition?      ',
@@ -176,5 +194,13 @@ export class EscrowCreateComponent {
       return true;
     else
       return this.validAmount && this.validAddress && (this.validFinishAfter && this.validCancelAfter && ((this.finishAfterDateTime.getTime() - this.cancelAfterDateTime.getTime()) < 0));
+  }
+
+  clearInputs() {
+    this.destinationInput = this.amountInput = null;
+    this.cancelafterDateInput = this.cancelafterTimeInput = this.cancelAfterDateTime = null;
+    this.finishafterDateInput = this.finishafterTimeInput = this.finishAfterDateTime = null;
+
+    this.isValidEscrow = this.validAddress = this.validAmount = this.validCancelAfter = this.validFinishAfter = this.validCondition = false;
   }
 }

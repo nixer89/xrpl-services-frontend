@@ -80,8 +80,10 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   
     this.emailInput = "";
 
-    this.requireDestTagInput = false;
+    let trxFlags:number = this.originalAccountInfo && this.originalAccountInfo.Flags;
 
+    this.requireDestTagInput = (trxFlags & 131072) == 131072;
+    
     this.checkChanges();
   }
 
@@ -126,8 +128,12 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     if(this.emailInput && this.validEmail && (!this.originalAccountInfo || md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash))
       this.payload.txjson.EmailHash = md5(this.emailInput.trim()).toUpperCase();
 
-    if(this.requireDestTagInput)
-      this.payload.txjson.SetFlag = 1;
+    if(this.requireDestTagChangeDetected) {
+      if(this.requireDestTagInput)
+        this.payload.txjson.SetFlag = 1;
+      else
+        this.payload.txjson.ClearFlag = 1;
+    }
 
     if(this.payload.txjson.Domain)
       this.payload.custom_meta.instructions+= "Set a new Domain"
@@ -174,7 +180,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.emailChangeDetected = this.emailInput != null && this.emailInput.trim().length > 0 && (!this.originalAccountInfo || (md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash));
     this.validEmail = !this.emailChangeDetected || emailValidator.validate(this.emailInput);
 
-    this.requireDestTagChangeDetected = true;
+    this.requireDestTagChangeDetected = ((!this.originalAccountInfo || !this.originalAccountInfo.Flags) && this.requireDestTagInput) || (this.originalAccountInfo && this.originalAccountInfo.Flags && (((this.originalAccountInfo.Flags & 131072) == 131072) != this.requireDestTagInput));
 
     //console.log("domainChangeDetected: " + this.domainChangeDetected);
     //console.log("validDomain: " + this.validDomain);

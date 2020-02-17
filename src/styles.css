@@ -40,6 +40,10 @@ a.footerlink {
     padding-right: 0px;
 }
 
+.mat-expansion-panel-header-title {
+    align-items: center;
+}
+
 body .snackbar-success {
     background: #ffffff;
     color: green;
@@ -48,10 +52,10 @@ body .snackbar-success {
   }
   
 body .snackbar-failed {
-background: #ffffff;
-color: #EB0000;
-display: flex;
-justify-content: center;
+    background: #ffffff;
+    color: #EB0000;
+    display: flex;
+    justify-content: center;
 }
 
 .mat-card.margin-5 {
