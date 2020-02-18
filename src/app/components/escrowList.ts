@@ -1,0 +1,135 @@
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { Observable, Subscription } from 'rxjs';
+
+@Component({
+    selector: "escrowList",
+    templateUrl: "escrowList.html",
+    styleUrls: ['./escrowList.css']
+})
+export class EscrowList implements OnInit, OnDestroy {
+
+    @Input()
+    escrowAccountChanged: Observable<string>;
+
+    @Input()
+    testMode: boolean;
+
+    @Input()
+    isCancel: boolean;
+
+    @Output()
+    escrowSequenceFound: EventEmitter<any> = new EventEmitter();
+    
+    websocket: WebSocketSubject<any>;
+    escrowData:any[] = [];
+    displayedColumns: string[] = ['destination', 'amount', 'finishafter', 'cancelafter', 'condition'];
+    loading:boolean = true;
+    originalTestModeValue:boolean;
+    escrowClicked:boolean = false;
+
+    private escrowAccountChangedSubscription: Subscription;
+
+    constructor() {}
+
+    ngOnInit() {
+        this.setupWebsocket();
+
+        this.escrowAccountChangedSubscription = this.escrowAccountChanged.subscribe(xrplAccount => {
+            //console.log("escrow acccount changed received: " + xrplAccount);
+            if(xrplAccount)
+                this.loadEscrowList(xrplAccount);
+            else
+                this.escrowData = [];
+        });
+    }
+
+    ngOnDestroy() {
+        if(this.escrowAccountChangedSubscription)
+          this.escrowAccountChangedSubscription.unsubscribe();
+
+        if(this.websocket) {
+            this.websocket.unsubscribe();
+            this.websocket.complete();
+        }
+    }
+
+    setupWebsocket() {
+        this.originalTestModeValue = this.testMode;
+        this.websocket = webSocket(this.testMode ? 'wss://testnet.xrpl-labs.com' : 'wss://s1.ripple.com');
+
+        this.websocket.asObservable().subscribe(async message => {
+            //console.log("websocket message: " + JSON.stringify(message));
+            if(message.status && message.status === 'success' && message.type && message.type === 'response') {
+              if(message.result && message.result.account_objects) {
+                  let unfilteredList:any[] = message.result.account_objects;
+                  if(this.isCancel)
+                      this.escrowData = unfilteredList.filter(escrow => escrow.CancelAfter && (new Date((escrow.CancelAfter+946684800)*1000).getTime() < Date.now()));
+                  else
+                    this.escrowData = unfilteredList.filter(escrow => ((!escrow.FinishAfter && escrow.Condition) || (escrow.FinishAfter && new Date((escrow.FinishAfter+946684800)*1000).getTime() < Date.now())) && (!escrow.CancelAfter || new Date((escrow.CancelAfter+946684800)*1000).getTime() > Date.now()));
+                
+                //if data 0 (no available escrows) -> show message "no escrows available"
+                if(this.escrowData.length == 0)
+                    this.escrowData = null;
+                    
+                this.loading = false;
+              }
+              else if(message.result && message.result.TransactionType === 'EscrowCreate') {
+                  //console.log("Sequence: " + message.result.Sequence);
+                  this.escrowSequenceFound.emit({sequence: message.result.Sequence, condition: message.result.Condition});
+                  this.escrowClicked = true;
+                  this.loading = false;
+              }
+                //console.log("xrplAccountData");
+            } else {                
+              this.escrowData = null;
+              this.loading = false;
+            }
+        });
+    }
+
+    loadEscrowList(xrplAccount: string) {
+        if(this.originalTestModeValue != this.testMode) {
+            this.websocket.unsubscribe();
+            this.websocket.complete();
+
+            this.setupWebsocket();
+        }
+
+        if(xrplAccount) {
+            this.loading = true;
+
+            let account_objects_request:any = {
+              command: "account_objects",
+              account: xrplAccount,
+              type: "escrow",
+              ledger_index: "validated",
+            }
+      
+            this.websocket.next(account_objects_request);
+        }
+    }
+
+    getTimeFromRippleTime(rippleCodedFinishAfter: number): string {
+        if(rippleCodedFinishAfter) {
+            let finishAfter:Date = new Date((rippleCodedFinishAfter+946684800)*1000);
+            return finishAfter.toLocaleString();
+        } else
+            return "-";
+    }
+
+    getAmountInXRP(amount: string): Number {
+        return Number.parseInt(amount) / 1000000;
+    }
+
+    escrowSelected(escrow: any) {
+        //console.log("escrow selected: " + JSON.stringify(escrow));
+
+        let txInfo:any = {
+            command: "tx",
+            transaction: escrow.PreviousTxnID,
+        }
+
+        this.websocket.next(txInfo);
+    }
+}

@@ -32,8 +32,8 @@ export class XrplTransactionsComponent implements OnInit {
     private snackBar: MatSnackBar) { }
 
   async ngOnInit() {
-    this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
-    await this.loadAccountData();
+    //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
+    //await this.loadAccountData();
 
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;
@@ -41,7 +41,7 @@ export class XrplTransactionsComponent implements OnInit {
       if(payloadId) {
         //check if transaction was successfull and redirect user to stats page right away:
         let payloadInfo = await this.xummApi.getPayloadInfo(payloadId);
-        console.log(JSON.stringify(payloadInfo));
+        //console.log(JSON.stringify(payloadInfo));
         if(payloadInfo && payloadInfo.response && payloadInfo.response.account && signinToValidate) {
             this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
             this.xrplAccount = payloadInfo.response.account;
@@ -62,10 +62,16 @@ export class XrplTransactionsComponent implements OnInit {
 
   async loadAccountData() {
     if(this.xrplAccount) {
+
+      if(this.websocket) {
+        this.websocket.unsubscribe();
+        this.websocket.complete();
+      }
+
       this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://s1.ripple.com');
 
       this.websocket.asObservable().subscribe(async message => {
-        console.log("websocket message: " + JSON.stringify(message));
+        //console.log("websocket message: " + JSON.stringify(message));
         if(message.status && message.status === 'success' && message.type && message.type === 'response') {
           if(message.result && message.result.account_data)
             this.xrplAccountData = message.result.account_data;
@@ -83,15 +89,7 @@ export class XrplTransactionsComponent implements OnInit {
         "strict": true,
       }
 
-      let account_objects_request:any = {
-        command: "account_objects",
-        account: this.xrplAccount,
-        type: "escrow",
-        ledger_index: "validated",
-      }
-
       this.websocket.next(account_info_request);
-      this.websocket.next(account_objects_request);
     }
   }
 
@@ -103,8 +101,8 @@ export class XrplTransactionsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((info:any) => {
-      console.log('The dialog was closed');
-      console.log(info);
+      //console.log('The dialog was closed');
+      //console.log(info);
       if(info && info.redirect) {
         //nothing to do
       } else {
@@ -125,7 +123,7 @@ export class XrplTransactionsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((info:any) => {
-      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+      //console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
       if(info && info.redirect) {
         //nothing to do
@@ -156,12 +154,12 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   emitAccountInfoChanged() {
-    console.log("emit account info changed");
+    //console.log("emit account info changed");
     this.accountInfoChanged.next(this.xrplAccountData);
   }
 
   async onPayloadReceived(payload:any) {
-    console.log("received payload: " + JSON.stringify(payload));
+    //console.log("received payload: " + JSON.stringify(payload));
     if(this.xrplAccount)
       payload.xrplAccount = this.xrplAccount;
 

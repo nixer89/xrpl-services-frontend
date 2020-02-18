@@ -57,16 +57,16 @@ export class XummSignDialogComponent implements OnInit{
 
         let xummResponse:any;
         try {
-            console.log("sending xumm payload: " + JSON.stringify(xummPayload));
+            //console.log("sending xumm payload: " + JSON.stringify(xummPayload));
             xummResponse = await this.xummApi.submitPayload(xummPayload);
-            console.log(JSON.stringify(xummResponse));
+            //console.log(JSON.stringify(xummResponse));
             if(!xummResponse || xummResponse.error) {
                 this.loading = false;
                 this.showError = true;
                 setTimeout(() => this.handleFailedSignIn(), 3000);
             }
         } catch (err) {
-            console.log(JSON.stringify(err));
+            //console.log(JSON.stringify(err));
             this.loading = false;
             this.backendNotAvailable = true;
             this.showError = true;
@@ -96,7 +96,7 @@ export class XummSignDialogComponent implements OnInit{
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
                 let transactionResult = await this.xummApi.checkSignIn(message.payload_uuidv4);
-                console.log(transactionResult);
+                //console.log(transactionResult);
                 
                 this.waitingForPayment = false;
                 if(transactionResult && transactionResult.success) {

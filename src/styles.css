@@ -61,3 +61,11 @@ body .snackbar-failed {
 .mat-card.margin-5 {
     margin: 5px;
 }
+
+.changed {
+    transition: color 0s ease-in, text-shadow 0s ease-in, background-color 1.1s linear 0s;
+    text-shadow: #bbb 2px 2px 2px;
+    background-color: #ffffcc;
+    color: red;
+    font-weight: 600;
+}

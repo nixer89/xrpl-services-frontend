@@ -36,7 +36,7 @@
     <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
         <accountset [accountInfoChanged]="accountInfoChanged.asObservable()" (onPayload)="onPayloadReceived($event)"></accountset>
         <escrowcreate [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowcreate>
-        <escrowfinish [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowfinish>
-        <escrowcancel [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowcancel>
+        <escrowfinish [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)" [testMode]="isTestMode"></escrowfinish>
+        <escrowcancel [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)" [testMode]="isTestMode"></escrowcancel>
     </mat-accordion>
 </mat-card>

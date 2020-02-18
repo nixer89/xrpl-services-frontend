@@ -35,6 +35,8 @@ export class GenericPayloadQRDialog implements OnInit {
     async ngOnInit() {
         this.loading = true;
 
+        this.payload.web = this.deviceDetector.isDesktop();
+
         let refererURL:string;
 
         if(document.URL.includes('?')) {
@@ -48,7 +50,7 @@ export class GenericPayloadQRDialog implements OnInit {
         let xummResponse:any;
         try {
             xummResponse = await this.xummApi.submitPayload(this.payload);
-            console.log("xummResponse: " + JSON.stringify(xummResponse)); 
+            //console.log("xummResponse: " + JSON.stringify(xummResponse)); 
             if(!xummResponse || xummResponse.error) {
                 this.loading = false;
                 this.backendNotAvailable = true;
@@ -56,7 +58,7 @@ export class GenericPayloadQRDialog implements OnInit {
                 setTimeout(() => this.handleFailedTransaction(), 3000);
             }
         } catch (err) {
-            console.log(JSON.stringify(err));
+            //console.log(JSON.stringify(err));
             this.loading = false;
             this.backendNotAvailable = true;
             this.showError = true;
@@ -88,7 +90,7 @@ export class GenericPayloadQRDialog implements OnInit {
                 //get xrpl account
                 let txInfo:any = await this.xummApi.validateTransaction(message.payload_uuidv4);
                 
-                console.log("txInfo: " + JSON.stringify(txInfo));
+                //console.log("txInfo: " + JSON.stringify(txInfo));
                 this.waitingForPayment = false;
 
                 if(txInfo && txInfo.success) {
@@ -117,6 +119,12 @@ export class GenericPayloadQRDialog implements OnInit {
     }
     
     handleSuccessfullTransaction() {
+        if(this.websocket) {
+            this.websocket.unsubscribe();
+            this.websocket.complete();
+        }
+        
+        this.websocket = null;
         this.dialogRef.close(this.transactionInfo);
     }
 

@@ -51,7 +51,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
 
   cancelDateInFuture:boolean = false;
   finishDateInFuture:boolean = false;
-  cancelDateAfterFinishDate:boolean = false;
+  cancelDateBeforeFinishDate:boolean = false;
 
   dateTimePickerSupported:boolean = true;
 
@@ -92,7 +92,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       this.cancelAfterDateTime = null;
 
     this.cancelDateInFuture = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime() < Date.now();
-    this.validCancelAfter = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime() > Date.now();
+    this.validCancelAfter = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime()>0;
 
     if(this.finishafterDateInput && this.finishafterTimeInput)
       this.finishAfterDateTime = new Date(this.finishafterDateInput + " " + this.finishafterTimeInput)
@@ -100,11 +100,13 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       this.finishAfterDateTime = null;
     
     this.finishDateInFuture = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() < Date.now();
-    this.validFinishAfter = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() > Date.now();
+    this.validFinishAfter = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() > 0;
     
 
     if(this.validCancelAfter && this.validFinishAfter)
-      this.cancelDateAfterFinishDate = this.finishAfterDateTime.getTime() > this.cancelAfterDateTime.getTime();
+      this.cancelDateBeforeFinishDate = this.finishAfterDateTime.getTime() >= this.cancelAfterDateTime.getTime();
+    else
+      this.cancelDateBeforeFinishDate = false;
 
 
     this.validAmount = this.amountInput && this.amountInput >= 0.000001;
@@ -122,10 +124,10 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       this.isValidEscrow = false;
 
     if(this.isValidEscrow && this.validFinishAfter && this.validCancelAfter) {
-      this.isValidEscrow = !this.cancelDateAfterFinishDate
+      this.isValidEscrow = !this.cancelDateBeforeFinishDate && !this.cancelDateInFuture && !this.finishDateInFuture;
     }
 
-    console.log("isValidEscrow: " + this.isValidEscrow);
+    //console.log("isValidEscrow: " + this.isValidEscrow);
   }
 
   sendPayloadToXumm() {
@@ -153,19 +155,19 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       //console.log('             ', myFulfillment.serializeUri())
 
       var condition = myFulfillment.getConditionBinary().toString('hex').toUpperCase()
-      console.log('Condition  : ', condition)
+      //console.log('Condition  : ', condition)
         // 'A0258020' + sha256(fulfillment_bytes) + '810102'
       //console.log('             ', myFulfillment.getCondition().serializeUri())
 
       //console.log()
 
-      console.log(
-        'Fulfillment valid for Condition?      ',
-          cryptoCondition.validateFulfillment(
-          cryptoCondition.Fulfillment.fromBinary(Buffer.from(fulfillment, 'hex')).serializeUri(), 
-          cryptoCondition.Condition.fromBinary(Buffer.from(condition, 'hex')).serializeUri()
-        )
-      )
+      //console.log(
+      //  'Fulfillment valid for Condition?      ',
+      //    cryptoCondition.validateFulfillment(
+      //    cryptoCondition.Fulfillment.fromBinary(Buffer.from(fulfillment, 'hex')).serializeUri(), 
+      //    cryptoCondition.Condition.fromBinary(Buffer.from(condition, 'hex')).serializeUri()
+      //  )
+      //)
 
       this.payload.txjson.Condition = condition
     }
@@ -191,8 +193,10 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     this.cancelafterDateInput = this.cancelafterTimeInput = this.cancelAfterDateTime = null;
     this.finishafterDateInput = this.finishafterTimeInput = this.finishAfterDateTime = null;
 
-    this.cancelDateInFuture =  this.finishDateInFuture = this.cancelDateAfterFinishDate = false;
+    this.cancelDateInFuture =  this.finishDateInFuture = this.cancelDateBeforeFinishDate = false;
 
     this.isValidEscrow = this.validAddress = this.validAmount = this.validCancelAfter = this.validFinishAfter = this.validCondition = false;
+
+    this.passwordInput = null;
   }
 }

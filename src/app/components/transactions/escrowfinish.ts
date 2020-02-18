@@ -1,9 +1,7 @@
 import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import * as cryptoCondition from 'five-bells-condition'
-import { Observable, Subscription } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
-import { EscrowListDialog } from '../escrowListDialog';
+import { Observable, Subscription, Subject } from 'rxjs';
 
 @Component({
   selector: 'escrowfinish',
@@ -17,6 +15,9 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   @Output()
   onPayload: EventEmitter<any> = new EventEmitter();
 
+  @Input()
+  testMode: boolean;
+
   @ViewChild('inpescrowowner', {static: false}) inpescrowowner;
   escrowOwnerInput: string;
 
@@ -27,6 +28,9 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   passwordInput: string;
 
   private transactionSuccessfullSubscription: Subscription;
+  escrowAccountChanged: Subject<string> = new Subject<string>();
+
+  escrowSequenceSelected:boolean = false;
 
   isValidEscrowFinish = false;
   validAddress = false;
@@ -34,6 +38,9 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   validCondition = false;
 
   hidePw = true;
+
+  lastKnownAddress:string = null;
+  showPwField:boolean = true;
 
   private payload:any = {
     options: {
@@ -44,7 +51,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     }
   }
 
-  constructor(private escrowDialog: MatDialog) {}
+  constructor() {}
 
   ngOnInit() {
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
@@ -77,21 +84,21 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
       //console.log('             ', myFulfillment.serializeUri())
 
       var condition = myFulfillment.getConditionBinary().toString('hex').toUpperCase()
-      console.log('Condition  : ', condition)
+      //console.log('Condition  : ', condition)
       // 'A0258020' + sha256(fulfillment_bytes) + '810102'
       //console.log('             ', myFulfillment.getCondition().serializeUri())
 
       //console.log()
 
-      console.log(
-        'Fulfillment valid for Condition?      ',
-          cryptoCondition.validateFulfillment(
-          cryptoCondition.Fulfillment.fromBinary(Buffer.from(fulfillment, 'hex')).serializeUri(), 
-          cryptoCondition.Condition.fromBinary(Buffer.from(condition, 'hex')).serializeUri()
-        )
-      )
+      //console.log(
+      //  'Fulfillment valid for Condition?      ',
+      //    cryptoCondition.validateFulfillment(
+      //    cryptoCondition.Fulfillment.fromBinary(Buffer.from(fulfillment, 'hex')).serializeUri(), 
+      //    cryptoCondition.Condition.fromBinary(Buffer.from(condition, 'hex')).serializeUri()
+      //  )
+      //)
 
-      console.log("fulfillment_bytes.length: " + fulfillment_bytes.length);
+      //console.log("fulfillment_bytes.length: " + fulfillment_bytes.length);
 
       this.payload.txjson.Condition = condition
       this.payload.txjson.Fulfillment = fulfillment;
@@ -105,16 +112,26 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     //console.log("amountInput: " + this.amountInput);
     //console.log("destinationInput: " + this.destinationInput);
     
-    console.log(this.escrowSequenceInput);
+    //console.log(this.escrowSequenceInput);
 
     this.validSequence = this.escrowSequenceInput && Number.isInteger(Number(this.escrowSequenceInput));
     this.validAddress = this.escrowOwnerInput && this.escrowOwnerInput.trim().length > 0 && this.isValidXRPAddress(this.escrowOwnerInput.trim());
+
+    if(this.validAddress && (this.escrowOwnerInput.trim() != this.lastKnownAddress)) {
+      this.lastKnownAddress = this.escrowOwnerInput.trim();
+      //console.log("emitting escrowAccountChanged event");
+      this.escrowAccountChanged.next(this.lastKnownAddress);
+    } else if(!this.validAddress) {
+      this.lastKnownAddress = null;
+      this.escrowAccountChanged.next(null);
+    }
+
 
     this.validCondition = this.passwordInput && this.passwordInput.trim().length > 0;
 
     this.isValidEscrowFinish = this.validAddress && this.validSequence && (!this.passwordInput || this.validCondition);
 
-    console.log("isValidEscrowFinish: " + this.isValidEscrowFinish);
+    //console.log("isValidEscrowFinish: " + this.isValidEscrowFinish);
   }
 
   isValidXRPAddress(address: string): boolean {
@@ -133,24 +150,16 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   clearInputs() {
     this.escrowOwnerInput = this.escrowSequenceInput = null;
     this.isValidEscrowFinish = this.validAddress = this.validSequence = false;
+    this.lastKnownAddress = null;
+    this.escrowAccountChanged.next(null);
   }
 
-  openEscrowList() {
-    const dialogRef = this.escrowDialog.open(EscrowListDialog, {
-      width: '80%',
-      height: '80%;',
-      data: {xrplAccount: this.escrowOwnerInput, testMode: true}
-    });
+  onEscrowSequenceFound(escrowInfo:any) {
+    this.escrowSequenceInput = escrowInfo.sequence;
 
-    dialogRef.afterClosed().subscribe((escrow:any) => {
-      console.log('The dialog was closed');
-      console.log(escrow);
-      if(escrow && escrow.escrowSequence) {
-        //nothing to do
-        this.escrowSequenceInput = escrow.escrowSequence;
-      }
-
-      this.checkChanges();
-    });
+    this.escrowSequenceSelected = true;
+    setTimeout(() => this.escrowSequenceSelected = false, 1000);
+    
+    this.checkChanges();
   }
 }

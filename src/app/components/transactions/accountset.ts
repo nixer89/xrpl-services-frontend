@@ -10,7 +10,7 @@ import * as emailValidator from 'email-validator'
 export class AccountSetComponent implements OnInit, OnDestroy {
 
   @Input()
-  accountInfoChanged: Observable<void>;
+  accountInfoChanged: Observable<any>;
 
   @Output()
   onPayload: EventEmitter<any> = new EventEmitter();
@@ -72,7 +72,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   }
 
   reloadData() {
-    console.log(JSON.stringify(this.originalAccountInfo));
+    //console.log(JSON.stringify(this.originalAccountInfo));
     if(this.originalAccountInfo)
         this.domainInput = this.hexToString(this.originalAccountInfo.Domain)
     else
@@ -102,11 +102,11 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   }
 
   sendToXumm() {
-    console.log("sending to xumm");
-    console.log("originalAccountInfo: " + JSON.stringify(this.originalAccountInfo));
-    console.log("domain: " + this.domainInput);
-    console.log("domain hex: " + this.stringToHex(this.domainInput.trim()));
-    console.log("email: " + this.emailInput);
+    //console.log("sending to xumm");
+    //console.log("originalAccountInfo: " + JSON.stringify(this.originalAccountInfo));
+    //console.log("domain: " + this.domainInput);
+    //console.log("domain hex: " + this.stringToHex(this.domainInput.trim()));
+    //console.log("email: " + this.emailInput);
 
     this.payload.custom_meta = {};
     this.payload.custom_meta.instructions = "";

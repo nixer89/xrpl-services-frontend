@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 
 @Component({
   selector: 'escrowcancel',
@@ -20,11 +20,19 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   @ViewChild('inpescrowsequence', {static: false}) inpescrowsequence;
   escrowSequenceInput: any;
 
+  @Input()
+  testMode: boolean;
+
   private transactionSuccessfullSubscription: Subscription;
+  escrowAccountChanged: Subject<any> = new Subject<any>();
 
   isValidEscrowCancel = false;
   validAddress = false;
   validSequence = false;
+  
+  lastKnownAddress:string = null;
+
+  escrowSequenceSelected:boolean = false;
 
   private payload:any = {
     options: {
@@ -65,9 +73,18 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
     this.validSequence = this.escrowSequenceInput && Number.isInteger(Number(this.escrowSequenceInput));
     this.validAddress = this.escrowOwnerInput && this.escrowOwnerInput.trim().length > 0 && this.isValidXRPAddress(this.escrowOwnerInput.trim());
 
+    if(this.validAddress && (this.escrowOwnerInput.trim() != this.lastKnownAddress)) {
+      this.lastKnownAddress = this.escrowOwnerInput.trim();
+      //console.log("emitting escrowAccountChanged event");
+      this.escrowAccountChanged.next(this.lastKnownAddress);
+    } else if(!this.validAddress) {
+      this.lastKnownAddress = null;
+      this.escrowAccountChanged.next(null);
+    }
+
     this.isValidEscrowCancel = this.validAddress && this.validSequence;
 
-    console.log("isValidEscrowCancel: " + this.isValidEscrowCancel);
+    //console.log("isValidEscrowCancel: " + this.isValidEscrowCancel);
   }
 
   isValidXRPAddress(address: string): boolean {
@@ -86,5 +103,16 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   clearInputs() {
     this.escrowOwnerInput = this.escrowSequenceInput = null;
     this.isValidEscrowCancel = this.validAddress = this.validSequence = false;
+    this.lastKnownAddress = null;
+    this.escrowAccountChanged.next(null);
+  }
+
+  onEscrowSequenceFound(escrowInfo:any) {
+    this.escrowSequenceInput = escrowInfo.sequence;
+
+    this.escrowSequenceSelected = true;
+    setTimeout(() => this.escrowSequenceSelected = false, 1000);
+
+    this.checkChanges();
   }
 }

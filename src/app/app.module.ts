@@ -14,7 +14,7 @@ import { TopbarComponent } from './components/topbar';
 import { FooterComponent } from './components/footer';
 import { XummSignDialogComponent } from './components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from './components/genericPayloadQRDialog';
-import { EscrowListDialog } from './components/escrowListDialog';
+import { EscrowList } from './components/escrowList';
 
 //XRPL transactions
 import { AccountSetComponent } from './components/transactions/accountset';
@@ -40,6 +40,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatDividerModule } from '@angular/material/divider';
 
 //my services
 import {AppService} from './services/app.service';
@@ -58,7 +59,7 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
     FooterComponent,
     XummSignDialogComponent,
     GenericPayloadQRDialog,
-    EscrowListDialog,
+    EscrowList,
     AccountSetComponent,
     EscrowCreateComponent,
     EscrowFinishComponent,
@@ -88,13 +89,13 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
     MatCheckboxModule,
     MatTableModule,
     MatPaginatorModule,
+    MatDividerModule,
     //Special
     DeviceDetectorModule.forRoot()
   ],
   entryComponents: [
     XummSignDialogComponent,
-    GenericPayloadQRDialog,
-    EscrowListDialog
+    GenericPayloadQRDialog
   ],
   providers: [
     AppService,
