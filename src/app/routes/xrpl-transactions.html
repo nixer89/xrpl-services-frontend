@@ -12,9 +12,9 @@
                 </button>
                 <span style="flex: 1 1 auto;"></span>
             </div>
-            <div style="padding-top: 0.2em;" class="floatcenter">
+            <div style="padding-top: 0.5em;" class="floatcenter">
                 <div *ngIf="!xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
-                    <label>Login to load your account data.</label>
+                    <label>Login to load your account data and to receive Xumm push notifications.</label>
                 </div>
                 <div *ngIf="xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
                     <label fxHide.xs>You are currently logged in with the XRPL account:</label>
@@ -38,5 +38,6 @@
         <escrowcreate [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowcreate>
         <escrowfinish [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)" [testMode]="isTestMode"></escrowfinish>
         <escrowcancel [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)" [testMode]="isTestMode"></escrowcancel>
+        <setregularkey [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></setregularkey>
     </mat-accordion>
 </mat-card>

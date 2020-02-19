@@ -31,12 +31,10 @@
       <label>Cancel After (optional)</label>
       <mat-card-content style="padding-top:1em;">
         <mat-form-field>
-          <input *ngIf="dateTimePickerSupported" matInput name="cancelafterdate" type="date" placeholder="Choose a Date" [(ngModel)]="cancelafterDateInput" (ngModelChange)="checkChanges()">
-          <input *ngIf="!dateTimePickerSupported" matInput name="cancelafterdate" placeholder="yyyy-mm-dd" [(ngModel)]="cancelafterDateInput" (ngModelChange)="checkChanges()">
+          <input matInput name="cancelafterdate" [type]="dateTimePickerSupported ? 'date' : 'time'" [placeholder]="dateTimePickerSupported ? 'Choose a Date' : 'yyyy-mm-dd'" [(ngModel)]="cancelafterDateInput" (ngModelChange)="checkChanges()">
         </mat-form-field>
         <mat-form-field>
-          <input *ngIf="dateTimePickerSupported" matInput name="cancelaftertime" type="time" step="2" placeholder="Choose a Time" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
-          <input *ngIf="!dateTimePickerSupported" matInput name="cancelaftertime"  step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
+          <input matInput name="cancelaftertime" [type]="dateTimePickerSupported ? 'time' : 'text'" [placeholder]="dateTimePickerSupported ? 'Choose a Time' : 'HH:mm:ss (24h format)'" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
         </mat-form-field>
       </mat-card-content>
       <mat-hint *ngIf="(cancelafterTimeInput || cancelafterDateInput) && !validCancelAfter" style="color: crimson;">Invalid date/time.</mat-hint>
@@ -48,12 +46,10 @@
       <label>Finish After (optional)</label>
       <mat-card-content style="padding-top:1em;">
         <mat-form-field>
-          <input *ngIf="dateTimePickerSupported" matInput name="finishafterdate" type="date" placeholder="Choose a Date" [(ngModel)]="finishafterDateInput" (ngModelChange)="checkChanges()">
-          <input *ngIf="!dateTimePickerSupported" matInput name="finishafterdate" placeholder="yyyy-mm-dd" [(ngModel)]="finishafterDateInput" (ngModelChange)="checkChanges()">
+          <input *ngIf="dateTimePickerSupported" matInput name="finishafterdate" [type]="dateTimePickerSupported ? 'date' : 'time'" [placeholder]="dateTimePickerSupported ? 'Choose a Date' : 'yyyy-mm-dd'" [(ngModel)]="finishafterDateInput" (ngModelChange)="checkChanges()">
         </mat-form-field>
         <mat-form-field>
-          <input *ngIf="dateTimePickerSupported" matInput name="finishaftertime" type="time" step="2" placeholder="Choose a Time" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
-          <input *ngIf="!dateTimePickerSupported" matInput name="finishaftertime" step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
+          <input *ngIf="dateTimePickerSupported" matInput name="finishaftertime" type="time" [placeholder]="dateTimePickerSupported ? 'Choose a Time' : 'HH:mm:ss (24h format)'" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
         </mat-form-field>
       </mat-card-content>
       <mat-hint *ngIf="(finishafterTimeInput || finishafterDateInput) && !validFinishAfter && !finishDateInFuture" style="color: crimson;">Invalid date/time.</mat-hint>

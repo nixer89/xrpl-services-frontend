@@ -26,7 +26,7 @@ export class XrplTransactionsComponent implements OnInit {
   isTestMode:boolean = false;
 
   constructor(
-    private signDialog: MatDialog,
+    private matDialog: MatDialog,
     private route: ActivatedRoute,
     private xummApi: XummService,
     private snackBar: MatSnackBar) { }
@@ -50,6 +50,9 @@ export class XrplTransactionsComponent implements OnInit {
             this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
         } else {
           let transactionResult = await this.xummApi.validateTransaction(payloadId);
+
+          this.handleTransactionInfo(transactionResult);
+
           if(transactionResult && transactionResult.success) {
             this.snackBar.open("Your transaction was successfull on " + (transactionResult.testnet ? 'test net.' : 'live net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
           } else {
@@ -75,7 +78,7 @@ export class XrplTransactionsComponent implements OnInit {
         if(message.status && message.status === 'success' && message.type && message.type === 'response') {
           if(message.result && message.result.account_data)
             this.xrplAccountData = message.result.account_data;
-            //console.log("xrplAccountData");
+            console.log("xrplAccountData: " + JSON.stringify(this.xrplAccountData));
             this.emitAccountInfoChanged();
         } else {
           this.xrplAccountData = null;
@@ -94,7 +97,7 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   openSignInDialog(): void {
-    const dialogRef = this.signDialog.open(XummSignDialogComponent, {
+    const dialogRef = this.matDialog.open(XummSignDialogComponent, {
       width: 'auto',
       height: 'auto;',
       data: {xrplAccount: null}
@@ -116,7 +119,7 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   openGenericDialog(payload: any):void {
-    const dialogRef = this.signDialog.open(GenericPayloadQRDialog, {
+    const dialogRef = this.matDialog.open(GenericPayloadQRDialog, {
       width: 'auto',
       height: 'auto;',
       data: payload
@@ -128,29 +131,33 @@ export class XrplTransactionsComponent implements OnInit {
       if(info && info.redirect) {
         //nothing to do
       } else {
-        if(info && info.success) {
-          this.xrplAccount = info.xrplAccount;
-  
-          this.isTestMode = info.testnet;
-  
-          if(info.txid) {
-            if(info.testnet)
-              this.lastTrxLink = "https://test.bithomp.com/explorer/"+info.txid;
-            else
-              this.lastTrxLink = "https://bithomp.com/explorer/"+info.txid;
-          }
-
-          this.transactionSuccessfull.next();
-        } else {
-          this.xrplAccount = null;
-          this.lastTrxLink = null;
-        }
-      }
-
-      if(this.xrplAccount) {
-        this.loadAccountData();
+        this.handleTransactionInfo(info);
       }
     });
+  }
+
+  handleTransactionInfo(trxInfo:any) {
+    if(trxInfo && trxInfo.xrplAccount)
+      this.xrplAccount = trxInfo.xrplAccount;
+
+    if(trxInfo && trxInfo.success) {
+      this.isTestMode = trxInfo.testnet;
+
+      if(trxInfo.txid) {
+        if(trxInfo.testnet)
+          this.lastTrxLink = "https://test.bithomp.com/explorer/"+trxInfo.txid;
+        else
+          this.lastTrxLink = "https://bithomp.com/explorer/"+trxInfo.txid;
+      }
+
+      this.transactionSuccessfull.next();
+    } else {
+      this.lastTrxLink = null;
+    }
+
+    if(this.xrplAccount) {
+      this.loadAccountData();
+    }
   }
 
   emitAccountInfoChanged() {

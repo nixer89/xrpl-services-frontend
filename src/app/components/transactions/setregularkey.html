@@ -1,0 +1,34 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header fxShow fxHide.xs>
+    <mat-panel-title>
+      <mat-icon style="transform: scale(0.9);">vpn_key</mat-icon> &nbsp; Set Regular Key
+    </mat-panel-title>
+    <mat-panel-description>
+      Authorize a secondary key pair, called a regular key pair, to sign future transactions
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <mat-expansion-panel-header  fxShow.xs fxHide>
+    <mat-panel-title>
+      Set Regular Key
+    </mat-panel-title>
+    <mat-panel-description>
+      Set secondary key pair
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <a href="https://xrpl.org/setregularkey.html" target="_blank">Set Regular Key Documentation</a><br/>
+  <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
+    <mat-form-field>
+      <input #inpregularkey matInput name="regularkey" matInput placeholder="XRPL address which will be able to sign transactions" [(ngModel)]="regularKeyInput" (ngModelChange)="checkChanges()">
+      <mat-hint *ngIf="regularKeyInput && !validAddress" style="color: crimson;">Not a valid XRPL address</mat-hint>
+    </mat-form-field>
+  </form>
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap="0.5em" style="padding-top: 2em;">
+    <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validAddress">
+      Send Set Regular Key to Xumm
+    </button>
+    <button mat-raised-button color="primary" (click)="deleteRegularKey()" matTooltip="Delete Regular Key!'">
+      Delete Regular Key
+    </button>
+  </div>
+</mat-expansion-panel>

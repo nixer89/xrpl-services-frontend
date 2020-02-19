@@ -55,7 +55,6 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
-      console.log("transaction was successfull")
       this.clearInputs()
     });
   }

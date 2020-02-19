@@ -21,6 +21,7 @@ import { AccountSetComponent } from './components/transactions/accountset';
 import { EscrowCreateComponent } from './components/transactions/escrowcreate';
 import { EscrowFinishComponent } from './components/transactions/escrowfinish';
 import { EscrowCancelComponent } from './components/transactions/escrowcancel';
+import { SetRegularKeyComponent } from './components/transactions/setregularkey';
 
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -63,7 +64,8 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
     AccountSetComponent,
     EscrowCreateComponent,
     EscrowFinishComponent,
-    EscrowCancelComponent
+    EscrowCancelComponent,
+    SetRegularKeyComponent
   ],
   imports: [
     BrowserModule,

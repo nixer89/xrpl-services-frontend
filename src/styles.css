@@ -44,6 +44,10 @@ a.footerlink {
     align-items: center;
 }
 
+.mat-expansion-panel-header-description {
+    align-items: center;
+}
+
 body .snackbar-success {
     background: #ffffff;
     color: green;

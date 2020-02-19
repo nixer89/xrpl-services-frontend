@@ -9,6 +9,11 @@ import * as emailValidator from 'email-validator'
 })
 export class AccountSetComponent implements OnInit, OnDestroy {
 
+  private ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG:number = 1;
+  private ROOT_FLAG_DESTINATION_TAG_REQUIRED:number = 131072;
+  private ACCOUNT_FLAG_DISABLE_MASTER_KEY:number = 4;
+  private ROOT_FLAG_MASTER_KEY_DISABLED:number = 1048576;
+
   @Input()
   accountInfoChanged: Observable<any>;
 
@@ -24,11 +29,17 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   @ViewChild('inprequiredesttag', {static: false}) inprequiredesttag;
   requireDestTagInput: boolean = false;
 
+  @ViewChild('inpdisablemasterkey', {static: false}) inpdisablemasterkey;
+  disableMasterKeyInput: boolean = false;
+
   private accountInfoChangedSubscription: Subscription;
   originalAccountInfo:any;
   domainChangeDetected:boolean = false;
   emailChangeDetected:boolean = false;
   requireDestTagChangeDetected:boolean = false;
+  disableMasterKeyChangeDetected:boolean = false;
+
+  isValidAccountSet:boolean = false;
 
   validAccountSet:boolean = false;
   validDomain:boolean = false;
@@ -80,9 +91,15 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   
     this.emailInput = "";
 
-    let trxFlags:number = this.originalAccountInfo && this.originalAccountInfo.Flags;
+    if(this.originalAccountInfo) {
+      let trxFlags:number = this.originalAccountInfo && this.originalAccountInfo.Flags;
 
-    this.requireDestTagInput = (trxFlags & 131072) == 131072;
+      this.requireDestTagInput = (trxFlags & this.ROOT_FLAG_DESTINATION_TAG_REQUIRED) == this.ROOT_FLAG_DESTINATION_TAG_REQUIRED;
+      this.disableMasterKeyInput = (trxFlags & this.ROOT_FLAG_MASTER_KEY_DISABLED) == this.ROOT_FLAG_MASTER_KEY_DISABLED;
+    } else {
+      this.requireDestTagInput = false;
+      this.disableMasterKeyInput = false;
+    }
     
     this.checkChanges();
   }
@@ -122,9 +139,16 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
     if(this.requireDestTagChangeDetected) {
       if(this.requireDestTagInput)
-        this.payload.txjson.SetFlag = 1;
+        this.payload.txjson.SetFlag = this.ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG;
       else
-        this.payload.txjson.ClearFlag = 1;
+        this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG;
+    }
+
+    if(this.disableMasterKeyChangeDetected) {
+      if(this.disableMasterKeyInput)
+        this.payload.txjson.SetFlag = this.ACCOUNT_FLAG_DISABLE_MASTER_KEY;
+      else
+        this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_DISABLE_MASTER_KEY;
     }
 
     if(this.payload.txjson.Domain)
@@ -166,13 +190,18 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   }
 
   checkChanges() {
+
     this.domainChangeDetected = this.domainInput != null && this.domainInput.trim().length > 0 && (!this.originalAccountInfo || (!this.originalAccountInfo.Domain || (this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain)));
     this.validDomain = !this.domainChangeDetected || this.domainInput && this.domainInput.trim().length > 0;
 
     this.emailChangeDetected = this.emailInput != null && this.emailInput.trim().length > 0 && (!this.originalAccountInfo || (md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash));
     this.validEmail = !this.emailChangeDetected || emailValidator.validate(this.emailInput);
 
-    this.requireDestTagChangeDetected = ((!this.originalAccountInfo || !this.originalAccountInfo.Flags) && this.requireDestTagInput) || (this.originalAccountInfo && this.originalAccountInfo.Flags && (((this.originalAccountInfo.Flags & 131072) == 131072) != this.requireDestTagInput));
+    this.requireDestTagChangeDetected = ((!this.originalAccountInfo || !this.originalAccountInfo.Flags) && this.requireDestTagInput) || (this.originalAccountInfo && this.originalAccountInfo.Flags && (((this.originalAccountInfo.Flags & this.ROOT_FLAG_DESTINATION_TAG_REQUIRED) == this.ROOT_FLAG_DESTINATION_TAG_REQUIRED) != this.requireDestTagInput));
+
+    this.disableMasterKeyChangeDetected = ((!this.originalAccountInfo || !this.originalAccountInfo.Flags) && this.disableMasterKeyInput) || (this.originalAccountInfo && this.originalAccountInfo.Flags && (((this.originalAccountInfo.Flags & this.ROOT_FLAG_MASTER_KEY_DISABLED) ==  this.ROOT_FLAG_MASTER_KEY_DISABLED) != this.disableMasterKeyInput));
+
+    this.isValidAccountSet = this.validDomain && this.validEmail && (this.domainChangeDetected || this.emailChangeDetected || this.requireDestTagChangeDetected || this.disableMasterKeyChangeDetected) && !(this.requireDestTagChangeDetected && this.disableMasterKeyChangeDetected);
 
     //console.log("domainChangeDetected: " + this.domainChangeDetected);
     //console.log("validDomain: " + this.validDomain);
