@@ -85,18 +85,26 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     //console.log("amountInput: " + this.amountInput);
     //console.log("destinationInput: " + this.destinationInput);
     
-    if(this.cancelafterDateInput && this.cancelafterTimeInput)
-      this.cancelAfterDateTime = new Date(this.cancelafterDateInput + " " + this.cancelafterTimeInput)
-    else
-      this.cancelAfterDateTime = null;
+    if(this.dateTimePickerSupported) {
+      if(this.cancelafterDateInput && this.cancelafterTimeInput)
+        this.cancelAfterDateTime = new Date(this.cancelafterDateInput.trim() + " " + this.cancelafterTimeInput.trim())
+      else
+        this.cancelAfterDateTime = null;
+    } else {
+      this.cancelAfterDateTime = this.handleDateAndTimeNonPicker(this.cancelafterDateInput, this.cancelafterTimeInput);
+    }
 
     this.cancelDateInFuture = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime() < Date.now();
-    this.validCancelAfter = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime()>0;
+    this.validCancelAfter = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime() > 0;
 
-    if(this.finishafterDateInput && this.finishafterTimeInput)
-      this.finishAfterDateTime = new Date(this.finishafterDateInput + " " + this.finishafterTimeInput)
-    else
-      this.finishAfterDateTime = null;
+    if(this.dateTimePickerSupported) {
+      if(this.finishafterDateInput && this.finishafterTimeInput)
+        this.finishAfterDateTime = new Date(this.finishafterDateInput.trim() + " " + this.finishafterTimeInput.trim());
+      else
+        this.finishAfterDateTime = null;
+    } else {
+      this.finishAfterDateTime = this.handleDateAndTimeNonPicker(this.finishafterDateInput, this.finishafterTimeInput);
+    }
     
     this.finishDateInFuture = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() < Date.now();
     this.validFinishAfter = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() > 0;
@@ -127,6 +135,31 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     }
 
     //console.log("isValidEscrow: " + this.isValidEscrow);
+  }
+
+  handleDateAndTimeNonPicker(dateInput: string, timeInput: string): Date {
+    let dateTime:Date = null;
+    if(dateInput && dateInput.trim().length > 0)
+      dateTime = new Date(dateInput.trim());
+    else
+      dateTime = null;
+
+    if(timeInput && timeInput.trim().length > 0 && dateTime) {
+      let splitValues:string[] = timeInput.trim().split(':');
+
+      if(splitValues) {
+        if(splitValues[0] && Number.isInteger(Number.parseInt(splitValues[0])))
+          dateTime.setHours(Number.parseInt(splitValues[0]));
+
+        if(splitValues[1] && Number.isInteger(Number.parseInt(splitValues[1])))
+          dateTime.setMinutes(Number.parseInt(splitValues[1]));
+
+        if(splitValues[2] && Number.isInteger(Number.parseInt(splitValues[2])))
+          dateTime.setSeconds(Number.parseInt(splitValues[2]));
+      }
+    }
+
+    return dateTime;
   }
 
   sendPayloadToXumm() {
