@@ -22,6 +22,7 @@ import { EscrowCreateComponent } from './components/transactions/escrowcreate';
 import { EscrowFinishComponent } from './components/transactions/escrowfinish';
 import { EscrowCancelComponent } from './components/transactions/escrowcancel';
 import { SetRegularKeyComponent } from './components/transactions/setregularkey';
+import { SignerListSetComponent } from './components/transactions/signerlistset';
 
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -33,7 +34,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
@@ -65,7 +65,8 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
     EscrowCreateComponent,
     EscrowFinishComponent,
     EscrowCancelComponent,
-    SetRegularKeyComponent
+    SetRegularKeyComponent,
+    SignerListSetComponent
   ],
   imports: [
     BrowserModule,
@@ -83,7 +84,6 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
-    MatDatepickerModule,
     MatNativeDateModule,
     MatSlideToggleModule,
     MatIconModule,
@@ -101,8 +101,7 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
   ],
   providers: [
     AppService,
-    XummService,
-    MatDatepickerModule
+    XummService
   ],
   bootstrap: [AppComponent]
 })

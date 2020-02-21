@@ -15,11 +15,13 @@ import { XummService } from '../services/xumm.service'
 export class XrplTransactionsComponent implements OnInit {
   
   xrplAccount:string;
-  xrplAccountData:any;
+  xrplAccount_Info:any;
+  xrplAccount_Objects: any;
 
   lastTrxLink:string;
 
   accountInfoChanged: Subject<void> = new Subject<void>();
+  accountObjectsChanged: Subject<void> = new Subject<void>();
   transactionSuccessfull: Subject<void> = new Subject<void>();
   websocket: WebSocketSubject<any>;
 
@@ -33,6 +35,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   async ngOnInit() {
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
+    //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
     //await this.loadAccountData();
 
     this.route.queryParams.subscribe(async params => {
@@ -76,13 +79,23 @@ export class XrplTransactionsComponent implements OnInit {
       this.websocket.asObservable().subscribe(async message => {
         //console.log("websocket message: " + JSON.stringify(message));
         if(message.status && message.status === 'success' && message.type && message.type === 'response') {
-          if(message.result && message.result.account_data)
-            this.xrplAccountData = message.result.account_data;
-            console.log("xrplAccountData: " + JSON.stringify(this.xrplAccountData));
+          if(message.result && message.result.account_data) {
+            this.xrplAccount_Info = message.result.account_data;
+            console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
             this.emitAccountInfoChanged();
+          }
+
+          if(message.result && message.result.account_objects) {
+            this.xrplAccount_Objects = message.result.account_objects;
+            console.log("xrplAccount_Objects: " + JSON.stringify(this.xrplAccount_Objects));
+            this.emitAccountObjectsChanged();
+          }
+
         } else {
-          this.xrplAccountData = null;
+          this.xrplAccount_Info = null;
+          this.xrplAccount_Objects = null;
           this.emitAccountInfoChanged();
+          this.emitAccountObjectsChanged();
         }
       });
 
@@ -92,7 +105,14 @@ export class XrplTransactionsComponent implements OnInit {
         "strict": true,
       }
 
+      let account_objects_request:any = {
+        command: "account_objects",
+        account: this.xrplAccount,
+        type: "signer_list",
+      }
+
       this.websocket.next(account_info_request);
+      this.websocket.next(account_objects_request);
     }
   }
 
@@ -162,7 +182,12 @@ export class XrplTransactionsComponent implements OnInit {
 
   emitAccountInfoChanged() {
     //console.log("emit account info changed");
-    this.accountInfoChanged.next(this.xrplAccountData);
+    this.accountInfoChanged.next(this.xrplAccount_Info);
+  }
+
+  emitAccountObjectsChanged() {
+    //console.log("emit account objects changed");
+    this.accountObjectsChanged.next(this.xrplAccount_Objects);
   }
 
   async onPayloadReceived(payload:any) {
@@ -174,8 +199,8 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   getAccountBalance(): number {
-    if(this.xrplAccountData && this.xrplAccountData.Balance) {
-      let balance:number = Number(this.xrplAccountData.Balance);
+    if(this.xrplAccount_Info && this.xrplAccount_Info.Balance) {
+      let balance:number = Number(this.xrplAccount_Info.Balance);
       return balance/1000000;
     } else {
       return 0;
@@ -184,9 +209,10 @@ export class XrplTransactionsComponent implements OnInit {
 
   logoutAccount() {
     this.xrplAccount = null;
-    this.xrplAccountData = null;
+    this.xrplAccount_Info = null;
     this.lastTrxLink = null;
     this.emitAccountInfoChanged();
+    this.emitAccountObjectsChanged();
   }
 
 }

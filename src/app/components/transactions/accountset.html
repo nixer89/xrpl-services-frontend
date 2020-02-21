@@ -42,13 +42,13 @@
         <mat-hint *ngIf="!(requireDestTagChangeDetected && disableMasterKeyChangeDetected) && requireDestTagChangeDetected && !requireDestTagInput" style="color: crimson;">Attention! Users are able to send transactions without <b>Destination Tag</b>!</mat-hint>
       </div>
       <div fxLayout="column">
-        <mat-checkbox name="disableMasterkey" style="padding-top: 1em;" [(ngModel)]="disableMasterKeyInput" (change)="checkChanges()" [disabled]="originalAccountInfo && !originalAccountInfo.RegularKey">Disable Master Key</mat-checkbox>
-        <mat-hint *ngIf="originalAccountInfo && !originalAccountInfo.RegularKey">You need to set an alternative signing method first befor you can disable your <b>Master Key</b>! (set a Regular Key or setup MultiSign)</mat-hint>
+        <mat-checkbox name="disableMasterkey" style="padding-top: 1em;" [(ngModel)]="disableMasterKeyInput" (change)="checkChanges()" [disabled]="originalAccountInfo && !originalAccountInfo.RegularKey && (!originalAccountObjects || !originalAccountObjects[0])">Disable Master Key</mat-checkbox>
+        <mat-hint *ngIf="originalAccountInfo && !originalAccountInfo.RegularKey">Befor you can disable your <b>Master Key</b> you have to set an alternative signing method first! (Regular Key or SignerList)</mat-hint>
         <mat-hint *ngIf="!(requireDestTagChangeDetected && disableMasterKeyChangeDetected) && disableMasterKeyChangeDetected && disableMasterKeyInput" style="color: crimson;">Attention! You are going to disable the <b>Master Key</b> of your account. You could loose access to your account. Make sure you know what you are doing!</mat-hint>
         <mat-hint *ngIf="!(requireDestTagChangeDetected && disableMasterKeyChangeDetected) && disableMasterKeyChangeDetected && !disableMasterKeyInput" style="color: crimson;">Attention! You are going to reactivate your <b>Master Key</b>! If it was compromised, attackers have the possibility back to steal your funds!</mat-hint>
       </div>
   </mat-card>
-  <mat-hint *ngIf="requireDestTagChangeDetected && disableMasterKeyChangeDetected" style="color: blue">You can change only one Account Flag at a time. To change two account flags, you have to execute two transactions.</mat-hint>
+  <mat-hint *ngIf="requireDestTagChangeDetected && disableMasterKeyChangeDetected" style="color: orangered">You can change only one Account Flag at a time. To change two account flags, you have to execute two transactions.</mat-hint>
   </form>
   <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="0.5em">
     <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!isValidAccountSet">

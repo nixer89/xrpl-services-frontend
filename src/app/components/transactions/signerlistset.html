@@ -1,0 +1,80 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header fxShow fxHide.xs>
+    <mat-panel-title>
+      <mat-icon style="transform: scale(0.9);">playlist_add_check</mat-icon> &nbsp; Signer List Set
+    </mat-panel-title>
+    <mat-panel-description>
+      Create, replace, or remove a list of signers that can be used to multi-sign a transaction.
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <mat-expansion-panel-header  fxShow.xs fxHide>
+    <mat-panel-title>
+      Signer List Set
+    </mat-panel-title>
+    <mat-panel-description>
+      Set a list of signers
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <div fxFlex fxLayout="column" fxLayoutGap="5em;">
+    <a href="https://xrpl.org/signerlistset.html" target="_blank">Signer List Set Documentation</a><br/>
+    <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
+      <mat-form-field>
+        <input #inpsignerquorum matInput name="signerquorum" matInput placeholder="Signer Quorum. A target number for the signer weights" [(ngModel)]="signerQuorumInput" (ngModelChange)="checkChanges()">
+        <mat-hint *ngIf="validSignerQuorum.valid">{{validSignerQuorum.message}}</mat-hint>
+        <mat-hint *ngIf="!validSignerQuorum.valid" style="color: crimson;">{{validSignerQuorum.message}}</mat-hint>
+      </mat-form-field>
+    </form>
+    <mat-card>
+      <h3>Signer List (maximum of 8 XRPL addresses)</h3>
+      <mat-hint>Please make sure that the XRPL account this Signer List will be submitted to is not in the list below. Otherwise your transaction will fail.</mat-hint><br><br>
+      <label>Current overall signer list weight: {{overallSignerWeights}}</label>
+      <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+        <mat-expansion-panel *ngFor="let signer of signerList; index as i;" fxLayout="column" [ngStyle]="{'background-color': (i%2==0 ? '#C0C0C0': '#A0A0A0')}">
+          <mat-expansion-panel-header>
+            <mat-panel-title *ngIf="signer.SignerEntry.Account">
+              <div *ngIf="signer.valid" fxLayout="row" fxLayout.xs="column">
+                {{i+1}}. {{signer.SignerEntry.Account}} | Weight: {{signer.SignerEntry.SignerWeight}}
+              </div>
+              <div *ngIf="!signer.valid" fxLayout="row" fxLayout.xs="column" style="align-items: center;">
+                {{i+1}}.&nbsp; {{signer.SignerEntry.Account}} &nbsp; <mat-icon style="color: orangered;">error_outline</mat-icon>
+              </div>
+            </mat-panel-title>
+            <mat-panel-title *ngIf="!signer.SignerEntry.Account">
+              {{i+1}}.&nbsp; New Signer List Entry
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
+            <mat-form-field>
+              <input #inpaddress matInput name="signeraddress" matInput placeholder="XRPL address to add to the signer list" [(ngModel)]="signer.SignerEntry.Account" (ngModelChange)="checkSignerChanges(signer)">
+              <mat-hint *ngIf="signer.SignerEntry.Account && !isValidXRPAddress(signer.SignerEntry.Account)" style="color: crimson;">Not a valid XRPL address</mat-hint>
+              <mat-hint *ngIf="signer.SignerEntry.Account && isValidXRPAddress(signer.SignerEntry.Account) && isDuplicateAccount(signer.SignerEntry.Account)" style="color: crimson;">The same XRPL address can only be added once!</mat-hint>
+            </mat-form-field>
+            <mat-form-field>
+              <input #inpaddress matInput name="signerweight" matInput placeholder="The weight of a signature from this signer" [(ngModel)]="signer.SignerEntry.SignerWeight" (ngModelChange)="checkSignerChanges(signer)">
+              <mat-hint *ngIf="!isValidInteger(signer.SignerEntry.SignerWeight)" style="color: crimson;">Please provide an integer value</mat-hint>
+              <mat-hint *ngIf="isValidInteger(signer.SignerEntry.SignerWeight) && !isValidWeight(signer.SignerEntry.SignerWeight)" style="color: crimson;">The signature weight must be greater 0 and smaller 65536</mat-hint>
+            </mat-form-field>
+          </form>
+          <button mat-raised-button color="secondary" matTooltip="Delete Signer" (click)="removeSigner(i)" style="align-items: center; margin-top: 1em;">
+            <mat-icon>delete</mat-icon> Delete Signer Entry
+          </button>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <button *ngIf="signerList.length < 8" mat-raised-button color="primary" matTooltip="Add a new Signer" (click)="addSigner()" style="margin-top: 1em;">
+        <mat-icon>playlist_add</mat-icon> Add Signer
+      </button>
+    </mat-card>
+    
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap="0.5em" style="padding-top: 2em;">
+      <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!this.signerQuorumInput || !validSignerList">
+        Send Signer List Set to Xumm
+      </button>
+      <button mat-raised-button color="primary" (click)="deleteSignerList()" matTooltip="Delete Signer List!"  [disabled]="originalAccountInfo && !hasAlternativeSigningMethod() || (originalAccountObjects && (!originalAccountObjects[0] || this.originalAccountObjects[0].LedgerEntryType != 'SignerList' || this.originalAccountObjects[0].SignerEntries.length == 0))" >
+        Delete Signer List from Account
+      </button>
+    </div>
+    <mat-hint *ngIf="originalAccountInfo && !hasAlternativeSigningMethod() && originalAccountObjects && originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType === 'SignerList' || (originalAccountObjects && originalAccountObjects[0] && ( this.originalAccountObjects[0].LedgerEntryType != 'SignerList' || this.originalAccountObjects[0].SignerEntries.length == 0))" style="color: crimson;">Hint: You can not delete your SignerList because you don't have an alternative signing method. (Master Key or Regular Key)</mat-hint>
+  </div>
+</mat-expansion-panel>

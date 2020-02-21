@@ -1,12 +1,19 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable } from 'rxjs';
+import * as flagsutil from '../../utils/flagutils';
 
 @Component({
   selector: 'setregularkey',
   templateUrl: './setregularkey.html'
 })
 export class SetRegularKeyComponent implements OnInit, OnDestroy {
+
+  @Input()
+  accountInfoChanged: Observable<any>;
+
+  @Input()
+  accountObjectsChanged: Observable<any>;
 
   @Input()
   transactionSuccessfull: Observable<void>;
@@ -16,6 +23,11 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
 
   @ViewChild('inpregularkey', {static: false}) inpregularkey;
   regularKeyInput: string;
+
+  private accountInfoChangedSubscription: Subscription;
+  private accountObjectsChangedSubscription: Subscription;
+  originalAccountInfo:any;
+  originalAccountObjects:any;
 
   private transactionSuccessfullSubscription: Subscription;
 
@@ -31,6 +43,22 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
+      //console.log("account info changed received")
+      this.originalAccountInfo = accountData;
+      if(this.originalAccountInfo && this.originalAccountInfo.RegularKey) {
+        this.regularKeyInput = this.originalAccountInfo.RegularKey;
+        this.checkChanges();
+      } else {
+        this.clearInputs();
+      }
+    });
+
+    this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(accountObjects => {
+      //console.log("account objects changed received")
+      this.originalAccountObjects = accountObjects;
+    });
+
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
       this.clearInputs()
     });
@@ -39,6 +67,12 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if(this.transactionSuccessfullSubscription)
       this.transactionSuccessfullSubscription.unsubscribe();
+
+    if(this.accountInfoChangedSubscription)
+      this.accountInfoChangedSubscription.unsubscribe();
+
+    if(this.accountObjectsChangedSubscription)
+      this.accountObjectsChangedSubscription.unsubscribe();
   }
 
   sendPayloadToXumm() {
@@ -69,6 +103,10 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
       //console.log("err encoding " + err);
       return false;
     }
+  }
+
+  hasAlternativeSigningMethod() {
+    return this.originalAccountInfo && this.originalAccountObjects && (!flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags) || (this.originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType === "SignerList" && this.originalAccountObjects[0].SignerEntries.length > 0));
   }
 
   clearInputs() {

@@ -4,7 +4,7 @@
       <mat-icon style="transform: scale(0.9);">vpn_key</mat-icon> &nbsp; Set Regular Key
     </mat-panel-title>
     <mat-panel-description>
-      Authorize a secondary key pair, called a regular key pair, to sign future transactions
+      Authorize a secondary key pair, called a regular key pair, to sign future transactions.
     </mat-panel-description>
   </mat-expansion-panel-header>
   <mat-expansion-panel-header  fxShow.xs fxHide>
@@ -21,14 +21,16 @@
     <mat-form-field>
       <input #inpregularkey matInput name="regularkey" matInput placeholder="XRPL address which will be able to sign transactions" [(ngModel)]="regularKeyInput" (ngModelChange)="checkChanges()">
       <mat-hint *ngIf="regularKeyInput && !validAddress" style="color: crimson;">Not a valid XRPL address</mat-hint>
+      <mat-hint *ngIf="originalAccountInfo && regularKeyInput == originalAccountInfo.Account" style="color: crimson;">You cannot set the Regular Key to the same address.</mat-hint>
     </mat-form-field>
   </form>
   <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap="0.5em" style="padding-top: 2em;">
-    <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validAddress">
+    <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validAddress || (!originalAccountInfo || (originalAccountInfo && (regularKeyInput == originalAccountInfo.Account || regularKeyInput == originalAccountInfo.RegularKey)))">
       Send Set Regular Key to Xumm
     </button>
-    <button mat-raised-button color="primary" (click)="deleteRegularKey()" matTooltip="Delete Regular Key!'">
+    <button mat-raised-button color="primary" (click)="deleteRegularKey()" matTooltip="Delete Regular Key!" [disabled]="!hasAlternativeSigningMethod() || (originalAccountInfo && !originalAccountInfo.RegularKey)">
       Delete Regular Key
     </button>
   </div>
+  <mat-hint *ngIf="originalAccountInfo && originalAccountInfo.RegularKey && (originalAccountObjects && !hasAlternativeSigningMethod())" style="color: orangered;">You cannot delete your Regular Key because you don't have an alternative signing method (Master Key or SignerList)</mat-hint>
 </mat-expansion-panel>

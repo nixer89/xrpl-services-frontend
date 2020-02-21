@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ViewChild, Output, EventEmitter } 
 import { Subscription, Observable} from 'rxjs';
 import * as md5 from 'md5';
 import * as emailValidator from 'email-validator'
+import * as flagsutil from '../../utils/flagutils';
 
 @Component({
   selector: 'accountset',
@@ -10,12 +11,13 @@ import * as emailValidator from 'email-validator'
 export class AccountSetComponent implements OnInit, OnDestroy {
 
   private ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG:number = 1;
-  private ROOT_FLAG_DESTINATION_TAG_REQUIRED:number = 131072;
   private ACCOUNT_FLAG_DISABLE_MASTER_KEY:number = 4;
-  private ROOT_FLAG_MASTER_KEY_DISABLED:number = 1048576;
 
   @Input()
   accountInfoChanged: Observable<any>;
+
+  @Input()
+  accountObjectsChanged: Observable<any>;
 
   @Output()
   onPayload: EventEmitter<any> = new EventEmitter();
@@ -33,7 +35,10 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   disableMasterKeyInput: boolean = false;
 
   private accountInfoChangedSubscription: Subscription;
+  private accountObjectsChangedSubscription: Subscription;
   originalAccountInfo:any;
+  originalAccountObjects:any;
+
   domainChangeDetected:boolean = false;
   emailChangeDetected:boolean = false;
   requireDestTagChangeDetected:boolean = false;
@@ -56,8 +61,14 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
   ngOnInit(){
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
-      console.log("account info changed received")
+      //console.log("account info changed received")
       this.originalAccountInfo = accountData;
+      this.reloadData()
+    });
+
+    this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(accountObjects => {
+      //console.log("account objects changed received")
+      this.originalAccountObjects = accountObjects;
       this.reloadData()
     });
 
@@ -69,6 +80,9 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if(this.accountInfoChangedSubscription)
       this.accountInfoChangedSubscription.unsubscribe();
+
+    if(this.accountObjectsChangedSubscription)
+      this.accountObjectsChangedSubscription.unsubscribe();
   }
 
   initializePayload() {
@@ -94,8 +108,8 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     if(this.originalAccountInfo) {
       let trxFlags:number = this.originalAccountInfo && this.originalAccountInfo.Flags;
 
-      this.requireDestTagInput = (trxFlags & this.ROOT_FLAG_DESTINATION_TAG_REQUIRED) == this.ROOT_FLAG_DESTINATION_TAG_REQUIRED;
-      this.disableMasterKeyInput = (trxFlags & this.ROOT_FLAG_MASTER_KEY_DISABLED) == this.ROOT_FLAG_MASTER_KEY_DISABLED;
+      this.requireDestTagInput = flagsutil.isRequireDestinationTagEnabled(trxFlags);
+      this.disableMasterKeyInput = flagsutil.isMasterKeyDisabled(trxFlags);
     } else {
       this.requireDestTagInput = false;
       this.disableMasterKeyInput = false;
@@ -197,9 +211,9 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.emailChangeDetected = this.emailInput != null && this.emailInput.trim().length > 0 && (!this.originalAccountInfo || (md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash));
     this.validEmail = !this.emailChangeDetected || emailValidator.validate(this.emailInput);
 
-    this.requireDestTagChangeDetected = ((!this.originalAccountInfo || !this.originalAccountInfo.Flags) && this.requireDestTagInput) || (this.originalAccountInfo && this.originalAccountInfo.Flags && (((this.originalAccountInfo.Flags & this.ROOT_FLAG_DESTINATION_TAG_REQUIRED) == this.ROOT_FLAG_DESTINATION_TAG_REQUIRED) != this.requireDestTagInput));
+    this.requireDestTagChangeDetected = ((!this.originalAccountInfo || !this.originalAccountInfo.Flags) && this.requireDestTagInput) || (this.originalAccountInfo && this.originalAccountInfo.Flags && (flagsutil.isRequireDestinationTagEnabled(this.originalAccountInfo.Flags) != this.requireDestTagInput));
 
-    this.disableMasterKeyChangeDetected = ((!this.originalAccountInfo || !this.originalAccountInfo.Flags) && this.disableMasterKeyInput) || (this.originalAccountInfo && this.originalAccountInfo.Flags && (((this.originalAccountInfo.Flags & this.ROOT_FLAG_MASTER_KEY_DISABLED) ==  this.ROOT_FLAG_MASTER_KEY_DISABLED) != this.disableMasterKeyInput));
+    this.disableMasterKeyChangeDetected = ((!this.originalAccountInfo || !this.originalAccountInfo.Flags) && this.disableMasterKeyInput) || (this.originalAccountInfo && this.originalAccountInfo.Flags && (flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags) != this.disableMasterKeyInput));
 
     this.isValidAccountSet = this.validDomain && this.validEmail && (this.domainChangeDetected || this.emailChangeDetected || this.requireDestTagChangeDetected || this.disableMasterKeyChangeDetected) && !(this.requireDestTagChangeDetected && this.disableMasterKeyChangeDetected);
 
