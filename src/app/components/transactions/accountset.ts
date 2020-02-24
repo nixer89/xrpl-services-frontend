@@ -3,6 +3,7 @@ import { Subscription, Observable} from 'rxjs';
 import * as md5 from 'md5';
 import * as emailValidator from 'email-validator'
 import * as flagsutil from '../../utils/flagutils';
+import { XummPostPayloadBodyJson } from 'xumm-api';
 
 @Component({
   selector: 'accountset',
@@ -142,9 +143,6 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.payload.custom_meta = {};
     this.payload.custom_meta.instructions = "";
 
-    if(this.originalAccountInfo && this.originalAccountInfo.Account)
-      this.payload.xrplAccount = this.originalAccountInfo.Account;
-
     if(this.domainInput && this.validDomain && (!this.originalAccountInfo || this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain))
       this.payload.txjson.Domain = this.stringToHex(this.domainInput.trim());
 
@@ -186,18 +184,12 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     else
       this.payload.custom_meta.instructions+= ".";
 
-    if(this.originalAccountInfo && this.originalAccountInfo.Account)
-      this.payload.xrplAccount = this.originalAccountInfo.Account;
-
     this.onPayload.emit(this.payload);
     this.initializePayload();
   }
 
   deleteEmailHash() {
     this.payload.txjson.EmailHash = "00000000000000000000000000000000";
-
-    if(this.originalAccountInfo && this.originalAccountInfo.Account)
-      this.payload.xrplAccount = this.originalAccountInfo.Account;
 
     this.onPayload.emit(this.payload);
     this.initializePayload();

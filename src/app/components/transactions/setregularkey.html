@@ -19,16 +19,16 @@
   <a href="https://xrpl.org/setregularkey.html" target="_blank">Set Regular Key Documentation</a><br/>
   <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
     <mat-form-field>
-      <input #inpregularkey matInput name="regularkey" matInput placeholder="XRPL address which will be able to sign transactions" [(ngModel)]="regularKeyInput" (ngModelChange)="checkChanges()">
+      <input #inpregularkey matInput name="regularkey" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address which will be able to sign transactions" [(ngModel)]="regularKeyInput" (ngModelChange)="checkChanges()">
       <mat-hint *ngIf="regularKeyInput && !validAddress" style="color: crimson;">Not a valid XRPL address</mat-hint>
       <mat-hint *ngIf="originalAccountInfo && regularKeyInput == originalAccountInfo.Account" style="color: crimson;">You cannot set the Regular Key to the same address.</mat-hint>
     </mat-form-field>
   </form>
-  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap="0.5em" style="padding-top: 2em;">
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
     <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validAddress || (!originalAccountInfo || (originalAccountInfo && (regularKeyInput == originalAccountInfo.Account || regularKeyInput == originalAccountInfo.RegularKey)))">
       Send Set Regular Key to Xumm
     </button>
-    <button mat-raised-button color="primary" (click)="deleteRegularKey()" matTooltip="Delete Regular Key!" [disabled]="!hasAlternativeSigningMethod() || (originalAccountInfo && !originalAccountInfo.RegularKey)">
+    <button mat-raised-button color="warn" (click)="deleteRegularKey()" matTooltip="Delete Regular Key!" [disabled]="!hasAlternativeSigningMethod() || (originalAccountInfo && !originalAccountInfo.RegularKey)">
       Delete Regular Key
     </button>
   </div>

@@ -50,14 +50,14 @@
   </mat-card>
   <mat-hint *ngIf="requireDestTagChangeDetected && disableMasterKeyChangeDetected" style="color: orangered">You can change only one Account Flag at a time. To change two account flags, you have to execute two transactions.</mat-hint>
   </form>
-  <div fxLayout="row" fxLayout.xs="column" fxLayoutGap="0.5em">
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
     <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!isValidAccountSet">
       Send Account Settings to Xumm
     </button>
-    <button mat-raised-button color="primary" (click)="deleteDomain()" matTooltip="{{originalAccountInfo && originalAccountInfo.Domain ? 'Delete Domain: ' : 'Delete Domain'}}{{hexToString(originalAccountInfo && originalAccountInfo.Domain)}}" [disabled]="originalAccountInfo && !originalAccountInfo.Domain">
+    <button mat-raised-button color="warn" (click)="deleteDomain()" matTooltip="{{originalAccountInfo && originalAccountInfo.Domain ? 'Delete Domain: ' : 'Delete Domain'}}{{hexToString(originalAccountInfo && originalAccountInfo.Domain)}}" [disabled]="originalAccountInfo && !originalAccountInfo.Domain">
       Delete Domain
     </button>
-    <button mat-raised-button color="primary" (click)="deleteEmailHash()" matTooltip="Delete Email Hash!" [disabled]="originalAccountInfo && !originalAccountInfo.EmailHash">
+    <button mat-raised-button color="warn" (click)="deleteEmailHash()" matTooltip="Delete Email Hash!" [disabled]="originalAccountInfo && !originalAccountInfo.EmailHash">
       Delete EmailHash
     </button>
   </div>

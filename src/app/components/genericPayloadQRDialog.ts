@@ -3,6 +3,8 @@ import { XummService } from '../services/xumm.service';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
+import { XummPostPayloadResponse } from 'xumm-api'
 
 @Component({
     selector: "genericPayloadQRDialog",
@@ -29,13 +31,13 @@ export class GenericPayloadQRDialog implements OnInit {
         private xummApi: XummService,
         private deviceDetector: DeviceDetectorService,
         public dialogRef: MatDialogRef<GenericPayloadQRDialog>,
-        @Inject(MAT_DIALOG_DATA) public payload: any) {
+        @Inject(MAT_DIALOG_DATA) public payload: GenericBackendPostRequest) {
     }
 
     async ngOnInit() {
         this.loading = true;
 
-        this.payload.web = this.deviceDetector.isDesktop();
+        this.payload.options.web = this.deviceDetector.isDesktop();
 
         let refererURL:string;
 
@@ -45,13 +47,13 @@ export class GenericPayloadQRDialog implements OnInit {
             refererURL = document.URL;
         }
 
-        this.payload.referer = refererURL;
+        this.payload.options.referer = refererURL;
 
-        let xummResponse:any;
+        let xummResponse:XummPostPayloadResponse;
         try {
             xummResponse = await this.xummApi.submitPayload(this.payload);
             //console.log("xummResponse: " + JSON.stringify(xummResponse)); 
-            if(!xummResponse || xummResponse.error) {
+            if(!xummResponse || !xummResponse.uuid) {
                 this.loading = false;
                 this.backendNotAvailable = true;
                 this.showError = true;
@@ -88,7 +90,7 @@ export class GenericPayloadQRDialog implements OnInit {
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
                 //get xrpl account
-                let txInfo:any = await this.xummApi.validateTransaction(message.payload_uuidv4);
+                let txInfo:TransactionValidation = await this.xummApi.validateTransaction(message.payload_uuidv4);
                 
                 //console.log("txInfo: " + JSON.stringify(txInfo));
                 this.waitingForPayment = false;

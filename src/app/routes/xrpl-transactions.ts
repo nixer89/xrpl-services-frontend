@@ -7,6 +7,8 @@ import { Subject } from 'rxjs'
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
+import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
+import { XummPostPayloadBodyJson, XummGetPayloadResponse } from 'xumm-api';
 
 @Component({
   selector: 'app-xrpl-transactions',
@@ -35,6 +37,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   async ngOnInit() {
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
+    //this.isTestMode = true;
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
     //await this.loadAccountData();
 
@@ -43,7 +46,9 @@ export class XrplTransactionsComponent implements OnInit {
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
         //check if transaction was successfull and redirect user to stats page right away:
-        let payloadInfo = await this.xummApi.getPayloadInfo(payloadId);
+        this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
+        let payloadInfo:XummGetPayloadResponse = await this.xummApi.getPayloadInfo(payloadId);
+        this.snackBar.dismiss();
         //console.log(JSON.stringify(payloadInfo));
         if(payloadInfo && payloadInfo.response && payloadInfo.response.account && signinToValidate) {
             this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
@@ -52,7 +57,7 @@ export class XrplTransactionsComponent implements OnInit {
         } else if (signinToValidate) {
             this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
         } else {
-          let transactionResult = await this.xummApi.validateTransaction(payloadId);
+          let transactionResult:TransactionValidation = await this.xummApi.validateTransaction(payloadId);
 
           this.handleTransactionInfo(transactionResult);
 
@@ -123,13 +128,13 @@ export class XrplTransactionsComponent implements OnInit {
       data: {xrplAccount: null}
     });
 
-    dialogRef.afterClosed().subscribe((info:any) => {
+    dialogRef.afterClosed().subscribe((info:TransactionValidation) => {
       //console.log('The dialog was closed');
       //console.log(info);
       if(info && info.redirect) {
         //nothing to do
-      } else {
-        this.xrplAccount = info;
+      } else if(info && info.xrplAccount) {
+        this.xrplAccount = info.xrplAccount;
       }
 
       if(this.xrplAccount) {
@@ -138,14 +143,14 @@ export class XrplTransactionsComponent implements OnInit {
     });
   }
 
-  openGenericDialog(payload: any):void {
+  openGenericDialog(payload: GenericBackendPostRequest):void {
     const dialogRef = this.matDialog.open(GenericPayloadQRDialog, {
       width: 'auto',
       height: 'auto;',
       data: payload
     });
 
-    dialogRef.afterClosed().subscribe((info:any) => {
+    dialogRef.afterClosed().subscribe((info:TransactionValidation) => {
       //console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
       if(info && info.redirect) {
@@ -156,7 +161,7 @@ export class XrplTransactionsComponent implements OnInit {
     });
   }
 
-  handleTransactionInfo(trxInfo:any) {
+  handleTransactionInfo(trxInfo:TransactionValidation) {
     if(trxInfo && trxInfo.xrplAccount)
       this.xrplAccount = trxInfo.xrplAccount;
 
@@ -190,12 +195,16 @@ export class XrplTransactionsComponent implements OnInit {
     this.accountObjectsChanged.next(this.xrplAccount_Objects);
   }
 
-  async onPayloadReceived(payload:any) {
+  async onPayloadReceived(xummPayload:XummPostPayloadBodyJson) {
     //console.log("received payload: " + JSON.stringify(payload));
-    if(this.xrplAccount)
-      payload.xrplAccount = this.xrplAccount;
+    let genericBackendRequest:GenericBackendPostRequest = {
+      options: {
+        xrplAccount: this.xrplAccount ? this.xrplAccount : null
+      },
+      payload: xummPayload
+    }
 
-    this.openGenericDialog(payload);
+    this.openGenericDialog(genericBackendRequest);
   }
 
   getAccountBalance(): number {

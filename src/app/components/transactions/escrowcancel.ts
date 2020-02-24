@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable, Subject } from 'rxjs';
+import { XummPostPayloadBodyJson } from 'xumm-api';
 
 @Component({
   selector: 'escrowcancel',
@@ -34,7 +35,7 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
 
   escrowSequenceSelected:boolean = false;
 
-  private payload:any = {
+  private payload:XummPostPayloadBodyJson = {
     options: {
       expire: 5
     },

@@ -2,6 +2,7 @@ import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } 
 import { Encode } from 'xrpl-tagged-address-codec';
 import * as cryptoCondition from 'five-bells-condition'
 import { Observable, Subscription, Subject } from 'rxjs';
+import { XummPostPayloadBodyJson } from 'xumm-api';
 
 @Component({
   selector: 'escrowfinish',
@@ -39,10 +40,12 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
 
   hidePw = true;
 
+  escrowOwnerChangedAutomatically:boolean = false;
+
   lastKnownAddress:string = null;
   showPwField:boolean = true;
 
-  private payload:any = {
+  private payload:XummPostPayloadBodyJson = {
     options: {
       expire: 5
     },
@@ -147,13 +150,19 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   }
 
   clearInputs() {
-    this.escrowOwnerInput = this.escrowSequenceInput = null;
-    this.isValidEscrowFinish = this.validAddress = this.validSequence = false;
+    this.escrowOwnerInput = this.escrowSequenceInput = this.passwordInput = null;
+    this.isValidEscrowFinish = this.validAddress = this.validSequence = this.escrowOwnerChangedAutomatically = false;
     this.lastKnownAddress = null;
+    
     this.escrowAccountChanged.next(null);
   }
 
   onEscrowSequenceFound(escrowInfo:any) {
+    if(this.escrowOwnerInput && this.escrowOwnerInput.trim() != escrowInfo.owner) {
+      this.escrowOwnerInput = escrowInfo.owner;
+      this.escrowOwnerChangedAutomatically = true;
+      setTimeout(() => this.escrowOwnerChangedAutomatically = false, 5000);
+    }
     this.escrowSequenceInput = escrowInfo.sequence;
 
     this.escrowSequenceSelected = true;

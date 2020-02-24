@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } 
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
+import { XummPostPayloadBodyJson } from 'xumm-api';
 
 @Component({
   selector: 'setregularkey',
@@ -33,7 +34,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
 
   validAddress = false;
 
-  private payload:any = {
+  private payload:XummPostPayloadBodyJson = {
     options: {
       expire: 5
     },

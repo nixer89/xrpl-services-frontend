@@ -1,16 +1,15 @@
 <mat-card fxFlex fxLayout="column" fxLayoutGap="0.1em" class="margin-5">
-    <div fxLayout="row">
+    <div fxLayout="row" fxLayout.xs="column">
+        <div *ngIf="xrplAccount" style="align-self: start;">
+            <button  mat-raised-button color="primary" matTooltip="Logout" matTooltipPosition="below" (click)="logoutAccount()">
+                Logout
+            </button>
+        </div>
         <div fxLayout="column" fxLayoutAlign="start center" class="floatcenter">
             <div *ngIf="!xrplAccount">
                 <button mat-raised-button style="height: 50px; border-radius: 10px; padding: 5px;" matTooltip="Login with Xumm to load your account data." matTooltipPosition="right" (click)="openSignInDialog()">
                     <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with Xumm">
                 </button>
-            </div>
-            <div *ngIf="xrplAccount" style="align-self: start;">
-                <button  mat-raised-button color="primary" matTooltip="Logout" matTooltipPosition="below" (click)="logoutAccount()">
-                    Logout
-                </button>
-                <span style="flex: 1 1 auto;"></span>
             </div>
             <div style="padding-top: 0.5em;" class="floatcenter">
                 <div *ngIf="!xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
@@ -18,13 +17,15 @@
                 </div>
                 <div *ngIf="xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
                     <label fxHide.xs>You are currently logged in with the XRPL account:</label>
-                    <b fxShow fxHide.xs> {{xrplAccount}} </b>
-                    <b fxShow.xs fxHide style="font-size: 0.8em;"> {{xrplAccount}} </b>
+                    <a [href]="(isTestMode? 'https://test.bithomp.com/explorer/' : 'https://bithomp.com/explorer/')+xrplAccount">
+                        <b fxShow fxHide.xs> {{xrplAccount}} </b>
+                        <b fxShow.xs fxHide style="font-size: 0.8em;"> {{xrplAccount}} </b>
+                    </a>
                     <label fxHide.xs>and balance:</label>
                     <b fxShow fxHide.xs> {{getAccountBalance()}} XRP. </b>
                     <b fxShow.xs fxHide style="font-size: 0.8em;"> {{getAccountBalance()}} XRP. </b>
                 </div>
-                <label style="color: orangered;" *ngIf="xrplAccount && !xrplAccount_Info">This account was not found on the <b>{{isTestMode ? ' test net ' : ' live net '}}</b>.</label>
+                <label style="color: orangered;" ngStyle.xs="font-size: 0.8em;" *ngIf="xrplAccount && !xrplAccount_Info">This account was not found on the <b>{{isTestMode ? ' test net ' : ' live net '}}</b>.</label>
             </div>
         </div>
         <mat-card fxShow fxHide.xs >

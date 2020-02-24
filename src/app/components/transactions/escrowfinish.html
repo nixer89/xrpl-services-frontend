@@ -21,6 +21,7 @@
     <mat-form-field>
       <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="checkChanges()">
       <mat-hint *ngIf="escrowOwnerInput && !validAddress" style="color: crimson;">Not a valid XRPL address</mat-hint>
+      <mat-hint *ngIf="escrowOwnerChangedAutomatically" style="color: crimson;">Escrow Owner changed. Your inserted account was the destination address.</mat-hint>
     </mat-form-field>
     <div style="margin-bottom: 1em;" >
       <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" (escrowSequenceFound)="onEscrowSequenceFound($event)" [testMode]="testMode"></escrowList>
@@ -37,7 +38,7 @@
       </button>
     </mat-form-field>
   </form>
-  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap="0.5em" style="padding-top: 2em;">
+  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em" style="padding-top: 2em;">
     <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowFinish">
       Send Escrow Finish to Xumm
     </button>

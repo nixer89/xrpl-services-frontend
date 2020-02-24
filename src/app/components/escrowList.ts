@@ -59,7 +59,7 @@ export class EscrowList implements OnInit, OnDestroy {
         this.websocket = webSocket(this.testMode ? 'wss://testnet.xrpl-labs.com' : 'wss://s1.ripple.com');
 
         this.websocket.asObservable().subscribe(async message => {
-            //console.log("websocket message: " + JSON.stringify(message));
+            console.log("websocket message: " + JSON.stringify(message));
             if(message.status && message.status === 'success' && message.type && message.type === 'response') {
               if(message.result && message.result.account_objects) {
                   let unfilteredList:any[] = message.result.account_objects;
@@ -76,7 +76,7 @@ export class EscrowList implements OnInit, OnDestroy {
               }
               else if(message.result && message.result.TransactionType === 'EscrowCreate') {
                   //console.log("Sequence: " + message.result.Sequence);
-                  this.escrowSequenceFound.emit({sequence: message.result.Sequence, condition: message.result.Condition});
+                  this.escrowSequenceFound.emit({owner: message.result.Account, sequence: message.result.Sequence, condition: message.result.Condition});
                   this.escrowClicked = true;
                   this.loading = false;
               }

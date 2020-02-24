@@ -3,6 +3,8 @@ import { XummService } from '../services/xumm.service';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef } from '@angular/material/dialog';
+import { XummPostPayloadBodyJson, XummPostPayloadResponse, XummGetPayloadResponse } from 'xumm-api';
+import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
 
 @Component({
     selector: "xummSignRequestDialog",
@@ -34,8 +36,14 @@ export class XummSignDialogComponent implements OnInit{
         this.loading = true;
 
         //setting up xumm payload and waiting for websocket
-        let xummPayload:any = {
-            web: this.deviceDetector.isDesktop(),
+        let backendPayload:GenericBackendPostRequest = {
+            options: {
+                web: this.deviceDetector.isDesktop(),
+            },
+            payload: null
+        }
+
+        let xummPayload:XummPostPayloadBodyJson = {
             options: {
                 expire: 1
             },
@@ -52,15 +60,17 @@ export class XummSignDialogComponent implements OnInit{
             refererURL = document.URL;
         }
 
-        xummPayload.referer = refererURL;
-        xummPayload.signinToValidate = true;
+        backendPayload.options.referer = refererURL;
+        backendPayload.options.signinToValidate = true;
 
-        let xummResponse:any;
+        backendPayload.payload = xummPayload;
+
+        let xummResponse:XummPostPayloadResponse;
         try {
             //console.log("sending xumm payload: " + JSON.stringify(xummPayload));
-            xummResponse = await this.xummApi.submitPayload(xummPayload);
+            xummResponse = await this.xummApi.submitPayload(backendPayload);
             //console.log(JSON.stringify(xummResponse));
-            if(!xummResponse || xummResponse.error) {
+            if(!xummResponse || !xummResponse.uuid) {
                 this.loading = false;
                 this.showError = true;
                 setTimeout(() => this.handleFailedSignIn(), 3000);
@@ -95,14 +105,14 @@ export class XummSignDialogComponent implements OnInit{
             //console.log("message received: " + JSON.stringify(message));
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
-                let transactionResult = await this.xummApi.checkSignIn(message.payload_uuidv4);
+                let transactionResult:TransactionValidation = await this.xummApi.checkSignIn(message.payload_uuidv4);
                 //console.log(transactionResult);
                 
                 this.waitingForPayment = false;
                 if(transactionResult && transactionResult.success) {
                     this.transactionSigned = true;
                     //get xrpl account
-                    let payloadInfo:any = await this.xummApi.getPayloadInfo(message.payload_uuidv4);
+                    let payloadInfo:XummGetPayloadResponse = await this.xummApi.getPayloadInfo(message.payload_uuidv4);
                     this.xrplAccount = payloadInfo.response.account;
 
                     setTimeout(() => this.handleSuccessfullSignIn(), 3000);
@@ -127,7 +137,7 @@ export class XummSignDialogComponent implements OnInit{
     }
     
     handleSuccessfullSignIn() {
-        this.dialogRef.close(this.xrplAccount);
+        this.dialogRef.close({ success: true, testnet: false, xrplAccount: this.xrplAccount});
     }
 
     handleFailedSignIn() {

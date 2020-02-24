@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AppService } from './app.service';
+import { XummPostPayloadResponse, XummGetPayloadResponse, XummDeletePayloadResponse } from 'xumm-api';
+import { TransactionValidation } from '../utils/types';
 
 @Injectable()
 export class XummService {
@@ -8,76 +10,76 @@ export class XummService {
     isTestMode = false;
     xummBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://api.xumm.community';
 
-    async submitPayload(payload:any): Promise<any> {
+    async submitPayload(payload:any): Promise<XummPostPayloadResponse> {
         try {
             console.log("submitting payload: " + JSON.stringify(payload));
             return this.app.post(this.xummBackendURL+"/api/v1/platform/payload", payload);
         } catch(err) {
             console.log(JSON.stringify(err))
-            return { error: true }
+            return null;
         }
     }
 
-    async getPayloadInfo(payloadId:string): Promise<any> {
+    async getPayloadInfo(payloadId:string): Promise<XummGetPayloadResponse> {
         try {
             return this.app.get(this.xummBackendURL+"/api/v1/platform/payload/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
-            return { error: true }
+            return null;
         }
     }
 
-    async deletePayload(payloadId:string): Promise<any> {
+    async deletePayload(payloadId:string): Promise<XummDeletePayloadResponse> {
         try {
             return this.app.delete(this.xummBackendURL+"/api/v1/platform/payload/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
-            return { error: true }
+            return null;
         }
     }
 
-    async validateTransaction(payloadId:string): Promise<any> {
+    async validateTransaction(payloadId:string): Promise<TransactionValidation> {
         try {
             return this.app.get(this.xummBackendURL+"/api/v1/xrpl/validatetx/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
-            return { error: true }
+            return { error: true, success: false, testnet:false }
         }
     }
     
-    async checkPayment(payloadId:string): Promise<any> {
+    async checkPayment(payloadId:string): Promise<TransactionValidation> {
         try {
             return this.app.get(this.xummBackendURL+"/api/v1/check/payment/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
-            return { error: true }
+            return { error: true, success: false, testnet:false }
         }
     }
 
-    async checkTimedPayment(payloadId:string, referer:string): Promise<any> {
+    async checkTimedPayment(payloadId:string, referer:string): Promise<TransactionValidation> {
         try {
             return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/referer/"+payloadId+"?referer="+referer);
         } catch(err) {
             console.log(JSON.stringify(err))
-            return { error: true }
+            return { error: true, success: false, testnet:false }
         }
     }
 
-    async checkSignIn(payloadId:string): Promise<any> {
+    async checkSignIn(payloadId:string): Promise<TransactionValidation> {
         try {
             return this.app.get(this.xummBackendURL+"/api/v1/check/signin/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
-            return { error: true }
+            return { error: true, success: false, testnet:false }
         }
     }
 
-    async signInToValidateTimedPayment(payloadId:any, referer:string): Promise<any> {
+    async signInToValidateTimedPayment(payloadId:any, referer:string): Promise<TransactionValidation> {
         try {
             return this.app.get(this.xummBackendURL+"/api/v1/check/signinToValidatePayment/"+payloadId+(referer ? "?referer="+referer:""));
         } catch(err) {
             console.log(JSON.stringify(err))
-            return { error: true }
+            return { error: true, success: false, testnet:false }
         }
     }
 }

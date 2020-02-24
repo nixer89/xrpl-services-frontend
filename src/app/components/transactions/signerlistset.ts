@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy, ViewEncapsulation } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
+import { XummPostPayloadBodyJson } from 'xumm-api';
 
 interface SignerListQuorumValidation {
   valid: boolean,
@@ -18,7 +19,8 @@ interface SignerEntry {
 
 @Component({
   selector: 'signerlistset',
-  templateUrl: './signerlistset.html'
+  templateUrl: './signerlistset.html',
+  styleUrls: ['./signerlistset.css']
 })
 export class SignerListSetComponent implements OnInit, OnDestroy {
 
@@ -52,7 +54,9 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
 
   overallSignerWeights:number = 0;
 
-  private payload:any = {
+  changesDetected:boolean = false;
+
+  private payload:XummPostPayloadBodyJson = {
     options: {
       expire: 5
     },
@@ -98,6 +102,8 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   checkChanges() {
+
+    //console.log("check changes");
     //console.log("signerList: " + JSON.stringify(this.signerList));
     //console.log("signerQuorumInput: " + this.signerQuorumInput);
 
@@ -216,12 +222,21 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   sendPayloadToXumm() {
-
-    let signerListToSend:any[] = this.signerList;
+    console.log("sending to xumm");
+    let signerListToSend:any[] = JSON.parse(JSON.stringify(this.signerList))
+    //console.log("signerListToSend: " + JSON.stringify(signerListToSend));
+    //console.log("this.signerList: " + JSON.stringify(this.signerList));
+    
+    //console.log("copied");
     signerListToSend.forEach(signer => {
       signer.SignerEntry.SignerWeight = parseInt(signer.SignerEntry.SignerWeight);
       delete signer.valid;
     });
+
+    //console.log("signerListToSend: " + JSON.stringify(signerListToSend));
+    //console.log("this.signerList: " + JSON.stringify(this.signerList));
+
+    //console.log("into integer");
 
     if(this.signerQuorumInput && this.signerQuorumInput)
       this.payload.txjson.SignerQuorum = this.signerQuorumInput

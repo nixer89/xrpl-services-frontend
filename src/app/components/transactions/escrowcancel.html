@@ -30,7 +30,7 @@
       <mat-hint *ngIf="escrowSequenceInput && !validSequence" style="color: crimson;">Not a valid Escrow Sequence</mat-hint>
     </mat-form-field>
   </form>
-  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutGap="0.5em" style="padding-top: 2em;">
+  <div fxLayout="row" fxLayoutAlign="start center" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
     <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowCancel">
       Send Escrow Cancel to Xumm
     </button>

@@ -3,6 +3,7 @@ import { Encode } from 'xrpl-tagged-address-codec';
 import * as cryptoCondition from 'five-bells-condition'
 import { Subscription, Observable } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { XummPostPayloadBodyJson } from 'xumm-api';
 
 @Component({
   selector: 'escrowcreate',
@@ -57,7 +58,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
 
   hidePw = true;
 
-  private payload:any = {
+  private xummPayload:XummPostPayloadBodyJson = {
     options: {
       expire: 5
     },
@@ -165,16 +166,16 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   sendPayloadToXumm() {
 
     if(this.amountInput && this.amountInput >= 0.000001)
-      this.payload.txjson.Amount = this.amountInput*1000000+"";
+      this.xummPayload.txjson.Amount = this.amountInput*1000000+"";
 
     if(this.destinationInput && this.destinationInput.trim().length>0 && this.isValidXRPAddress(this.destinationInput))
-      this.payload.txjson.Destination = this.destinationInput.trim();
+      this.xummPayload.txjson.Destination = this.destinationInput.trim();
 
     if(this.validCancelAfter)
-      this.payload.txjson.CancelAfter = (this.cancelAfterDateTime.getTime()/1000)-946684800;
+      this.xummPayload.txjson.CancelAfter = (this.cancelAfterDateTime.getTime()/1000)-946684800;
 
     if(this.validFinishAfter)
-      this.payload.txjson.FinishAfter = (this.finishAfterDateTime.getTime()/1000)-946684800;
+      this.xummPayload.txjson.FinishAfter = (this.finishAfterDateTime.getTime()/1000)-946684800;
 
     if(this.validCondition) {
       let fulfillment_bytes:Buffer = Buffer.from(this.passwordInput.trim(), 'utf-8');
@@ -201,10 +202,10 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       //  )
       //)
 
-      this.payload.txjson.Condition = condition
+      this.xummPayload.txjson.Condition = condition
     }
 
-    this.onPayload.emit(this.payload);
+    this.onPayload.emit(this.xummPayload);
   }
 
   isValidXRPAddress(address: string): boolean {
