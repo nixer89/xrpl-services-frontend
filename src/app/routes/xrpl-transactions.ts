@@ -133,8 +133,8 @@ export class XrplTransactionsComponent implements OnInit {
       //console.log(info);
       if(info && info.redirect) {
         //nothing to do
-      } else if(info && info.xrplAccount) {
-        this.xrplAccount = info.xrplAccount;
+      } else if(info && info.account) {
+        this.xrplAccount = info.account;
       }
 
       if(this.xrplAccount) {
@@ -162,8 +162,8 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   handleTransactionInfo(trxInfo:TransactionValidation) {
-    if(trxInfo && trxInfo.xrplAccount)
-      this.xrplAccount = trxInfo.xrplAccount;
+    if(trxInfo && trxInfo.account)
+      this.xrplAccount = trxInfo.account;
 
     if(trxInfo && trxInfo.success) {
       this.isTestMode = trxInfo.testnet;

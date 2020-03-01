@@ -31,13 +31,13 @@ export class GenericPayloadQRDialog implements OnInit {
         private xummApi: XummService,
         private deviceDetector: DeviceDetectorService,
         public dialogRef: MatDialogRef<GenericPayloadQRDialog>,
-        @Inject(MAT_DIALOG_DATA) public payload: GenericBackendPostRequest) {
+        @Inject(MAT_DIALOG_DATA) public genericPayload: GenericBackendPostRequest) {
     }
 
     async ngOnInit() {
         this.loading = true;
 
-        this.payload.options.web = this.deviceDetector.isDesktop();
+        this.genericPayload.options.web = this.deviceDetector.isDesktop();
 
         let refererURL:string;
 
@@ -47,11 +47,11 @@ export class GenericPayloadQRDialog implements OnInit {
             refererURL = document.URL;
         }
 
-        this.payload.options.referer = refererURL;
+        this.genericPayload.options.referer = refererURL;
 
         let xummResponse:XummPostPayloadResponse;
         try {
-            xummResponse = await this.xummApi.submitPayload(this.payload);
+            xummResponse = await this.xummApi.submitPayload(this.genericPayload);
             //console.log("xummResponse: " + JSON.stringify(xummResponse)); 
             if(!xummResponse || !xummResponse.uuid) {
                 this.loading = false;

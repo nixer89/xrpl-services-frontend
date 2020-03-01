@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DeviceDetectorService } from 'ngx-device-detector';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 
 @Component({
@@ -10,20 +9,17 @@ import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 })
 export class TopbarComponent {
 
-  constructor(
-    private supportDialog: MatDialog,
-    private snackBar: MatSnackBar,
-    private deviceDetector: DeviceDetectorService
-  ) { }
+  constructor( private supportDialog: MatDialog, private snackBar: MatSnackBar) {
+
+  }
 
   async supportViaXumm() {
     //setting up xumm payload and waiting for websocket
     let xummPayload:any = {
-      web: this.deviceDetector.isDesktop(),
       options: {
           expire: 5
       },
-    txjson: {
+      txjson: {
           TransactionType: "Payment",
           Fee: "12"
       }

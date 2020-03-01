@@ -35,23 +35,6 @@ export class XummSignDialogComponent implements OnInit{
     async ngOnInit() {
         this.loading = true;
 
-        //setting up xumm payload and waiting for websocket
-        let backendPayload:GenericBackendPostRequest = {
-            options: {
-                web: this.deviceDetector.isDesktop(),
-            },
-            payload: null
-        }
-
-        let xummPayload:XummPostPayloadBodyJson = {
-            options: {
-                expire: 1
-            },
-	        txjson: {
-                TransactionType: "SignIn"
-            }
-        }
-
         let refererURL:string;
 
         if(document.URL.includes('?')) {
@@ -59,11 +42,22 @@ export class XummSignDialogComponent implements OnInit{
         } else {
             refererURL = document.URL;
         }
-
-        backendPayload.options.referer = refererURL;
-        backendPayload.options.signinToValidate = true;
-
-        backendPayload.payload = xummPayload;
+        //setting up xumm payload and waiting for websocket
+        let backendPayload:GenericBackendPostRequest = {
+            options: {
+                web: this.deviceDetector.isDesktop(),
+                referer: refererURL,
+                signinToValidate: true
+            },
+            payload: {
+                options: {
+                    expire: 1
+                },
+                txjson: {
+                    TransactionType: "SignIn"
+                }
+            }
+        }
 
         let xummResponse:XummPostPayloadResponse;
         try {
@@ -112,8 +106,7 @@ export class XummSignDialogComponent implements OnInit{
                 if(transactionResult && transactionResult.success) {
                     this.transactionSigned = true;
                     //get xrpl account
-                    let payloadInfo:XummGetPayloadResponse = await this.xummApi.getPayloadInfo(message.payload_uuidv4);
-                    this.xrplAccount = payloadInfo.response.account;
+                    this.xrplAccount = transactionResult.account;
 
                     setTimeout(() => this.handleSuccessfullSignIn(), 3000);
                 } else {

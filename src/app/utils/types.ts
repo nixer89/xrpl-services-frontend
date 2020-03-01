@@ -20,6 +20,6 @@ export interface TransactionValidation {
     message?: string,
     payloadExpired?: boolean,
     noValidationTimeFrame?: boolean,
-    xrplAccount?: string,
-    redirect?: boolean
+    redirect?: boolean,
+    account?: string
 }
