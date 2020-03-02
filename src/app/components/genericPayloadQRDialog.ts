@@ -51,7 +51,7 @@ export class GenericPayloadQRDialog implements OnInit {
 
         this.genericPayload.options.referer = refererURL;
 
-        this.googleAnalytics.analyticsEventEmitter(this.genericPayload.payload.txjson.TransactionType.toLowerCase(), 'sendToXummGeneric', 'generic_payload_dialog_component');
+        this.googleAnalytics.analyticsEventEmitter(this.genericPayload.payload.txjson.TransactionType.toLowerCase()+'_transaction', 'sendToXummGeneric', 'generic_payload_dialog_component');
 
         let xummResponse:XummPostPayloadResponse;
         try {
@@ -90,8 +90,8 @@ export class GenericPayloadQRDialog implements OnInit {
         this.loading = false;
         this.waitingForPayment = true;
         this.websocket.asObservable().subscribe(async message => {
-//            console.log("message received: " + JSON.stringify(message));
-            if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
+            console.log("message received: " + JSON.stringify(message));
+            if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID && message.signed) {
                 
                 //get xrpl account
                 let txInfo:TransactionValidation = await this.xummApi.validateTransaction(message.payload_uuidv4);

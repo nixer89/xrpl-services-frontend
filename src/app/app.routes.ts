@@ -8,6 +8,7 @@ export const routes: Routes = [
     {path: '', component: XrplTransactionsComponent},
     {path: 'privacy', component: PrivacyComponent},
     {path: 'terms', component: TermsComponent},
+    {path: '**', redirectTo: ''}
 ];
 
 export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);
