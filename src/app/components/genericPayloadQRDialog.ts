@@ -91,19 +91,24 @@ export class GenericPayloadQRDialog implements OnInit {
         this.waitingForPayment = true;
         this.websocket.asObservable().subscribe(async message => {
             console.log("message received: " + JSON.stringify(message));
-            if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID && message.signed) {
+            if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
-                //get xrpl account
-                let txInfo:TransactionValidation = await this.xummApi.validateTransaction(message.payload_uuidv4);
-                
-                //console.log("txInfo: " + JSON.stringify(txInfo));
-                this.waitingForPayment = false;
+                if(message.signed) {
+                    //get xrpl account
+                    let txInfo:TransactionValidation = await this.xummApi.validateTransaction(message.payload_uuidv4);
+                    
+                    //console.log("txInfo: " + JSON.stringify(txInfo));
+                    this.waitingForPayment = false;
 
-                if(txInfo && txInfo.success) {
-                    this.transactionSigned = true;
-                    this.transactionInfo = txInfo;
+                    if(txInfo && txInfo.success) {
+                        this.transactionSigned = true;
+                        this.transactionInfo = txInfo;
 
-                    setTimeout(() => this.handleSuccessfullTransaction(), 3000);
+                        setTimeout(() => this.handleSuccessfullTransaction(), 3000);
+                    } else {
+                        this.showError = true;
+                        setTimeout(() => this.handleFailedTransaction(), 3000);
+                    }
                 } else {
                     this.showError = true;
                     setTimeout(() => this.handleFailedTransaction(), 3000);

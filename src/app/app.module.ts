@@ -50,6 +50,8 @@ import { GoogleAnalyticsService } from './services/google-analytics.service';
 
 //special
 import { DeviceDetectorModule } from 'ngx-device-detector';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -94,7 +96,8 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
     MatPaginatorModule,
     MatDividerModule,
     //Special
-    DeviceDetectorModule.forRoot()
+    DeviceDetectorModule.forRoot(),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' })
   ],
   entryComponents: [
     XummSignDialogComponent,
