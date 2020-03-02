@@ -3,12 +3,15 @@ import { Encode } from 'xrpl-tagged-address-codec';
 import * as cryptoCondition from 'five-bells-condition'
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummPostPayloadBodyJson } from 'xumm-api';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 
 @Component({
   selector: 'escrowfinish',
   templateUrl: './escrowfinish.html'
 })
 export class EscrowFinishComponent implements OnInit, OnDestroy {
+
+  constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
   transactionSuccessfull: Observable<void>;
@@ -54,8 +57,6 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     }
   }
 
-  constructor() {}
-
   ngOnInit() {
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
       this.clearInputs()
@@ -68,6 +69,8 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   }
 
   sendPayloadToXumm() {
+
+    this.googleAnalytics.analyticsEventEmitter('escrow_finish', 'sendToXumm', 'escrow_finish_component');
 
     if(this.escrowOwnerInput && this.escrowOwnerInput.trim().length>0 && this.validAddress)
       this.payload.txjson.Owner = this.escrowOwnerInput.trim();

@@ -3,6 +3,7 @@ import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
 import { XummPostPayloadBodyJson } from 'xumm-api';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 
 interface SignerListQuorumValidation {
   valid: boolean,
@@ -23,6 +24,8 @@ interface SignerEntry {
   styleUrls: ['./signerlistset.css']
 })
 export class SignerListSetComponent implements OnInit, OnDestroy {
+
+  constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
   accountObjectsChanged: Observable<any>;
@@ -222,6 +225,8 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   sendPayloadToXumm() {
+    this.googleAnalytics.analyticsEventEmitter('signer_list_set', 'sendToXumm', 'Xumm');
+
     console.log("sending to xumm");
     let signerListToSend:any[] = JSON.parse(JSON.stringify(this.signerList))
     //console.log("signerListToSend: " + JSON.stringify(signerListToSend));

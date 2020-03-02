@@ -1,0 +1,17 @@
+[METADATA]
+modified = 2019-02-26T08:29:00.000Z
+
+[[ACCOUNTS]]
+address = "rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF"
+network = "main"
+desc = "nixerFFM"
+
+[[ACCOUNTS]]
+address = "r9N4v3cWxfh4x6yUNjxNy3DbWUgbzMBLdk"
+network = "main"
+desc = "nixerFFM"
+
+[[PRINCIPALS]]
+name = "nixerFFM"
+email = "XummCommunity@gmail.com"
+twitter = "@nixerFFM"

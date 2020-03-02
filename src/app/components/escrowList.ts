@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Observable, Subscription } from 'rxjs';
+import { GoogleAnalyticsService } from '../services/google-analytics.service';
 
 @Component({
     selector: "escrowList",
@@ -30,7 +31,7 @@ export class EscrowList implements OnInit, OnDestroy {
 
     private escrowAccountChangedSubscription: Subscription;
 
-    constructor() {}
+    constructor(private googleAnalytics: GoogleAnalyticsService) {}
 
     ngOnInit() {
         this.setupWebsocket();
@@ -89,6 +90,8 @@ export class EscrowList implements OnInit, OnDestroy {
     }
 
     loadEscrowList(xrplAccount: string) {
+        this.googleAnalytics.analyticsEventEmitter('load_escrow_list', 'escrow_list', 'escrow_list_component');
+
         if(this.originalTestModeValue != this.testMode) {
             this.websocket.unsubscribe();
             this.websocket.complete();
@@ -123,6 +126,7 @@ export class EscrowList implements OnInit, OnDestroy {
     }
 
     escrowSelected(escrow: any) {
+        this.googleAnalytics.analyticsEventEmitter('escrow_list_selected', 'escrow_list', 'escrow_list_component');
         //console.log("escrow selected: " + JSON.stringify(escrow));
 
         let txInfo:any = {

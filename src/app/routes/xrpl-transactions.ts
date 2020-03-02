@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
 import { XummPostPayloadBodyJson, XummGetPayloadResponse } from 'xumm-api';
+import { GoogleAnalyticsService } from '../services/google-analytics.service';
 
 @Component({
   selector: 'app-xrpl-transactions',
@@ -33,7 +34,8 @@ export class XrplTransactionsComponent implements OnInit {
     private matDialog: MatDialog,
     private route: ActivatedRoute,
     private xummApi: XummService,
-    private snackBar: MatSnackBar) { }
+    private snackBar: MatSnackBar,
+    private googleAnalytics: GoogleAnalyticsService) { }
 
   async ngOnInit() {
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
@@ -45,6 +47,7 @@ export class XrplTransactionsComponent implements OnInit {
       let payloadId = params.payloadId;
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
+        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload_id', 'xrpl_transactions_component');
         //check if transaction was successfull and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
         let payloadInfo:XummGetPayloadResponse = await this.xummApi.getPayloadInfo(payloadId);
@@ -217,6 +220,7 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   logoutAccount() {
+    this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'xrpl_transactions_component');
     this.xrplAccount = null;
     this.xrplAccount_Info = null;
     this.lastTrxLink = null;

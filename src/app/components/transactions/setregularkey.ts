@@ -3,12 +3,15 @@ import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
 import { XummPostPayloadBodyJson } from 'xumm-api';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 
 @Component({
   selector: 'setregularkey',
   templateUrl: './setregularkey.html'
 })
 export class SetRegularKeyComponent implements OnInit, OnDestroy {
+
+  constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
   accountInfoChanged: Observable<any>;
@@ -78,6 +81,8 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
 
   sendPayloadToXumm() {
 
+    this.googleAnalytics.analyticsEventEmitter('set_regular_key', 'sendToXumm', 'set_regular_key');
+
     if(this.regularKeyInput && this.regularKeyInput.trim().length>0 && this.validAddress)
       this.payload.txjson.RegularKey = this.regularKeyInput.trim();
 
@@ -123,6 +128,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   }
 
   deleteRegularKey() {
+    this.googleAnalytics.analyticsEventEmitter('delete_regular_key', 'sendToXumm', 'set_regular_key_component');
     this.onPayload.emit({
       options: {
         expire: 5

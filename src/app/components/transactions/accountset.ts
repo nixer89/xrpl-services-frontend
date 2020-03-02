@@ -3,7 +3,7 @@ import { Subscription, Observable} from 'rxjs';
 import * as md5 from 'md5';
 import * as emailValidator from 'email-validator'
 import * as flagsutil from '../../utils/flagutils';
-import { XummPostPayloadBodyJson } from 'xumm-api';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 
 @Component({
   selector: 'accountset',
@@ -13,6 +13,8 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
   private ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG:number = 1;
   private ACCOUNT_FLAG_DISABLE_MASTER_KEY:number = 4;
+
+  constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
   accountInfoChanged: Observable<any>;
@@ -174,6 +176,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   }
 
   deleteDomain() {
+    this.googleAnalytics.analyticsEventEmitter('delete_domain', 'sendToXumm', 'account_set_component');
     this.payload.txjson.Domain = '';
 
     this.payload.custom_meta = {};
@@ -189,6 +192,8 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   }
 
   deleteEmailHash() {
+    this.googleAnalytics.analyticsEventEmitter('delete_emailhash', 'sendToXumm', 'account_set_component');
+
     this.payload.txjson.EmailHash = "00000000000000000000000000000000";
 
     this.onPayload.emit(this.payload);

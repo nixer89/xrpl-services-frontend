@@ -2,12 +2,15 @@ import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } 
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { XummPostPayloadBodyJson } from 'xumm-api';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 
 @Component({
   selector: 'escrowcancel',
   templateUrl: './escrowcancel.html'
 })
 export class EscrowCancelComponent implements OnInit, OnDestroy {
+
+  constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
   transactionSuccessfull: Observable<void>;
@@ -56,6 +59,7 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   }
 
   sendPayloadToXumm() {
+    this.googleAnalytics.analyticsEventEmitter('escrow_cancel', 'sendToXumm', 'escrow_cancel_component');
 
     if(this.escrowOwnerInput && this.escrowOwnerInput.trim().length>0 && this.validAddress)
       this.payload.txjson.Owner = this.escrowOwnerInput.trim();

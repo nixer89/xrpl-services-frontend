@@ -5,6 +5,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
 import { XummPostPayloadResponse } from 'xumm-api'
+import { GoogleAnalyticsService } from '../services/google-analytics.service';
 
 @Component({
     selector: "genericPayloadQRDialog",
@@ -31,7 +32,8 @@ export class GenericPayloadQRDialog implements OnInit {
         private xummApi: XummService,
         private deviceDetector: DeviceDetectorService,
         public dialogRef: MatDialogRef<GenericPayloadQRDialog>,
-        @Inject(MAT_DIALOG_DATA) public genericPayload: GenericBackendPostRequest) {
+        @Inject(MAT_DIALOG_DATA) public genericPayload: GenericBackendPostRequest,
+        private googleAnalytics: GoogleAnalyticsService) {
     }
 
     async ngOnInit() {
@@ -48,6 +50,8 @@ export class GenericPayloadQRDialog implements OnInit {
         }
 
         this.genericPayload.options.referer = refererURL;
+
+        this.googleAnalytics.analyticsEventEmitter(this.genericPayload.payload.txjson.TransactionType.toLowerCase(), 'sendToXummGeneric', 'generic_payload_dialog_component');
 
         let xummResponse:XummPostPayloadResponse;
         try {

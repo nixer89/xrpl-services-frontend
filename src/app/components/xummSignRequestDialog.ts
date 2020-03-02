@@ -1,10 +1,11 @@
 import { Component, OnInit } from "@angular/core";
 import { XummService } from '../services/xumm.service';
-import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import { webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef } from '@angular/material/dialog';
-import { XummPostPayloadBodyJson, XummPostPayloadResponse, XummGetPayloadResponse } from 'xumm-api';
+import { XummPostPayloadResponse } from 'xumm-api';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
+import { GoogleAnalyticsService } from '../services/google-analytics.service';
 
 @Component({
     selector: "xummSignRequestDialog",
@@ -29,7 +30,8 @@ export class XummSignDialogComponent implements OnInit{
     constructor(
         private xummApi: XummService,
         private deviceDetector: DeviceDetectorService,
-        public dialogRef: MatDialogRef<XummSignDialogComponent>) {
+        public dialogRef: MatDialogRef<XummSignDialogComponent>,
+        private googleAnalytics: GoogleAnalyticsService) {
     }
 
     async ngOnInit() {
@@ -58,6 +60,8 @@ export class XummSignDialogComponent implements OnInit{
                 }
             }
         }
+
+        this.googleAnalytics.analyticsEventEmitter(backendPayload.payload.txjson.TransactionType.toLowerCase(), 'sendToXummSignIn', 'signin_dialog_component');
 
         let xummResponse:XummPostPayloadResponse;
         try {

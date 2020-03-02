@@ -4,12 +4,15 @@ import * as cryptoCondition from 'five-bells-condition'
 import { Subscription, Observable } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { XummPostPayloadBodyJson } from 'xumm-api';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 
 @Component({
   selector: 'escrowcreate',
   templateUrl: './escrowcreate.html'
 })
 export class EscrowCreateComponent implements OnInit, OnDestroy{
+
+  constructor(private device:DeviceDetectorService, private googleAnalytics: GoogleAnalyticsService) {}
 
   @Input()
   transactionSuccessfull: Observable<void>;
@@ -66,8 +69,6 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       TransactionType: "EscrowCreate"
     }
   }
-
-  constructor(private device:DeviceDetectorService) {}
 
   ngOnInit() {
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
@@ -164,6 +165,8 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   }
 
   sendPayloadToXumm() {
+
+    this.googleAnalytics.analyticsEventEmitter('escrow_create', 'sendToXumm', 'escrow_create_component');
 
     if(this.amountInput && this.amountInput >= 0.000001)
       this.xummPayload.txjson.Amount = this.amountInput*1000000+"";

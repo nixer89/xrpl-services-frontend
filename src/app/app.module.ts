@@ -44,8 +44,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatDividerModule } from '@angular/material/divider';
 
 //my services
-import {AppService} from './services/app.service';
-import {XummService} from './services/xumm.service';
+import { AppService } from './services/app.service';
+import { XummService } from './services/xumm.service';
+import { GoogleAnalyticsService } from './services/google-analytics.service';
 
 //special
 import { DeviceDetectorModule } from 'ngx-device-detector';
@@ -101,7 +102,8 @@ import { DeviceDetectorModule } from 'ngx-device-detector';
   ],
   providers: [
     AppService,
-    XummService
+    XummService,
+    GoogleAnalyticsService
   ],
   bootstrap: [AppComponent]
 })

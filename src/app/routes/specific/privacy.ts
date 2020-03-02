@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Title, Meta } from '@angular/platform-browser';
+import { Title } from '@angular/platform-browser';
+import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 
 @Component({
   selector: 'privacy',
@@ -8,9 +9,10 @@ import { Title, Meta } from '@angular/platform-browser';
 
 export class PrivacyComponent implements OnInit {
 
-  constructor(private titleService: Title, private meta: Meta) {}
+  constructor(private titleService: Title, private googleAnalytics: GoogleAnalyticsService) {}
 
   ngOnInit() {
     this.titleService.setTitle("Xumm Community Privacy");
+    this.googleAnalytics.analyticsEventEmitter('privacy_opened', 'privacy', 'privacy_component');
   }
 }
