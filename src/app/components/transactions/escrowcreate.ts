@@ -18,7 +18,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   transactionSuccessfull: Observable<void>;
 
   @Output()
-  onPayload: EventEmitter<any> = new EventEmitter();
+  onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
 
   @ViewChild('inpamount', {static: false}) inpamount;
   amountInput: number;

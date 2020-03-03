@@ -4,6 +4,7 @@ import * as md5 from 'md5';
 import * as emailValidator from 'email-validator'
 import * as flagsutil from '../../utils/flagutils';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
+import { XummPostPayloadBodyJson } from 'xumm-api';
 
 @Component({
   selector: 'accountset',
@@ -23,7 +24,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   accountObjectsChanged: Observable<any>;
 
   @Output()
-  onPayload: EventEmitter<any> = new EventEmitter();
+  onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
 
   @ViewChild('inpdomain', {static: false}) inpdomain;
   domainInput: string = "";
@@ -53,7 +54,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   validDomain:boolean = false;
   validEmail:boolean = false;
 
-  payload:any = {
+  payload:XummPostPayloadBodyJson = {
     options: {
       expire: 1
     },
@@ -143,7 +144,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     //console.log("email: " + this.emailInput);
 
     this.payload.custom_meta = {};
-    this.payload.custom_meta.instructions = "";
+    this.payload.custom_meta.instruction = "";
 
     if(this.domainInput && this.validDomain && (!this.originalAccountInfo || this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain))
       this.payload.txjson.Domain = this.stringToHex(this.domainInput.trim());
@@ -152,24 +153,32 @@ export class AccountSetComponent implements OnInit, OnDestroy {
       this.payload.txjson.EmailHash = md5(this.emailInput.trim()).toUpperCase();
 
     if(this.requireDestTagChangeDetected) {
-      if(this.requireDestTagInput)
+      if(this.requireDestTagInput) {
         this.payload.txjson.SetFlag = this.ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG;
-      else
+        this.payload.custom_meta.instruction+= "- Set 'Require Destination Tag'\n"
+      } else {
         this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG;
+        this.payload.custom_meta.instruction+= "- Unset 'Require Destination Tag'\n"
+      }
     }
 
     if(this.disableMasterKeyChangeDetected) {
-      if(this.disableMasterKeyInput)
+      if(this.disableMasterKeyInput) {
         this.payload.txjson.SetFlag = this.ACCOUNT_FLAG_DISABLE_MASTER_KEY;
-      else
+        this.payload.custom_meta.instruction+= "- Deactivate Master Key\n"
+      }
+      else {
         this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_DISABLE_MASTER_KEY;
+        this.payload.custom_meta.instruction+= "- Reactivate Master Key\n"
+      }
     }
 
     if(this.payload.txjson.Domain)
-      this.payload.custom_meta.instructions+= "Set a new Domain"
+      this.payload.custom_meta.instruction+= "- Set a new Domain\n"
 
     if(this.payload.txjson.EmailHash)
-    this.payload.custom_meta.instructions+= "Set a new Domain"
+      this.payload.custom_meta.instruction+= "- Set a new EmailHash\n"
+    
 
     this.onPayload.emit(this.payload);
     this.initializePayload();
@@ -180,12 +189,12 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.payload.txjson.Domain = '';
 
     this.payload.custom_meta = {};
-    this.payload.custom_meta.instructions = "Delete your Domain attached to this account";
+    this.payload.custom_meta.instruction = "Delete your Domain attached to this account";
 
     if(this.originalAccountInfo && this.originalAccountInfo.Domain)
-      this.payload.custom_meta.instructions+= ": " + this.hexToString(this.originalAccountInfo.Domain);
+      this.payload.custom_meta.instruction+= ": " + this.hexToString(this.originalAccountInfo.Domain);
     else
-      this.payload.custom_meta.instructions+= ".";
+      this.payload.custom_meta.instruction+= ".";
 
     this.onPayload.emit(this.payload);
     this.initializePayload();
@@ -195,6 +204,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.googleAnalytics.analyticsEventEmitter('delete_emailhash', 'sendToXumm', 'account_set_component');
 
     this.payload.txjson.EmailHash = "00000000000000000000000000000000";
+    this.payload.custom_meta.instruction = "Delete your Email attached to this account";
 
     this.onPayload.emit(this.payload);
     this.initializePayload();

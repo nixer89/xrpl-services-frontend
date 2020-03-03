@@ -23,7 +23,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   transactionSuccessfull: Observable<void>;
 
   @Output()
-  onPayload: EventEmitter<any> = new EventEmitter();
+  onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
 
   @ViewChild('inpregularkey', {static: false}) inpregularkey;
   regularKeyInput: string;
@@ -83,8 +83,10 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
 
     this.googleAnalytics.analyticsEventEmitter('set_regular_key', 'sendToXumm', 'set_regular_key');
 
-    if(this.regularKeyInput && this.regularKeyInput.trim().length>0 && this.validAddress)
+    if(this.regularKeyInput && this.regularKeyInput.trim().length>0 && this.validAddress) {
       this.payload.txjson.RegularKey = this.regularKeyInput.trim();
+      this.payload.custom_meta.instruction = "Set RegularKey to: " + this.regularKeyInput.trim();
+    }
 
     this.onPayload.emit(this.payload);
   }
@@ -129,13 +131,17 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
 
   deleteRegularKey() {
     this.googleAnalytics.analyticsEventEmitter('delete_regular_key', 'sendToXumm', 'set_regular_key_component');
-    this.onPayload.emit({
+    let payloadToSend:XummPostPayloadBodyJson = {
       options: {
-        expire: 5
+        expire: 5,
       },
       txjson: {
         TransactionType: "SetRegularKey"
+      },
+      custom_meta: {
+        instruction: 'Delete your RegularKey.'
       }
-    });
+    }
+    this.onPayload.emit(payloadToSend);
   }
 }
