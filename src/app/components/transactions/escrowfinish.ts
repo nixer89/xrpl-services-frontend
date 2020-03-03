@@ -1,6 +1,5 @@
 import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
-import * as cryptoCondition from 'five-bells-condition'
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
@@ -81,36 +80,41 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     if(this.validCondition) {
       let fulfillment_bytes:Buffer = Buffer.from(this.passwordInput.trim(), 'utf-8');
 
-      let myFulfillment = new cryptoCondition.PreimageSha256()
-      myFulfillment.setPreimage(fulfillment_bytes);
+      import('five-bells-condition').then( cryptoCondition => {
+        let myFulfillment = new cryptoCondition.PreimageSha256();
 
-      let fulfillment = myFulfillment.serializeBinary().toString('hex').toUpperCase()
-      //console.log('Fulfillment: ', fulfillment)
-      //console.log('             ', myFulfillment.serializeUri())
+        myFulfillment.setPreimage(fulfillment_bytes);
 
-      var condition = myFulfillment.getConditionBinary().toString('hex').toUpperCase()
-      //console.log('Condition  : ', condition)
-      // 'A0258020' + sha256(fulfillment_bytes) + '810102'
-      //console.log('             ', myFulfillment.getCondition().serializeUri())
+        let fulfillment = myFulfillment.serializeBinary().toString('hex').toUpperCase()
+        //console.log('Fulfillment: ', fulfillment)
+        //console.log('             ', myFulfillment.serializeUri())
 
-      //console.log()
+        var condition = myFulfillment.getConditionBinary().toString('hex').toUpperCase()
+        //console.log('Condition  : ', condition)
+        // 'A0258020' + sha256(fulfillment_bytes) + '810102'
+        //console.log('             ', myFulfillment.getCondition().serializeUri())
 
-      //console.log(
-      //  'Fulfillment valid for Condition?      ',
-      //    cryptoCondition.validateFulfillment(
-      //    cryptoCondition.Fulfillment.fromBinary(Buffer.from(fulfillment, 'hex')).serializeUri(), 
-      //    cryptoCondition.Condition.fromBinary(Buffer.from(condition, 'hex')).serializeUri()
-      //  )
-      //)
+        //console.log()
 
-      //console.log("fulfillment_bytes.length: " + fulfillment_bytes.length);
+        //console.log(
+        //  'Fulfillment valid for Condition?      ',
+        //    cryptoCondition.validateFulfillment(
+        //    cryptoCondition.Fulfillment.fromBinary(Buffer.from(fulfillment, 'hex')).serializeUri(), 
+        //    cryptoCondition.Condition.fromBinary(Buffer.from(condition, 'hex')).serializeUri()
+        //  )
+        //)
 
-      this.payload.txjson.Condition = condition
-      this.payload.txjson.Fulfillment = fulfillment;
-      this.payload.txjson.Fee = (330 + (10 * Math.ceil(fulfillment_bytes.length/16))).toString();
+        //console.log("fulfillment_bytes.length: " + fulfillment_bytes.length);
+
+        this.payload.txjson.Condition = condition
+        this.payload.txjson.Fulfillment = fulfillment;
+        this.payload.txjson.Fee = (330 + (10 * Math.ceil(fulfillment_bytes.length/16))).toString();
+
+        this.onPayload.emit(this.payload);
+      });
+    } else {
+      this.onPayload.emit(this.payload);
     }
-
-    this.onPayload.emit(this.payload);
   }
 
   checkChanges() {

@@ -51,19 +51,21 @@ export class XrplTransactionsComponent implements OnInit {
         //check if transaction was successfull and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
         let payloadInfo:XummGetPayloadResponse = await this.xummApi.getPayloadInfo(payloadId);
-        this.snackBar.dismiss();
         //console.log(JSON.stringify(payloadInfo));
         if(payloadInfo && payloadInfo.response && payloadInfo.response.account && signinToValidate) {
+            this.snackBar.dismiss();
             this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
             this.xrplAccount = payloadInfo.response.account;
             this.loadAccountData();
         } else if (signinToValidate) {
+            this.snackBar.dismiss();
             this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
         } else {
           let transactionResult:TransactionValidation = await this.xummApi.validateTransaction(payloadId);
 
           this.handleTransactionInfo(transactionResult);
 
+          this.snackBar.dismiss();
           if(transactionResult && transactionResult.success) {
             this.snackBar.open("Your transaction was successfull on " + (transactionResult.testnet ? 'test net.' : 'live net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
           } else {
@@ -86,7 +88,7 @@ export class XrplTransactionsComponent implements OnInit {
       this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://s1.ripple.com');
 
       this.websocket.asObservable().subscribe(async message => {
-        //console.log("websocket message: " + JSON.stringify(message));
+        console.log("websocket message: " + JSON.stringify(message));
         if(message.status && message.status === 'success' && message.type && message.type === 'response') {
           if(message.result && message.result.account_data) {
             this.xrplAccount_Info = message.result.account_data;
@@ -133,8 +135,8 @@ export class XrplTransactionsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((info:TransactionValidation) => {
-      //console.log('The dialog was closed');
-      //console.log(info);
+      console.log('The dialog was closed');
+      console.log(info);
       if(info && info.redirect) {
         //nothing to do
       } else if(info && info.account) {

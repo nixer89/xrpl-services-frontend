@@ -15,8 +15,6 @@ export class XummSignDialogComponent implements OnInit{
 
     qrLink:string;
 
-    xrplAccount:string;
-
     websocket: WebSocketSubject<any>;
     payloadUUID: string;
     showError: boolean = false;
@@ -101,26 +99,28 @@ export class XummSignDialogComponent implements OnInit{
         this.loading = false;
         this.waitingForPayment = true;
         this.websocket.asObservable().subscribe(async message => {
-            //console.log("message received: " + JSON.stringify(message));
+            console.log("message received: " + JSON.stringify(message));
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
                 let transactionResult:TransactionValidation = await this.xummApi.checkSignIn(message.payload_uuidv4);
-                //console.log(transactionResult);
+                console.log(transactionResult);
                 
                 this.waitingForPayment = false;
+
+                if(this.websocket) {
+                    this.websocket.unsubscribe();
+                    this.websocket.complete();
+                }
+
                 if(transactionResult && transactionResult.success) {
                     this.transactionSigned = true;
-                    //get xrpl account
-                    this.xrplAccount = transactionResult.account;
-
-                    setTimeout(() => this.handleSuccessfullSignIn(), 3000);
+                    
+                    setTimeout(() => this.handleSuccessfullSignIn(transactionResult.account), 3000);
                 } else {
                     this.showError = true;
                     setTimeout(() => this.handleFailedSignIn(), 3000);
                 }
 
-                this.websocket.unsubscribe();
-                this.websocket.complete();
             } else if(message.expired || message.expires_in_seconds <= 0) {
                 this.showError = true;
                 this.waitingForPayment = false;
@@ -134,16 +134,11 @@ export class XummSignDialogComponent implements OnInit{
         });
     }
     
-    handleSuccessfullSignIn() {
-        this.dialogRef.close({ success: true, testnet: false, xrplAccount: this.xrplAccount});
+    handleSuccessfullSignIn(xrplAccount: string) {
+        this.dialogRef.close({ success: true, testnet: false, account: xrplAccount});
     }
 
     handleFailedSignIn() {
-        if(this.websocket) {
-            this.websocket.unsubscribe();
-            this.websocket.complete();
-        }
-
         this.websocket = null;
         this.dialogRef.close(null);
     }

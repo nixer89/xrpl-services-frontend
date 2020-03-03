@@ -183,32 +183,38 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     if(this.validCondition) {
       let fulfillment_bytes:Buffer = Buffer.from(this.passwordInput.trim(), 'utf-8');
 
-      let myFulfillment = new cryptoCondition.PreimageSha256()
-      myFulfillment.setPreimage(fulfillment_bytes);
+      
+      import('five-bells-condition').then( cryptoCondition => {
+        let myFulfillment = new cryptoCondition.PreimageSha256();
 
-      let fulfillment = myFulfillment.serializeBinary().toString('hex').toUpperCase()
-      //console.log('Fulfillment: ', fulfillment)
-      //console.log('             ', myFulfillment.serializeUri())
+        myFulfillment.setPreimage(fulfillment_bytes);
 
-      var condition = myFulfillment.getConditionBinary().toString('hex').toUpperCase()
-      //console.log('Condition  : ', condition)
-        // 'A0258020' + sha256(fulfillment_bytes) + '810102'
-      //console.log('             ', myFulfillment.getCondition().serializeUri())
+        let fulfillment = myFulfillment.serializeBinary().toString('hex').toUpperCase()
+        //console.log('Fulfillment: ', fulfillment)
+        //console.log('             ', myFulfillment.serializeUri())
 
-      //console.log()
+        var condition = myFulfillment.getConditionBinary().toString('hex').toUpperCase()
+        //console.log('Condition  : ', condition)
+          // 'A0258020' + sha256(fulfillment_bytes) + '810102'
+        //console.log('             ', myFulfillment.getCondition().serializeUri())
 
-      //console.log(
-      //  'Fulfillment valid for Condition?      ',
-      //    cryptoCondition.validateFulfillment(
-      //    cryptoCondition.Fulfillment.fromBinary(Buffer.from(fulfillment, 'hex')).serializeUri(), 
-      //    cryptoCondition.Condition.fromBinary(Buffer.from(condition, 'hex')).serializeUri()
-      //  )
-      //)
+        //console.log()
 
-      this.xummPayload.txjson.Condition = condition
+        //console.log(
+        //  'Fulfillment valid for Condition?      ',
+        //    cryptoCondition.validateFulfillment(
+        //    cryptoCondition.Fulfillment.fromBinary(Buffer.from(fulfillment, 'hex')).serializeUri(), 
+        //    cryptoCondition.Condition.fromBinary(Buffer.from(condition, 'hex')).serializeUri()
+        //  )
+        //)
+
+        this.xummPayload.txjson.Condition = condition
+
+        this.onPayload.emit(this.xummPayload);
+      });      
+    } else {
+      this.onPayload.emit(this.xummPayload);
     }
-
-    this.onPayload.emit(this.xummPayload);
   }
 
   isValidXRPAddress(address: string): boolean {

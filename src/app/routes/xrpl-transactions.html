@@ -33,7 +33,7 @@
                 <label><b>Network</b></label>
                 <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
                     <label>Live</label>&nbsp;
-                    <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()"></mat-slide-toggle>&nbsp;
+                    <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                     <label>Test</label>
                 </div>
             </div>
@@ -44,7 +44,7 @@
             <label><b>Network</b></label>
             <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
                 <label>Live</label>&nbsp;
-                <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()"></mat-slide-toggle>&nbsp;
+                <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                 <label>Test</label>
             </div>
         </div>
