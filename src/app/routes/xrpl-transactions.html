@@ -49,9 +49,12 @@
             </div>
         </div>
     </mat-card>
-    <div *ngIf="lastTrxLink" style="padding-top: 1em;">
-        View your transaction on the XRP Ledger:
-        <a [href]="lastTrxLink" target="_blank;" rel="noreferrer">XRPL Transaction Link</a>
+    <div *ngIf="lastTrxLinkBithomp || lastTrxLinkXrplOrg || lastTrxLinkXrpScan || lastTrxLinkXrp1ntel" style="padding-top: 1em;">
+        View your transaction on the XRP Ledger: <br fxHide fxShow.xs>
+        <span *ngIf="lastTrxLinkBithomp"><a [href]="lastTrxLinkBithomp" target="_blank;" rel="noreferrer">Bithomp</a> | </span>
+        <span *ngIf="lastTrxLinkXrplOrg"><a  [href]="lastTrxLinkXrplOrg" target="_blank;" rel="noreferrer">XRPL.org</a></span>
+        <span *ngIf="lastTrxLinkXrpScan"> | <a  [href]="lastTrxLinkXrpScan" target="_blank;" rel="noreferrer">XRPScan</a> | </span>
+        <span *ngIf="lastTrxLinkXrp1ntel"><a  [href]="lastTrxLinkXrp1ntel" target="_blank;" rel="noreferrer">xrp1ntel</a></span>
     </div>
     <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
         <accountset [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" (onPayload)="onPayloadReceived($event)"></accountset>

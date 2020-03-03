@@ -21,7 +21,10 @@ export class XrplTransactionsComponent implements OnInit {
   xrplAccount_Info:any;
   xrplAccount_Objects: any;
 
-  lastTrxLink:string;
+  lastTrxLinkBithomp:string;
+  lastTrxLinkXrplOrg:string;
+  lastTrxLinkXrpScan:string;
+  lastTrxLinkXrp1ntel:string;
 
   accountInfoChanged: Subject<void> = new Subject<void>();
   accountObjectsChanged: Subject<void> = new Subject<void>();
@@ -175,15 +178,22 @@ export class XrplTransactionsComponent implements OnInit {
       this.isTestMode = trxInfo.testnet;
 
       if(trxInfo.txid) {
-        if(trxInfo.testnet)
-          this.lastTrxLink = "https://test.bithomp.com/explorer/"+trxInfo.txid;
-        else
-          this.lastTrxLink = "https://bithomp.com/explorer/"+trxInfo.txid;
+        if(trxInfo.testnet) {
+          this.lastTrxLinkBithomp = "https://test.bithomp.com/explorer/"+trxInfo.txid;
+          this.lastTrxLinkXrplOrg = "https://testnet.xrpl.org/transactions/"+trxInfo.txid;
+        } else {
+          this.lastTrxLinkBithomp = "https://bithomp.com/explorer/"+trxInfo.txid;
+          this.lastTrxLinkXrplOrg = "https://livenet.xrpl.org/transactions/"+trxInfo.txid;
+          this.lastTrxLinkXrpScan = "https://xrpscan.com/tx/"+trxInfo.txid;
+          this.lastTrxLinkXrp1ntel = "https://xrp1ntel.com/tx/"+trxInfo.txid;
+        }
       }
 
       this.transactionSuccessfull.next();
     } else {
-      this.lastTrxLink = null;
+      this.lastTrxLinkBithomp = null;
+      this.lastTrxLinkXrplOrg = null;
+      this.lastTrxLinkXrpScan = null;
     }
 
     if(this.xrplAccount) {
@@ -224,9 +234,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   logoutAccount() {
     this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'xrpl_transactions_component');
-    this.xrplAccount = null;
-    this.xrplAccount_Info = null;
-    this.lastTrxLink = null;
+    this.xrplAccount = this.xrplAccount_Info = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = null;
     this.emitAccountInfoChanged();
     this.emitAccountObjectsChanged();
   }

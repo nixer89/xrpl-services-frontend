@@ -91,12 +91,14 @@ export class EscrowList implements OnInit, OnDestroy {
     loadEscrowList(xrplAccount: string) {
         this.googleAnalytics.analyticsEventEmitter('load_escrow_list', 'escrow_list', 'escrow_list_component');
 
-        if(this.originalTestModeValue != this.testMode) {
+        if(this.websocket && this.originalTestModeValue != this.testMode) {
             this.websocket.unsubscribe();
             this.websocket.complete();
-
-            this.setupWebsocket();
+            this.websocket = null;
         }
+
+        if(!this.websocket || this.websocket.closed)
+            this.setupWebsocket();
 
         if(xrplAccount) {
             this.loading = true;
