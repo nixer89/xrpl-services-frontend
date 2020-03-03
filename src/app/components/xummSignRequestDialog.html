@@ -6,7 +6,7 @@
         <div *ngIf="qrLink" fxLayout="column" fxLayoutGap="0.5em" class="floatcenter">
             <span>Scan QR code to Login. Sign the XUMM request with the account you want to login with:</span>
             <mat-progress-spinner *ngIf="!showQR" color="primary" mode="indeterminate"></mat-progress-spinner>
-            <img (load)="QRLoaded()" [src]="qrLink" width="150" height="150" style="vertical-align: middle;">
+            <img (load)="QRLoaded()" [src]="qrLink" width="150" height="150" style="vertical-align: middle;" alt="">
         </div>
         <div class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
             <span>Waiting for transaction confirmation...</span>

@@ -96,6 +96,7 @@ export class XummSignDialogComponent implements OnInit{
     initSocket(url:string) {
         // register socket for receiving data:
         //console.log("connecting socket to: " + url);
+        console.log("connecting websocket");
         this.websocket = webSocket(url);
         this.loading = false;
         this.waitingForPayment = true;

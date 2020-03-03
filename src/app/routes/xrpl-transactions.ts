@@ -82,6 +82,7 @@ export class XrplTransactionsComponent implements OnInit {
         this.websocket.complete();
       }
 
+      console.log("connecting websocket");
       this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://s1.ripple.com');
 
       this.websocket.asObservable().subscribe(async message => {

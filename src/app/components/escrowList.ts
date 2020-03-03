@@ -34,8 +34,6 @@ export class EscrowList implements OnInit, OnDestroy {
     constructor(private googleAnalytics: GoogleAnalyticsService) {}
 
     ngOnInit() {
-        this.setupWebsocket();
-
         this.escrowAccountChangedSubscription = this.escrowAccountChanged.subscribe(xrplAccount => {
             //console.log("escrow acccount changed received: " + xrplAccount);
             if(xrplAccount)
@@ -57,6 +55,7 @@ export class EscrowList implements OnInit, OnDestroy {
 
     setupWebsocket() {
         this.originalTestModeValue = this.testMode;
+        console.log("connecting websocket");
         this.websocket = webSocket(this.testMode ? 'wss://testnet.xrpl-labs.com' : 'wss://s1.ripple.com');
 
         this.websocket.asObservable().subscribe(async message => {

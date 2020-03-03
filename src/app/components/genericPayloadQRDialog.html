@@ -7,7 +7,7 @@
             <span *ngIf="pushed">Push notification has been sent. If not received, scan QR code.</span>
             <span *ngIf="!pushed">Scan QR code to show the Xumm Sign Request in your Xumm App:</span>
             <mat-progress-spinner *ngIf="!showQR" color="primary" mode="indeterminate"></mat-progress-spinner>
-            <img (load)="QRLoaded()" [src]="qrLink" width="150" height="150" style="vertical-align: middle;">
+            <img (load)="QRLoaded()" [src]="qrLink" width="150" height="150" style="vertical-align: middle;" alt="">
         </div>
         <div class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
             <span>Waiting for you to sign the request...</span>

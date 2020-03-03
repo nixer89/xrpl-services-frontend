@@ -86,6 +86,7 @@ export class GenericPayloadQRDialog implements OnInit {
 
     initSocket(url:string) {
         // register socket for receiving data:
+        console.log("connecting websocket");
         this.websocket = webSocket(url);
         this.loading = false;
         this.waitingForPayment = true;

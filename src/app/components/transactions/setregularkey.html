@@ -16,7 +16,7 @@
     </mat-panel-description>
   </mat-expansion-panel-header>
 
-  <a href="https://xrpl.org/setregularkey.html" target="_blank">Set Regular Key Documentation</a><br/>
+  <a href="https://xrpl.org/setregularkey.html" target="_blank" rel="noreferrer">Set Regular Key Documentation</a><br/>
   <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
     <mat-form-field>
       <input #inpregularkey matInput name="regularkey" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address which will be able to sign transactions" [(ngModel)]="regularKeyInput" (ngModelChange)="checkChanges()">

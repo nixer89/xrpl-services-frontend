@@ -51,7 +51,7 @@
     </mat-card>
     <div *ngIf="lastTrxLink" style="padding-top: 1em;">
         View your transaction on the XRP Ledger:
-        <a [href]="lastTrxLink" target="_blank;">XRPL Transaction Link</a>
+        <a [href]="lastTrxLink" target="_blank;" rel="noreferrer">XRPL Transaction Link</a>
     </div>
     <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
         <accountset [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" (onPayload)="onPayloadReceived($event)"></accountset>

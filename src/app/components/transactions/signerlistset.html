@@ -17,7 +17,7 @@
   </mat-expansion-panel-header>
 
   <div fxFlex fxLayout="column" fxLayoutGap="5em;">
-    <a href="https://xrpl.org/signerlistset.html" target="_blank">Signer List Set Documentation</a><br/>
+    <a href="https://xrpl.org/signerlistset.html" target="_blank" rel="noreferrer">Signer List Set Documentation</a><br/>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
         <input #inpsignerquorum matInput name="signerquorum" matInput placeholder="Signer Quorum. A target number for the signer weights" [(ngModel)]="signerQuorumInput" (ngModelChange)="checkChanges()">
