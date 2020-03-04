@@ -13,6 +13,9 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
+  accountInfoChanged: Observable<any>;
+
+  @Input()
   transactionSuccessfull: Observable<void>;
 
   @Output()
@@ -27,6 +30,7 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   @Input()
   testMode: boolean;
 
+  private accountInfoChangedSubscription: Subscription;
   private transactionSuccessfullSubscription: Subscription;
   escrowAccountChanged: Subject<any> = new Subject<any>();
 
@@ -48,12 +52,22 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(() => {
+      //console.log("account info changed received")
+      setTimeout(() => {
+        this.escrowAccountChanged.next(this.lastKnownAddress);
+      },500);
+    });
+
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
       this.clearInputs()
     });
   }
 
   ngOnDestroy() {
+    if(this.accountInfoChangedSubscription)
+      this.accountInfoChangedSubscription.unsubscribe();
+
     if(this.transactionSuccessfullSubscription)
       this.transactionSuccessfullSubscription.unsubscribe();
   }

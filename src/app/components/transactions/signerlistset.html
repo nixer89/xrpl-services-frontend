@@ -72,10 +72,10 @@
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!this.signerQuorumInput || !validSignerList">
         Send Signer List Set to Xumm
       </button>
-      <button mat-raised-button color="warn" (click)="deleteSignerList()" matTooltip="Delete Signer List!"  [disabled]="originalAccountInfo && !hasAlternativeSigningMethod() || (originalAccountObjects && (!originalAccountObjects[0] || this.originalAccountObjects[0].LedgerEntryType != 'SignerList' || this.originalAccountObjects[0].SignerEntries.length == 0))" >
+      <button mat-raised-button color="warn" (click)="deleteSignerList()" matTooltip="Delete Signer List!"  [disabled]="!hasAlternativeSigningMethod() || !originalAccountObjects || (!originalAccountObjects[0] || this.originalAccountObjects[0].LedgerEntryType != 'SignerList')" >
         Delete Signer List from Account
       </button>
     </div>
-    <mat-hint *ngIf="originalAccountInfo && !hasAlternativeSigningMethod() && originalAccountObjects && originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType === 'SignerList' || (originalAccountObjects && originalAccountObjects[0] && ( this.originalAccountObjects[0].LedgerEntryType != 'SignerList' || this.originalAccountObjects[0].SignerEntries.length == 0))" style="color: crimson;">Hint: You can not delete your SignerList because you don't have an alternative signing method. (Master Key or Regular Key)</mat-hint>
+    <mat-hint *ngIf="!hasAlternativeSigningMethod() && originalAccountObjects && originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType === 'SignerList'" style="color: crimson;">Hint: You can not delete your SignerList because you don't have an alternative signing method. (Master Key or Regular Key)</mat-hint>
   </div>
 </mat-expansion-panel>

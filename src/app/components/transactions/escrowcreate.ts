@@ -21,7 +21,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
 
   @ViewChild('inpamount', {static: false}) inpamount;
-  amountInput: number;
+  amountInput: string;
 
   @ViewChild('inpdestination', {static: false}) inpdestination;
   destinationInput: string;
@@ -56,6 +56,8 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   cancelDateInFuture:boolean = false;
   finishDateInFuture:boolean = false;
   cancelDateBeforeFinishDate:boolean = false;
+
+  maxSixDigits:boolean = false;
 
   dateTimePickerSupported:boolean = true;
 
@@ -117,8 +119,19 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     else
       this.cancelDateBeforeFinishDate = false;
 
+    if(this.amountInput) {
+      this.validAmount = !(/[^.0-9]|\d*\.\d{7,}/.test(this.amountInput));
 
-    this.validAmount = this.amountInput && this.amountInput >= 0.000001;
+      if(!this.validAmount) {
+        this.maxSixDigits = this.amountInput.includes('.') && this.amountInput.split('.')[1].length > 6;
+      } else {
+        this.maxSixDigits = false;
+      }
+    }
+
+    if(this.validAmount)
+      this.validAmount = this.amountInput && parseFloat(this.amountInput) >= 0.000001;
+
     this.validAddress = this.destinationInput && this.destinationInput.trim().length > 0 && this.isValidXRPAddress(this.destinationInput.trim());
 
     this.validCondition = this.passwordInput && this.passwordInput.trim().length > 0;
@@ -168,8 +181,8 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
 
     this.googleAnalytics.analyticsEventEmitter('escrow_create', 'sendToXumm', 'escrow_create_component');
 
-    if(this.amountInput && this.amountInput >= 0.000001)
-      this.xummPayload.txjson.Amount = this.amountInput*1000000+"";
+    if(this.amountInput && parseFloat(this.amountInput) >= 0.000001)
+      this.xummPayload.txjson.Amount = parseFloat(this.amountInput)*1000000+"";
 
     if(this.destinationInput && this.destinationInput.trim().length>0 && this.isValidXRPAddress(this.destinationInput))
       this.xummPayload.txjson.Destination = this.destinationInput.trim();

@@ -33,6 +33,8 @@ export class XrplTransactionsComponent implements OnInit {
 
   isTestMode:boolean = false;
 
+  loadingData:boolean = false;
+
   constructor(
     private matDialog: MatDialog,
     private route: ActivatedRoute,
@@ -43,8 +45,8 @@ export class XrplTransactionsComponent implements OnInit {
   async ngOnInit() {
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     //this.isTestMode = true;
-    //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
-    //await this.loadAccountData();
+    this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
+    await this.loadAccountData();
 
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;
@@ -81,27 +83,28 @@ export class XrplTransactionsComponent implements OnInit {
 
   async loadAccountData() {
     if(this.xrplAccount) {
+      this.loadingData = true;
 
       if(this.websocket) {
         this.websocket.unsubscribe();
         this.websocket.complete();
       }
 
-      console.log("connecting websocket");
+      //console.log("connecting websocket");
       this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://s1.ripple.com');
 
       this.websocket.asObservable().subscribe(async message => {
-        console.log("websocket message: " + JSON.stringify(message));
+        //console.log("websocket message: " + JSON.stringify(message));
         if(message.status && message.status === 'success' && message.type && message.type === 'response') {
           if(message.result && message.result.account_data) {
             this.xrplAccount_Info = message.result.account_data;
-            console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
+            //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
             this.emitAccountInfoChanged();
           }
 
           if(message.result && message.result.account_objects) {
             this.xrplAccount_Objects = message.result.account_objects;
-            console.log("xrplAccount_Objects: " + JSON.stringify(this.xrplAccount_Objects));
+            //console.log("xrplAccount_Objects: " + JSON.stringify(this.xrplAccount_Objects));
             this.emitAccountObjectsChanged();
           }
 
@@ -111,6 +114,8 @@ export class XrplTransactionsComponent implements OnInit {
           this.emitAccountInfoChanged();
           this.emitAccountObjectsChanged();
         }
+
+        this.loadingData = false;
       });
 
       let account_info_request:any = {
@@ -127,6 +132,8 @@ export class XrplTransactionsComponent implements OnInit {
 
       this.websocket.next(account_info_request);
       this.websocket.next(account_objects_request);
+    } else {
+      this.emitAccountInfoChanged();
     }
   }
 

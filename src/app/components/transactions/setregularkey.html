@@ -33,5 +33,5 @@
       Delete Regular Key
     </button>
   </div>
-  <mat-hint *ngIf="originalAccountInfo && originalAccountInfo.RegularKey && (originalAccountObjects && !hasAlternativeSigningMethod())" style="color: orangered;">You cannot delete your Regular Key because you don't have an alternative signing method (Master Key or SignerList)</mat-hint>
+  <mat-hint *ngIf="originalAccountInfo && originalAccountInfo.RegularKey && !hasAlternativeSigningMethod()" style="color: orangered;">You cannot delete your Regular Key because you don't have an alternative signing method (Master Key or SignerList)</mat-hint>
 </mat-expansion-panel>

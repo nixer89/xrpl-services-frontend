@@ -79,8 +79,6 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.initializePayload();    
   }
 
-  
-
   ngOnDestroy() {
     if(this.accountInfoChangedSubscription)
       this.accountInfoChangedSubscription.unsubscribe();
@@ -109,15 +107,15 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   
     this.emailInput = "";
 
-    if(this.originalAccountInfo) {
-      let trxFlags:number = this.originalAccountInfo && this.originalAccountInfo.Flags;
-
-      this.requireDestTagInput = flagsutil.isRequireDestinationTagEnabled(trxFlags);
-      this.disableMasterKeyInput = flagsutil.isMasterKeyDisabled(trxFlags);
+    if(this.originalAccountInfo && this.originalAccountInfo.Flags && this.originalAccountInfo.Flags > 0) {
+      this.requireDestTagInput = flagsutil.isRequireDestinationTagEnabled(this.originalAccountInfo.Flags);
+      this.disableMasterKeyInput = flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags);
     } else {
       this.requireDestTagInput = false;
       this.disableMasterKeyInput = false;
     }
+
+    this.requireDestTagChangeDetected = this.disableMasterKeyChangeDetected = this.domainChangeDetected = this.emailChangeDetected = false;
     
     this.checkChanges();
   }
@@ -204,6 +202,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.googleAnalytics.analyticsEventEmitter('delete_emailhash', 'sendToXumm', 'account_set_component');
 
     this.payload.txjson.EmailHash = "00000000000000000000000000000000";
+    this.payload.custom_meta = {};
     this.payload.custom_meta.instruction = "Delete your Email attached to this account";
 
     this.onPayload.emit(this.payload);
@@ -218,9 +217,19 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.emailChangeDetected = this.emailInput != null && this.emailInput.trim().length > 0 && (!this.originalAccountInfo || (md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash));
     this.validEmail = !this.emailChangeDetected || emailValidator.validate(this.emailInput);
 
-    this.requireDestTagChangeDetected = ((!this.originalAccountInfo || !this.originalAccountInfo.Flags) && this.requireDestTagInput) || (this.originalAccountInfo && this.originalAccountInfo.Flags && (flagsutil.isRequireDestinationTagEnabled(this.originalAccountInfo.Flags) != this.requireDestTagInput));
+    if((!this.originalAccountInfo || !this.originalAccountInfo.Flags || this.originalAccountInfo.Flags == 0) && this.requireDestTagInput)
+      this.requireDestTagChangeDetected = true;
+    else if(this.originalAccountInfo && this.originalAccountInfo.Flags && (flagsutil.isRequireDestinationTagEnabled(this.originalAccountInfo.Flags) != this.requireDestTagInput))
+      this.requireDestTagChangeDetected = true;
+    else
+      this.requireDestTagChangeDetected = false;
 
-    this.disableMasterKeyChangeDetected = ((!this.originalAccountInfo || !this.originalAccountInfo.Flags) && this.disableMasterKeyInput) || (this.originalAccountInfo && this.originalAccountInfo.Flags && (flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags) != this.disableMasterKeyInput));
+    if((!this.originalAccountInfo || !this.originalAccountInfo.Flags || this.originalAccountInfo.Flags == 0) && this.disableMasterKeyInput)
+      this.disableMasterKeyChangeDetected = true;
+    else if(this.originalAccountInfo && this.originalAccountInfo.Flags && (flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags) != this.disableMasterKeyInput))
+      this.disableMasterKeyChangeDetected = true;
+    else
+      this.disableMasterKeyChangeDetected = false;
 
     this.isValidAccountSet = this.validDomain && this.validEmail && (this.domainChangeDetected || this.emailChangeDetected || this.requireDestTagChangeDetected || this.disableMasterKeyChangeDetected) && !(this.requireDestTagChangeDetected && this.disableMasterKeyChangeDetected);
 
@@ -230,4 +239,9 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     //console.log("validEmail: " + this.validEmail);
   }
 
+  hasAlternativeSigningMethod() {
+    //console.log("this.originalAccountInfo: " + JSON.stringify(this.originalAccountInfo));
+    //console.log("this.originalAccountObjects: " + JSON.stringify(this.originalAccountObjects));
+    return (this.originalAccountInfo && this.originalAccountInfo.RegularKey) || (this.originalAccountObjects && (this.originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType === "SignerList" && this.originalAccountObjects[0].SignerEntries.length > 0));
+  }
 }

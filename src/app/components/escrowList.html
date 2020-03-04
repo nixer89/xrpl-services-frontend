@@ -1,5 +1,5 @@
-<label style="color: darkorange" *ngIf="!escrowData && !isCancel">No Escrows meet the EscrowFinish requirements.</label>
-<label style="color: darkorange" *ngIf="!escrowData && isCancel">No Escrows meet the EscrowCancel requirements.</label>
+<label style="color: darkorange" *ngIf="!escrowData && !isCancel">No Escrows found that meet the EscrowFinish requirements.</label>
+<label style="color: darkorange" *ngIf="!escrowData && isCancel">No Escrows found that meet the EscrowCancel requirements.</label>
 <mat-accordion *ngIf="escrowData && escrowData.length > 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
     <mat-expansion-panel #mep>
         <mat-expansion-panel-header>

@@ -85,6 +85,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
 
     if(this.regularKeyInput && this.regularKeyInput.trim().length>0 && this.validAddress) {
       this.payload.txjson.RegularKey = this.regularKeyInput.trim();
+      this.payload.custom_meta = {}
       this.payload.custom_meta.instruction = "Set RegularKey to: " + this.regularKeyInput.trim();
     }
 
@@ -114,7 +115,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   }
 
   hasAlternativeSigningMethod() {
-    return this.originalAccountInfo && this.originalAccountObjects && (!flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags) || (this.originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType === "SignerList" && this.originalAccountObjects[0].SignerEntries.length > 0));
+    return (this.originalAccountInfo && !flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags)) || (this.originalAccountObjects && (this.originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType === "SignerList" && this.originalAccountObjects[0].SignerEntries.length > 0));
   }
 
   clearInputs() {

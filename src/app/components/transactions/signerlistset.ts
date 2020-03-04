@@ -75,6 +75,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
 
     this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(accountObjects => {
       //console.log("account objects changed received")
+      this.clearInputs();
       this.originalAccountObjects = accountObjects;
       if(this.originalAccountObjects && this.originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType==="SignerList") {
         this.signerList = this.originalAccountObjects[0].SignerEntries;
@@ -221,7 +222,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   hasAlternativeSigningMethod() {
-    return this.originalAccountInfo && this.originalAccountObjects && (!flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags) || this.originalAccountInfo.RegularKey);
+    return this.originalAccountInfo && (!flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags) || this.originalAccountInfo.RegularKey);
   }
 
   sendPayloadToXumm() {
