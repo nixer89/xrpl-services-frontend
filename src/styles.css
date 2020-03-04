@@ -4,7 +4,11 @@
 html, body { 
     height: 100%;
 }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background-color: rgba(238, 238, 238, 0.5);
+}
 
 a.footerlink {
     margin-right: 1em;
@@ -40,11 +44,17 @@ a.footerlink {
     padding-right: 0px;
 }
 
+.mat-card {
+    background-color: rgba(238, 238, 238, 0.5);
+}
+
 .mat-expansion-panel-header-title {
+    width: 20%;
     align-items: center;
 }
 
 .mat-expansion-panel-header-description {
+    width: 80%;
     align-items: center;
 }
 

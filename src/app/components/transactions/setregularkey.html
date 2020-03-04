@@ -29,9 +29,9 @@
     <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validAddress || (!originalAccountInfo || (originalAccountInfo && (regularKeyInput == originalAccountInfo.Account || regularKeyInput == originalAccountInfo.RegularKey)))">
       Send Set Regular Key to Xumm
     </button>
-    <button mat-raised-button color="warn" (click)="deleteRegularKey()" matTooltip="Delete Regular Key!" [disabled]="!hasAlternativeSigningMethod() || (originalAccountInfo && !originalAccountInfo.RegularKey)">
+    <button mat-raised-button color="warn" (click)="deleteRegularKey()" matTooltip="Delete Regular Key!" [disabled]="(originalAccountInfo || originalAccountObjects) && (!hasAlternativeSigningMethod() || originalAccountInfo && !originalAccountInfo.RegularKey)">
       Delete Regular Key
     </button>
   </div>
-  <mat-hint *ngIf="originalAccountInfo && originalAccountInfo.RegularKey && !hasAlternativeSigningMethod()" style="color: orangered;">You cannot delete your Regular Key because you don't have an alternative signing method (Master Key or SignerList)</mat-hint>
+  <mat-hint *ngIf="originalAccountInfo && originalAccountInfo.RegularKey && !hasAlternativeSigningMethod()">Befor you can delete your Regular Key you have to set an alternative signing method. (Master Key or SignerList)</mat-hint>
 </mat-expansion-panel>

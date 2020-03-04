@@ -76,6 +76,6 @@
         Delete Signer List from Account
       </button>
     </div>
-    <mat-hint *ngIf="!hasAlternativeSigningMethod() && originalAccountObjects && originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType === 'SignerList'" style="color: crimson;">Hint: You can not delete your SignerList because you don't have an alternative signing method. (Master Key or Regular Key)</mat-hint>
+    <mat-hint *ngIf="!hasAlternativeSigningMethod() && originalAccountObjects && originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType === 'SignerList'">Befor you can delete your Signer List you have to set an alternative signing method. (Master Key or Regular Key)</mat-hint>
   </div>
 </mat-expansion-panel>
