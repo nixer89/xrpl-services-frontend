@@ -45,8 +45,8 @@ export class XrplTransactionsComponent implements OnInit {
   async ngOnInit() {
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     //this.isTestMode = true;
-    this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
-    await this.loadAccountData();
+    //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
+    //await this.loadAccountData();
 
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;
