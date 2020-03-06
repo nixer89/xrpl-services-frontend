@@ -179,7 +179,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   isValidXRPAddress(address: string): boolean {
-    if(!address || address.trim().length <= 0)
+    if(!address || address.trim().length <= 0 || this.isDuplicateAccount(address))
       return false;
     try {
       //console.log("encoding address: " + address);
