@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { TermsComponent } from './routes/specific/terms';
 import { PrivacyComponent } from './routes/specific/privacy'
 import { XrplTransactionsComponent } from './routes/xrpl-transactions';
+import { TransactionScheduler } from './routes/transaction-scheduler';
 import { TopbarComponent } from './components/topbar';
 import { FooterComponent } from './components/footer';
 import { XummSignDialogComponent } from './components/xummSignRequestDialog';
@@ -41,7 +42,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatMenuModule } from '@angular/material/menu';
 
 //my services
 import { AppService } from './services/app.service';
@@ -52,6 +53,7 @@ import { GoogleAnalyticsService } from './services/google-analytics.service';
 import { DeviceDetectorModule } from 'ngx-device-detector';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { LocalStorageModule } from 'angular-2-local-storage'
 
 @NgModule({
   declarations: [
@@ -59,6 +61,7 @@ import { environment } from '../environments/environment';
     TermsComponent,
     PrivacyComponent,
     XrplTransactionsComponent,
+    TransactionScheduler,
     TopbarComponent,
     FooterComponent,
     XummSignDialogComponent,
@@ -94,10 +97,11 @@ import { environment } from '../environments/environment';
     MatCheckboxModule,
     MatTableModule,
     MatPaginatorModule,
-    MatDividerModule,
+    MatMenuModule,
     //Special
     DeviceDetectorModule.forRoot(),
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' })
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
+    LocalStorageModule.forRoot({ prefix: 'XummCommunity', storageType: 'localStorage' }),
   ],
   entryComponents: [
     XummSignDialogComponent,

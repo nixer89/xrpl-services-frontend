@@ -25,7 +25,7 @@ export class EscrowList implements OnInit, OnDestroy {
     websocket: WebSocketSubject<any>;
     escrowData:any[] = [];
     displayedColumns: string[] = ['destination', 'amount', 'finishafter', 'cancelafter', 'condition'];
-    loading:boolean = true;
+    loading:boolean = false;
     originalTestModeValue:boolean;
     escrowClicked:boolean = false;
 
@@ -56,11 +56,11 @@ export class EscrowList implements OnInit, OnDestroy {
 
     setupWebsocket() {
         this.originalTestModeValue = this.testMode;
-        console.log("connecting websocket");
+        //console.log("connecting websocket");
         this.websocket = webSocket(this.testMode ? 'wss://testnet.xrpl-labs.com' : 'wss://s1.ripple.com');
 
         this.websocket.asObservable().subscribe(async message => {
-            console.log("websocket message: " + JSON.stringify(message));
+            //console.log("websocket message: " + JSON.stringify(message));
             if(message.status && message.status === 'success' && message.type && message.type === 'response') {
               if(message.result && message.result.account_objects) {
                   let unfilteredList:any[] = message.result.account_objects;

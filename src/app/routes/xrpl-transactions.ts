@@ -12,7 +12,7 @@ import { XummPostPayloadBodyJson, XummGetPayloadResponse } from 'xumm-api';
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
 
 @Component({
-  selector: 'app-xrpl-transactions',
+  selector: 'xrpl-transactions',
   templateUrl: './xrpl-transactions.html',
 })
 export class XrplTransactionsComponent implements OnInit {
@@ -46,7 +46,7 @@ export class XrplTransactionsComponent implements OnInit {
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     //this.isTestMode = true;
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
-    //await this.loadAccountData();
+    await this.loadAccountData();
 
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;
@@ -95,17 +95,29 @@ export class XrplTransactionsComponent implements OnInit {
 
       this.websocket.asObservable().subscribe(async message => {
         //console.log("websocket message: " + JSON.stringify(message));
-        if(message.status && message.status === 'success' && message.type && message.type === 'response') {
-          if(message.result && message.result.account_data) {
-            this.xrplAccount_Info = message.result.account_data;
-            //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
-            this.emitAccountInfoChanged();
-          }
+        if(message.status && message.type && message.type === 'response') {
+          if(message.status === 'success') {
+            if(message.result && message.result.account_data) {
+              this.xrplAccount_Info = message.result.account_data;
+              //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
+              this.emitAccountInfoChanged();
+            }
 
-          if(message.result && message.result.account_objects) {
-            this.xrplAccount_Objects = message.result.account_objects;
-            //console.log("xrplAccount_Objects: " + JSON.stringify(this.xrplAccount_Objects));
-            this.emitAccountObjectsChanged();
+            if(message.result && message.result.account_objects) {
+              this.xrplAccount_Objects = message.result.account_objects;
+              //console.log("xrplAccount_Objects: " + JSON.stringify(this.xrplAccount_Objects));
+              this.emitAccountObjectsChanged();
+            }
+          } else {
+            if(message.request.command === 'account_info') {
+              this.xrplAccount_Info = message;
+              this.emitAccountInfoChanged();
+            }
+
+            if(message.request.command === 'account_objects') {
+              this.xrplAccount_Objects = message;
+              this.emitAccountObjectsChanged();
+            }
           }
 
         } else {
@@ -145,8 +157,8 @@ export class XrplTransactionsComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((info:TransactionValidation) => {
-      console.log('The dialog was closed');
-      console.log(info);
+      //console.log('The dialog was closed');
+      //console.log(info);
       if(info && info.redirect) {
         //nothing to do
       } else if(info && info.account) {

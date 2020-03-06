@@ -1,0 +1,68 @@
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+$primary: mat-palette($mat-indigo);
+$accent: mat-palette($mat-pink, A200, A100, A400);
+$warn: mat-palette($mat-red);
+$light-theme: mat-light-theme($primary, $accent, $warn);
+
+.mat-expansion-panel {
+    background-color: rgba(238,238,238, 0.5) !important;
+}
+
+.mat-expansion-panel.expansion-panel-light {
+  background-color: #C0C0C0 !important;
+}
+
+.mat-expansion-panel.expansion-panel-darker {
+  background-color: #A0A0A0 !important;
+}
+
+.account-warning {
+  color: #EB0000;
+}
+
+@include angular-material-theme($light-theme);
+
+// Our dark theme
+.dark-theme {
+  $dark-primary: mat-palette($mat-indigo);
+  $dark-accent: mat-palette($mat-amber, A200, A100, A400);
+  $dark-warn: mat-palette($mat-red);   
+  $dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+
+  a {
+    color: #FFB300;
+  }
+
+  a:hover {
+    color: #FFA000;
+  }
+
+  a:active {
+    color: #FF8F00;
+  }
+
+  .mat-form-field.mat-focused .mat-form-field-label {
+    color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  .account-warning {
+    color: #FF6B6B;
+  }
+
+  .mat-expansion-panel {
+    background-color: rgba(50, 50, 50, 0.5) !important;
+}
+
+  .mat-expansion-panel.expansion-panel-light {
+    background-color: #202020 !important;
+  }
+  
+  .mat-expansion-panel.expansion-panel-darker {
+    background-color: #303030 !important;
+  }
+
+  @include angular-material-theme($dark-theme);
+}

@@ -15,6 +15,9 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   constructor(private device:DeviceDetectorService, private googleAnalytics: GoogleAnalyticsService) {}
 
   @Input()
+  accountInfoChanged: Observable<any>;
+
+  @Input()
   transactionSuccessfull: Observable<void>;
 
   @Output()
@@ -41,6 +44,8 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   @ViewChild('inppassword', {static: false}) password;
   passwordInput: string;
 
+  originalAccountInfo:any;
+  private accountInfoChangedSubscription: Subscription;
   private transactionSuccessfullSubscription: Subscription;
 
   isValidEscrow:boolean = false;
@@ -73,6 +78,11 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit() {
+    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
+      //console.log("account info changed received")
+      this.originalAccountInfo = accountData;
+    });
+
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
       this.clearInputs()
     });

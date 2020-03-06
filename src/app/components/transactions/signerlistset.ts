@@ -228,7 +228,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   sendPayloadToXumm() {
     this.googleAnalytics.analyticsEventEmitter('signer_list_set', 'sendToXumm', 'Xumm');
 
-    console.log("sending to xumm");
+    //console.log("sending to xumm");
     let signerListToSend:any[] = JSON.parse(JSON.stringify(this.signerList))
     //console.log("signerListToSend: " + JSON.stringify(signerListToSend));
     //console.log("this.signerList: " + JSON.stringify(this.signerList));

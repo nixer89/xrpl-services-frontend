@@ -1,4 +1,4 @@
-<mat-expansion-panel>
+<mat-expansion-panel [disabled]="originalAccountInfo && originalAccountInfo.error">
   <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">playlist_add_check</mat-icon> </span>
@@ -31,7 +31,7 @@
       <mat-hint>Please make sure that the XRPL account this Signer List will be submitted to is not in the list below. Otherwise your transaction will fail.</mat-hint><br><br>
       <label>Current overall signer list weight: {{overallSignerWeights}}</label>
       <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
-        <mat-expansion-panel *ngFor="let signer of signerList; index as i;" fxLayout="column" [ngStyle]="{'background-color': (i%2==0 ? '#C0C0C0': '#A0A0A0')}">
+        <mat-expansion-panel *ngFor="let signer of signerList; index as i;" fxLayout="column" [ngClass]="(i%2==0 ? 'expansion-panel-light': 'expansion-panel-darker')">
           <mat-expansion-panel-header>
             <mat-panel-title ngStyle.xs="font-size: 0.8em;" *ngIf="signer.SignerEntry.Account">
               <div *ngIf="signer.valid" fxLayout="row" fxLayout.xs="column">
@@ -58,7 +58,7 @@
               <mat-hint *ngIf="isValidInteger(signer.SignerEntry.SignerWeight) && !isValidWeight(signer.SignerEntry.SignerWeight)" style="color: crimson;">The signature weight must be greater 0 and smaller 65536</mat-hint>
             </mat-form-field>
           </form>
-          <button mat-raised-button color="secondary" matTooltip="Delete Signer" (click)="removeSigner(i)" style="align-items: center; margin-top: 1em;">
+          <button mat-raised-button color="warn" matTooltip="Delete Signer" (click)="removeSigner(i)" style="align-items: center; margin-top: 1em;">
             <mat-icon>delete</mat-icon> Delete Signer Entry
           </button>
         </mat-expansion-panel>

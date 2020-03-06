@@ -1,6 +1,6 @@
 {
   "name": "xumm-community",
-  "version": "0.8.3",
+  "version": "0.9.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
@@ -26,6 +26,7 @@
     "@angular/pwa": "^0.800.6",
     "@angular/router": "~8.2.14",
     "@angular/service-worker": "~8.2.14",
+    "angular-2-local-storage": "^3.0.2",
     "buffer": "^5.4.3",
     "email-validator": "^2.0.4",
     "five-bells-condition": "^5.0.1",

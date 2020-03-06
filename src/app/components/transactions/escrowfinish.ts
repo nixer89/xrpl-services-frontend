@@ -33,6 +33,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   @ViewChild('inppassword', {static: false}) password;
   passwordInput: string;
 
+  originalAccountInfo:any;
   private accountInfoChangedSubscription: Subscription;
   private transactionSuccessfullSubscription: Subscription;
   escrowAccountChanged: Subject<string> = new Subject<string>();
@@ -49,6 +50,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   escrowOwnerChangedAutomatically:boolean = false;
 
   lastKnownAddress:string = null;
+  lastKnownSequence:string = null;
   showPwField:boolean = true;
 
   private payload:XummPostPayloadBodyJson = {
@@ -61,8 +63,9 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(() => {
+    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
+      this.originalAccountInfo = accountData;
       setTimeout(() => {
         this.escrowAccountChanged.next(this.lastKnownAddress);
       },500);
@@ -134,7 +137,6 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   checkChanges() {
     //console.log("amountInput: " + this.amountInput);
     //console.log("destinationInput: " + this.destinationInput);
-    
     //console.log(this.escrowSequenceInput);
 
     this.validSequence = this.escrowSequenceInput && Number.isInteger(Number(this.escrowSequenceInput));
@@ -149,6 +151,13 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
       this.escrowAccountChanged.next(null);
     }
 
+    if(!this.validSequence && this.lastKnownSequence && this.isValidXRPAddress) {
+      //sequence change
+      this.escrowAccountChanged.next(this.escrowOwnerInput.trim());
+    }
+
+    if(this.validSequence)
+      this.lastKnownSequence = this.escrowSequenceInput;
 
     this.validCondition = this.passwordInput && this.passwordInput.trim().length > 0;
 

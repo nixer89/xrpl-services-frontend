@@ -1,21 +1,34 @@
 /* You can add global styles to this file, and also import other style files */
-@import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import './theme';
 
 html, body { 
     height: 100%;
 }
+
 body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
-    background-color: rgba(238, 238, 238, 0.5);
+    background-color: var(--background-color);
 }
+
+.mat-dialog-container {
+    background: var(--dialog-background) !important;
+    color: var(--dialog-color) !important;
+}
+
+.mat-menu-panel {
+    background: var(--dialog-background) !important;
+    color: var(--dialog-color) !important;
+  }
 
 a.footerlink {
     margin-right: 1em;
 }
 
-.mat-toolbar.mat-primary {
-    background: #1744A1;
+.mat-toolbar.second-toolbar {
+    background-color: rgb(27, 79, 184) !important;
+    height: 36px;
+    font-size: 0.8em;
 }
 
 .floatcenter {
@@ -44,10 +57,6 @@ a.footerlink {
     padding-right: 0px;
 }
 
-.mat-card {
-    background-color: rgba(238, 238, 238, 0.5);
-}
-
 .mat-expansion-panel-header-title {
     width: 20%;
     align-items: center;
@@ -59,14 +68,12 @@ a.footerlink {
 }
 
 body .snackbar-success {
-    background: #ffffff;
     color: green;
     display: flex;
     justify-content: center;
   }
   
 body .snackbar-failed {
-    background: #ffffff;
     color: #EB0000;
     display: flex;
     justify-content: center;
@@ -79,7 +86,6 @@ body .snackbar-failed {
 .changed {
     transition: color 0s ease-in, text-shadow 0s ease-in, background-color 1.1s linear 0s;
     text-shadow: #bbb 2px 2px 2px;
-    background-color: #ffffcc;
     color: red;
     font-weight: 600;
 }

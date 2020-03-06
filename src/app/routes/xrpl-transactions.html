@@ -17,18 +17,22 @@
                 </div>
                 <div *ngIf="xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
                     <label fxHide.xs>Logged in with:</label>
-                    <b fxShow fxHide.xs> {{xrplAccount}} </b>
-                    <b fxShow.xs fxHide style="font-size: 0.8em;"> {{xrplAccount}} </b>
+                    <label fxShow fxHide.xs>{{xrplAccount}}</label>
+                    <label fxShow.xs fxHide style="font-size: 0.8em;"> {{xrplAccount}}</label>
                     <label fxHide.xs>and balance:</label>
-                    <b fxShow fxHide.xs> {{getAccountBalance()}} XRP. </b>
-                    <b fxShow.xs fxHide style="font-size: 0.8em;"> {{getAccountBalance()}} XRP. </b>
+                    <label fxShow fxHide.xs>{{getAccountBalance()}} XRP.</label>
+                    <label fxShow.xs fxHide style="font-size: 0.8em;">{{getAccountBalance()}} XRP.</label>
                 </div>
-                <label style="color: orangered;" ngStyle.xs="font-size: 0.8em;" *ngIf="xrplAccount && !xrplAccount_Info && !loadingData">This account was not found on the <b>{{isTestMode ? ' test net ' : ' live net '}}</b>.</label>
+                <label class="account-warning" ngStyle.xs="font-size: 0.8em;" *ngIf="!loadingData && xrplAccount && xrplAccount_Info.error">This account was not found on the {{isTestMode ? ' test net ' : ' live net '}}.</label>
+                <div fxLayout="row" fxLayoutAlign="center center" *ngIf="loadingData">
+                    <label class="account-warning" ngStyle.xs="font-size: 0.8em;" >Loading account data...</label>
+                    <mat-progress-spinner color="primary" mode="indeterminate" diameter=20></mat-progress-spinner>
+                </div>
             </div>
         </div>
         <mat-card fxShow fxHide.xs >
             <div fxLayout="column" fxLayoutAlign="start center">
-                <label><b>Network</b></label>
+                <label>Network</label>
                 <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
                     <label>Live</label>&nbsp;
                     <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()" [disabled]="loadingData" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
@@ -39,7 +43,7 @@
     </div>
     <mat-card fxShow.xs fxHide class="floatcenter" style="padding-top: 1em;">
         <div fxLayout="column" fxLayoutAlign="start center">
-            <label><b>Network</b></label>
+            <label>Network</label>
             <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
                 <label>Live</label>&nbsp;
                 <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()" [disabled]="loadingData" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
@@ -56,7 +60,7 @@
     </div>
     <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
         <accountset [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" (onPayload)="onPayloadReceived($event)"></accountset>
-        <escrowcreate [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowcreate>
+        <escrowcreate [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowcreate>
         <escrowfinish [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)" [testMode]="isTestMode"></escrowfinish>
         <escrowcancel [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)" [testMode]="isTestMode"></escrowcancel>
         <setregularkey [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></setregularkey>

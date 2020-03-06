@@ -1,18 +1,34 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
-import { XummPostPayloadBodyJson } from 'xumm-api'
+import { XummPostPayloadBodyJson } from 'xumm-api';
+import { LocalStorageService } from 'angular-2-local-storage'
 
 @Component({
   selector: 'app-topbar',
   templateUrl: './topbar.html'
 })
-export class TopbarComponent {
+export class TopbarComponent implements OnInit {
+    
+  @Output()
+  darkThemeChanged: EventEmitter<boolean> = new EventEmitter();
 
-  constructor( private supportDialog: MatDialog, private snackBar: MatSnackBar) {
+  isDarkTheme: boolean;
 
+  constructor( private supportDialog: MatDialog, private snackBar: MatSnackBar, private localStorage: LocalStorageService) {
+    
+  }
+
+  ngOnInit(): void {
+    this.isDarkTheme = this.localStorage.get("darkMode");
+  }
+
+  toggleDarkTheme() {
+    this.isDarkTheme = !this.isDarkTheme;
+    this.darkThemeChanged.emit(this.isDarkTheme);
+    this.localStorage.set("darkMode", this.isDarkTheme);
   }
 
   async supportViaXumm() {

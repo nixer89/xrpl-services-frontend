@@ -1,6 +1,6 @@
 <mat-dialog-content class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
     <div *ngIf="loading && !showError && !waitingForPayment" fxLayout="column" class="floatcenter" style="width:300px; height: 200px;">
-        <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
     </div>
     <div *ngIf="!loading && !showError && waitingForPayment" fxLayout="column" fxLayoutGap="1.5em">
         <div *ngIf="qrLink" fxLayout="column" fxLayoutGap="0.5em" class="floatcenter">

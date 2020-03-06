@@ -1,4 +1,4 @@
-<mat-expansion-panel>
+<mat-expansion-panel [disabled]="originalAccountInfo && originalAccountInfo.error">
   <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">send</mat-icon> </span>
@@ -24,7 +24,7 @@
       <mat-hint *ngIf="escrowOwnerInput && !validAddress" style="color: crimson;">Not a valid XRPL address</mat-hint>
       <mat-hint *ngIf="escrowOwnerChangedAutomatically" style="color: crimson;">Escrow Owner changed. Your inserted account was the destination address.</mat-hint>
     </mat-form-field>
-    <div style="margin-bottom: 1em;" >
+    <div style="margin-bottom: 1em;" *ngIf="!validSequence">
       <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" (escrowSequenceFound)="onEscrowSequenceFound($event)" [testMode]="testMode"></escrowList>
     </div>
     <mat-form-field [ngClass]="{'changed': escrowSequenceSelected}">

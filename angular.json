@@ -27,7 +27,8 @@
               "src/robots.txt"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss",
+              "src/theme.scss"
             ],
             "scripts": []
           },
@@ -97,7 +98,8 @@
               "src/robots.txt"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss",
+              "src/theme.scss"
             ],
             "scripts": []
           }

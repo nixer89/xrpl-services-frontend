@@ -1,28 +1,60 @@
-<mat-toolbar fxFlex fxLayout="row" fxLayout.xs="column" color="primary" class="mat-elevation-z4">  
-  <mat-toolbar-row fxLayout="row">
-    <div fxLayout="row" fxLayoutGap="0.5em" style="align-items: center;">
-      <a [routerLink]="['/']" fxLayoutAlign="center center" fxLayoutGap="1em;" style="text-decoration: none; color: white;">
-        <img src="../../assets/topbar_logo.png" width="50px" height="50px" alt="Xumm Logo" style="margin-right: 0.5em;">
-        <span>Xumm Community</span>
-      </a>      
-    </div>
-      <!-- This fills the remaining space of the current row -->
-    <span style="flex: 1 1 auto;"></span>
-    <div fxHide.xs>
-      <span fxLayout="row" fxLayoutGap="5em" fxLayoutAlign="center center">
+<div fxFlex fxLayout="column">
+  <mat-toolbar fxLayout="row" fxLayout.xs="column" color="primary" style="background-color:#1744A1;" class="mat-elevation-z4">  
+    <mat-toolbar-row fxLayout="row">
+      <div fxLayout="row" fxLayoutGap="0.5em" style="align-items: center;">
+        <a [routerLink]="['/']" fxLayoutAlign="center center" fxLayoutGap="1em;" style="text-decoration: none; color: white;">
+          <img src="../../assets/topbar_logo.png" width="50px" height="50px" alt="Xumm Logo" style="margin-right: 0.5em;">
+          <span>Xumm Community</span>
+        </a>      
+      </div>
+        <!-- This fills the remaining space of the current row -->
+      <span style="flex: 1 1 auto;"></span>
+      <div fxHide.xs>
+        <span fxLayout="row" fxLayoutGap="5em" fxLayoutAlign="center center">
+          Support this project:&nbsp;
+          <button mat-button matTooltip="Donate to this project." matTooltipPosition="below" (click)="supportViaXumm()" style="padding:0px;">
+            <img src="../../assets/xummPay.svg" style="width: 150px; height: 45px;" alt="Support via Xumm">
+          </button>
+        </span>
+      </div>
+    </mat-toolbar-row>
+    <mat-toolbar-row fxHide fxShow.xs>
+      <span style="font-size: 0.8em;" fxLayoutAlign="center center">
         Support this project:&nbsp;
         <button mat-button matTooltip="Donate to this project." matTooltipPosition="below" (click)="supportViaXumm()" style="padding:0px;">
-          <img src="../../assets/xummPay.svg" style="width: 150px; height: 45px;" alt="Support via Xumm">
+          <img src="../../assets/xummPay.svg" style="width: 120px; height: 36px;" alt="Support via Xumm">
         </button>
       </span>
-    </div>
-  </mat-toolbar-row>
-  <mat-toolbar-row fxHide fxShow.xs>
-    <span style="font-size: 0.8em;" fxLayoutAlign="center center">
-      Support this project:&nbsp;
-      <button mat-button matTooltip="Donate to this project." matTooltipPosition="below" (click)="supportViaXumm()" style="padding:0px;">
-        <img src="../../assets/xummPay.svg" style="width: 120px; height: 36px;" alt="Support via Xumm">
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <mat-toolbar class="second-toolbar" color="primary" fxLayout="row" ngStyle.xs="padding:0px; font-size: 0.5em;">
+    <!-- normal menu -->
+    <div fxShow fxHide.xs>
+      <button mat-button [routerLink]="['']" matTooltip="XRPl Transactions">
+        <i class="material-icons topbar-menu-icon">mobile_friendly</i> XRPL Transactions
       </button>
-    </span>
-  </mat-toolbar-row>
-</mat-toolbar>
+      <button mat-button [routerLink]="['/scheduler']" matTooltip="Xumm Scheduler">
+        <i class="material-icons topbar-menu-icon">schedule</i> Transaction Scheduler
+      </button>
+    </div>
+
+    <div fxHide fxShow.xs>
+      <button mat-icon-button [matMenuTriggerFor]="appMenu">
+        <i class="material-icons topbar-menu-icon">menu</i>
+      </button>
+      <mat-menu #appMenu="matMenu" yPosition="below" xPosition="after">
+        <button mat-button [routerLink]="['']" matTooltip="XRPl Transactions">
+          <i class="material-icons">mobile_friendly</i> XRPL Transactions
+        </button>
+        <button mat-button [routerLink]="['/scheduler']" matTooltip="Xumm Scheduler">
+          <i class="material-icons">schedule</i> Transaction Scheduler
+        </button>
+      </mat-menu>
+    </div>
+
+    <span style="flex: 1 1 auto;"></span>
+    <button mat-icon-button (click)="toggleDarkTheme()" matTooltip="{{isDarkTheme ? 'Switch to LightMode' : 'Switch to DarkMode'}}" matTooltipPosition="left">
+      <i class="material-icons topbar-menu-icon">{{isDarkTheme ? 'wb_sunny' : 'nights_stay'}}</i>
+    </button>
+  </mat-toolbar>
+</div>

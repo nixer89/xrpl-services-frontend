@@ -86,12 +86,12 @@ export class GenericPayloadQRDialog implements OnInit {
 
     initSocket(url:string) {
         // register socket for receiving data:
-        console.log("connecting websocket");
+        //console.log("connecting websocket");
         this.websocket = webSocket(url);
         this.loading = false;
         this.waitingForPayment = true;
         this.websocket.asObservable().subscribe(async message => {
-            console.log("message received: " + JSON.stringify(message));
+            //console.log("message received: " + JSON.stringify(message));
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
                 if(message.signed) {

@@ -65,7 +65,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
   ngOnInit(){
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
-      //console.log("account info changed received")
+      //console.log("account info changed received: " + JSON.stringify(accountData));
       this.originalAccountInfo = accountData;
       this.reloadData()
     });

@@ -30,6 +30,7 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   @Input()
   testMode: boolean;
 
+  originalAccountInfo:any;
   private accountInfoChangedSubscription: Subscription;
   private transactionSuccessfullSubscription: Subscription;
   escrowAccountChanged: Subject<any> = new Subject<any>();
@@ -52,8 +53,9 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(() => {
+    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
+      this.originalAccountInfo = accountData;
       setTimeout(() => {
         this.escrowAccountChanged.next(this.lastKnownAddress);
       },500);
