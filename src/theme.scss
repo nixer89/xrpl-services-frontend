@@ -15,7 +15,15 @@ $light-theme: mat-light-theme($primary, $accent, $warn);
   background-color: #C0C0C0 !important;
 }
 
+.mat-expansion-panel-header.expantion-panel-light {
+  background-color: #C0C0C0 !important;
+}
+
 .mat-expansion-panel.expansion-panel-darker {
+  background-color: #A0A0A0 !important;
+}
+
+.mat-expansion-panel-header.expansion-panel-darker {
   background-color: #A0A0A0 !important;
 }
 
@@ -54,15 +62,23 @@ $light-theme: mat-light-theme($primary, $accent, $warn);
 
   .mat-expansion-panel {
     background-color: rgba(50, 50, 50, 0.5) !important;
-}
+  }
 
   .mat-expansion-panel.expansion-panel-light {
-    background-color: #202020 !important;
-  }
-  
-  .mat-expansion-panel.expansion-panel-darker {
     background-color: #303030 !important;
   }
 
+  .mat-expansion-panel-header.expansion-panel-light {
+    background-color: #303030 !important;
+  }
+
+  .mat-expansion-panel.expansion-panel-darker {
+    background-color: #202020 !important;
+  }
+
+  .mat-expansion-panel-header.expansion-panel-darker {
+    background-color: #202020 !important;
+  }
+  
   @include angular-material-theme($dark-theme);
 }
