@@ -21,8 +21,8 @@
   <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
     <mat-form-field>
       <input #inpregularkey matInput name="regularkey" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address which will be able to sign transactions" [(ngModel)]="regularKeyInput" (ngModelChange)="checkChanges()">
-      <mat-hint *ngIf="regularKeyInput && !validAddress" style="color: crimson;">Not a valid XRPL address</mat-hint>
-      <mat-hint *ngIf="originalAccountInfo && regularKeyInput == originalAccountInfo.Account" style="color: crimson;">You cannot set the Regular Key to the same address.</mat-hint>
+      <mat-hint *ngIf="regularKeyInput && !validAddress">Not a valid XRPL address</mat-hint>
+      <mat-hint *ngIf="originalAccountInfo && regularKeyInput == originalAccountInfo.Account">You cannot set the Regular Key to the same address.</mat-hint>
     </mat-form-field>
   </form>
   <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">

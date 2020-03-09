@@ -228,6 +228,8 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   sendPayloadToXumm() {
     this.googleAnalytics.analyticsEventEmitter('signer_list_set', 'sendToXumm', 'Xumm');
 
+    this.payload.custom_meta = {};
+
     //console.log("sending to xumm");
     let signerListToSend:any[] = JSON.parse(JSON.stringify(this.signerList))
     //console.log("signerListToSend: " + JSON.stringify(signerListToSend));
@@ -243,12 +245,18 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
     //console.log("this.signerList: " + JSON.stringify(this.signerList));
 
     //console.log("into integer");
+    this.payload.custom_meta.instruction = "- Number of signers: " + signerListToSend.length;
+    this.payload.custom_meta.instruction += "\n- Overall signer weight: " + this.overallSignerWeights;
 
-    if(this.signerQuorumInput && this.signerQuorumInput)
+    if(this.signerQuorumInput && this.signerQuorumInput) {
       this.payload.txjson.SignerQuorum = this.signerQuorumInput
+      this.payload.custom_meta.instruction += "\n- Quorum for valid MultiSignature: " + this.signerQuorumInput;
+    }
 
     if(signerListToSend && signerListToSend.length > 0 && this.validSignerList)
       this.payload.txjson.SignerEntries = signerListToSend;
+
+    this.payload.custom_meta.instruction += "\n\n- Please check the Signer List in the Xumm App!";
 
     this.onPayload.emit(this.payload);
   }
@@ -277,6 +285,9 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
       txjson: {
         TransactionType: "SignerListSet",
         SignerQuorum: 0
+      },
+      custom_meta: {
+        instruction: 'Delete Signer List.'
       }
     });
   }

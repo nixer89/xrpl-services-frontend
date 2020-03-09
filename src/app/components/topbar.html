@@ -12,7 +12,7 @@
       <div fxHide.xs>
         <span fxLayout="row" fxLayoutGap="5em" fxLayoutAlign="center center">
           Support this project:&nbsp;
-          <button mat-button matTooltip="Donate to this project." matTooltipPosition="below" (click)="supportViaXumm()" style="padding:0px;">
+          <button mat-button matTooltip="Make a Donation." matTooltipPosition="below" (click)="supportViaXumm()" style="padding:0px;">
             <img src="../../assets/xummPay.svg" style="width: 150px; height: 45px;" alt="Support via Xumm">
           </button>
         </span>
@@ -21,7 +21,7 @@
     <mat-toolbar-row fxHide fxShow.xs>
       <span style="font-size: 0.8em;" fxLayoutAlign="center center">
         Support this project:&nbsp;
-        <button mat-button matTooltip="Donate to this project." matTooltipPosition="below" (click)="supportViaXumm()" style="padding:0px;">
+        <button mat-button matTooltip="Make a Donation." matTooltipPosition="above" (click)="supportViaXumm()" style="padding:0px;">
           <img src="../../assets/xummPay.svg" style="width: 120px; height: 36px;" alt="Support via Xumm">
         </button>
       </span>
@@ -43,10 +43,10 @@
         <i class="material-icons topbar-menu-icon">menu</i>
       </button>
       <mat-menu #appMenu="matMenu" yPosition="below" xPosition="after">
-        <button mat-button [routerLink]="['']" matTooltip="XRPl Transactions">
+        <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['']" matTooltip="XRPl Transactions">
           <i class="material-icons">mobile_friendly</i> XRPL Transactions
         </button>
-        <button mat-button [routerLink]="['/scheduler']" matTooltip="Xumm Scheduler">
+        <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/scheduler']" matTooltip="Xumm Scheduler">
           <i class="material-icons">schedule</i> Transaction Scheduler
         </button>
       </mat-menu>

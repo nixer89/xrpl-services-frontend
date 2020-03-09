@@ -140,7 +140,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
         TransactionType: "SetRegularKey"
       },
       custom_meta: {
-        instruction: 'Delete your RegularKey.'
+        instruction: 'Delete Regular Key.'
       }
     }
     this.onPayload.emit(payloadToSend);

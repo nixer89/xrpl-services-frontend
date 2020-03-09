@@ -53,13 +53,13 @@ export class AppComponent implements OnInit {
     var bodyStyles = document.body.style;
     if(this.darkMode) {
       bodyStyles.setProperty('--background-color', 'rgba(50, 50, 50)');
-      bodyStyles.setProperty('--dialog-background', 'rgba(50, 50, 50)');
-      bodyStyles.setProperty('--dialog-color', '#ffffff');
+      //bodyStyles.setProperty('--dialog-background', 'rgba(50, 50, 50)');
+      //bodyStyles.setProperty('--dialog-color', '#ffffff');
     }
     else {
         bodyStyles.setProperty('--background-color', 'rgba(238,238,238,.5)');
-        bodyStyles.setProperty('--dialog-background', 'rgba(238,238,238)');
-        bodyStyles.setProperty('--dialog-color', 'rgba(0, 0, 0)');
+        //bodyStyles.setProperty('--dialog-background', 'rgba(238,238,238)');
+        //bodyStyles.setProperty('--dialog-color', 'rgba(0, 0, 0)');
     }
     // always scroll to the top of the page on route change:
     this.router.events.subscribe(e => e instanceof NavigationEnd ? window.scrollTo(0,0) : null);
@@ -71,14 +71,14 @@ export class AppComponent implements OnInit {
     var bodyStyles = document.body.style;
     if(isDarkMode) {
         bodyStyles.setProperty('--background-color', 'rgba(50, 50, 50)');
-        bodyStyles.setProperty('--dialog-background', 'rgba(50, 50, 50)');
-        bodyStyles.setProperty('--dialog-color', '#ffffff');
+        //bodyStyles.setProperty('--dialog-background', 'rgba(50, 50, 50)');
+        //bodyStyles.setProperty('--dialog-color', '#ffffff');
         
     }
     else {
         bodyStyles.setProperty('--background-color', 'rgba(238,238,238,.5)');
-        bodyStyles.setProperty('--dialog-background', 'rgba(238,238,238)');
-        bodyStyles.setProperty('--dialog-color', 'rgba(0, 0, 0)');
+        //bodyStyles.setProperty('--dialog-background', 'rgba(238,238,238)');
+        //bodyStyles.setProperty('--dialog-color', 'rgba(0, 0, 0)');
     }
   }
 }

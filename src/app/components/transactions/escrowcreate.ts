@@ -190,18 +190,27 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   sendPayloadToXumm() {
 
     this.googleAnalytics.analyticsEventEmitter('escrow_create', 'sendToXumm', 'escrow_create_component');
+    this.xummPayload.custom_meta = {};
 
-    if(this.amountInput && parseFloat(this.amountInput) >= 0.000001)
-      this.xummPayload.txjson.Amount = parseFloat(this.amountInput)*1000000+"";
-
-    if(this.destinationInput && this.destinationInput.trim().length>0 && this.isValidXRPAddress(this.destinationInput))
+    if(this.destinationInput && this.destinationInput.trim().length>0 && this.isValidXRPAddress(this.destinationInput)) {
       this.xummPayload.txjson.Destination = this.destinationInput.trim();
+      this.xummPayload.custom_meta.instruction = "- Escrow Destination: " + this.destinationInput.trim();
+    }
 
-    if(this.validCancelAfter)
+    if(this.amountInput && parseFloat(this.amountInput) >= 0.000001) {
+      this.xummPayload.txjson.Amount = parseFloat(this.amountInput)*1000000+"";
+      this.xummPayload.custom_meta.instruction += "\n- Escrow Amount: " + this.amountInput;
+    }
+ 
+    if(this.validCancelAfter) {
       this.xummPayload.txjson.CancelAfter = (this.cancelAfterDateTime.getTime()/1000)-946684800;
+      this.xummPayload.custom_meta.instruction += "\n- Cancel After (UTC): " + this.cancelAfterDateTime.toUTCString();
+    }
 
-    if(this.validFinishAfter)
+    if(this.validFinishAfter) {
       this.xummPayload.txjson.FinishAfter = (this.finishAfterDateTime.getTime()/1000)-946684800;
+      this.xummPayload.custom_meta.instruction += "\n- Finish After (UTC): " + this.finishAfterDateTime.toUTCString();
+    }
 
     if(this.validCondition) {
       let fulfillment_bytes:Buffer = Buffer.from(this.passwordInput.trim(), 'utf-8');
@@ -232,6 +241,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
         //)
 
         this.xummPayload.txjson.Condition = condition
+        this.xummPayload.custom_meta.instruction += "\n- With a password ✓"
 
         this.onPayload.emit(this.xummPayload);
       });      

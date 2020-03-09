@@ -2,36 +2,46 @@
 
 @include mat-core();
 
-$primary: mat-palette($mat-indigo);
-$accent: mat-palette($mat-pink, A200, A100, A400);
-$warn: mat-palette($mat-red);
-$light-theme: mat-light-theme($primary, $accent, $warn);
+.light-theme {
+  $primary: mat-palette($mat-indigo);
+  $accent: mat-palette($mat-pink, A200, A100, A400);
+  $warn: mat-palette($mat-red);
+  $light-theme: mat-light-theme($primary, $accent, $warn);
 
-.mat-expansion-panel {
+  .mat-expansion-panel {
     background-color: rgba(238,238,238, 0.5) !important;
-}
+  }
 
-.mat-expansion-panel.expansion-panel-light {
-  background-color: #C0C0C0 !important;
-}
+  .mat-expansion-panel.expansion-panel-light {
+    background-color: #C0C0C0 !important;
+  }
 
-.mat-expansion-panel-header.expantion-panel-light {
-  background-color: #C0C0C0 !important;
-}
+  .mat-expansion-panel-header.expantion-panel-light {
+    background-color: #C0C0C0 !important;
+  }
 
-.mat-expansion-panel.expansion-panel-darker {
-  background-color: #A0A0A0 !important;
-}
+  .mat-expansion-panel.expansion-panel-darker {
+    background-color: #A0A0A0 !important;
+  }
 
-.mat-expansion-panel-header.expansion-panel-darker {
-  background-color: #A0A0A0 !important;
-}
+  .mat-expansion-panel-header.expansion-panel-darker {
+    background-color: #A0A0A0 !important;
+  }
 
-.account-warning {
-  color: #EB0000;
-}
+  .account-warning {
+    color: #EB0000;
+  }
 
-@include angular-material-theme($light-theme);
+  .account-loading {
+    color: blue;
+  }
+
+  .theme-background {
+    background-color: rgba(238,238,238, 0.5) !important;
+  }
+
+  @include angular-material-theme($light-theme);
+}
 
 // Our dark theme
 .dark-theme {
@@ -60,6 +70,10 @@ $light-theme: mat-light-theme($primary, $accent, $warn);
     color: #FF6B6B;
   }
 
+  .account-loading {
+    color: #FFB300;
+  }
+
   .mat-expansion-panel {
     background-color: rgba(50, 50, 50, 0.5) !important;
   }
@@ -78,6 +92,10 @@ $light-theme: mat-light-theme($primary, $accent, $warn);
 
   .mat-expansion-panel-header.expansion-panel-darker {
     background-color: #202020 !important;
+  }
+
+  .theme-background {
+    background-color:rgba(50, 50, 50, 0.5) !important;
   }
   
   @include angular-material-theme($dark-theme);

@@ -5,6 +5,7 @@ import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { LocalStorageService } from 'angular-2-local-storage'
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-topbar',
@@ -17,18 +18,30 @@ export class TopbarComponent implements OnInit {
 
   isDarkTheme: boolean;
 
-  constructor( private supportDialog: MatDialog, private snackBar: MatSnackBar, private localStorage: LocalStorageService) {
+  constructor( private supportDialog: MatDialog, private snackBar: MatSnackBar, private localStorage: LocalStorageService, private overlayContainer: OverlayContainer) {
     
   }
 
   ngOnInit(): void {
     this.isDarkTheme = this.localStorage.get("darkMode");
+    this.setOverlayClass();
   }
 
   toggleDarkTheme() {
     this.isDarkTheme = !this.isDarkTheme;
     this.darkThemeChanged.emit(this.isDarkTheme);
     this.localStorage.set("darkMode", this.isDarkTheme);
+    this.setOverlayClass();
+  }
+
+  setOverlayClass() {
+    if(!this.isDarkTheme) {
+      this.overlayContainer.getContainerElement().classList.remove('dark-theme');
+      this.overlayContainer.getContainerElement().classList.add('light-theme');
+    } else {
+      this.overlayContainer.getContainerElement().classList.remove('light-theme');
+      this.overlayContainer.getContainerElement().classList.add('dark-theme');
+    }
   }
 
   async supportViaXumm() {

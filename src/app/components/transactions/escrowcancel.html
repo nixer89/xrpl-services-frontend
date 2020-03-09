@@ -21,14 +21,14 @@
   <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;padding-top: 1em;">
     <mat-form-field>
       <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="checkChanges()">
-      <mat-hint *ngIf="escrowOwnerInput && !validAddress" style="color: crimson;">Not a valid XRPL address</mat-hint>
+      <mat-hint *ngIf="escrowOwnerInput && !validAddress">Not a valid XRPL address</mat-hint>
     </mat-form-field>
     <div>
       <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" (escrowSequenceFound)="onEscrowSequenceFound($event)" [testMode]="testMode" [isCancel]="true"></escrowList>
     </div>
     <mat-form-field [ngClass]="{'changed': escrowSequenceSelected}">
       <input #inpescrowsequence matInput name="escrowsequence" min="0" matInput placeholder="Escrow Sequence Number" [(ngModel)]="escrowSequenceInput" (ngModelChange)="checkChanges()">
-      <mat-hint *ngIf="escrowSequenceInput && !validSequence" style="color: crimson;">Not a valid Escrow Sequence</mat-hint>
+      <mat-hint *ngIf="escrowSequenceInput && !validSequence">Not a valid Escrow Sequence</mat-hint>
     </mat-form-field>
   </form>
   <div fxLayout="row" fxLayoutAlign="start center" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">

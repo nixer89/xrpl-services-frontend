@@ -22,13 +22,13 @@
   <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
     <mat-form-field>
       <input #inpdestination matInput name="destination" placeholder="Escrow Destination (required)" [(ngModel)]="destinationInput" (ngModelChange)="checkChanges()">
-      <mat-hint *ngIf="destinationInput && !validAddress" style="color: crimson;">Not a valid XRP address</mat-hint>
+      <mat-hint *ngIf="destinationInput && !validAddress">Not a valid XRP address</mat-hint>
     </mat-form-field>
     <mat-form-field>
       <input #inpamount matInput type="text" name="amount" placeholder="Escrow Amount in XRP (required)" [(ngModel)]="amountInput" (ngModelChange)="checkChanges()">
-      <mat-hint *ngIf="amountInput && !validAmount && maxSixDigits" style="color: crimson;">The XRP amount cannot have more than 6 decimals.</mat-hint>
-      <mat-hint *ngIf="amountInput && !validAmount && ! maxSixDigits && amountInput.toString().includes(',')" style="color: crimson;">Not a valid amount. Please use '.' as decimal operator.</mat-hint>
-      <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && !amountInput.toString().includes(',')" style="color: crimson;">Not a valid amount</mat-hint>
+      <mat-hint *ngIf="amountInput && !validAmount && maxSixDigits">The XRP amount cannot have more than 6 decimals.</mat-hint>
+      <mat-hint *ngIf="amountInput && !validAmount && ! maxSixDigits && amountInput.toString().includes(',')">Not a valid amount. Please use '.' as decimal operator.</mat-hint>
+      <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && !amountInput.toString().includes(',')">Not a valid amount</mat-hint>
       
     </mat-form-field>
     <mat-card>
@@ -41,9 +41,9 @@
           <input matInput name="cancelaftertime" [type]="dateTimePickerSupported ? 'time' : 'text'" step="2" [placeholder]="dateTimePickerSupported ? 'Choose a Time' : 'HH:mm:ss (24h format)'" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
         </mat-form-field>
       </mat-card-content>
-      <mat-hint *ngIf="(cancelafterTimeInput || cancelafterDateInput) && !validCancelAfter" style="color: crimson;">Invalid date/time.</mat-hint>
-      <mat-hint *ngIf="validCancelAfter && cancelDateInFuture" style="color: crimson;">Cancel After needs to be in the future.</mat-hint>
-      <mat-hint *ngIf="validCancelAfter && !cancelDateInFuture && cancelDateBeforeFinishDate" style="color: crimson;">Cancel After needs to be after Finish After.</mat-hint>
+      <mat-hint *ngIf="(cancelafterTimeInput || cancelafterDateInput) && !validCancelAfter">Invalid date/time.</mat-hint>
+      <mat-hint *ngIf="validCancelAfter && cancelDateInFuture">Cancel After needs to be in the future.</mat-hint>
+      <mat-hint *ngIf="validCancelAfter && !cancelDateInFuture && cancelDateBeforeFinishDate">Cancel After needs to be after Finish After.</mat-hint>
       <mat-hint *ngIf="validCancelAfter && !cancelDateInFuture && !cancelDateBeforeFinishDate">UTC time: <b>{{cancelAfterDateTime.toUTCString()}}</b></mat-hint>
     </mat-card>
     <mat-card>
@@ -56,8 +56,8 @@
           <input matInput name="finishaftertime" [type]="dateTimePickerSupported ? 'time' : 'text'" step="2" [placeholder]="dateTimePickerSupported ? 'Choose a Time' : 'HH:mm:ss (24h format)'" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
         </mat-form-field>
       </mat-card-content>
-      <mat-hint *ngIf="(finishafterTimeInput || finishafterDateInput) && !validFinishAfter && !finishDateInFuture" style="color: crimson;">Invalid date/time.</mat-hint>
-      <mat-hint *ngIf="finishDateInFuture" style="color: crimson;">Finish After needs to be in the future.</mat-hint>
+      <mat-hint *ngIf="(finishafterTimeInput || finishafterDateInput) && !validFinishAfter && !finishDateInFuture">Invalid date/time.</mat-hint>
+      <mat-hint *ngIf="finishDateInFuture">Finish After needs to be in the future.</mat-hint>
       <mat-hint *ngIf="validFinishAfter && !finishDateInFuture">UTC time: <b>{{finishAfterDateTime.toUTCString()}}</b></mat-hint>
     </mat-card>
     <mat-form-field>

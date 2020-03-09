@@ -77,11 +77,15 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   sendPayloadToXumm() {
     this.googleAnalytics.analyticsEventEmitter('escrow_cancel', 'sendToXumm', 'escrow_cancel_component');
 
-    if(this.escrowOwnerInput && this.escrowOwnerInput.trim().length>0 && this.validAddress)
+    this.payload.custom_meta = {};
+    if(this.escrowOwnerInput && this.escrowOwnerInput.trim().length>0 && this.validAddress) {
       this.payload.txjson.Owner = this.escrowOwnerInput.trim();
+      this.payload.custom_meta.instruction = "Escrow Owner: " + this.payload.txjson.Owner;
+    }
 
     if(this.escrowSequenceInput && this.validSequence)
       this.payload.txjson.OfferSequence = Number(this.escrowSequenceInput);
+      this.payload.custom_meta.instruction+= "\nEscrow Sequence: " + this.payload.txjson.OfferSequence;
 
     this.onPayload.emit(this.payload);
   }

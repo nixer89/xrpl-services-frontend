@@ -88,11 +88,17 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
 
     this.googleAnalytics.analyticsEventEmitter('escrow_finish', 'sendToXumm', 'escrow_finish_component');
 
-    if(this.escrowOwnerInput && this.escrowOwnerInput.trim().length>0 && this.validAddress)
-      this.payload.txjson.Owner = this.escrowOwnerInput.trim();
+    this.payload.custom_meta = {};
 
-    if(this.escrowSequenceInput && this.validSequence)
+    if(this.escrowOwnerInput && this.escrowOwnerInput.trim().length>0 && this.validAddress) {
+      this.payload.txjson.Owner = this.escrowOwnerInput.trim();
+      this.payload.custom_meta.instruction = "- Escrow Owner: " +this.escrowOwnerInput.trim();
+    }
+
+    if(this.escrowSequenceInput && this.validSequence) {
       this.payload.txjson.OfferSequence = Number(this.escrowSequenceInput);
+      this.payload.custom_meta.instruction += "\n- Escrow Sequence: " + this.escrowSequenceInput;
+    }
 
     if(this.validCondition) {
       let fulfillment_bytes:Buffer = Buffer.from(this.passwordInput.trim(), 'utf-8');
@@ -126,6 +132,8 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
         this.payload.txjson.Condition = condition
         this.payload.txjson.Fulfillment = fulfillment;
         this.payload.txjson.Fee = (330 + (10 * Math.ceil(fulfillment_bytes.length/16))).toString();
+
+        this.payload.custom_meta.instruction += "\n- With a password ✓"
 
         this.onPayload.emit(this.payload);
       });

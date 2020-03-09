@@ -14,7 +14,7 @@
             <span style="flex: 1 1 auto;"></span>
         </div>
         <div class="floatcenter">
-            <button mat-button matTooltip="Cancel" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
+            <button mat-button class="theme-background" matTooltip="Cancel" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
                 <b>Cancel </b>
                 <i class="material-icons" style="color: red">
                     cancel
@@ -34,7 +34,7 @@
         </div>
         <div>
             <mat-dialog-actions>
-                <button mat-button mat-dialog-close matTooltip="Close" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
+                <button mat-button mat-dialog-close class="theme-background" matTooltip="Close" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
                     <b>Close </b>
                     <i class="material-icons">
                         cancel
@@ -44,7 +44,7 @@
         </div>
     </div>
 
-    <div *ngIf="transactionSigned">
+    <div *ngIf="transactionSigned" class="floatcenter">
         <div>
             <i class="material-icons" style="color: green; font-size: 3em;">
                 check_circle_outline

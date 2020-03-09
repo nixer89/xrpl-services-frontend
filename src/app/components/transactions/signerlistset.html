@@ -22,13 +22,13 @@
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em; margin-bottom: 15px;" ngStyle.xs="margin-bottom: 25px;">
       <mat-form-field>
         <input #inpsignerquorum matInput name="signerquorum" matInput placeholder="Signer Quorum. A target number for the signer weights" [(ngModel)]="signerQuorumInput" (ngModelChange)="checkChanges()">
-        <mat-hint *ngIf="validSignerQuorum.valid">{{validSignerQuorum.message}}</mat-hint>
-        <mat-hint *ngIf="!validSignerQuorum.valid" style="color: crimson;">{{validSignerQuorum.message}}</mat-hint>
+        <mat-hint *ngIf="validSignerQuorum.valid" style="color: grey !important">{{validSignerQuorum.message}}</mat-hint>
+        <mat-hint *ngIf="!validSignerQuorum.valid">{{validSignerQuorum.message}}</mat-hint>
       </mat-form-field>
     </form>
     <mat-card ngStyle.xs="padding: 8px;">
       <h3>Signer List (maximum of 8 XRPL addresses)</h3>
-      <mat-hint>Please make sure that the XRPL account this Signer List will be submitted to is not in the list below. Otherwise your transaction will fail.</mat-hint><br><br>
+      <mat-hint style="color: grey !important">Please make sure that the XRPL account this Signer List will be submitted to is not in the list below. Otherwise your transaction will fail.</mat-hint><br><br>
       <label>Current overall signer list weight: {{overallSignerWeights}}</label>
       <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
         <mat-expansion-panel *ngFor="let signer of signerList; index as i;" fxLayout="column" [ngClass]="(i%2==0 ? 'expansion-panel-light': 'expansion-panel-darker')">
@@ -49,13 +49,13 @@
           <form fxLayout="column" fxLayoutGap="0.5em">
             <mat-form-field>
               <input #inpaddress matInput name="signeraddress" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address to add to the signer list" [(ngModel)]="signer.SignerEntry.Account" (ngModelChange)="checkSignerChanges(signer)">
-              <mat-hint *ngIf="signer.SignerEntry.Account && !isValidXRPAddress(signer.SignerEntry.Account)" style="color: crimson;">Not a valid XRPL address</mat-hint>
-              <mat-hint *ngIf="signer.SignerEntry.Account && isValidXRPAddress(signer.SignerEntry.Account) && isDuplicateAccount(signer.SignerEntry.Account)" style="color: crimson;">The same XRPL address can only be added once!</mat-hint>
+              <mat-hint *ngIf="signer.SignerEntry.Account && !isValidXRPAddress(signer.SignerEntry.Account)">Not a valid XRPL address</mat-hint>
+              <mat-hint *ngIf="signer.SignerEntry.Account && isValidXRPAddress(signer.SignerEntry.Account) && isDuplicateAccount(signer.SignerEntry.Account)">The same XRPL address can only be added once!</mat-hint>
             </mat-form-field>
             <mat-form-field>
               <input #inpaddress matInput name="signerweight" placeholder="The weight of a signature from this signer" [(ngModel)]="signer.SignerEntry.SignerWeight" (ngModelChange)="checkSignerChanges(signer)">
-              <mat-hint *ngIf="!isValidInteger(signer.SignerEntry.SignerWeight)" style="color: crimson;">Please provide an integer value</mat-hint>
-              <mat-hint *ngIf="isValidInteger(signer.SignerEntry.SignerWeight) && !isValidWeight(signer.SignerEntry.SignerWeight)" style="color: crimson;">The signature weight must be greater 0 and smaller 65536</mat-hint>
+              <mat-hint *ngIf="!isValidInteger(signer.SignerEntry.SignerWeight)">Please provide an integer value</mat-hint>
+              <mat-hint *ngIf="isValidInteger(signer.SignerEntry.SignerWeight) && !isValidWeight(signer.SignerEntry.SignerWeight)">The signature weight must be greater 0 and smaller 65536</mat-hint>
             </mat-form-field>
           </form>
           <button mat-raised-button color="warn" matTooltip="Delete Signer" (click)="removeSigner(i)" style="align-items: center; margin-top: 1em;">

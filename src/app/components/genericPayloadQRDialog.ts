@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject, ViewChild } from "@angular/core";
 import { XummService } from '../services/xumm.service';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -6,6 +6,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
 import { XummPostPayloadResponse } from 'xumm-api'
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
+import { LocalStorageService } from 'angular-2-local-storage';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
     selector: "genericPayloadQRDialog",
@@ -14,8 +16,10 @@ import { GoogleAnalyticsService } from '../services/google-analytics.service';
 export class GenericPayloadQRDialog implements OnInit {
 
     qrLink:string;
-
     transactionInfo:any;
+    memoInput: string;
+
+    isDarkTheme:boolean = false;
 
     websocket: WebSocketSubject<any>;
     payloadUUID: string;
@@ -27,17 +31,37 @@ export class GenericPayloadQRDialog implements OnInit {
     loading:boolean = false;
     transactionSigned:boolean = false;
     pushed:boolean = false;
+    isOverview:boolean = true;
 
     constructor(
         private xummApi: XummService,
         private deviceDetector: DeviceDetectorService,
         public dialogRef: MatDialogRef<GenericPayloadQRDialog>,
         @Inject(MAT_DIALOG_DATA) public genericPayload: GenericBackendPostRequest,
-        private googleAnalytics: GoogleAnalyticsService) {
-    }
+        private googleAnalytics: GoogleAnalyticsService,
+        private localStorage: LocalStorageService,
+        private overlayContainer: OverlayContainer) {
+        }
 
     async ngOnInit() {
+        if(this.localStorage && !this.localStorage.get("darkMode")) {
+            this.overlayContainer.getContainerElement().classList.remove('dark-theme');
+            this.overlayContainer.getContainerElement().classList.add('light-theme');
+        } else {
+            this.overlayContainer.getContainerElement().classList.remove('light-theme');
+            this.overlayContainer.getContainerElement().classList.add('dark-theme');
+        }
+        
+        if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() != "payment") {
+            this.isOverview = true;
+        } else {
+            this.sendToXumm();
+        }
+    }
+
+    async sendToXumm() {
         this.loading = true;
+        this.isOverview = false;
 
         this.genericPayload.options.web = this.deviceDetector.isDesktop();
 
@@ -50,6 +74,10 @@ export class GenericPayloadQRDialog implements OnInit {
         }
 
         this.genericPayload.options.referer = refererURL;
+
+        if(this.memoInput && this.memoInput.trim().length > 0) {
+            this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xumm.community]_Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(this.memoInput.trim(), 'utf8').toString('hex').toUpperCase()}}];
+        }
 
         this.googleAnalytics.analyticsEventEmitter(this.genericPayload.payload.txjson.TransactionType.toLowerCase()+'_transaction', 'sendToXummGeneric', 'generic_payload_dialog_component');
 

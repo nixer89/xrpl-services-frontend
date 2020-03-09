@@ -6,6 +6,8 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { XummPostPayloadResponse } from 'xumm-api';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
+import { LocalStorageService } from 'angular-2-local-storage';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
     selector: "xummSignRequestDialog",
@@ -29,10 +31,19 @@ export class XummSignDialogComponent implements OnInit{
         private xummApi: XummService,
         private deviceDetector: DeviceDetectorService,
         public dialogRef: MatDialogRef<XummSignDialogComponent>,
-        private googleAnalytics: GoogleAnalyticsService) {
+        private googleAnalytics: GoogleAnalyticsService,
+        private localStorage: LocalStorageService,
+        private overlayContainer: OverlayContainer) {
     }
 
     async ngOnInit() {
+        if(this.localStorage && !this.localStorage.get("darkMode")) {
+            this.overlayContainer.getContainerElement().classList.remove('dark-theme');
+            this.overlayContainer.getContainerElement().classList.add('light-theme');
+        } else {
+            this.overlayContainer.getContainerElement().classList.remove('light-theme');
+            this.overlayContainer.getContainerElement().classList.add('dark-theme');
+        }
         this.loading = true;
 
         let refererURL:string;

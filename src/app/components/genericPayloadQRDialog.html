@@ -1,4 +1,27 @@
-<mat-dialog-content class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
+<mat-dialog-content fxLayout="column" ngStyle.gt-xs="min-width: 40em;">
+    <div *ngIf="isOverview" fxLayout="column" fxLayoutGap="20px">
+        <h3 class="floatcenter">Transaction Overview</h3>
+        <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="10px">
+            <mat-card class="theme-background">
+                <h4>XRPL Transaction Type:</h4>
+                <label>{{genericPayload.payload.txjson.TransactionType}}</label>
+            </mat-card>
+            <mat-card class="theme-background">
+                <h4>Summary:</h4>
+                <label style="white-space: pre-wrap;">{{genericPayload.payload.custom_meta.instruction}}</label>
+            </mat-card>
+            <mat-card class="theme-background" style="width: 90%;">
+                <h4>Transaction Memo (optional):</h4>
+                <mat-form-field style="width: 100%;">
+                    <input matInput type="text" [(ngModel)]="memoInput" placeholder="Memo" aria-label="XRPL Transaction Memo">
+                </mat-form-field>
+            </mat-card>
+            <div fxLayout="row" fxLayoutGap="10px" style="margin-top: 1em;">
+                <button mat-raised-button color="primary" (click)="sendToXumm()">Confirm</button>
+                <button mat-raised-button color="warn" (click)="closeIt()">Cancel</button>
+            </div>
+        </div>
+    </div>
     <div *ngIf="loading && !showError && !waitingForPayment" fxLayout="column" class="floatcenter" style="width:300px; height: 200px;">
         <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
     </div>
@@ -15,7 +38,7 @@
             <span style="flex: 1 1 auto;"></span>
         </div>
         <div class="floatcenter">
-            <button mat-button matTooltip="Cancel" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
+            <button mat-raised-button class="theme-background" matTooltip="Cancel" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
                 <b>Cancel </b>
                 <i class="material-icons" style="color: red">
                     cancel
@@ -35,7 +58,7 @@
         </div>
         <div>
             <mat-dialog-actions>
-                <button mat-button mat-dialog-close matTooltip="Close" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
+                <button mat-button mat-dialog-close class="theme-background" matTooltip="Close" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
                     <b>Close </b>
                     <i class="material-icons">
                         cancel
@@ -45,7 +68,7 @@
         </div>
     </div>
 
-    <div *ngIf="transactionSigned">
+    <div *ngIf="transactionSigned" class="floatcenter">
         <div>
             <i class="material-icons" style="color: green; font-size: 3em;">
                 check_circle_outline

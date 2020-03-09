@@ -11,16 +11,6 @@ body {
     background-color: var(--background-color);
 }
 
-.mat-dialog-container {
-    background: var(--dialog-background) !important;
-    color: var(--dialog-color) !important;
-}
-
-.mat-menu-panel {
-    background: var(--dialog-background) !important;
-    color: var(--dialog-color) !important;
-  }
-
 a.footerlink {
     margin-right: 1em;
 }
@@ -88,6 +78,10 @@ body .snackbar-failed {
     text-shadow: #bbb 2px 2px 2px;
     color: red;
     font-weight: 600;
+}
+
+.mat-hint {
+    color: #f44336 !important;
 }
 
 @media (max-width:599px) {

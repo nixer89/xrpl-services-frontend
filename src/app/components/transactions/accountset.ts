@@ -144,39 +144,36 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.payload.custom_meta = {};
     this.payload.custom_meta.instruction = "";
 
-    if(this.domainInput && this.validDomain && (!this.originalAccountInfo || this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain))
+    if(this.domainInput && this.validDomain && (!this.originalAccountInfo || this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain)) {
       this.payload.txjson.Domain = this.stringToHex(this.domainInput.trim());
+      this.payload.custom_meta.instruction += "- Set Domain to '"+this.domainInput.trim()
+    }
 
-    if(this.emailInput && this.validEmail && (!this.originalAccountInfo || md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash))
+    if(this.emailInput && this.validEmail && (!this.originalAccountInfo || md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash)) {
       this.payload.txjson.EmailHash = md5(this.emailInput.trim()).toUpperCase();
+      this.payload.custom_meta.instruction += "- Set Email to'"+this.emailInput.trim()
+    }
 
     if(this.requireDestTagChangeDetected) {
       if(this.requireDestTagInput) {
         this.payload.txjson.SetFlag = this.ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG;
-        this.payload.custom_meta.instruction+= "- Set 'Require Destination Tag'\n"
+        this.payload.custom_meta.instruction += "\n- Set 'Require Destination Tag'"
       } else {
         this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG;
-        this.payload.custom_meta.instruction+= "- Unset 'Require Destination Tag'\n"
+        this.payload.custom_meta.instruction += "\n- Unset 'Require Destination Tag'"
       }
     }
 
     if(this.disableMasterKeyChangeDetected) {
       if(this.disableMasterKeyInput) {
         this.payload.txjson.SetFlag = this.ACCOUNT_FLAG_DISABLE_MASTER_KEY;
-        this.payload.custom_meta.instruction+= "- Deactivate Master Key\n"
+        this.payload.custom_meta.instruction += "\n- Deactivate Master Key"
       }
       else {
         this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_DISABLE_MASTER_KEY;
-        this.payload.custom_meta.instruction+= "- Reactivate Master Key\n"
+        this.payload.custom_meta.instruction += "\n- Reactivate Master Key"
       }
-    }
-
-    if(this.payload.txjson.Domain)
-      this.payload.custom_meta.instruction+= "- Set a new Domain\n"
-
-    if(this.payload.txjson.EmailHash)
-      this.payload.custom_meta.instruction+= "- Set a new EmailHash\n"
-    
+    }    
 
     this.onPayload.emit(this.payload);
     this.initializePayload();
@@ -187,7 +184,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.payload.txjson.Domain = '';
 
     this.payload.custom_meta = {};
-    this.payload.custom_meta.instruction = "Delete your Domain attached to this account";
+    this.payload.custom_meta.instruction = "Delete Domain attached to the XRPL account";
 
     if(this.originalAccountInfo && this.originalAccountInfo.Domain)
       this.payload.custom_meta.instruction+= ": " + this.hexToString(this.originalAccountInfo.Domain);
@@ -203,7 +200,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
     this.payload.txjson.EmailHash = "00000000000000000000000000000000";
     this.payload.custom_meta = {};
-    this.payload.custom_meta.instruction = "Delete your Email attached to this account";
+    this.payload.custom_meta.instruction = "Delete Email attached to the XRPL account";
 
     this.onPayload.emit(this.payload);
     this.initializePayload();
