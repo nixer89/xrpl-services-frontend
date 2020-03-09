@@ -2,6 +2,11 @@
     white-space: pre-wrap;
 }
 
+.mat-dialog-content {
+    margin: 0px;
+    padding: 0px;
+}
+
 @media (max-width:599px) {
     .break-words {
         word-wrap: break-word !important;
@@ -15,5 +20,10 @@
         -moz-hyphens: auto;
         -webkit-hyphens: auto;
         hyphens: auto;
+    }
+
+    .mat-dialog-content {
+        font-size: 0.8em;
+        
     }
 }

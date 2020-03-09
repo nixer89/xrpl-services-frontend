@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild } from "@angular/core";
+import { Component, OnInit, Inject } from "@angular/core";
 import { XummService } from '../services/xumm.service';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -58,6 +58,8 @@ export class GenericPayloadQRDialog implements OnInit {
         } else {
             this.sendToXumm();
         }
+
+        window.scrollTo(0,0);
     }
 
     async sendToXumm() {

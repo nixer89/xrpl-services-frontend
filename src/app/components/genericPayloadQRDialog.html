@@ -1,4 +1,4 @@
-<mat-dialog-content fxLayout="column" ngStyle.gt-xs="min-width: 40em;">
+<mat-dialog-content fxLayout="column">
     <div *ngIf="isOverview" fxLayout="column" fxLayoutGap="20px">
         <h3 class="floatcenter">Transaction Overview</h3>
         <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="10px">
@@ -16,7 +16,7 @@
                     <input matInput type="text" [(ngModel)]="memoInput" placeholder="Memo" aria-label="XRPL Transaction Memo">
                 </mat-form-field>
             </mat-card>
-            <div fxLayout="row" fxLayoutGap="10px" style="margin-top: 1em;">
+            <div fxLayout="row" fxLayoutGap="10px">
                 <button mat-raised-button color="primary" (click)="sendToXumm()">Confirm</button>
                 <button mat-raised-button color="warn" (click)="closeIt()">Cancel</button>
             </div>
