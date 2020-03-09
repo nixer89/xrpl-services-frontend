@@ -11,7 +11,8 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
     selector: "genericPayloadQRDialog",
-    templateUrl: "genericPayloadQRDialog.html"
+    templateUrl: "genericPayloadQRDialog.html",
+    styleUrls: ['./genericPayloadQRDialog.scss']
 })
 export class GenericPayloadQRDialog implements OnInit {
 
