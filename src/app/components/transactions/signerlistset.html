@@ -17,20 +17,20 @@
     </mat-panel-description>
   </mat-expansion-panel-header>
 
-  <div fxFlex fxLayout="column" fxLayoutGap="5em;">
+  <div fxFlex fxLayout="column" fxLayoutGap="0.8em">
     <a href="https://xrpl.org/signerlistset.html" target="_blank" rel="noreferrer">Signer List Set Documentation</a>
-    <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em; margin-bottom: 15px;" ngStyle.xs="margin-bottom: 25px;">
-      <mat-form-field>
+    <form fxLayout="column" fxLayoutGap="0.5em">
+      <mat-form-field style="margin-bottom: 15px;" ngStyle.xs="margin-bottom: 25px;">
         <input #inpsignerquorum matInput name="signerquorum" matInput placeholder="Signer Quorum. A target number for the signer weights" [(ngModel)]="signerQuorumInput" (ngModelChange)="checkChanges()">
         <mat-hint *ngIf="validSignerQuorum.valid" style="color: grey !important">{{validSignerQuorum.message}}</mat-hint>
         <mat-hint *ngIf="!validSignerQuorum.valid">{{validSignerQuorum.message}}</mat-hint>
       </mat-form-field>
     </form>
-    <mat-card ngStyle.xs="padding: 8px;">
-      <h3>Signer List (maximum of 8 XRPL addresses)</h3>
-      <mat-hint style="color: grey !important">Please make sure that the XRPL account this Signer List will be submitted to is not in the list below. Otherwise your transaction will fail.</mat-hint><br><br>
+    <mat-card fxLayout="column" fxLayoutGap="0.5em" ngStyle.xs="padding: 8px;">
+      <h4>Signer List (maximum of 8 XRPL addresses)</h4>
+      <mat-hint style="color: grey !important">Please make sure that the XRPL account this Signer List will be submitted to is not in the list below. Otherwise your transaction will fail.</mat-hint>
       <label>Current overall signer list weight: {{overallSignerWeights}}</label>
-      <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+      <mat-accordion fxLayout="column" fxLayoutGap="0.5em">
         <mat-expansion-panel *ngFor="let signer of signerList; index as i;" fxLayout="column" [ngClass]="(i%2==0 ? 'expansion-panel-light': 'expansion-panel-darker')">
           <mat-expansion-panel-header [ngClass]="(i%2==0 ? 'expansion-panel-light': 'expansion-panel-darker')">
             <mat-panel-title ngStyle.xs="font-size: 0.8em;" *ngIf="signer.SignerEntry.Account">
@@ -58,17 +58,19 @@
               <mat-hint *ngIf="isValidInteger(signer.SignerEntry.SignerWeight) && !isValidWeight(signer.SignerEntry.SignerWeight)">The signature weight must be greater 0 and smaller 65536</mat-hint>
             </mat-form-field>
           </form>
-          <button mat-raised-button color="warn" matTooltip="Delete Signer" (click)="removeSigner(i)" style="align-items: center; margin-top: 1em;">
+          <button mat-raised-button color="warn" matTooltip="Delete Signer" (click)="removeSigner(i)">
             <mat-icon>delete</mat-icon> Delete Signer Entry
           </button>
         </mat-expansion-panel>
       </mat-accordion>
-      <button *ngIf="signerList.length < 8" mat-raised-button color="primary" matTooltip="Add a new Signer" (click)="addSigner()" style="margin-top: 1em;">
-        <mat-icon>playlist_add</mat-icon> Add Signer
-      </button>
+      <div>
+        <button *ngIf="signerList.length < 8" mat-raised-button color="primary" matTooltip="Add a new Signer" (click)="addSigner()">
+          <mat-icon>playlist_add</mat-icon> Add Signer
+        </button>
+      </div>
     </mat-card>
     
-    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!this.signerQuorumInput || !validSignerList">
         Send Signer List Set to Xumm
       </button>
