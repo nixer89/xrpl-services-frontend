@@ -58,7 +58,7 @@
               <mat-hint *ngIf="isValidInteger(signer.SignerEntry.SignerWeight) && !isValidWeight(signer.SignerEntry.SignerWeight)">The signature weight must be greater 0 and smaller 65536</mat-hint>
             </mat-form-field>
           </form>
-          <button mat-raised-button color="warn" matTooltip="Delete Signer" (click)="removeSigner(i)">
+          <button mat-raised-button color="warn" matTooltip="Delete Signer" (click)="removeSigner(i)" style="margin-top: 0.8em;">
             <mat-icon>delete</mat-icon> Delete Signer Entry
           </button>
         </mat-expansion-panel>
@@ -74,7 +74,7 @@
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!this.signerQuorumInput || !validSignerList">
         Send Signer List Set to Xumm
       </button>
-      <button mat-raised-button color="warn" (click)="deleteSignerList()" matTooltip="Delete Signer List!"  [disabled]="!hasAlternativeSigningMethod() || !originalAccountObjects || (!originalAccountObjects[0] || this.originalAccountObjects[0].LedgerEntryType != 'SignerList')" >
+      <button mat-raised-button color="warn" (click)="deleteSignerList()" matTooltip="Delete Signer List!" [disabled]="(originalAccountObjects && (!originalAccountObjects[0] || this.originalAccountObjects[0].LedgerEntryType != 'SignerList')) || (originalAccountObjects && originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType === 'SignerList' && !hasAlternativeSigningMethod())" >
         Delete Signer List from Account
       </button>
     </div>

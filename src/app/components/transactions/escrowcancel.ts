@@ -38,10 +38,14 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   isValidEscrowCancel = false;
   validAddress = false;
   validSequence = false;
-  
-  lastKnownAddress:string = null;
 
+  lastKnownAddress:string = null;
+  lastKnownSequence:string = null;
+
+  showEscrowSequenceSelectedStyle:boolean = false;
   escrowSequenceSelected:boolean = false;
+
+  escrowOwnerChangedAutomatically:boolean = false;
 
   private payload:XummPostPayloadBodyJson = {
     options: {
@@ -75,27 +79,26 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   }
 
   sendPayloadToXumm() {
+
     this.googleAnalytics.analyticsEventEmitter('escrow_cancel', 'sendToXumm', 'escrow_cancel_component');
 
     this.payload.custom_meta = {};
+
     if(this.escrowOwnerInput && this.escrowOwnerInput.trim().length>0 && this.validAddress) {
       this.payload.txjson.Owner = this.escrowOwnerInput.trim();
-      this.payload.custom_meta.instruction = "Escrow Owner: " + this.payload.txjson.Owner;
+      this.payload.custom_meta.instruction = "- Escrow Owner: " +this.escrowOwnerInput.trim();
     }
 
-    if(this.escrowSequenceInput && this.validSequence)
+    if(this.escrowSequenceInput && this.validSequence) {
       this.payload.txjson.OfferSequence = Number(this.escrowSequenceInput);
-      this.payload.custom_meta.instruction+= "\nEscrow Sequence: " + this.payload.txjson.OfferSequence;
-
+      this.payload.custom_meta.instruction += "\n- Escrow Sequence: " + this.escrowSequenceInput;
+    }    
+    
     this.onPayload.emit(this.payload);
   }
 
-  checkChanges() {
-    //console.log("amountInput: " + this.amountInput);
-    //console.log("destinationInput: " + this.destinationInput);
-    
-    this.validSequence = this.escrowSequenceInput && Number.isInteger(Number(this.escrowSequenceInput));
-    this.validAddress = this.escrowOwnerInput && this.escrowOwnerInput.trim().length > 0 && this.isValidXRPAddress(this.escrowOwnerInput.trim());
+  xrplAccountChanged() {
+    this.checkChanges();
 
     if(this.validAddress && (this.escrowOwnerInput.trim() != this.lastKnownAddress)) {
       this.lastKnownAddress = this.escrowOwnerInput.trim();
@@ -105,8 +108,33 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
       this.lastKnownAddress = null;
       this.escrowAccountChanged.next(null);
     }
+  }
+
+  sequenceChanged() {
+    this.checkChanges();
+
+    if(!this.validSequence && this.lastKnownSequence && this.validAddress) {
+      //sequence change
+      console.log("send sequence changed");
+      this.escrowAccountChanged.next(this.escrowOwnerInput.trim());
+    }
+
+  }
+
+  checkChanges() {
+    //console.log("amountInput: " + this.amountInput);
+    //console.log("destinationInput: " + this.destinationInput);
+    //console.log(this.escrowSequenceInput);
+
+    this.validSequence = Number.isInteger(Number(this.escrowSequenceInput)) && parseInt(this.escrowSequenceInput) > 0;
+    this.validAddress = this.escrowOwnerInput && this.escrowOwnerInput.trim().length > 0 && this.isValidXRPAddress(this.escrowOwnerInput.trim());
+
+    if(this.validSequence)
+      this.lastKnownSequence = this.escrowSequenceInput;
 
     this.isValidEscrowCancel = this.validAddress && this.validSequence;
+
+    this.escrowSequenceSelected = false;
 
     //console.log("isValidEscrowCancel: " + this.isValidEscrowCancel);
   }
@@ -126,17 +154,24 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
 
   clearInputs() {
     this.escrowOwnerInput = this.escrowSequenceInput = null;
-    this.isValidEscrowCancel = this.validAddress = this.validSequence = false;
+    this.isValidEscrowCancel = this.validAddress = this.validSequence = this.escrowOwnerChangedAutomatically = false;
     this.lastKnownAddress = null;
+    
     this.escrowAccountChanged.next(null);
   }
 
   onEscrowSequenceFound(escrowInfo:any) {
+    if(this.escrowOwnerInput && this.escrowOwnerInput.trim() != escrowInfo.owner) {
+      this.escrowOwnerInput = escrowInfo.owner;
+      this.escrowOwnerChangedAutomatically = true;
+      setTimeout(() => this.escrowOwnerChangedAutomatically = false, 5000);
+    }
     this.escrowSequenceInput = escrowInfo.sequence;
+    this.checkChanges();
 
     this.escrowSequenceSelected = true;
-    setTimeout(() => this.escrowSequenceSelected = false, 1000);
 
-    this.checkChanges();
+    this.showEscrowSequenceSelectedStyle = true;
+    setTimeout(() => this.showEscrowSequenceSelectedStyle = false, 1000);
   }
 }

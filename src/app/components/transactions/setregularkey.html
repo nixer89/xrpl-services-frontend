@@ -26,7 +26,7 @@
     </mat-form-field>
   </form>
   <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
-    <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validAddress || (!originalAccountInfo || (originalAccountInfo && (regularKeyInput == originalAccountInfo.Account || regularKeyInput == originalAccountInfo.RegularKey)))">
+    <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validAddress || (originalAccountInfo && (regularKeyInput == originalAccountInfo.Account || regularKeyInput == originalAccountInfo.RegularKey))">
       Send Set Regular Key to Xumm
     </button>
     <button mat-raised-button color="warn" (click)="deleteRegularKey()" matTooltip="Delete Regular Key!" [disabled]="(originalAccountInfo || originalAccountObjects) && (!hasAlternativeSigningMethod() || originalAccountInfo && !originalAccountInfo.RegularKey)">

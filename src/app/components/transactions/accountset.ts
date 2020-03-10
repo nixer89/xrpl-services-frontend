@@ -141,37 +141,39 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     //console.log("domain hex: " + this.stringToHex(this.domainInput.trim()));
     //console.log("email: " + this.emailInput);
 
+    this.googleAnalytics.analyticsEventEmitter('set_account_data', 'sendToXumm', 'account_set_component');
+
     this.payload.custom_meta = {};
     this.payload.custom_meta.instruction = "";
 
     if(this.domainInput && this.validDomain && (!this.originalAccountInfo || this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain)) {
       this.payload.txjson.Domain = this.stringToHex(this.domainInput.trim());
-      this.payload.custom_meta.instruction += "- Set Domain to '"+this.domainInput.trim()
+      this.payload.custom_meta.instruction += "- Set Domain to '"+this.domainInput.trim()+'\n'
     }
 
     if(this.emailInput && this.validEmail && (!this.originalAccountInfo || md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash)) {
       this.payload.txjson.EmailHash = md5(this.emailInput.trim()).toUpperCase();
-      this.payload.custom_meta.instruction += "- Set Email to'"+this.emailInput.trim()
+      this.payload.custom_meta.instruction += "- Set Email to '"+this.emailInput.trim()+'\n'
     }
 
     if(this.requireDestTagChangeDetected) {
       if(this.requireDestTagInput) {
         this.payload.txjson.SetFlag = this.ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG;
-        this.payload.custom_meta.instruction += "\n- Set 'Require Destination Tag'"
+        this.payload.custom_meta.instruction += "- Set 'Require Destination Tag'\n"
       } else {
         this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG;
-        this.payload.custom_meta.instruction += "\n- Unset 'Require Destination Tag'"
+        this.payload.custom_meta.instruction += "- Unset 'Require Destination Tag'\n"
       }
     }
 
     if(this.disableMasterKeyChangeDetected) {
       if(this.disableMasterKeyInput) {
         this.payload.txjson.SetFlag = this.ACCOUNT_FLAG_DISABLE_MASTER_KEY;
-        this.payload.custom_meta.instruction += "\n- Deactivate Master Key"
+        this.payload.custom_meta.instruction += "- Disable Master Key\n"
       }
       else {
         this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_DISABLE_MASTER_KEY;
-        this.payload.custom_meta.instruction += "\n- Reactivate Master Key"
+        this.payload.custom_meta.instruction += "- Enable Master Key\n"
       }
     }    
 

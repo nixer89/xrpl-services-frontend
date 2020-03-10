@@ -1,12 +1,12 @@
-<mat-dialog-content fxFlex fxLayout="column">
+<mat-dialog-content fxFlex fxLayout="column" ngStyle.gt-xs="min-width: 20em">
     <div *ngIf="isOverview" fxLayout="column" fxLayoutGap="1em">
         <h3 class="floatcenter">{{genericPayload.payload.txjson.TransactionType}}</h3>
-        <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="0.8em">
+        <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="0.8em" ngStyle.gt-xs="width: 90%;">
             <mat-card class="theme-background">
                 <h4>Summary:</h4>
                 <label class="break-words">{{genericPayload.payload.custom_meta.instruction}}</label>
             </mat-card>
-            <mat-card class="theme-background" style="width: 90%;">
+            <mat-card class="theme-background" ngStyle.gt-xs="width: 90%;">
                 <h4>Transaction Memo (optional):</h4>
                 <mat-form-field style="width: 100%;">
                     <input matInput type="text" [(ngModel)]="memoInput" placeholder="Memo" aria-label="XRPL Transaction Memo">

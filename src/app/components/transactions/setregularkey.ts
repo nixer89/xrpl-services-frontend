@@ -81,7 +81,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
 
   sendPayloadToXumm() {
 
-    this.googleAnalytics.analyticsEventEmitter('set_regular_key', 'sendToXumm', 'set_regular_key');
+    this.googleAnalytics.analyticsEventEmitter('set_regular_key', 'sendToXumm', 'set_regular_key_component');
 
     if(this.regularKeyInput && this.regularKeyInput.trim().length>0 && this.validAddress) {
       this.payload.txjson.RegularKey = this.regularKeyInput.trim();
@@ -92,13 +92,10 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
     this.onPayload.emit(this.payload);
   }
 
-  checkChanges() {
-    //console.log("amountInput: " + this.amountInput);
-    //console.log("destinationInput: " + this.destinationInput);
-    
+  checkChanges() {   
     this.validAddress = this.regularKeyInput && this.regularKeyInput.trim().length > 0 && this.isValidXRPAddress(this.regularKeyInput.trim());
 
-    //console.log("isValidEscrowCancel: " + this.isValidEscrowCancel);
+    //console.log("validAddress: " + this.validAddress);
   }
 
   isValidXRPAddress(address: string): boolean {

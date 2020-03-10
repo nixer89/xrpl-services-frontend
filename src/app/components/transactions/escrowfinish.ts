@@ -38,7 +38,9 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   private transactionSuccessfullSubscription: Subscription;
   escrowAccountChanged: Subject<string> = new Subject<string>();
 
+  showEscrowSequenceSelectedStyle:boolean = false;
   escrowSequenceSelected:boolean = false;
+  showPassword:boolean = true;
 
   isValidEscrowFinish = false;
   validAddress = false;
@@ -142,13 +144,8 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkChanges() {
-    //console.log("amountInput: " + this.amountInput);
-    //console.log("destinationInput: " + this.destinationInput);
-    //console.log(this.escrowSequenceInput);
-
-    this.validSequence = this.escrowSequenceInput && Number.isInteger(Number(this.escrowSequenceInput));
-    this.validAddress = this.escrowOwnerInput && this.escrowOwnerInput.trim().length > 0 && this.isValidXRPAddress(this.escrowOwnerInput.trim());
+  xrplAccountChanged() {
+    this.checkChanges();
 
     if(this.validAddress && (this.escrowOwnerInput.trim() != this.lastKnownAddress)) {
       this.lastKnownAddress = this.escrowOwnerInput.trim();
@@ -158,11 +155,26 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
       this.lastKnownAddress = null;
       this.escrowAccountChanged.next(null);
     }
+  }
 
-    if(!this.validSequence && this.lastKnownSequence && this.isValidXRPAddress) {
+  sequenceChanged() {
+    this.checkChanges();
+
+    if(!this.validSequence && this.lastKnownSequence && this.validAddress) {
       //sequence change
+      console.log("send sequence changed");
       this.escrowAccountChanged.next(this.escrowOwnerInput.trim());
     }
+
+  }
+
+  checkChanges() {
+    //console.log("amountInput: " + this.amountInput);
+    //console.log("destinationInput: " + this.destinationInput);
+    //console.log(this.escrowSequenceInput);
+
+    this.validSequence = Number.isInteger(Number(this.escrowSequenceInput)) && parseInt(this.escrowSequenceInput) > 0;
+    this.validAddress = this.escrowOwnerInput && this.escrowOwnerInput.trim().length > 0 && this.isValidXRPAddress(this.escrowOwnerInput.trim());
 
     if(this.validSequence)
       this.lastKnownSequence = this.escrowSequenceInput;
@@ -170,6 +182,9 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     this.validCondition = this.passwordInput && this.passwordInput.trim().length > 0;
 
     this.isValidEscrowFinish = this.validAddress && this.validSequence && (!this.passwordInput || this.validCondition);
+
+    this.escrowSequenceSelected = false;
+    this.showPassword = true;
 
     //console.log("isValidEscrowFinish: " + this.isValidEscrowFinish);
   }
@@ -202,10 +217,12 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
       setTimeout(() => this.escrowOwnerChangedAutomatically = false, 5000);
     }
     this.escrowSequenceInput = escrowInfo.sequence;
+    this.checkChanges();
 
     this.escrowSequenceSelected = true;
-    setTimeout(() => this.escrowSequenceSelected = false, 1000);
-    
-    this.checkChanges();
+    this.showPassword = escrowInfo.condition;
+
+    this.showEscrowSequenceSelectedStyle = true;
+    setTimeout(() => this.showEscrowSequenceSelectedStyle = false, 1000);
   }
 }

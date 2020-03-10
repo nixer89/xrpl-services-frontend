@@ -45,14 +45,14 @@ export class XrplTransactionsComponent implements OnInit {
   async ngOnInit() {
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     //this.isTestMode = true;
-    //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
-    //await this.loadAccountData();
+    this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
+    await this.loadAccountData();
 
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
-        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload_id', 'xrpl_transactions_component');
+        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'xrpl_transactions_component');
         //check if transaction was successfull and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
         let payloadInfo:XummGetPayloadResponse = await this.xummApi.getPayloadInfo(payloadId);
@@ -83,6 +83,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   async loadAccountData() {
     if(this.xrplAccount) {
+      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'xrpl_transactions_component');
       this.loadingData = true;
 
       if(this.websocket) {
@@ -197,6 +198,7 @@ export class XrplTransactionsComponent implements OnInit {
     }
 
     if(trxInfo && trxInfo.success) {
+      this.googleAnalytics.analyticsEventEmitter('handle_transaction_success', 'handle_transaction', 'xrpl_transactions_component');
       this.isTestMode = trxInfo.testnet;
 
       if(trxInfo.txid) {
@@ -213,6 +215,7 @@ export class XrplTransactionsComponent implements OnInit {
 
       this.transactionSuccessfull.next();
     } else {
+      this.googleAnalytics.analyticsEventEmitter('handle_transaction_failed', 'handle_transaction', 'xrpl_transactions_component');
       this.lastTrxLinkBithomp = null;
       this.lastTrxLinkXrplOrg = null;
       this.lastTrxLinkXrpScan = null;
@@ -256,7 +259,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   logoutAccount() {
     this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'xrpl_transactions_component');
-    this.xrplAccount = this.xrplAccount_Info = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = null;
+    this.xrplAccount = this.xrplAccount_Info = this.xrplAccount_Objects = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = null;
     this.emitAccountInfoChanged();
     this.emitAccountObjectsChanged();
   }

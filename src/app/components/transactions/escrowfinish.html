@@ -20,20 +20,21 @@
   <a href="https://xrpl.org/escrowfinish.html" target="_blank" rel="noreferrer">Escrow Finish Documentation</a><br/>
   <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
     <mat-form-field>
-      <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="checkChanges()">
+      <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="xrplAccountChanged()">
       <mat-hint *ngIf="escrowOwnerInput && !validAddress">Not a valid XRPL address</mat-hint>
       <mat-hint *ngIf="escrowOwnerChangedAutomatically">Escrow Owner changed. Your inserted account was the destination address.</mat-hint>
     </mat-form-field>
-    <div style="margin-bottom: 1em;" *ngIf="!validSequence">
+    <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validSequence ? 'block':'none' }">
       <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" (escrowSequenceFound)="onEscrowSequenceFound($event)" [testMode]="testMode"></escrowList>
     </div>
-    <mat-form-field [ngClass]="{'changed': escrowSequenceSelected}">
-      <input #inpescrowsequence matInput name="escrowsequence" min="0" matInput placeholder="Escrow Sequence Number" [(ngModel)]="escrowSequenceInput" (ngModelChange)="checkChanges()">
+    <mat-form-field [ngClass]="{'changed': showEscrowSequenceSelectedStyle}">
+      <input #inpescrowsequence matInput name="escrowsequence" min="0" matInput placeholder="Escrow Sequence Number" [(ngModel)]="escrowSequenceInput" (ngModelChange)="sequenceChanged()">
       <mat-hint *ngIf="escrowSequenceInput && !validSequence">Not a valid Escrow Sequence</mat-hint>
     </mat-form-field>
-    <mat-form-field>
-      <input #inppassword matInput name="password" [type]="hidePw ? 'password' : 'text'" matInput placeholder="Password which secures the Escrow (optional)" [(ngModel)]="passwordInput" (ngModelChange)="checkChanges()">
-      <mat-hint style="color: orangered;">Optional. The password you choose when creating the Escrow.</mat-hint>
+    <mat-form-field *ngIf="showPassword">
+      <input #inppassword matInput name="password" [type]="hidePw ? 'password' : 'text'" matInput placeholder="Password which secures the Escrow {{!escrowSequenceSelected ? '(optional)' : ''}}" [(ngModel)]="passwordInput" (ngModelChange)="checkChanges()">
+      <mat-hint *ngIf="!escrowSequenceSelected" style="color: orangered;">Optional. The password you choose when creating the Escrow.</mat-hint>
+      <mat-hint *ngIf="escrowSequenceSelected" style="color: orangered;">The password you choose when creating the Escrow.</mat-hint>
       <button mat-icon-button matSuffix (click)="hidePw = !hidePw" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePw">
         <mat-icon>{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
       </button>

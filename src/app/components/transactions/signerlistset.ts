@@ -74,7 +74,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
     });
 
     this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(accountObjects => {
-      //console.log("account objects changed received")
+      //console.log("account objects changed received: " + JSON.stringify(accountObjects))
       this.clearInputs();
       this.originalAccountObjects = accountObjects;
       if(this.originalAccountObjects && this.originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType==="SignerList") {
@@ -89,7 +89,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
     });
 
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
-      //console.log("account info changed received")
+      //console.log("account info changed received: " + JSON.stringify(accountData))
       this.originalAccountInfo = accountData;
     });
   }
@@ -226,7 +226,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   sendPayloadToXumm() {
-    this.googleAnalytics.analyticsEventEmitter('signer_list_set', 'sendToXumm', 'Xumm');
+    this.googleAnalytics.analyticsEventEmitter('signer_list_set', 'sendToXumm', 'signer_list_set_component');
 
     this.payload.custom_meta = {};
 
@@ -246,12 +246,11 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
 
     //console.log("into integer");
     this.payload.custom_meta.instruction = "- Number of signers: " + signerListToSend.length;
-    this.payload.custom_meta.instruction += "\n- Overall signer weight: " + this.overallSignerWeights;
+    
+    this.payload.txjson.SignerQuorum = this.signerQuorumInput
+    this.payload.custom_meta.instruction += "\n- Quorum for valid MultiSignature: " + this.signerQuorumInput;
 
-    if(this.signerQuorumInput && this.signerQuorumInput) {
-      this.payload.txjson.SignerQuorum = this.signerQuorumInput
-      this.payload.custom_meta.instruction += "\n- Quorum for valid MultiSignature: " + this.signerQuorumInput;
-    }
+    this.payload.custom_meta.instruction += "\n- Overall signer weight: " + this.overallSignerWeights;
 
     if(signerListToSend && signerListToSend.length > 0 && this.validSignerList)
       this.payload.txjson.SignerEntries = signerListToSend;
@@ -278,6 +277,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   deleteSignerList() {
+    this.googleAnalytics.analyticsEventEmitter('delete_signer_list', 'sendToXumm', 'signer_list_set_component');
     this.onPayload.emit({
       options: {
         expire: 5
