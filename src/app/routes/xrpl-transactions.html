@@ -1,4 +1,4 @@
-<mat-card fxFlex fxLayout="column" fxLayoutGap="0.1em" class="margin-5">
+<mat-card fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
     <div fxLayout="row" fxLayout.xs="column">
         <div *ngIf="xrplAccount" style="align-self: start;">
             <button  mat-raised-button color="primary" matTooltip="Logout" matTooltipPosition="below" (click)="logoutAccount()">
@@ -17,20 +17,18 @@
                 </div>
                 <div *ngIf="xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
                     <label fxHide.xs>Logged in with:</label>
-                    <label fxShow fxHide.xs>{{xrplAccount}}</label>
-                    <label fxShow.xs fxHide style="font-size: 0.8em;"> {{xrplAccount}}</label>
+                    <label class="account-loading" ngStyle.xs="font-size: 0.8em;"> {{xrplAccount}}</label>
                     <label fxHide.xs>and balance:</label>
-                    <label fxShow fxHide.xs>{{getAccountBalance()}} XRP.</label>
-                    <label fxShow.xs fxHide style="font-size: 0.8em;">{{getAccountBalance()}} XRP.</label>
+                    <label class="account-loading" ngStyle.xs="font-size: 0.8em;">{{getAccountBalance()}} XRP.</label>
                 </div>
                 <label class="account-warning" ngStyle.xs="font-size: 0.8em;" *ngIf="!loadingData && xrplAccount && xrplAccount_Info.error">This account was not found on the {{isTestMode ? ' test net ' : ' live net '}}.</label>
                 <div fxLayout="row" fxLayoutAlign="center center" *ngIf="loadingData">
-                    <label ngClass="account-loading" ngStyle.xs="font-size: 0.8em;" >Loading account data...</label>
+                    <label class="account-loading" ngStyle.xs="font-size: 0.8em;" >Loading account data...</label>
                     <mat-progress-spinner color="primary" mode="indeterminate" diameter=20></mat-progress-spinner>
                 </div>
             </div>
         </div>
-        <mat-card class="theme-background" fxShow fxHide.xs >
+        <mat-card *ngIf="xrplAccount" class="theme-background" fxShow fxHide.xs >
             <div fxLayout="column" fxLayoutAlign="start center">
                 <label>Network</label>
                 <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
@@ -41,7 +39,7 @@
             </div>
         </mat-card>
     </div>
-    <mat-card fxShow.xs fxHide class="theme-background floatcenter" style="padding-top: 1em;">
+    <mat-card *ngIf="xrplAccount" fxShow.xs fxHide class="theme-background floatcenter" style="font-size: 0.8em;">
         <div fxLayout="column" fxLayoutAlign="start center">
             <label>Network</label>
             <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
