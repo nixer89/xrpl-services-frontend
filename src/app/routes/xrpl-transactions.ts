@@ -10,6 +10,8 @@ import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
 import { XummPostPayloadBodyJson, XummGetPayloadResponse } from 'xumm-api';
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
+import { LocalStorageService } from 'angular-2-local-storage';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'xrpl-transactions',
@@ -40,9 +42,18 @@ export class XrplTransactionsComponent implements OnInit {
     private route: ActivatedRoute,
     private xummApi: XummService,
     private snackBar: MatSnackBar,
-    private googleAnalytics: GoogleAnalyticsService) { }
+    private googleAnalytics: GoogleAnalyticsService,
+    private localStorage: LocalStorageService,
+    private overlayContainer: OverlayContainer) { }
 
   async ngOnInit() {
+    if(this.localStorage && !this.localStorage.get("darkMode")) {
+      this.overlayContainer.getContainerElement().classList.remove('dark-theme');
+      this.overlayContainer.getContainerElement().classList.add('light-theme');
+    } else {
+        this.overlayContainer.getContainerElement().classList.remove('light-theme');
+        this.overlayContainer.getContainerElement().classList.add('dark-theme');
+    }
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     //this.isTestMode = true;
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
@@ -61,7 +72,7 @@ export class XrplTransactionsComponent implements OnInit {
             this.snackBar.dismiss();
             this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
             this.xrplAccount = payloadInfo.response.account;
-            this.loadAccountData();
+            this.localStorage.set("xrplAccount", this.xrplAccount);
         } else if (signinToValidate) {
             this.snackBar.dismiss();
             this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
@@ -78,10 +89,15 @@ export class XrplTransactionsComponent implements OnInit {
           }
         }
       }
+
+      if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
+        this.xrplAccount = this.localStorage.get("xrplAccount");
+        this.loadAccountData();
+      }
     });
   }
 
-  async loadAccountData() {
+  async loadAccountData(isInit?: boolean) {
     if(this.xrplAccount) {
       this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'xrpl_transactions_component');
       this.loadingData = true;
@@ -127,6 +143,9 @@ export class XrplTransactionsComponent implements OnInit {
           this.emitAccountInfoChanged();
           this.emitAccountObjectsChanged();
         }
+
+        if(isInit && this.snackBar)
+          this.snackBar.dismiss();
 
         this.loadingData = false;
       });
@@ -222,6 +241,7 @@ export class XrplTransactionsComponent implements OnInit {
     }
 
     if(this.xrplAccount) {
+      this.localStorage.set("xrplAccount", this.xrplAccount);
       this.loadAccountData();
     }
   }
@@ -260,6 +280,7 @@ export class XrplTransactionsComponent implements OnInit {
   logoutAccount() {
     this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'xrpl_transactions_component');
     this.xrplAccount = this.xrplAccount_Info = this.xrplAccount_Objects = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = null;
+    this.localStorage.remove("xrplAccount");
     this.emitAccountInfoChanged();
     this.emitAccountObjectsChanged();
   }

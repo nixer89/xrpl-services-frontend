@@ -41,6 +41,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(){
+    this.localStorage.remove("xrplAccount");
     let storageKeys:string[] = this.localStorage.keys();
     if(storageKeys && storageKeys.includes('darkMode')) {
       this.darkMode = this.localStorage.get("darkMode");

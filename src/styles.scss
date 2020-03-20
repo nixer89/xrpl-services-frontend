@@ -58,13 +58,13 @@ a.footerlink {
 }
 
 body .snackbar-success {
-    color: green;
+    color: green !important;
     display: flex;
     justify-content: center;
-  }
+}
   
 body .snackbar-failed {
-    color: #EB0000;
+    color: #EB0000 !important;
     display: flex;
     justify-content: center;
 }
