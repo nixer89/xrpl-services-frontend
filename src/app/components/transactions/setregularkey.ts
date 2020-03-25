@@ -38,9 +38,6 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   validAddress = false;
 
   private payload:XummPostPayloadBodyJson = {
-    options: {
-      expire: 5
-    },
     txjson: {
       TransactionType: "SetRegularKey"
     }
@@ -118,9 +115,6 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   clearInputs() {
     this.regularKeyInput = null;
     this.payload = {
-      options: {
-        expire: 5
-      },
       txjson: {
         TransactionType: "SetRegularKey"
       }
@@ -130,9 +124,6 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   deleteRegularKey() {
     this.googleAnalytics.analyticsEventEmitter('delete_regular_key', 'sendToXumm', 'set_regular_key_component');
     let payloadToSend:XummPostPayloadBodyJson = {
-      options: {
-        expire: 5,
-      },
       txjson: {
         TransactionType: "SetRegularKey"
       },

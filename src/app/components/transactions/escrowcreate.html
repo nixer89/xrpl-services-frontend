@@ -29,7 +29,6 @@
       <mat-hint *ngIf="amountInput && !validAmount && maxSixDigits">The XRP amount cannot have more than 6 decimals.</mat-hint>
       <mat-hint *ngIf="amountInput && !validAmount && ! maxSixDigits && amountInput.toString().includes(',')">Not a valid amount. Please use '.' as decimal operator.</mat-hint>
       <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && !amountInput.toString().includes(',')">Not a valid amount</mat-hint>
-      
     </mat-form-field>
     <mat-card>
       <label>Cancel After (optional)</label>

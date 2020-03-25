@@ -60,9 +60,6 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   changesDetected:boolean = false;
 
   private payload:XummPostPayloadBodyJson = {
-    options: {
-      expire: 5
-    },
     txjson: {
       TransactionType: "SignerListSet"
     }
@@ -267,9 +264,6 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
     this.validSignerList = false;
 
     this.payload = {
-      options: {
-        expire: 5
-      },
       txjson: {
         TransactionType: "SignerListSet"
       }
@@ -279,9 +273,6 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   deleteSignerList() {
     this.googleAnalytics.analyticsEventEmitter('delete_signer_list', 'sendToXumm', 'signer_list_set_component');
     this.onPayload.emit({
-      options: {
-        expire: 5
-      },
       txjson: {
         TransactionType: "SignerListSet",
         SignerQuorum: 0

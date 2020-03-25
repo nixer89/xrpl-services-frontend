@@ -47,9 +47,6 @@ export class TopbarComponent implements OnInit {
   async supportViaXumm() {
     //setting up xumm payload and waiting for websocket
     let xummPayload:XummPostPayloadBodyJson = {
-      options: {
-          expire: 5
-      },
       txjson: {
           TransactionType: "Payment",
           Fee: "12"

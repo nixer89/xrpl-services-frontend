@@ -62,7 +62,7 @@ export class XummSignDialogComponent implements OnInit{
             },
             payload: {
                 options: {
-                    expire: 1
+                    expire: 5
                 },
                 txjson: {
                     TransactionType: "SignIn"

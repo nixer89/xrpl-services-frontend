@@ -66,6 +66,12 @@ export class GenericPayloadQRDialog implements OnInit {
         this.loading = true;
         this.isOverview = false;
 
+        //set expiry time to 5 minutes
+        if(!this.genericPayload.payload.options)
+            this.genericPayload.payload.options = {};
+        
+        this.genericPayload.payload.options.expire = 5;
+
         this.genericPayload.options.web = this.deviceDetector.isDesktop();
 
         let refererURL:string;

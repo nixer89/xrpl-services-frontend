@@ -69,9 +69,6 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   hidePw = true;
 
   private xummPayload:XummPostPayloadBodyJson = {
-    options: {
-      expire: 5
-    },
     txjson: {
       TransactionType: "EscrowCreate"
     }

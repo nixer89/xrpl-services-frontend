@@ -15,7 +15,8 @@ import { TopbarComponent } from './components/topbar';
 import { FooterComponent } from './components/footer';
 import { XummSignDialogComponent } from './components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from './components/genericPayloadQRDialog';
-import { EscrowList } from './components/escrowList';
+import { EscrowList } from './components/escrowList/escrowList';
+import { IouList } from './components/iouList/iouList';
 
 //XRPL transactions
 import { AccountSetComponent } from './components/transactions/accountset';
@@ -24,6 +25,7 @@ import { EscrowFinishComponent } from './components/transactions/escrowfinish';
 import { EscrowCancelComponent } from './components/transactions/escrowcancel';
 import { SetRegularKeyComponent } from './components/transactions/setregularkey';
 import { SignerListSetComponent } from './components/transactions/signerlistset';
+import { TrustSetComponent } from './components/transactions/trustset';
 
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -67,12 +69,14 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     XummSignDialogComponent,
     GenericPayloadQRDialog,
     EscrowList,
+    IouList,
     AccountSetComponent,
     EscrowCreateComponent,
     EscrowFinishComponent,
     EscrowCancelComponent,
     SetRegularKeyComponent,
-    SignerListSetComponent
+    SignerListSetComponent,
+    TrustSetComponent
   ],
   imports: [
     BrowserModule,

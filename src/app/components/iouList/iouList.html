@@ -1,0 +1,36 @@
+<div *ngIf="loading" fxLayout="row" fxLayoutAlign="start center">
+    <label>Loading IOUs...&nbsp;</label>
+    <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+</div>
+<label style="color: darkorange" *ngIf="!loading && !iouList">This account does not issue any currencies (IOUs).</label>
+<mat-accordion *ngIf="!loading && iouList && iouList.length > 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+    <mat-expansion-panel #mep>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Select an IOU from the list below
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-table [dataSource]="iouList" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="currency">
+                <mat-header-cell *matHeaderCellDef> IOU Currency Code </mat-header-cell>
+                <mat-cell *matCellDef="let iou" (click)="mep.expanded=false">
+                    <span fxShow fxHide.xs > {{iou.currency}}</span>
+                    <span fxShow.xs fxHide ><b>IOU Currency Code:</b><br>{{iou.currency}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="amount">
+                <mat-header-cell *matHeaderCellDef > Total issued value of this currency: </mat-header-cell>
+                <mat-cell *matCellDef="let iou" (click)="mep.expanded=false">
+                    <span fxShow fxHide.xs >{{iou.amount}} {{iou.currency}}</span>
+                    <span fxShow.xs fxHide ><b>Total issued value:</b><br>{{iou.amount}} {{iou.currency}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" (click)="iouSelected(row)"></mat-row>
+
+        </mat-table>
+    </mat-expansion-panel>
+</mat-accordion>

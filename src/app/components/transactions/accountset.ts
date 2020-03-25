@@ -55,9 +55,6 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   validEmail:boolean = false;
 
   payload:XummPostPayloadBodyJson = {
-    options: {
-      expire: 1
-    },
     txjson: {
       TransactionType: "AccountSet"
     }
@@ -89,9 +86,6 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
   initializePayload() {
     this.payload = {
-      options: {
-        expire: 1
-      },
       txjson: {
         TransactionType: "AccountSet"
       }

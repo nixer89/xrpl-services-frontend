@@ -56,9 +56,6 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   showPwField:boolean = true;
 
   private payload:XummPostPayloadBodyJson = {
-    options: {
-      expire: 5
-    },
     txjson: {
       TransactionType: "EscrowFinish"
     }

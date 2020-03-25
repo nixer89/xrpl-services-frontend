@@ -48,9 +48,6 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   escrowOwnerChangedAutomatically:boolean = false;
 
   private payload:XummPostPayloadBodyJson = {
-    options: {
-      expire: 5
-    },
     txjson: {
       TransactionType: "EscrowCancel"
     }
