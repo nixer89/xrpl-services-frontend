@@ -142,11 +142,11 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     this.validAddress = this.issuerAccountInput && this.issuerAccountInput.trim().length > 0 && this.isValidXRPAddress(this.issuerAccountInput.trim());
 
     if(this.validCurrency) {
-      if(!this.lastKnownCurrency)
+      if((!this.lastKnownCurrency || this.lastKnownCurrency.trim().length == 0 ) && (!this.limitInput || this.limitInput.trim().length == 0))
         this.limitInput = "1000000";
-
-      this.lastKnownCurrency = this.issuedCurrencyInput;
     }
+
+    this.lastKnownCurrency = this.issuedCurrencyInput;
 
     
     if(this.limitInput) {
@@ -184,7 +184,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
   }
 
   clearInputs() {
-    this.issuerAccountInput = this.issuedCurrencyInput = null;
+    this.issuerAccountInput = this.issuedCurrencyInput = this.limitInput = null;
     this.isValidTrustSet = this.validAddress = this.validCurrency = this.validLimit = false;
     this.lastKnownAddress = null;
     
