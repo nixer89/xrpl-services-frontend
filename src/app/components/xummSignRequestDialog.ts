@@ -113,21 +113,27 @@ export class XummSignDialogComponent implements OnInit{
             //console.log("message received: " + JSON.stringify(message));
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
-                let transactionResult:TransactionValidation = await this.xummApi.checkSignIn(message.payload_uuidv4);
-                //console.log(transactionResult);
-                
-                this.waitingForPayment = false;
-
-                if(this.websocket) {
-                    this.websocket.unsubscribe();
-                    this.websocket.complete();
-                }
-
-                if(transactionResult && transactionResult.success) {
-                    this.transactionSigned = true;
+                if(message.signed) {
+                    let transactionResult:TransactionValidation = await this.xummApi.checkSignIn(message.payload_uuidv4);
+                    //console.log(transactionResult);
                     
-                    setTimeout(() => this.handleSuccessfullSignIn(transactionResult.account), 3000);
+                    this.waitingForPayment = false;
+
+                    if(this.websocket) {
+                        this.websocket.unsubscribe();
+                        this.websocket.complete();
+                    }
+
+                    if(transactionResult && transactionResult.success) {
+                        this.transactionSigned = true;
+                        
+                        setTimeout(() => this.handleSuccessfullSignIn(transactionResult.account), 3000);
+                    } else {
+                        this.showError = true;
+                        setTimeout(() => this.handleFailedSignIn(), 3000);
+                    }
                 } else {
+                    this.waitingForPayment = false;
                     this.showError = true;
                     setTimeout(() => this.handleFailedSignIn(), 3000);
                 }

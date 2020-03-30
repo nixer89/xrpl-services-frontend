@@ -148,6 +148,7 @@ export class GenericPayloadQRDialog implements OnInit {
                         setTimeout(() => this.handleFailedTransaction(), 3000);
                     }
                 } else {
+                    this.waitingForPayment = false;
                     this.showError = true;
                     setTimeout(() => this.handleFailedTransaction(), 3000);
                 }
