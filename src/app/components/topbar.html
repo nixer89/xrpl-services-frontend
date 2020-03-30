@@ -30,11 +30,14 @@
   <mat-toolbar class="second-toolbar" color="primary" fxLayout="row" ngStyle.xs="padding:0px; font-size: 0.5em;">
     <!-- normal menu -->
     <div fxShow fxHide.xs>
-      <button mat-button [routerLink]="['']" matTooltip="XRPl Transactions">
+      <button mat-button [routerLink]="['']" matTooltip="XRPL Transactions">
         <i class="material-icons topbar-menu-icon">mobile_friendly</i> XRPL Transactions
       </button>
       <button mat-button [routerLink]="['/scheduler']" matTooltip="Xumm Scheduler">
         <i class="material-icons topbar-menu-icon">schedule</i> Transaction Scheduler
+      </button>
+      <button mat-button [routerLink]="['/generic-backend']" matTooltip="Xumm Community Generic Backend">
+        <i class="material-icons topbar-menu-icon">device_hub</i> Generic Backend
       </button>
     </div>
 

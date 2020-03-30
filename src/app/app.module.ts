@@ -11,6 +11,7 @@ import { TermsComponent } from './routes/specific/terms';
 import { PrivacyComponent } from './routes/specific/privacy'
 import { XrplTransactionsComponent } from './routes/xrpl-transactions';
 import { TransactionScheduler } from './routes/transaction-scheduler';
+import { GenericBackendDefinition } from './routes/generic-backend';
 import { TopbarComponent } from './components/topbar';
 import { FooterComponent } from './components/footer';
 import { XummSignDialogComponent } from './components/xummSignRequestDialog';
@@ -64,6 +65,7 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     PrivacyComponent,
     XrplTransactionsComponent,
     TransactionScheduler,
+    GenericBackendDefinition,
     TopbarComponent,
     FooterComponent,
     XummSignDialogComponent,
