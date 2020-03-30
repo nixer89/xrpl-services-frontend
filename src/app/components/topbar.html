@@ -46,11 +46,14 @@
         <i class="material-icons topbar-menu-icon">menu</i>
       </button>
       <mat-menu #appMenu="matMenu" yPosition="below" xPosition="after">
-        <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['']" matTooltip="XRPl Transactions">
+        <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['']" matTooltip="XRPL Transactions">
           <i class="material-icons">mobile_friendly</i> XRPL Transactions
         </button>
         <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/scheduler']" matTooltip="Xumm Scheduler">
           <i class="material-icons">schedule</i> Transaction Scheduler
+        </button>
+        <button mat-button [routerLink]="['/generic-backend']" matTooltip="Xumm Community Generic Backend">
+          <i class="material-icons topbar-menu-icon">device_hub</i> Generic Backend
         </button>
       </mat-menu>
     </div>
