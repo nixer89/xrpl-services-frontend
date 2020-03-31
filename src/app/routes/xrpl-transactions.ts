@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
-import { XummPostPayloadBodyJson, XummGetPayloadResponse } from 'xumm-api';
+import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';

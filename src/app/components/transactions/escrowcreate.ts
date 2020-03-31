@@ -1,6 +1,5 @@
 import { Component, ViewChild, Output, EventEmitter, OnInit, OnDestroy, Input } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
-import * as cryptoCondition from 'five-bells-condition'
 import { Subscription, Observable } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { XummPostPayloadBodyJson } from 'xumm-api';
