@@ -66,20 +66,22 @@ export class XrplTransactionsComponent implements OnInit {
         this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'xrpl_transactions_component');
         //check if transaction was successfull and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
-        let payloadInfo:XummGetPayloadResponse = await this.xummApi.getPayloadInfo(payloadId);
         //console.log(JSON.stringify(payloadInfo));
-        if(payloadInfo && payloadInfo.response && payloadInfo.response.account && signinToValidate) {
-            this.snackBar.dismiss();
-            this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
-            this.xrplAccount = payloadInfo.response.account;
-            this.localStorage.set("xrplAccount", this.xrplAccount);
-        } else if (signinToValidate) {
-            this.snackBar.dismiss();
-            this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+        if(signinToValidate) {
+            let signInCheck:TransactionValidation = await this.xummApi.checkSignIn(payloadId);
+
+            if(signInCheck.success) {
+              this.snackBar.dismiss();
+              this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+              await this.handleTransactionInfo(signInCheck);
+            } else {
+              this.snackBar.dismiss();
+              this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+            }    
         } else {
           let transactionResult:TransactionValidation = await this.xummApi.validateTransaction(payloadId);
 
-          this.handleTransactionInfo(transactionResult);
+          await this.handleTransactionInfo(transactionResult);
 
           this.snackBar.dismiss();
           if(transactionResult && transactionResult.success) {
@@ -90,6 +92,7 @@ export class XrplTransactionsComponent implements OnInit {
         }
       }
 
+      
       if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
         this.xrplAccount = this.localStorage.get("xrplAccount");
         this.loadAccountData();
@@ -210,7 +213,7 @@ export class XrplTransactionsComponent implements OnInit {
     });
   }
 
-  handleTransactionInfo(trxInfo:TransactionValidation) {
+  async handleTransactionInfo(trxInfo:TransactionValidation) {
     if(trxInfo && trxInfo.account) {
       this.loadingData = true;
       this.xrplAccount = trxInfo.account;
@@ -230,9 +233,9 @@ export class XrplTransactionsComponent implements OnInit {
           this.lastTrxLinkXrpScan = "https://xrpscan.com/tx/"+trxInfo.txid;
           this.lastTrxLinkXrp1ntel = "https://xrp1ntel.com/tx/"+trxInfo.txid;
         }
-      }
 
-      this.transactionSuccessfull.next();
+        this.transactionSuccessfull.next();
+      }
     } else {
       this.googleAnalytics.analyticsEventEmitter('handle_transaction_failed', 'handle_transaction', 'xrpl_transactions_component');
       this.lastTrxLinkBithomp = null;
@@ -242,7 +245,7 @@ export class XrplTransactionsComponent implements OnInit {
 
     if(this.xrplAccount) {
       this.localStorage.set("xrplAccount", this.xrplAccount);
-      this.loadAccountData();
+      await this.loadAccountData();
     }
   }
 
