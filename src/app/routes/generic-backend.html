@@ -12,22 +12,34 @@
         </p>
     </mat-card>
 
-    <mat-card class="theme-background" fxLayout="column">
-        <h2>XUMM Pay Button</h2>
-        The XUMM Generic Pay Button offers you an easy possibility to add a "XUMM Pay" button into your website. As example: for donations/tips/payments but also for offering exclusive content (after payment)<br/>
-        <label>An example can be seen on: <a href="https://goodxrp.org" target="_blank">goodxrp.org</a></label>
-
-        <br/><h3>How to use the XUMM Generic Pay Button [ XGPB ;-) ]:</h3>
+    <mat-card class="theme-background" fxLayout="column" fxLayoutGap="0.5em">
+        <h2>XUMM Buttons</h2>
+        The easy-to-integrate XUMM.Community Buttons offer you an very simple way to add a XUMM button into your website. As example: for donations/tips/payments but also for offering exclusive content (after payment)<br/>
+        <h3>How to use the XUMM.Community Buttons:</h3>
         <p>
             You have to be whitelisted for the xumm.community Generic Backend (see steps above). After you are whitelisted:<br/>
             Add the following script into the <b><code>&lt;head&gt;</code></b> section of your website:<br/><br/>
-            
-            <b><code>&lt;script async src="https://pay.xumm.community/payViaXumm.js"&gt;&lt;/script&gt;</code></b><br/><br/>
+            <b class="hint">XUMM Pay Button:</b><br>
+            <b class="account-loading"><code>&lt;script async src="https://pay.xumm.community/payViaXumm.js"&gt;&lt;/script&gt;</code></b><br/><br/>
             
             Now you can add a <b><code>&lt;div&gt;</code></b> tag anywhere in your page where you want to have a pay button.<br/><br>
-            The <b><code>&lt;div&gt;</code></b> tag <b>must have</b> the attribute: <b><code>class="xumm-pay-button"</code></b>:<br/>
-            <b><code>&lt;div class="xumm-pay-button"&gt;&lt;/div&gt;</code></b><br/><br>
-            The XUMM Generic Pay Button will be inserted into the <b><code>&lt;div&gt;</code></b> element. If you want to change the size of the button, just change the size of the surrounding <b><code>&lt;div&gt;</code></b>.
+            The <b><code>&lt;div&gt;</code></b> tag <b class="account-loading">must have</b> the attribute: <b><code>class="xumm-pay-button"</code></b>:<br/>
+            <b class="account-loading"><code>&lt;div class="xumm-pay-button"&gt;&lt;/div&gt;</code></b><br/><br>
+            The XUMM Generic Pay Button will be inserted into the <b><code>&lt;div&gt;</code></b> element.<br/>
+            If you want to change the size of the button, just change the size of the surrounding <b><code>&lt;div&gt;</code></b>.<br/><br/>
+            <img src="https://pay.xumm.community/xummPay.svg" style="height: 40px;">
         </p>
+        <p>
+            <b class="hint">XUMM Donate Button:</b><br/>
+            To insert a XUMM Donate Button, the same steps as for the XUMM Pay Button need to be taken. The only difference are the scripts.<br/>
+            The scripts for the Donation Button are the following:<br/><br/>
+            <b class="account-loading"><code>&lt;script async src="https://donate.xumm.community/donateViaXumm.js"&gt;&lt;/script&gt;</code></b><br/><br/>
+            The <b><code>&lt;div&gt;</code></b> tag <b class="account-loading">must have</b> the attribute: <b><code>class="xumm-donate-button"</code></b>:<br/>
+            <b class="account-loading"><code>&lt;div class="xumm-donate-button"&gt;&lt;/div&gt;</code></b><br/><br>
+            <img src="https://donate.xumm.community/xummDonate.svg" style="height: 40px;"><br/>
+            <label style="font-size: 0.8em;">(Style will be changed into a "Donate" label soon.)</label><br/>
+
+        </p>
+        <br/><br/><label class="account-loading">Of course it is also possible to add both buttons into your website.</label>
     </mat-card>
 </mat-card>
