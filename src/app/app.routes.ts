@@ -5,11 +5,13 @@ import { TransactionScheduler } from './routes/transaction-scheduler';
 import { GenericBackendDefinition } from './routes/generic-backend';
 import { PrivacyComponent } from './routes/specific/privacy';
 import { TermsComponent } from './routes/specific/terms';
+import { EasyIOU } from './routes/easyIOU';
 
 export const routes: Routes = [
     {path: '', component: XrplTransactionsComponent},
     {path: 'scheduler', component: TransactionScheduler},
     {path: 'generic-backend', component: GenericBackendDefinition},
+    {path: 'easy-iou', component: EasyIOU},
     {path: 'privacy', component: PrivacyComponent},
     {path: 'terms', component: TermsComponent},
     {path: '**', redirectTo: ''}

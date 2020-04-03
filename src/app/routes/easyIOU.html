@@ -1,0 +1,63 @@
+<mat-card fxFlex fxLayout="column" fxLayoutGap="0.1em" class="margin-5">
+    <mat-vertical-stepper [linear]="true" #stepper>
+        <mat-step>
+            <mat-card>
+                Easy-IOU is currently probably the most easiest way to issue your own currency on the XRP Ledger.<br/>
+                From 'beer-token' over 'toilet-paper-token' (TPT), everything is possible!<br/><br/>
+
+                We will charge you 5 XRP for this service. Additionally a new trust line for your IOU will add 5 XRP to your accounts reserve.<br/>
+                So please make sure you have at least 30 XRP in your account!<br/><br/>
+                
+
+                Click 'next' and follow the instructions if you are ready and you know what your are doing!
+                <div>
+                    <button mat-button matStepperNext>Next</button>
+                  </div>
+            </mat-card>
+        </mat-step>
+        <mat-step fxLayout="column">
+            <ng-template matStepLabel>Issuing account</ng-template>
+            <label>What is the XRP Ledger account which will be issuing your tokens?</label>
+            <label>(You need to be in possession of the keys and sign all following transaction with this account!!!)</label>
+            <form>  
+                <mat-form-field>
+                    <input #inpissuer matInput name="issuer" placeholder="XRPL account which will be used for issuing" [(ngModel)]="issuerInput" (ngModelChange)="checkChangesIssuer()">
+                </mat-form-field>
+            </form>
+            <div>
+                <button mat-button matStepperNext [disabled]="!validIssuer">Next</button>
+            </div>
+          </mat-step>
+        <mat-step>
+          <form>
+            <ng-template matStepLabel>Set DefaultRipple</ng-template>
+            <mat-form-field>
+              <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+            </mat-form-field>
+            <div>
+              <button mat-button matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step>
+          <form>
+            <ng-template matStepLabel>Fill out your address</ng-template>
+            <mat-form-field>
+              <input matInput placeholder="Address" formControlName="secondCtrl" required>
+            </mat-form-field>
+            <div>
+              <button mat-button matStepperPrevious>Back</button>
+              <button mat-button matStepperNext>Next</button>
+            </div>
+          </form>
+        </mat-step>
+        <mat-step>
+          <ng-template matStepLabel>Done</ng-template>
+          You are now done.
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button (click)="stepper.reset()">Reset</button>
+          </div>
+        </mat-step>
+      </mat-vertical-stepper>
+</mat-card>

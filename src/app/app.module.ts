@@ -12,6 +12,7 @@ import { PrivacyComponent } from './routes/specific/privacy'
 import { XrplTransactionsComponent } from './routes/xrpl-transactions';
 import { TransactionScheduler } from './routes/transaction-scheduler';
 import { GenericBackendDefinition } from './routes/generic-backend';
+import { EasyIOU } from './routes/easyIOU';
 import { TopbarComponent } from './components/topbar';
 import { FooterComponent } from './components/footer';
 import { XummSignDialogComponent } from './components/xummSignRequestDialog';
@@ -46,6 +47,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatStepperModule } from '@angular/material/stepper';
 
 //my services
 import { AppService } from './services/app.service';
@@ -66,6 +68,7 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     XrplTransactionsComponent,
     TransactionScheduler,
     GenericBackendDefinition,
+    EasyIOU,
     TopbarComponent,
     FooterComponent,
     XummSignDialogComponent,
@@ -104,6 +107,7 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     MatTableModule,
     MatPaginatorModule,
     MatMenuModule,
+    MatStepperModule,
     //Special
     DeviceDetectorModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
