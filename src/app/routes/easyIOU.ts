@@ -1,7 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
+import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
+import { XummService } from '../services/xumm.service'
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { Subject } from 'rxjs';
+import { TransactionValidation, GenericBackendPostRequest } from '../utils/types';
+import { GoogleAnalyticsService } from '../services/google-analytics.service';
 
 @Component({
   selector: 'easyIOU',
@@ -9,13 +15,84 @@ import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 })
 export class EasyIOU {
 
-  @ViewChild('inpissuer', {static: false}) inpissuer;
-  issuerInput: string;
+  constructor(
+    private matDialog: MatDialog,
+    private xummApi: XummService,
+    private googleAnalytics: GoogleAnalyticsService) {
 
-  validIssuer:boolean = false;
+  }
 
-  checkChangesIssuer() {
-    this.validIssuer = this.issuerInput && this.issuerInput.trim().length > 0 && this.isValidXRPAddress(this.issuerInput.trim());
+  xrplAccount_Info:any;
+  websocket: WebSocketSubject<any>;
+  isTestMode:boolean = false;
+
+  private issuerAccount: string = "rBnjStKwLFmpSye3z4hJkrB1Lhk45RuWnG";
+  validIssuer:boolean = true;
+
+  transactionSuccessfull: Subject<void> = new Subject<void>();
+
+  paymentNotSuccessfull:boolean = false;
+  paymentNotFound: boolean = false;
+
+  getIssuer(): string {
+    return this.issuerAccount;
+  }
+
+  payForIOU() {
+    let genericBackendRequest:GenericBackendPostRequest = {
+      payload: {
+        txjson: {
+          TransactionType: "Payment",
+          Fee: "12"
+        }
+      }
+    } 
+    
+    const dialogRef = this.matDialog.open(GenericPayloadQRDialog, {
+      width: 'auto',
+      height: 'auto;',
+      data: genericBackendRequest
+    });
+
+    dialogRef.afterClosed().subscribe((info:TransactionValidation) => {
+      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+
+      if(info && info.success && info.account) {
+        if(this.isValidXRPAddress(info.account))
+          this.issuerAccount = info.account;
+          this.validIssuer = true;
+          this.paymentNotSuccessfull = false;
+          this.paymentNotFound = false;
+      } else {
+        this.paymentNotSuccessfull = true;
+      }
+    });
+  }
+
+  loginForIOU() {
+    const dialogRef = this.matDialog.open(XummSignDialogComponent, {
+      width: 'auto',
+      height: 'auto;',
+      data: {xrplAccount: null}
+    });
+
+    dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
+      console.log('The signin dialog was closed: ' + JSON.stringify(info));
+
+      if(info && info.success && info.account && this.isValidXRPAddress(info.account)) {
+        this.issuerAccount = info.account;
+        this.validIssuer = true;
+        let checkPayment:TransactionValidation = await this.xummApi.signInToValidateTimedPayment(info.payloadId,null);
+        if(checkPayment && checkPayment.success) {
+          this.paymentNotSuccessfull = false;
+          this.paymentNotFound = false;
+        } else {
+          this.paymentNotFound = true;
+        }
+      } else {
+        this.paymentNotFound = true;
+      }
+    });
   }
   
   isValidXRPAddress(address: string): boolean {
@@ -28,6 +105,49 @@ export class EasyIOU {
       //no valid address
       //console.log("err encoding " + err);
       return false;
+    }
+  }
+
+  async loadAccountData() {
+    if(this.issuerAccount) {
+      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'easy_iou', 'easy_iou_component');
+
+      if(this.websocket) {
+        this.websocket.unsubscribe();
+        this.websocket.complete();
+      }
+
+      //console.log("connecting websocket");
+      this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
+
+      this.websocket.asObservable().subscribe(async message => {
+        //console.log("websocket message: " + JSON.stringify(message));
+        if(message.status && message.type && message.type === 'response') {
+          if(message.status === 'success') {
+            if(message.result && message.result.account_data) {
+              this.xrplAccount_Info = message.result.account_data;
+              //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
+            }
+
+          } else {
+            if(message.request.command === 'account_info') {
+              this.xrplAccount_Info = message;
+            }
+          }
+
+        } else {
+          this.xrplAccount_Info = null;
+        }
+
+      });
+
+      let account_info_request:any = {
+        command: "account_info",
+        account: this.issuerAccount,
+        "strict": true,
+      }
+
+      this.websocket.next(account_info_request);
     }
   }
 

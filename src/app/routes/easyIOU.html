@@ -1,41 +1,79 @@
-<mat-card fxFlex fxLayout="column" fxLayoutGap="0.1em" class="margin-5">
+<mat-card fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
     <mat-vertical-stepper [linear]="true" #stepper>
         <mat-step>
-            <mat-card>
-                Easy-IOU is currently probably the most easiest way to issue your own currency on the XRP Ledger.<br/>
-                From 'beer-token' over 'toilet-paper-token' (TPT), everything is possible!<br/><br/>
+            <mat-card fxLayout="column" fxLayoutGap="0.5em">
+                <ng-template matStepLabel>Description</ng-template>
+                <label>Easy-IOU is probably the most easiest way to issue your own currency on the XRP Ledger.</label>
+                <label>From 'beer-token' over 'toilet-paper-token' (TPT), everything is possible!</label><br/><br/>
 
-                We will charge you 5 XRP for this service. Additionally a new trust line for your IOU will add 5 XRP to your accounts reserve.<br/>
-                So please make sure you have at least 30 XRP in your account!<br/><br/>
+                <label class="account-warning">We will charge you 5 XRP for this service.</label>
+                <label>Additionally a new trust line for your IOU will be created. This adds 5 XRP to your accounts reserve.</label>
+                <label>So please make sure you have at least 30 XRP (+ some Drops for fees) in your account!</label><br/>
                 
+                <label class="account-loading">Once 5 XRP was paid, the payment for this account is valid for 24h. So you have 24h to finish creating your IOU. After 24h you would need to pay again.</label><br/><br/>
 
-                Click 'next' and follow the instructions if you are ready and you know what your are doing!
-                <div>
-                    <button mat-button matStepperNext>Next</button>
-                  </div>
+                <label>Click 'next' and follow the instructions if you are ready and you know what your are doing!</label>
+                <div style="padding-top: 0.5em;">
+                    <button mat-raised-button color="primary" matStepperNext>Next</button>
+                </div>
             </mat-card>
         </mat-step>
-        <mat-step fxLayout="column">
+        <mat-step>
+          <mat-card fxLayout="column" fxLayoutGap="0.5em">
+            <ng-template matStepLabel>Select the network</ng-template>
+            <label class="account-loading">Do you want to issue an IOU on the live network or test network?</label>
+            <mat-card class="theme-background">
+              <div fxLayout="column" fxLayoutAlign="start center">
+                  <label>Network</label>
+                  <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
+                      <label>Live</label>&nbsp;
+                      <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
+                      <label>Test</label>
+                  </div>
+              </div>
+            </mat-card>
+            <label>If you want to issue on the test net, the 5 XRP payment can be done on the test net as well!</label>
+            <button mat-raised-button color="primary" matStepperNext>Next</button>
+          </mat-card>
+        </mat-step>
+        <mat-step>
+          <mat-card fxLayout="column" fxLayoutGap="0.5em">
             <ng-template matStepLabel>Issuing account</ng-template>
-            <label>What is the XRP Ledger account which will be issuing your tokens?</label>
-            <label>(You need to be in possession of the keys and sign all following transaction with this account!!!)</label>
-            <form>  
-                <mat-form-field>
-                    <input #inpissuer matInput name="issuer" placeholder="XRPL account which will be used for issuing" [(ngModel)]="issuerInput" (ngModelChange)="checkChangesIssuer()">
-                </mat-form-field>
-            </form>
-            <div>
-                <button mat-button matStepperNext [disabled]="!validIssuer">Next</button>
+            <label class="account-loading">What is the XRP Ledger account which will be issuing your tokens?</label>
+            <label>You need to pay or sign in with the account you want to issue your IOU.</label>
+            <div  style="padding-top: 0.5em;" *ngIf="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound">
+              <button mat-button matTooltip="Pay for your IOU via XUMM." matTooltipPosition="above" (click)="payForIOU()" style="padding:0px;">
+                <img src="../../assets/xummPay.svg" style="width: 148px; height: 40px;" alt="Pay via XUMM">
+              </button>
+              &nbsp;<label class="account-warning">Make a 5 XRP payment if you haven't paid withing the last 24h.</label>
             </div>
-          </mat-step>
+            <div *ngIf="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound">
+              <button mat-button matTooltip="SignIn via XUMM." matTooltipPosition="above" (click)="loginForIOU()" style="padding:0px;">
+                <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
+              </button>
+              &nbsp;<label class="account-loading">Sign in with the account you have paid with in the last 24h.</label>
+            </div>
+            
+            <mat-hint *ngIf="paymentNotSuccessfull" style="padding-top: 0.5em;">You payment was not successfull on the XRP Ledger live net.</mat-hint>
+            <mat-hint *ngIf="paymentNotFound" style="padding-top: 0.5em;">No valid payment found for account {{getIssuer()}} withing the last 24h.</mat-hint>
+            
+            <div fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !paymentNotSuccessfull && !paymentNotFound">
+              <label>The account you want to issue an IOU with is: </label>
+              <label class="account-warning">{{getIssuer()}}</label>
+            </div>
+            <div>
+                <button mat-raised-button color="primary" matStepperNext [disabled]="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound">Next</button>
+            </div>
+          </mat-card>
+        </mat-step>
         <mat-step>
           <form>
             <ng-template matStepLabel>Set DefaultRipple</ng-template>
             <mat-form-field>
-              <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+              <input matInput placeholder="Last name, First name" required>
             </mat-form-field>
             <div>
-              <button mat-button matStepperNext>Next</button>
+              <button mat-raised-button color="primary" matStepperNext>Next</button>
             </div>
           </form>
         </mat-step>
@@ -43,7 +81,7 @@
           <form>
             <ng-template matStepLabel>Fill out your address</ng-template>
             <mat-form-field>
-              <input matInput placeholder="Address" formControlName="secondCtrl" required>
+              <input matInput placeholder="Address" required>
             </mat-form-field>
             <div>
               <button mat-button matStepperPrevious>Back</button>
