@@ -59,7 +59,8 @@ export class TopbarComponent implements OnInit {
   openGenericDialog(xummPayload: XummPostPayloadBodyJson):void {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
-        xrplAccount: this.localStorage.get("xrplAccount")
+        xrplAccount: this.localStorage.get("xrplAccount"),
+        referer: 'abcde'
       },
       payload: xummPayload
     }

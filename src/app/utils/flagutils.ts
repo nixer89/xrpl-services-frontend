@@ -15,3 +15,7 @@ export function isRequireDestinationTagEnabled(flags:number) {
 export function isMasterKeyDisabled(flags:number) {
     return flags && (flags & ROOT_FLAG_DISABLE_MASTER) == ROOT_FLAG_DISABLE_MASTER;
 }
+
+export function isDefaultRippleEnabled(flags:number) {
+    return flags && (flags & ROOT_FLAG_DEFAULT_RIPPLE) == ROOT_FLAG_DEFAULT_RIPPLE;
+}

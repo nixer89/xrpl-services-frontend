@@ -72,17 +72,22 @@ export class GenericPayloadQRDialog implements OnInit {
         
         this.genericPayload.payload.options.expire = 5;
 
+        if(!this.genericPayload.options)
+            this.genericPayload.options = {};
+
         this.genericPayload.options.web = this.deviceDetector.isDesktop();
 
-        let refererURL:string;
+        if(!this.genericPayload.options.referer) {
+            let refererURL:string;
 
-        if(document.URL.includes('?')) {
-            refererURL = document.URL.substring(0, document.URL.indexOf('?'));
-        } else {
-            refererURL = document.URL;
+            if(document.URL.includes('?')) {
+                refererURL = document.URL.substring(0, document.URL.indexOf('?'));
+            } else {
+                refererURL = document.URL;
+            }
+
+            this.genericPayload.options.referer = refererURL;
         }
-
-        this.genericPayload.options.referer = refererURL;
 
         if(this.memoInput && this.memoInput.trim().length > 0) {
             this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xumm.community]_Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(this.memoInput.trim(), 'utf8').toString('hex').toUpperCase()}}];

@@ -127,7 +127,7 @@ export class XummSignDialogComponent implements OnInit{
                     if(transactionResult && transactionResult.success) {
                         this.transactionSigned = true;
                         
-                        setTimeout(() => this.handleSuccessfullSignIn(transactionResult.account), 3000);
+                        setTimeout(() => this.handleSuccessfullSignIn(transactionResult.account, message.payload_uuidv4), 3000);
                     } else {
                         this.showError = true;
                         setTimeout(() => this.handleFailedSignIn(), 3000);
@@ -151,8 +151,8 @@ export class XummSignDialogComponent implements OnInit{
         });
     }
     
-    handleSuccessfullSignIn(xrplAccount: string) {
-        this.dialogRef.close({ success: true, testnet: false, account: xrplAccount});
+    handleSuccessfullSignIn(xrplAccount: string, payloadId: string) {
+        this.dialogRef.close({ success: true, testnet: false, account: xrplAccount, payloadId: payloadId});
     }
 
     handleFailedSignIn() {
