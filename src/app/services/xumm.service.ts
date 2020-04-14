@@ -7,7 +7,7 @@ import { TransactionValidation } from '../utils/types';
 export class XummService {
     constructor(private app: AppService) {}
 
-    isTestMode = true;
+    isTestMode = false;
     xummBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://api.xumm.community';
 
     async submitPayload(payload:any): Promise<XummPostPayloadResponse> {
@@ -56,9 +56,18 @@ export class XummService {
         }
     }
 
-    async checkTimedPayment(payloadId:string, referer:string): Promise<TransactionValidation> {
+    async checkTimedPayment(payloadId:string): Promise<TransactionValidation> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/referer/"+payloadId+"?referer="+referer);
+            return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/"+payloadId);
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return { error: true, success: false, testnet:false }
+        }
+    }
+
+    async checkTimedPaymentReferer(payloadId:string, referer?:string): Promise<TransactionValidation> {
+        try {
+            return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/referer/"+payloadId+(referer ? "?referer="+referer : ""));
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }

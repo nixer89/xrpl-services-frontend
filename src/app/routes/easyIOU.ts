@@ -25,10 +25,11 @@ export class EasyIOU implements OnInit {
 
   }
 
-  currentStep:number = 1;
+  currentStep:number = 0;
   checkBoxTwoAccounts:boolean = false;
   checkBoxSufficientFunds:boolean = false;
   checkBoxFiveXrp:boolean = false;
+  checkBoxNetwork:boolean = false;
 
   xrplAccount_Info:any;
   websocket: WebSocketSubject<any>;

@@ -28,12 +28,16 @@
     background-color: #A0A0A0 !important;
   }
 
-  .account-warning {
+  .warning {
     color: #EB0000;
   }
 
-  .account-loading {
+  .loading {
     color: blue;
+  }
+
+  .success {
+    color: green
   }
 
   .theme-background {
@@ -70,12 +74,16 @@
     color: rgba(255, 255, 255, 0.7) !important;
   }
 
-  .account-warning {
+  .warning {
     color: #FF6B6B;
   }
 
-  .account-loading {
+  .loading {
     color: #FFB300;
+  }
+
+  .success {
+    color: #00B300
   }
 
   .mat-expansion-panel {

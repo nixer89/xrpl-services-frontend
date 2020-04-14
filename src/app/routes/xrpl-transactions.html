@@ -17,13 +17,13 @@
                 </div>
                 <div *ngIf="xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
                     <label fxHide.xs>Logged in with:</label>
-                    <label class="account-loading" ngStyle.xs="font-size: 0.8em;"> {{xrplAccount}}</label>
+                    <label class="loading" ngStyle.xs="font-size: 0.8em;"> {{xrplAccount}}</label>
                     <label fxHide.xs>and balance:</label>
-                    <label class="account-loading" ngStyle.xs="font-size: 0.8em;">{{getAccountBalance()}} XRP.</label>
+                    <label class="loading" ngStyle.xs="font-size: 0.8em;">{{getAccountBalance()}} XRP.</label>
                 </div>
-                <label class="account-warning" ngStyle.xs="font-size: 0.8em;" *ngIf="!loadingData && xrplAccount && xrplAccount_Info && xrplAccount_Info.error">This account was not found on the {{isTestMode ? ' test net ' : ' live net '}}.</label>
+                <label class="warning" ngStyle.xs="font-size: 0.8em;" *ngIf="!loadingData && xrplAccount && xrplAccount_Info && xrplAccount_Info.error">This account was not found on the {{isTestMode ? ' test net ' : ' live net '}}.</label>
                 <div fxLayout="row" fxLayoutAlign="center center" *ngIf="loadingData">
-                    <label class="account-loading" ngStyle.xs="font-size: 0.8em;" >Loading account data...</label>
+                    <label class="loading" ngStyle.xs="font-size: 0.8em;" >Loading account data...</label>
                     <mat-progress-spinner color="primary" mode="indeterminate" diameter=20></mat-progress-spinner>
                 </div>
             </div>
