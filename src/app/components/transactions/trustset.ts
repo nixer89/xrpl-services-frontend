@@ -58,7 +58,8 @@ export class TrustSetComponent implements OnInit, OnDestroy {
 
   private payload:XummPostPayloadBodyJson = {
     txjson: {
-      TransactionType: "TrustSet"
+      TransactionType: "TrustSet",
+      Flags: this.TRUST_SET_FLAG_SET_NO_RIPPLE
     }
   }
 
