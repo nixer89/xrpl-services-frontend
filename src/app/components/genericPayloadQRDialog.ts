@@ -90,7 +90,7 @@ export class GenericPayloadQRDialog implements OnInit {
         }
 
         if(this.memoInput && this.memoInput.trim().length > 0) {
-            this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xumm.community]_Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(this.memoInput.trim(), 'utf8').toString('hex').toUpperCase()}}];
+            this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xumm.community]Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(this.memoInput.trim(), 'utf8').toString('hex').toUpperCase()}}];
         }
 
         this.googleAnalytics.analyticsEventEmitter(this.genericPayload.payload.txjson.TransactionType.toLowerCase()+'_transaction', 'sendToXummGeneric', 'generic_payload_dialog_component');
@@ -139,10 +139,11 @@ export class GenericPayloadQRDialog implements OnInit {
                 if(message.signed) {
                     //get xrpl account
                     let txInfo:TransactionValidation;
-                    if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment')
+                    if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment' && !this.genericPayload.options.issuing) {
                         txInfo = await this.xummApi.checkTimedPaymentReferer(message.payload_uuidv4);
-                    else
+                    } else {
                         txInfo = await this.xummApi.validateTransaction(message.payload_uuidv4);
+                    }
                     
                     //console.log("txInfo: " + JSON.stringify(txInfo));
                     this.waitingForPayment = false;

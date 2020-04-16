@@ -29,15 +29,15 @@ export class IouList implements OnInit, OnDestroy {
     displayedColumns: string[] = ['currency', 'amount'];
     loading:boolean = false;
     originalTestModeValue:boolean;
-    escrowClicked:boolean = false;
+    iouClicked:boolean = false;
 
-    private escrowAccountChangedSubscription: Subscription;
+    private iouAccountChangedSubscription: Subscription;
 
     constructor(private googleAnalytics: GoogleAnalyticsService) {}
 
     ngOnInit() {
-        this.escrowAccountChangedSubscription = this.issuerAccountChanged.subscribe(xrplAccount => {
-            //console.log("escrow account changed received: " + xrplAccount);
+        this.iouAccountChangedSubscription = this.issuerAccountChanged.subscribe(xrplAccount => {
+            //console.log("iou account changed received: " + xrplAccount);
             //console.log("test mode: " + this.testMode);
             if(xrplAccount)
                 this.loadIOUList(xrplAccount);
@@ -47,8 +47,8 @@ export class IouList implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        if(this.escrowAccountChangedSubscription)
-          this.escrowAccountChangedSubscription.unsubscribe();
+        if(this.iouAccountChangedSubscription)
+          this.iouAccountChangedSubscription.unsubscribe();
 
         if(this.websocket) {
             this.websocket.unsubscribe();
@@ -76,7 +76,7 @@ export class IouList implements OnInit, OnDestroy {
                     this.iouList = this.iouList.sort((iouA, iouB) => iouA.currency.localeCompare(iouB.currency));
                 }
             
-                //if data 0 (no available escrows) -> show message "no escrows available"
+                //if data 0 (no available ious) -> show message "no ious available"
                 if(this.iouList && this.iouList.length == 0)
                     this.iouList = null;
                     
@@ -115,8 +115,8 @@ export class IouList implements OnInit, OnDestroy {
     }
 
     iouSelected(iou: any) {
-        this.googleAnalytics.analyticsEventEmitter('escrow_list_selected', 'escrow_list', 'escrow_list_component');
-        //console.log("escrow selected: " + JSON.stringify(escrow));
+        this.googleAnalytics.analyticsEventEmitter('iou_list_selected', 'iou_list', 'iou_list_component');
+        //console.log("iou selected: " + JSON.stringify(iou));
         this.issuerCurrencySelected.emit(iou)
     }
 }

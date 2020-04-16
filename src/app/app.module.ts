@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {AppRoutes} from './app.routes';
+import { AppRoutes } from './app.routes';
 
 //my components
 import { AppComponent } from './app.component';

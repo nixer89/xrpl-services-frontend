@@ -7,7 +7,8 @@ export interface GenericBackendPostRequest {
         pushDisabled?: boolean,
         referer?: string,
         xrplAccount?: string,
-        signinToValidate?: boolean
+        signinToValidate?: boolean,
+        issuing?: boolean
     },
     payload: XummPostPayloadBodyJson
 }

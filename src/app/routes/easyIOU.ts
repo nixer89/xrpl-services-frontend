@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
@@ -9,6 +9,8 @@ import { Subject } from 'rxjs';
 import { TransactionValidation, GenericBackendPostRequest } from '../utils/types';
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import * as flagUtil from '../utils/flagutils';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { MatStepper } from '@angular/material/stepper';
 
 @Component({
   selector: 'easyIOU',
@@ -21,11 +23,11 @@ export class EasyIOU implements OnInit {
   constructor(
     private matDialog: MatDialog,
     private xummApi: XummService,
-    private googleAnalytics: GoogleAnalyticsService) {
+    private googleAnalytics: GoogleAnalyticsService,
+    private device: DeviceDetectorService) {
 
   }
 
-  currentStep:number = 0;
   checkBoxTwoAccounts:boolean = false;
   checkBoxSufficientFunds:boolean = false;
   checkBoxFiveXrp:boolean = false;
@@ -33,11 +35,16 @@ export class EasyIOU implements OnInit {
 
   xrplAccount_Info:any;
   websocket: WebSocketSubject<any>;
-  isTestMode:boolean = true;
+  isTestMode:boolean = false;
 
-  private issuerAccount: string = "rBnjStKwLFmpSye3z4hJkrB1Lhk45RuWnG";
+  private issuerAccount: string;
   //private issuerAccount: string;
-  validIssuer:boolean = true;
+  validIssuer:boolean = false;
+
+  currencyCode:string;
+  limit:number;
+  validCurrencyCode:boolean = false;
+  validLimit:boolean = false;
 
   transactionSuccessfull: Subject<void> = new Subject<void>();
 
@@ -46,9 +53,18 @@ export class EasyIOU implements OnInit {
   loadingIssuerAccount:boolean = false;
 
   needDefaultRipple:boolean = true;
+  recipientAddress:string;
+  recipientTrustlineSet:boolean = false;
+  weHaveIssued:boolean = false;
+
+  @ViewChild('stepper', {static: false}) stepper: MatStepper;
 
   ngOnInit(): void {
     this.loadAccountData();
+  }
+
+  isDektop(): boolean {
+    return this.device.isDesktop();
   }
 
   getIssuer(): string {
@@ -60,6 +76,9 @@ export class EasyIOU implements OnInit {
       payload: {
         txjson: {
           TransactionType: "Payment"
+        },
+        custom_meta: {
+          instruction: "Please pay with the account you want to issue your IOU from!"
         }
       }
     } 
@@ -73,7 +92,7 @@ export class EasyIOU implements OnInit {
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
       console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
-      if(info && info.success && info.account) {
+      if(info && info.success && info.account && (!info.testnet || this.isTestMode)) {
         if(this.isValidXRPAddress(info.account))
           this.issuerAccount = info.account;
           this.validIssuer = true;
@@ -99,7 +118,8 @@ export class EasyIOU implements OnInit {
 
       if(info && info.success && info.account && this.isValidXRPAddress(info.account)) {
         let checkPayment:TransactionValidation = await this.xummApi.signInToValidateTimedPayment(info.payloadId,null);
-        if(checkPayment && checkPayment.success && !checkPayment.testnet || this.isTestMode) {
+        console.log("login to validate payment: " + JSON.stringify(checkPayment));
+        if(checkPayment && checkPayment.success && (!checkPayment.testnet || this.isTestMode)) {
           this.issuerAccount = info.account;
           this.validIssuer = true;
           this.paymentNotSuccessfull = false;
@@ -109,13 +129,17 @@ export class EasyIOU implements OnInit {
           this.issuerAccount = info.account;
           this.validIssuer = true;
           this.paymentNotFound = true;
-          this.loadingIssuerAccount = true;
+          this.loadingIssuerAccount = false;
         }
-      } else {
+      } else if(info && info.account) {
         this.issuerAccount = info.account;
         this.validIssuer = true;
         this.paymentNotFound = true;
-        this.loadingIssuerAccount = true;
+        this.loadingIssuerAccount = false;
+      } else {
+        this.issuerAccount = null;
+        this.validIssuer = false;
+        this.loadingIssuerAccount = false;
       }
     });
   }
@@ -192,7 +216,7 @@ export class EasyIOU implements OnInit {
           SetFlag: this.ACCOUNT_FLAG_DEFAULT_RIPPLE
         },
         custom_meta: {
-          instruction: "- Set 'DefaultRipple' flag to your account"
+          instruction: "- Set 'DefaultRipple' flag to the issuing account\n\n- Please sign with the ISSUER account!"
         }
       }
     } 
@@ -206,10 +230,153 @@ export class EasyIOU implements OnInit {
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
       console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
-      if(info && info.success && info.account) {
+      if(info && info.success && info.account && info.testnet == this.isTestMode) {
          await this.loadAccountData();
+      } else {
+
       }
     });
+  }
+
+  checkChangesIOUDetails() {
+    this.validCurrencyCode = this.currencyCode && /^[A-Z]{3}$/.test(this.currencyCode) && this.currencyCode != "XRP";
+    this.validLimit = this.limit && this.limit > 0 && Number.isInteger(Number(this.limit)) && /^[\d]{1,15}$/.test(this.limit.toString());
+  }
+
+  setTrustline() {
+    let genericBackendRequest:GenericBackendPostRequest = {
+      payload: {
+        txjson: {
+          TransactionType: "TrustSet",
+          Flags: 131072, //no ripple
+          LimitAmount: {
+            currency: this.currencyCode.trim(),
+            issuer: this.issuerAccount.trim(),
+            value: this.limit.toString().trim()
+          }
+        },
+        custom_meta: {
+          instruction: "- Set TrustLine between IOU recipient and issuer\n\n- Please sign with the RECIPIENT account!"
+        }
+      }
+    } 
+    
+    const dialogRef = this.matDialog.open(GenericPayloadQRDialog, {
+      width: 'auto',
+      height: 'auto;',
+      data: genericBackendRequest
+    });
+
+    dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
+      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+
+      if(info && info.success && info.account && info.testnet == this.isTestMode) {
+         this.recipientTrustlineSet = true;
+         this.recipientAddress = info.account;
+      } else {
+        this.recipientTrustlineSet = false;
+      }
+    });
+  }
+
+  issueIOU() {
+    let genericBackendRequest:GenericBackendPostRequest = {
+      options: {
+        issuing: true
+      },
+      payload: {
+        txjson: {
+          TransactionType: "Payment",
+          Destination: this.recipientAddress,
+          Amount: {
+            currency: this.currencyCode.trim(),
+            issuer: this.issuerAccount.trim(),
+            value: this.limit.toString().trim()
+          }
+        },
+        custom_meta: {
+          instruction: "- Issuing " + this.limit + " " + this.currencyCode + " to: " + this.recipientAddress + "\n\n- Please sign with the ISSUER account!"
+        }
+      }
+    } 
+    
+    const dialogRef = this.matDialog.open(GenericPayloadQRDialog, {
+      width: 'auto',
+      height: 'auto;',
+      data: genericBackendRequest
+    });
+
+    dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
+      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+
+      if(info && info.success && info.account && info.testnet == this.isTestMode) {
+        this.weHaveIssued = true;
+      } else {
+        this.weHaveIssued = false;
+      }
+    });
+  }
+
+  moveNext() {
+    // complete the current step
+    this.stepper.selected.completed = true;
+    this.stepper.selected.editable = false;
+    // move to next step
+    this.stepper.next();
+    this.stepper.selected.editable = true;
+  }
+
+  moveBack() {
+    console.log("steps: " + this.stepper.steps.length);
+    // move to previous step
+    this.stepper.selected.completed = false;
+    this.stepper.selected.editable = false;
+
+    this.stepper.steps.forEach((item, index) => {
+      if(index == this.stepper.selectedIndex-1 && this.stepper.selectedIndex-1 >= 0) {
+        item.editable = true;
+        item.completed = false;
+      }
+    })
+
+    switch(this.stepper.selectedIndex) {
+      case 0: break;
+      case 1: {
+        this.isTestMode = false;
+        break;
+      }
+      case 2: {
+        this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = false;
+        break;
+      }
+      case 3: {
+        this.currencyCode = null;
+        this.limit = null;
+        this.validCurrencyCode = false;
+        this.validLimit = false;
+      }
+      case 4: {
+        this.issuerAccount = this.xrplAccount_Info = null;
+        this.validIssuer = false;
+        this.paymentNotFound = this.paymentNotSuccessfull = false;
+        break;
+      }
+      case 5: {
+        this.needDefaultRipple = true;
+        break;
+      }
+      case 6: {
+        this.recipientTrustlineSet = false;
+        this.recipientAddress = null;
+        break;
+      }
+      case 7: {
+        this.weHaveIssued = false;
+      }
+      case 8: break;
+    }
+
+    this.stepper.previous();
   }
 
   clearIssuerAccount() {
@@ -220,6 +387,24 @@ export class EasyIOU implements OnInit {
     this.validIssuer = false;
     this.xrplAccount_Info = null;
     this.needDefaultRipple = true;
+  }
+
+  reset() {
+    this.isTestMode = false;
+    this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = false;
+    this.currencyCode = null;
+    this.limit = null;
+    this.validCurrencyCode = false;
+    this.validLimit = false;
+    this.issuerAccount = this.xrplAccount_Info = null;
+    this.validIssuer = false;
+    this.paymentNotFound = this.paymentNotSuccessfull = false;
+    this.needDefaultRipple = true;
+    this.recipientTrustlineSet = false;
+    this.recipientAddress = null;
+    this.weHaveIssued = false;
+    this.stepper.reset();
+
   }
 
 }
