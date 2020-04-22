@@ -32,6 +32,9 @@ export class EasyIOU implements OnInit {
   checkBoxSufficientFunds:boolean = false;
   checkBoxFiveXrp:boolean = false;
   checkBoxNetwork:boolean = false;
+  checkBoxNoLiability:boolean = false;
+
+  checkBoxIssuingText:boolean = false;
 
   xrplAccount_Info:any;
   websocket: WebSocketSubject<any>;
@@ -238,8 +241,11 @@ export class EasyIOU implements OnInit {
     });
   }
 
-  checkChangesIOUDetails() {
+  checkChangesCurrencyCode() {
     this.validCurrencyCode = this.currencyCode && /^[A-Z]{3}$/.test(this.currencyCode) && this.currencyCode != "XRP";
+  }
+
+  checkChangesLimit() {
     this.validLimit = this.limit && this.limit > 0 && Number.isInteger(Number(this.limit)) && /^[\d]{1,15}$/.test(this.limit.toString());
   }
 
@@ -342,11 +348,11 @@ export class EasyIOU implements OnInit {
     switch(this.stepper.selectedIndex) {
       case 0: break;
       case 1: {
-        this.isTestMode = false;
+        this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = false;
         break;
       }
       case 2: {
-        this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = false;
+        this.isTestMode = false;
         break;
       }
       case 3: {
@@ -391,7 +397,7 @@ export class EasyIOU implements OnInit {
 
   reset() {
     this.isTestMode = false;
-    this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = false;
+    this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = false;
     this.currencyCode = null;
     this.limit = null;
     this.validCurrencyCode = false;

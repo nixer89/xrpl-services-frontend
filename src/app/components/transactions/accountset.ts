@@ -14,6 +14,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
   private ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG:number = 1;
   private ACCOUNT_FLAG_DISABLE_MASTER_KEY:number = 4;
+  private ACCOUNT_FLAG_DEFAULT_RIPPLE:number = 8;
 
   constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
@@ -38,6 +39,9 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   @ViewChild('inpdisablemasterkey', {static: false}) inpdisablemasterkey;
   disableMasterKeyInput: boolean = false;
 
+  @ViewChild('inpdefaultripple', {static: false}) inpdefaultripple;
+  defaultRippleInput: boolean = false;
+
   private accountInfoChangedSubscription: Subscription;
   private accountObjectsChangedSubscription: Subscription;
   originalAccountInfo:any;
@@ -47,6 +51,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   emailChangeDetected:boolean = false;
   requireDestTagChangeDetected:boolean = false;
   disableMasterKeyChangeDetected:boolean = false;
+  defaultRippleChangeDetected:boolean = false;
 
   isValidAccountSet:boolean = false;
 
@@ -104,9 +109,11 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     if(this.originalAccountInfo && this.originalAccountInfo.Flags && this.originalAccountInfo.Flags > 0) {
       this.requireDestTagInput = flagsutil.isRequireDestinationTagEnabled(this.originalAccountInfo.Flags);
       this.disableMasterKeyInput = flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags);
+      this.defaultRippleInput = flagsutil.isDefaultRippleEnabled(this.originalAccountInfo.Flags);
     } else {
       this.requireDestTagInput = false;
       this.disableMasterKeyInput = false;
+      this.defaultRippleInput = false;
     }
 
     this.requireDestTagChangeDetected = this.disableMasterKeyChangeDetected = this.domainChangeDetected = this.emailChangeDetected = false;
@@ -169,7 +176,18 @@ export class AccountSetComponent implements OnInit, OnDestroy {
         this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_DISABLE_MASTER_KEY;
         this.payload.custom_meta.instruction += "- Enable Master Key\n"
       }
-    }    
+    }
+
+    if(this.defaultRippleChangeDetected) {
+      if(this.defaultRippleInput) {
+        this.payload.txjson.SetFlag = this.ACCOUNT_FLAG_DEFAULT_RIPPLE;
+        this.payload.custom_meta.instruction += "- Set 'Default Ripple' flag\n"
+      }
+      else {
+        this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_DEFAULT_RIPPLE;
+        this.payload.custom_meta.instruction += "- Unset 'Default Ripple' flag\n"
+      }
+    }  
 
     this.onPayload.emit(this.payload);
     this.initializePayload();
@@ -223,6 +241,13 @@ export class AccountSetComponent implements OnInit, OnDestroy {
       this.disableMasterKeyChangeDetected = true;
     else
       this.disableMasterKeyChangeDetected = false;
+
+    if((!this.originalAccountInfo || !this.originalAccountInfo.Flags || this.originalAccountInfo.Flags == 0) && this.defaultRippleInput)
+      this.defaultRippleChangeDetected = true;
+    else if(this.originalAccountInfo && this.originalAccountInfo.Flags && (flagsutil.isDefaultRippleEnabled(this.originalAccountInfo.Flags) != this.defaultRippleInput))
+      this.defaultRippleChangeDetected = true;
+    else
+      this.defaultRippleChangeDetected = false;
 
     this.isValidAccountSet = this.validDomain && this.validEmail && (this.domainChangeDetected || this.emailChangeDetected || this.requireDestTagChangeDetected || this.disableMasterKeyChangeDetected) && !(this.requireDestTagChangeDetected && this.disableMasterKeyChangeDetected);
 
