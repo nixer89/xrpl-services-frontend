@@ -28,9 +28,10 @@ export class XrplTransactionsComponent implements OnInit {
   lastTrxLinkXrpScan:string;
   lastTrxLinkXrp1ntel:string;
 
-  accountInfoChanged: Subject<void> = new Subject<void>();
-  accountObjectsChanged: Subject<void> = new Subject<void>();
-  transactionSuccessfull: Subject<void> = new Subject<void>();
+  accountInfoChanged: Subject<any> = new Subject<any>();
+  accountObjectsChanged: Subject<any> = new Subject<any>();
+  transactionSuccessfull: Subject<any> = new Subject<any>();
+  networkChangedSubject: Subject<boolean> = new Subject<boolean>();
   websocket: WebSocketSubject<any>;
 
   isTestMode:boolean = false;
@@ -54,10 +55,12 @@ export class XrplTransactionsComponent implements OnInit {
         this.overlayContainer.getContainerElement().classList.remove('light-theme');
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
     }
+
+    this.xrplAccount="rnK4ybo1Gu4gcNpvnWy74Y16kpwhYepsMr";
+    this.isTestMode = true;
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
-    //this.isTestMode = true;
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
-    //await this.loadAccountData();
+    await this.loadAccountData(false);
 
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;
@@ -95,12 +98,17 @@ export class XrplTransactionsComponent implements OnInit {
       
       if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
         this.xrplAccount = this.localStorage.get("xrplAccount");
-        this.loadAccountData();
+        this.loadAccountData(false);
       }
     });
   }
 
-  async loadAccountData(isInit?: boolean) {
+  changeNetwork() {
+    this.loadAccountData(true);
+    this.networkChangedSubject.next(this.isTestMode);
+  }
+
+  async loadAccountData(networkChanged:boolean, isInit?: boolean) {
     if(this.xrplAccount) {
       this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'xrpl_transactions_component');
       this.loadingData = true;
@@ -190,7 +198,7 @@ export class XrplTransactionsComponent implements OnInit {
       }
 
       if(this.xrplAccount) {
-        this.loadAccountData();
+        this.loadAccountData(false);
       }
     });
   }
@@ -245,7 +253,7 @@ export class XrplTransactionsComponent implements OnInit {
 
     if(this.xrplAccount) {
       this.localStorage.set("xrplAccount", this.xrplAccount);
-      await this.loadAccountData();
+      await this.loadAccountData(false);
     }
   }
 

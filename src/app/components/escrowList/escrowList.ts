@@ -57,7 +57,7 @@ export class EscrowList implements OnInit, OnDestroy {
     setupWebsocket() {
         this.originalTestModeValue = this.testMode;
         //console.log("connecting websocket");
-        this.websocket = webSocket(this.testMode ? 'wss://testnet.xrpl-labs.com' : 'wss://s1.ripple.com');
+        this.websocket = webSocket(this.testMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
 
         this.websocket.asObservable().subscribe(async message => {
             //console.log("websocket message: " + JSON.stringify(message));

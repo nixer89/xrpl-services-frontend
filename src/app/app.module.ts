@@ -19,6 +19,9 @@ import { XummSignDialogComponent } from './components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from './components/genericPayloadQRDialog';
 import { EscrowList } from './components/escrowList/escrowList';
 import { IouList } from './components/iouList/iouList';
+import { TrustLineList } from './components/trustlineList/trustlineList';
+import { CreateIOU } from './components/easyIOU/createIOU';
+import { IssueMoreIOU } from './components/easyIOU/issueMoreIOU';
 
 //XRPL transactions
 import { AccountSetComponent } from './components/transactions/accountset';
@@ -75,6 +78,9 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     GenericPayloadQRDialog,
     EscrowList,
     IouList,
+    TrustLineList,
+    CreateIOU,
+    IssueMoreIOU,
     AccountSetComponent,
     EscrowCreateComponent,
     EscrowFinishComponent,

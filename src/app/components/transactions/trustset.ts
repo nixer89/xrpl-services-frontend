@@ -43,7 +43,8 @@ export class TrustSetComponent implements OnInit, OnDestroy {
   originalAccountInfo:any;
   private accountInfoChangedSubscription: Subscription;
   private transactionSuccessfullSubscription: Subscription;
-  issuerAccountChanged: Subject<string> = new Subject<string>();
+  issuerAccountChangedSubject: Subject<string> = new Subject<string>();
+  xrplAccountInfoChangedSubject: Subject<string> = new Subject<string>();
 
   showIssuedCurrencySelectedStyle:boolean = false;
   issuedCurrencySelected:boolean = false;
@@ -56,19 +57,18 @@ export class TrustSetComponent implements OnInit, OnDestroy {
   lastKnownAddress:string = null;
   lastKnownCurrency:string = null;
 
-  private payload:XummPostPayloadBodyJson = {
-    txjson: {
-      TransactionType: "TrustSet",
-      Flags: this.TRUST_SET_FLAG_SET_NO_RIPPLE
-    }
-  }
+  isEditMode:boolean = false;
 
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
-      //console.log("account info changed received")
+      console.log("account info changed received: " + JSON.stringify(accountData));
       this.originalAccountInfo = accountData;
+      if(this.originalAccountInfo && this.originalAccountInfo.Account)
+        this.xrplAccountInfoChangedSubject.next(this.originalAccountInfo);
+      else
+        this.xrplAccountInfoChangedSubject.next(null);
       setTimeout(() => {
-        this.issuerAccountChanged.next(this.lastKnownAddress);
+        this.issuerAccountChangedSubject.next(this.lastKnownAddress);
       },500);
     });
 
@@ -89,47 +89,54 @@ export class TrustSetComponent implements OnInit, OnDestroy {
 
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'sendToXumm', 'trust_set_component');
 
-    this.payload.txjson.LimitAmount = {};
-    this.payload.custom_meta = {};
+    let payload:XummPostPayloadBodyJson = {
+      txjson: {
+        TransactionType: "TrustSet",
+        Flags: this.TRUST_SET_FLAG_SET_NO_RIPPLE
+      }
+    }
+
+    payload.txjson.LimitAmount = {};
+    payload.custom_meta = {};
 
     if(this.issuerAccountInput && this.issuerAccountInput.trim().length>0 && this.validAddress) {
-      this.payload.txjson.LimitAmount.issuer = this.issuerAccountInput.trim();
-      this.payload.custom_meta.instruction = "- Issuer Address: " +this.issuerAccountInput.trim();
+      payload.txjson.LimitAmount.issuer = this.issuerAccountInput.trim();
+      payload.custom_meta.instruction = "- Issuer Address: " +this.issuerAccountInput.trim();
     }
 
     if(this.issuedCurrencyInput && this.validCurrency) {
-      this.payload.txjson.LimitAmount.currency = this.issuedCurrencyInput.trim();
-      this.payload.custom_meta.instruction += "\n- IOU currency code: " + this.issuedCurrencyInput.trim();
+      payload.txjson.LimitAmount.currency = this.issuedCurrencyInput.trim();
+      payload.custom_meta.instruction += "\n- IOU currency code: " + this.issuedCurrencyInput.trim();
     }
 
     if(this.limitInput && this.validLimit) {
-      this.payload.txjson.LimitAmount.value = this.limitInput.trim()
-      this.payload.custom_meta.instruction += "\n- Limit: " + this.limitInput.trim();
+      payload.txjson.LimitAmount.value = this.limitInput.trim()
+      payload.custom_meta.instruction += "\n- Limit: " + this.limitInput.trim();
     }
 
-    this.onPayload.emit(this.payload);
+    this.onPayload.emit(payload);
   }
 
-  xrplAccountChanged() {
+  issuerAccountChanged() {
     this.checkChanges();
 
     if(this.validAddress && (this.issuerAccountInput.trim() != this.lastKnownAddress)) {
       this.lastKnownAddress = this.issuerAccountInput.trim();
       //console.log("emitting issuerAccountChanged event");
-      this.issuerAccountChanged.next(this.lastKnownAddress);
+      this.issuerAccountChangedSubject.next(this.lastKnownAddress);
     } else if(!this.validAddress) {
       this.lastKnownAddress = null;
-      this.issuerAccountChanged.next(null);
+      this.issuerAccountChangedSubject.next(null);
     }
   }
 
-  sequenceChanged() {
+  currencyChanged() {
     this.checkChanges();
 
     if(!this.validCurrency && this.lastKnownCurrency && this.validAddress) {
       //sequence change
       console.log("send sequence changed");
-      this.issuerAccountChanged.next(this.issuerAccountInput.trim());
+      this.issuerAccountChangedSubject.next(this.issuerAccountInput.trim());
     }
 
   }
@@ -161,7 +168,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     }
 
     if(this.validLimit)
-      this.validLimit = this.limitInput && parseFloat(this.limitInput) >= 0.000000000000001;
+      this.validLimit = this.limitInput && parseFloat(this.limitInput) >= 0;
 
     this.isValidTrustSet = this.validAddress && this.validCurrency && this.validLimit;
 
@@ -188,8 +195,47 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     this.issuerAccountInput = this.issuedCurrencyInput = this.limitInput = null;
     this.isValidTrustSet = this.validAddress = this.validCurrency = this.validLimit = false;
     this.lastKnownAddress = null;
+    this.isEditMode = false;
     
-    this.issuerAccountChanged.next(null);
+    this.issuerAccountChangedSubject.next(null);
+  }
+
+  onTrustLineEdit(trustline:any) {
+    this.isEditMode = true;
+    this.issuerAccountInput = trustline.account;
+    this.issuedCurrencyInput = trustline.currency;
+    this.limitInput = trustline.limit;
+    this.checkChanges();
+  }
+
+  onDisableRippling(trustline:any) {
+    console.log("onDisableRippling");
+    this.googleAnalytics.analyticsEventEmitter('trust_set', 'onDisableRippling', 'trust_set_component');
+
+    let payload:XummPostPayloadBodyJson = {
+      txjson: {
+        TransactionType: "TrustSet",
+        Flags: this.TRUST_SET_FLAG_SET_NO_RIPPLE
+      }
+    }
+
+    payload.txjson.LimitAmount = {};
+    payload.custom_meta = {
+      instruction: "Set 'NoRipple' Flag on this TrustLine\n\n"
+    };
+
+    payload.txjson.LimitAmount.issuer = trustline.account;
+    payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
+
+    payload.txjson.LimitAmount.currency = trustline.currency;
+    payload.custom_meta.instruction += "\n- IOU currency code: " + trustline.currency;
+
+    payload.txjson.LimitAmount.value = trustline.limit
+    payload.custom_meta.instruction += "\n- Limit: " + trustline.limit;
+
+    payload.custom_meta.instruction += "\n- Disable Rippling: true";
+
+    this.onPayload.emit(payload);
   }
 
   onIssuedCurrencyFound(iou:any) {
@@ -200,5 +246,38 @@ export class TrustSetComponent implements OnInit, OnDestroy {
 
     this.showIssuedCurrencySelectedStyle = true;
     setTimeout(() => this.showIssuedCurrencySelectedStyle = false, 1000);
+  }
+
+  deleteTrustLine(trustline: any) {
+    this.googleAnalytics.analyticsEventEmitter('trust_set', 'deleteTrustLine', 'trust_set_component');
+
+    let payload:XummPostPayloadBodyJson = {
+      txjson: {
+        TransactionType: "TrustSet",
+        Flags: this.TRUST_SET_FLAG_SET_NO_RIPPLE
+      }
+    }
+
+    payload.txjson.LimitAmount = {};
+    payload.custom_meta = {
+      instruction: "Deleting TrustLine\n\n"
+    };
+
+    payload.txjson.LimitAmount.issuer = trustline.account;
+    payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
+
+    payload.txjson.LimitAmount.currency = trustline.currency;
+    payload.custom_meta.instruction += "\n- IOU currency code: " + trustline.currency;
+
+    payload.txjson.LimitAmount.value = "0"
+    payload.custom_meta.instruction += "\n- Limit: 0";
+
+    this.onPayload.emit(payload);
+  }
+
+  cancelEdit() {
+    this.issuerAccountInput = this.limitInput = this.issuedCurrencyInput = null;
+    this.checkChanges();
+    this.isEditMode = false;
   }
 }

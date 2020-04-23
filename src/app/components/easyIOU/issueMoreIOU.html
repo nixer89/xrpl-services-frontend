@@ -1,0 +1,56 @@
+<mat-expansion-panel>
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      Issue more of your created IOU here!
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <mat-card fxLayout="column" fxLayoutGap="0.3em">
+    After you have initially created your IOU, you can issue more tokens to accounts which have a TrustLine to your issuer account.
+    <div *ngIf="!getIssuer() || !validIssuer">
+      <button mat-button matTooltip="Sign In via XUMM." matTooltipPosition="above" (click)="signInWithIssuer()" style="padding:0px;">
+        <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
+      </button>
+      &nbsp;<label class="loading">Please sign in with the issuer account.</label>
+    </div>
+    <div *ngIf="getIssuer() && validIssuer" fxLayout="column" fxLayoutGap="0.3em">
+      <label class="loading">Do you want to create an IOU on the live network or test network?</label>
+      <div fxLayout="row" fxLayoutGap="0.5em">
+        <mat-card class="theme-background">
+          <div fxLayout="column" fxLayoutAlign="start center">
+              <label>Network</label>
+              <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
+                <label>Live</label>&nbsp;
+                <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
+                <label>Test</label>
+              </div>
+          </div>
+        </mat-card>
+        <span style="flex: 1 1 auto;"></span>
+      </div>
+      <form fxLayout="column" fxLayoutGap="0.5em">
+        <mat-form-field>
+          <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the IOU" [(ngModel)]="issuerAccount" [disabled]="true">
+          <mat-hint *ngIf="getIssuer() && !validIssuer">Not a valid XRPL address</mat-hint>
+        </mat-form-field>
+
+        <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrencyCode ? 'block':'none' }">
+          <iouList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" [testMode]="isTestMode" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></iouList>
+        </div>
+      
+        <label class="loading">Currency to issue:</label>
+        <mat-form-field style="padding-top: 0.5em;">
+          <input matInput name="Currency Code" placeholder="Currency Code" [(ngModel)]="currencyCode" (ngModelChange)="checkChangesCurrencyCode()" [disabled]="true">
+          <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode != 'XRP'">Not a valid Currency Code. Please use 3 capital letters for the Currency Code (like 'USD')</mat-hint>
+          <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode === 'XRP'">You cannot issue any XRP!</mat-hint>
+        </mat-form-field>
+
+        <label class="loading">How many tokens you want to issue initially? (You could issue more later on through normal payments)</label>
+        <mat-form-field>
+          <input matInput name="Number of tokens" placeholder="Number of tokens" [(ngModel)]="limit" (ngModelChange)="checkChangesLimit()">
+          <mat-hint *ngIf="limit && !validLimit">Not a valid number. Please choose a whole number with a maximum of 15 digits!</mat-hint>
+        </mat-form-field>
+      </form>
+    </div>
+  </mat-card>
+</mat-expansion-panel>

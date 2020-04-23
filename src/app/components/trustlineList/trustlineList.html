@@ -1,0 +1,97 @@
+<div *ngIf="loading" fxLayout="row" fxLayoutAlign="start center">
+    <label>Loading TrustLines ...&nbsp;</label>
+    <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+</div>
+<label style="color: darkorange" *ngIf="!loading && account_Info && account_Info.Account && (!trustLines || trustLines.length < 1)">This account does not have any TrustLines.</label>
+<mat-accordion *ngIf="!loading && trustLines && trustLines.length > 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+    <mat-expansion-panel #mep>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Show TrustLines of signed in account
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-table [dataSource]="trustLines" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="account">
+                <mat-header-cell *matHeaderCellDef> Counterparty </mat-header-cell>
+                <mat-cell *matCellDef="let trustline">
+                    <span fxShow fxHide.xs > {{trustline.account}}</span>
+                    <span fxShow.xs fxHide ><b>Counterparty:</b><br>{{trustline.account}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="currency">
+                <mat-header-cell *matHeaderCellDef> IOU Currency Code </mat-header-cell>
+                <mat-cell *matCellDef="let trustline">
+                    <span fxShow fxHide.xs > {{trustline.currency}}</span>
+                    <span fxShow.xs fxHide ><b>IOU Currency Code:</b>&nbsp;{{trustline.currency}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="balance">
+                <mat-header-cell *matHeaderCellDef> Balance of this TrustLine </mat-header-cell>
+                <mat-cell *matCellDef="let trustline">
+                    <span fxShow fxHide.xs > {{trustline.balance}}</span>
+                    <span fxShow.xs fxHide ><b>Balance:</b>&nbsp;{{trustline.balance}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="limit">
+                <mat-header-cell *matHeaderCellDef > Limit of this TrustLine </mat-header-cell>
+                <mat-cell *matCellDef="let trustline">
+                    <span fxShow fxHide.xs >{{trustline.limit}}</span>
+                    <span fxShow.xs fxHide ><b>Limit:</b>&nbsp;{{trustline.limit}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="limit_peer">
+                <mat-header-cell *matHeaderCellDef > Limit from counterparty </mat-header-cell>
+                <mat-cell *matCellDef="let trustline">
+                    <span fxShow fxHide.xs >{{trustline.limit_peer}}</span>
+                    <span fxShow.xs fxHide ><b>Limit Counterparty:</b>&nbsp;{{trustline.limit_peer}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="no_ripple">
+                <mat-header-cell *matHeaderCellDef > Rippling Disabled </mat-header-cell>
+                <mat-cell *matCellDef="let trustline">
+                    <span fxShow fxHide.xs >
+                        <mat-checkbox [checked]="trustline.no_ripple" [disabled]="true"></mat-checkbox>
+                        <button mat-icon-button *ngIf="trustline.no_ripple && !accountHasDefaultRipple()" matTooltip="It is highly recommended to disable rippling on your trustline. Click here to do so." (click)="setNoRippleFlag(trustline)">
+                            <mat-icon class="warning">warning</mat-icon>
+                        </button>
+                    </span>
+                    <span fxShow.xs fxHide fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="0.3em">
+                        <b>Rippling Disabled:</b>&nbsp;
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <mat-checkbox [checked]="trustline.no_ripple" [disabled]="true"></mat-checkbox>
+                            <button mat-icon-button *ngIf="!trustline.no_ripple && !accountHasDefaultRipple()" matTooltip="It is highly recommended to disable rippling on your trustline. Click here to do so." (click)="setNoRippleFlag(trustline)">
+                                <mat-icon class="warning">warning</mat-icon>
+                            </button>
+                        </div>
+                    </span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+                <mat-header-cell *matHeaderCellDef > Actions: </mat-header-cell>
+                <mat-cell *matCellDef="let trustline">
+                    <div fxLayout="row" fxLayoutGap="0.5em">
+                        <button mat-icon-button aria-label="Edit" [disabled]="trustline.limit === '0' && trustline.limit_peer != '0'" [matTooltip]="trustline.limit === '0' && trustline.limit_peer != '0' ? 'You did not create this TrustLine. Not able to edit!': 'Edit this TrustLine'" matTooltipPosition="above" (click)="editTrustline(trustline);mep.expanded=false">
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                        <button *ngIf="trustline.limit_peer === '0'" mat-icon-button [disabled]="trustline.balance != '0'" aria-label="Delete"  [matTooltip]="trustline.balance != '0' ? 'Balance is not 0. Not able to delete!' : 'Delete this trustline'" matTooltipPosition="above" (click)="deleteTrustLine(trustline);mep.expanded=false">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                        <button *ngIf="trustline.limit_peer != '0'" mat-icon-button [disabled]="true" aria-label="Delete"  matTooltip="You did not create this TrustLine. Not able to delete!" matTooltipPosition="above">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+        </mat-table>
+</mat-expansion-panel>

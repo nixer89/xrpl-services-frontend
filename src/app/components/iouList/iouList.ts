@@ -37,8 +37,8 @@ export class IouList implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.iouAccountChangedSubscription = this.issuerAccountChanged.subscribe(xrplAccount => {
-            //console.log("iou account changed received: " + xrplAccount);
-            //console.log("test mode: " + this.testMode);
+            console.log("iou account changed received: " + xrplAccount);
+            console.log("test mode: " + this.testMode);
             if(xrplAccount)
                 this.loadIOUList(xrplAccount);
             else
@@ -59,11 +59,12 @@ export class IouList implements OnInit, OnDestroy {
     setupWebsocket() {
         this.originalTestModeValue = this.testMode;
         //console.log("connecting websocket");
-        this.websocket = webSocket(this.testMode ? 'wss://testnet.xrpl-labs.com' : 'wss://s1.ripple.com');
+        this.websocket = webSocket(this.testMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
 
         this.websocket.asObservable().subscribe(async message => {
-            //console.log("websocket message: " + JSON.stringify(message));
+            console.log("IOU websocket message: " + JSON.stringify(message));
             if(message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.obligations) {
+                this.iouList = [];
                 let obligations:any = message.result.obligations;
                 
                 if(obligations) {
@@ -90,6 +91,7 @@ export class IouList implements OnInit, OnDestroy {
     }
 
     loadIOUList(xrplAccount: string) {
+        console.log("loading IOU list for: " + xrplAccount);
         this.googleAnalytics.analyticsEventEmitter('load_iou_list', 'iou_list', 'iou_list_component');
 
         if(this.websocket && this.originalTestModeValue != this.testMode) {
