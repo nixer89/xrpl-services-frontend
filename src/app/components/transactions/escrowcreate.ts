@@ -136,7 +136,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     }
 
     if(this.validAmount)
-      this.validAmount = this.amountInput && parseFloat(this.amountInput) >= 0.000001;
+      this.validAmount = this.amountInput && parseFloat(this.amountInput) >= 0.000001 && !this.escrowBiggerThanAvailable();
 
     this.validAddress = this.destinationInput && this.destinationInput.trim().length > 0 && this.isValidXRPAddress(this.destinationInput.trim());
 
@@ -257,6 +257,22 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       //console.log("err encoding " + err);
       return false;
     }
+  }
+
+  getAvailableBalanceForEscrow(): number {
+    if(this.originalAccountInfo && this.originalAccountInfo.Balance) {
+      let balance:number = Number(this.originalAccountInfo.Balance);
+      balance = balance - (20*1000000); //deduct acc reserve
+      balance = balance - (this.originalAccountInfo.OwnerCount * 5 * 1000000); //deduct owner count
+      balance = balance - 5 * 1000000; //deduct account reserve for escrow
+      return balance/1000000;
+    } else {
+      return 0;
+    }
+  }
+
+  escrowBiggerThanAvailable(): boolean {
+    return this.amountInput && parseFloat(this.amountInput) > this.getAvailableBalanceForEscrow();
   }
 
   clearInputs() {

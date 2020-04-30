@@ -31,7 +31,6 @@ export class XrplTransactionsComponent implements OnInit {
   accountInfoChanged: Subject<any> = new Subject<any>();
   accountObjectsChanged: Subject<any> = new Subject<any>();
   transactionSuccessfull: Subject<any> = new Subject<any>();
-  networkChangedSubject: Subject<boolean> = new Subject<boolean>();
   websocket: WebSocketSubject<any>;
 
   isTestMode:boolean = false;
@@ -105,10 +104,9 @@ export class XrplTransactionsComponent implements OnInit {
 
   changeNetwork() {
     this.loadAccountData(true);
-    this.networkChangedSubject.next(this.isTestMode);
   }
 
-  async loadAccountData(networkChanged:boolean, isInit?: boolean) {
+  async loadAccountData(isInit?: boolean) {
     if(this.xrplAccount) {
       this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'xrpl_transactions_component');
       this.loadingData = true;
@@ -119,7 +117,7 @@ export class XrplTransactionsComponent implements OnInit {
       }
 
       //console.log("connecting websocket");
-      this.websocket = webSocket(this.isTestMode ? 'wss://s.altnet.rippletest.net' : 'wss://xrpl.ws');
+      this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
 
       this.websocket.asObservable().subscribe(async message => {
         //console.log("websocket message: " + JSON.stringify(message));
@@ -282,6 +280,17 @@ export class XrplTransactionsComponent implements OnInit {
   getAccountBalance(): number {
     if(this.xrplAccount_Info && this.xrplAccount_Info.Balance) {
       let balance:number = Number(this.xrplAccount_Info.Balance);
+      return balance/1000000;
+    } else {
+      return 0;
+    }
+  }
+
+  getAvailableBalance(): number {
+    if(this.xrplAccount_Info && this.xrplAccount_Info.Balance) {
+      let balance:number = Number(this.xrplAccount_Info.Balance);
+      balance = balance - (20*1000000); //deduct acc reserve
+      balance = balance - (this.xrplAccount_Info.OwnerCount * 5 * 1000000); //deduct owner count
       return balance/1000000;
     } else {
       return 0;

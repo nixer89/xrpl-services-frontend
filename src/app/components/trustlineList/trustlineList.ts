@@ -37,7 +37,7 @@ export class TrustLineList implements OnInit, OnDestroy {
     
     websocket: WebSocketSubject<any>;
     trustLines:TrustLine[] = [];
-    displayedColumns: string[] = ['account','balance','currency', 'limit', 'limit_peer', 'no_ripple', 'actions'];
+    displayedColumns: string[] = ['currency', 'account','balance', 'limit', 'limit_peer', 'no_ripple', 'actions'];
     loading:boolean = false;
     originalTestModeValue:boolean;
     trustlineClicked:boolean = false;
@@ -73,7 +73,7 @@ export class TrustLineList implements OnInit, OnDestroy {
     setupWebsocket() {
         this.originalTestModeValue = this.testMode;
         //console.log("connecting websocket");
-        this.websocket = webSocket(this.testMode ? 'wss://s.altnet.rippletest.net' : 'wss://xrpl.ws');
+        this.websocket = webSocket(this.testMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
 
         this.websocket.asObservable().subscribe(async message => {
             if(message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.lines) {

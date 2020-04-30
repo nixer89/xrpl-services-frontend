@@ -21,14 +21,15 @@
   <label style="color: crimson;padding-top: 1em;"><b>Be careful. You could lock away your funds for years!</b><br/></label>
   <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
     <mat-form-field>
-      <input #inpdestination matInput name="destination" placeholder="Escrow Destination (required)" [(ngModel)]="destinationInput" (ngModelChange)="checkChanges()">
+      <input #inpdestination matInput name="destination" placeholder="Escrow Destination XRPL Address (required)" [(ngModel)]="destinationInput" (ngModelChange)="checkChanges()">
       <mat-hint *ngIf="destinationInput && !validAddress">Not a valid XRP address</mat-hint>
     </mat-form-field>
     <mat-form-field>
       <input #inpamount matInput type="text" name="amount" placeholder="Escrow Amount in XRP (required)" [(ngModel)]="amountInput" (ngModelChange)="checkChanges()">
       <mat-hint *ngIf="amountInput && !validAmount && maxSixDigits">The XRP amount cannot have more than 6 decimals.</mat-hint>
-      <mat-hint *ngIf="amountInput && !validAmount && ! maxSixDigits && amountInput.toString().includes(',')">Not a valid amount. Please use '.' as decimal operator.</mat-hint>
-      <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && !amountInput.toString().includes(',')">Not a valid amount</mat-hint>
+      <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && amountInput.toString().includes(',')">Not a valid amount. Please use '.' as decimal operator.</mat-hint>
+      <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && !amountInput.toString().includes(',') && !escrowBiggerThanAvailable()">Not a valid amount</mat-hint>
+      <mat-hint *ngIf="amountInput && !validAmount && escrowBiggerThanAvailable()">Your escrow amount is too big. Your maximal amount for escrow is: {{getAvailableBalanceForEscrow()}} XRP. ('Available Balance' - 5 XRP for account reserve) <a href="https://xrpl.org/reserves.html#owner-reserves" target="_blank"> (Owner Reserves Info)</a></mat-hint>
     </mat-form-field>
     <mat-card>
       <label>Finish After (optional)</label>

@@ -28,13 +28,13 @@
         </mat-card>
         <span style="flex: 1 1 auto;"></span>
       </div>
-      <form fxLayout="column" fxLayoutGap="0.5em">
+      <form fxLayout="column" fxLayoutGap="0.3em" style="padding-top: 0.8em;">
         <mat-form-field>
           <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the IOU" [(ngModel)]="issuerAccount" [disabled]="true">
           <mat-hint *ngIf="getIssuer() && !validIssuer">Not a valid XRPL address</mat-hint>
         </mat-form-field>
 
-        <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrencyCode ? 'block':'none' }">
+        <div style="margin-bottom: 1em;">
           <iouList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" [testMode]="isTestMode" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></iouList>
         </div>
       
@@ -45,12 +45,38 @@
           <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode === 'XRP'">You cannot issue any XRP!</mat-hint>
         </mat-form-field>
 
-        <label class="loading">How many tokens you want to issue initially? (You could issue more later on through normal payments)</label>
+        <label class="loading">Which address shall the IOU be sent to?</label>
         <mat-form-field>
-          <input matInput name="Number of tokens" placeholder="Number of tokens" [(ngModel)]="limit" (ngModelChange)="checkChangesLimit()">
-          <mat-hint *ngIf="limit && !validLimit">Not a valid number. Please choose a whole number with a maximum of 15 digits!</mat-hint>
+          <input #inpdestination matInput name="destination" placeholder="IOU recipient" [(ngModel)]="destinationInput" (ngModelChange)="checkChangesDestination()">
+          <mat-hint *ngIf="destinationInput && !validAddress">Not a valid XRP address</mat-hint>
+          <mat-hint *ngIf="destinationInput && validAddress && recipientAccountNotFound">Recipient address not found on XRP Ledger <b>{{isTestMode ? 'test' : 'live'}}</b> net.</mat-hint>
+          <mat-hint *ngIf="destinationInput && validAddress && noTrustLineFound">No trust line found for the selected currency with the issuer account on the XRP Ledger <b>{{isTestMode ? 'test' : 'live'}}</b> net.</mat-hint>
+          
         </mat-form-field>
+
+        <div *ngIf="validCurrencyCode && validAddress && loadingRecipientToIssuerTL" fxLayout="row" fxLayoutGap="0.3em">
+          <label>Checking some things...</label>
+          <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+        </div>
+        <div *ngIf="validCurrencyCode && validAddress && !loadingRecipientToIssuerTL && recipientToIssuerTrustLine" fxLayout="column" fxLayoutGap="0.3em">
+          <label class="loading">How many more tokens you want to issue? (Max: {{getMaxIssuerTokens()}})</label>
+          <div *ngIf="getMaxIssuerTokens() <= 0">
+            <label class="warning">The trustline from the recipient to the issuer account does not have enough limit anymore. Please ask the recipient to increase the limit of this trustline.</label>
+          </div>
+          <div *ngIf="getMaxIssuerTokens() > 0" fxLayout="column" fxLayoutGap="0.3em">
+            <mat-form-field>
+              <input matInput name="Number of tokens" placeholder="Number of tokens" [(ngModel)]="numberOfTokens" (ngModelChange)="checkChangesNumberOfTokens()">
+              <mat-hint *ngIf="numberOfTokens && !validNumberOfTokens && getMaxIssuerTokens() >= numberOfTokens">Not a valid number. Please choose a whole number with a maximum of 15 decimal places!</mat-hint>
+            </mat-form-field>
+          </div>
+        </div>
       </form>
+      <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
+        <button mat-raised-button color="primary" (click)="issueIOU()" [disabled]="!validAddress || !validIssuer || !validCurrencyCode || !validNumberOfTokens">
+          Send IOU via XUMM
+        </button>
+        <label *ngIf="!destinationInput || !validAddress">Please enter a valid XRPL address as recipient.</label>
+      </div>
     </div>
   </mat-card>
 </mat-expansion-panel>

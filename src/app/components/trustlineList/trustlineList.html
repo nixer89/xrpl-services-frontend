@@ -12,14 +12,6 @@
         </mat-expansion-panel-header>
         <mat-table [dataSource]="trustLines" class="mat-elevation-z8">
 
-            <ng-container matColumnDef="account">
-                <mat-header-cell *matHeaderCellDef> Counterparty </mat-header-cell>
-                <mat-cell *matCellDef="let trustline">
-                    <span fxShow fxHide.xs > {{trustline.account}}</span>
-                    <span fxShow.xs fxHide ><b>Counterparty:</b><br>{{trustline.account}}</span>
-                </mat-cell>
-            </ng-container>
-
             <ng-container matColumnDef="currency">
                 <mat-header-cell *matHeaderCellDef> IOU Currency Code </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
@@ -27,6 +19,14 @@
                     <span fxShow.xs fxHide ><b>IOU Currency Code:</b>&nbsp;{{trustline.currency}}</span>
                 </mat-cell>
             </ng-container>
+
+            <ng-container matColumnDef="account">
+                <mat-header-cell *matHeaderCellDef> Counterparty </mat-header-cell>
+                <mat-cell *matCellDef="let trustline">
+                    <span fxShow fxHide.xs > {{trustline.account}}</span>
+                    <span fxShow.xs fxHide ><b>Counterparty:</b><br>{{trustline.account}}</span>
+                </mat-cell>
+            </ng-container>            
 
             <ng-container matColumnDef="balance">
                 <mat-header-cell *matHeaderCellDef> Balance of this TrustLine </mat-header-cell>
@@ -57,7 +57,7 @@
                 <mat-cell *matCellDef="let trustline">
                     <span fxShow fxHide.xs >
                         <mat-checkbox [checked]="trustline.no_ripple" [disabled]="true"></mat-checkbox>
-                        <button mat-icon-button *ngIf="trustline.no_ripple && !accountHasDefaultRipple()" matTooltip="It is highly recommended to disable rippling on your trustline. Click here to do so." (click)="setNoRippleFlag(trustline)">
+                        <button mat-icon-button *ngIf="!trustline.no_ripple && !accountHasDefaultRipple()" matTooltip="It is highly recommended to disable rippling on your trustline. Click here to do so." (click)="setNoRippleFlag(trustline)">
                             <mat-icon class="warning">warning</mat-icon>
                         </button>
                     </span>
@@ -76,7 +76,7 @@
             <ng-container matColumnDef="actions">
                 <mat-header-cell *matHeaderCellDef > Actions: </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
-                    <div fxLayout="row" fxLayoutGap="0.5em">
+                    <div fxLayout="row" fxLayout.lt-md="column" fxLayout.xs="row" fxLayoutGap="0.2em">
                         <button mat-icon-button aria-label="Edit" [disabled]="trustline.limit === '0' && trustline.limit_peer != '0'" [matTooltip]="trustline.limit === '0' && trustline.limit_peer != '0' ? 'You did not create this TrustLine. Not able to edit!': 'Edit this TrustLine'" matTooltipPosition="above" (click)="editTrustline(trustline);mep.expanded=false">
                             <mat-icon>edit</mat-icon>
                         </button>

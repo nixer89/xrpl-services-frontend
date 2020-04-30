@@ -99,7 +99,7 @@
               <label class="loading">How many tokens you want to issue initially? (You could issue more later on through normal payments)</label>
               <mat-form-field>
                 <input matInput name="Number of tokens" placeholder="Number of tokens" [(ngModel)]="limit" (ngModelChange)="checkChangesLimit()">
-                <mat-hint *ngIf="limit && !validLimit">Not a valid number. Please choose a whole number with a maximum of 15 digits!</mat-hint>
+                <mat-hint *ngIf="limit && !validLimit">Not a valid number. Please choose a number with a maximum of 15 decimal places!</mat-hint>
               </mat-form-field>
             </form>
             

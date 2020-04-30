@@ -20,6 +20,7 @@
                     <label class="loading" ngStyle.xs="font-size: 0.8em;"> {{xrplAccount}}</label>
                     <label fxHide.xs>and balance:</label>
                     <label class="loading" ngStyle.xs="font-size: 0.8em;">{{getAccountBalance()}} XRP.</label>
+                    <label class="warning" ngStyle.xs="font-size: 0.8em;">(Available: {{getAvailableBalance()}} XRP.)</label>
                 </div>
                 <label class="warning" ngStyle.xs="font-size: 0.8em;" *ngIf="!loadingData && xrplAccount && xrplAccount_Info && xrplAccount_Info.error">This account was not found on the {{isTestMode ? ' test net ' : ' live net '}}.</label>
                 <div fxLayout="row" fxLayoutAlign="center center" *ngIf="loadingData">

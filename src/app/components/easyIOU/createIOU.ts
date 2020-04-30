@@ -174,7 +174,7 @@ export class CreateIOU implements OnInit {
       }
 
       //console.log("connecting websocket");
-      this.websocket = webSocket(this.isTestMode ? 'wss://s.altnet.rippletest.net' : 'wss://xrpl.ws');
+      this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
 
       this.websocket.asObservable().subscribe(async message => {
         //console.log("websocket message: " + JSON.stringify(message));
@@ -249,7 +249,7 @@ export class CreateIOU implements OnInit {
   }
 
   checkChangesLimit() {
-    this.validLimit = this.limit && this.limit > 0 && Number.isInteger(Number(this.limit)) && /^[\d]{1,15}$/.test(this.limit.toString());
+    this.validLimit = this.limit && this.limit > 0 && Number.isInteger(Number(this.limit)) && /[^.0-9]|\d*\.\d{16,}/.test(this.limit.toString());
   }
 
   setTrustline() {
