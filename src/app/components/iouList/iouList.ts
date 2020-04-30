@@ -59,7 +59,7 @@ export class IouList implements OnInit, OnDestroy {
     setupWebsocket() {
         this.originalTestModeValue = this.testMode;
         //console.log("connecting websocket");
-        this.websocket = webSocket(this.testMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
+        this.websocket = webSocket(this.testMode ? 'wss://s.altnet.rippletest.net' : 'wss://xrpl.ws');
 
         this.websocket.asObservable().subscribe(async message => {
             console.log("IOU websocket message: " + JSON.stringify(message));

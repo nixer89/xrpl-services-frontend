@@ -104,6 +104,7 @@ export class CreateIOU implements OnInit {
           await this.loadAccountData();
       } else {
         this.paymentNotSuccessfull = true;
+        this.paymentNotFound = false;
       }
     });
   }
@@ -132,12 +133,14 @@ export class CreateIOU implements OnInit {
           this.issuerAccount = info.account;
           this.validIssuer = true;
           this.paymentNotFound = true;
+          this.paymentNotSuccessfull = false;
           this.loadingIssuerAccount = false;
         }
       } else if(info && info.account) {
         this.issuerAccount = info.account;
         this.validIssuer = true;
         this.paymentNotFound = true;
+        this.paymentNotSuccessfull = false;
         this.loadingIssuerAccount = false;
       } else {
         this.issuerAccount = null;
@@ -171,7 +174,7 @@ export class CreateIOU implements OnInit {
       }
 
       //console.log("connecting websocket");
-      this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
+      this.websocket = webSocket(this.isTestMode ? 'wss://s.altnet.rippletest.net' : 'wss://xrpl.ws');
 
       this.websocket.asObservable().subscribe(async message => {
         //console.log("websocket message: " + JSON.stringify(message));

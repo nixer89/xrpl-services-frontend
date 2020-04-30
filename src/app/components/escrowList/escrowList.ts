@@ -57,7 +57,7 @@ export class EscrowList implements OnInit, OnDestroy {
     setupWebsocket() {
         this.originalTestModeValue = this.testMode;
         //console.log("connecting websocket");
-        this.websocket = webSocket(this.testMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
+        this.websocket = webSocket(this.testMode ? 'wss://s.altnet.rippletest.net' : 'wss://xrpl.ws');
 
         this.websocket.asObservable().subscribe(async message => {
             //console.log("websocket message: " + JSON.stringify(message));
@@ -76,7 +76,7 @@ export class EscrowList implements OnInit, OnDestroy {
                 this.loading = false;
               }
               else if(message.result && message.result.TransactionType === 'EscrowCreate') {
-                  //console.log("Sequence: " + message.result.Sequence);
+                  console.log("Sequence: " + message.result.Sequence);
                   this.escrowSequenceFound.emit({owner: message.result.Account, sequence: message.result.Sequence, condition: message.result.Condition});
                   this.escrowClicked = true;
                   this.loading = false;
@@ -129,7 +129,16 @@ export class EscrowList implements OnInit, OnDestroy {
 
     escrowSelected(escrow: any) {
         this.googleAnalytics.analyticsEventEmitter('escrow_list_selected', 'escrow_list', 'escrow_list_component');
-        //console.log("escrow selected: " + JSON.stringify(escrow));
+        console.log("escrow selected: " + JSON.stringify(escrow));
+
+        if(this.websocket && this.originalTestModeValue != this.testMode) {
+            this.websocket.unsubscribe();
+            this.websocket.complete();
+            this.websocket = null;
+        }
+
+        if(!this.websocket || this.websocket.closed)
+            this.setupWebsocket();
 
         let txInfo:any = {
             command: "tx",
