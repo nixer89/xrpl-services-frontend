@@ -3,6 +3,7 @@ import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Observable, Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import * as util from '../../utils/flagutils';
+import { AccountInfoChanged } from 'src/app/utils/types';
 
 interface TrustLine {
     account:string,
@@ -21,10 +22,7 @@ interface TrustLine {
 export class TrustLineList implements OnInit, OnDestroy {
 
     @Input()
-    xrplAccountInfoChanged: Observable<string>;
-
-    @Input()
-    testMode: boolean;
+    xrplAccountInfoChanged: Observable<AccountInfoChanged>;
 
     @Output()
     trustLineEdit: EventEmitter<any> = new EventEmitter();
@@ -39,7 +37,8 @@ export class TrustLineList implements OnInit, OnDestroy {
     trustLines:TrustLine[] = [];
     displayedColumns: string[] = ['currency', 'account','balance', 'limit', 'limit_peer', 'no_ripple', 'actions'];
     loading:boolean = false;
-    originalTestModeValue:boolean;
+    testMode:boolean = false;
+    originalTestModeValue:boolean = false;
     trustlineClicked:boolean = false;
 
     account_Info:any = null;
@@ -52,7 +51,9 @@ export class TrustLineList implements OnInit, OnDestroy {
         this.trustLineAccountChangedSubscription = this.xrplAccountInfoChanged.subscribe(account_Info => {
             //console.log("trustline account changed received: " + xrplAccount);
             //console.log("test mode: " + this.testMode);
-            this.account_Info = account_Info;
+            this.account_Info = account_Info.info;
+            this.testMode = account_Info.mode;
+            
             if(this.account_Info && this.account_Info.Account)
                 this.loadTrustLineList(this.account_Info.Account);
             else
@@ -87,6 +88,7 @@ export class TrustLineList implements OnInit, OnDestroy {
                     this.trustLines = null;
                     
                 console.log(JSON.stringify(this.trustLines));
+                delete this.trustLines[0].no_ripple;
                 this.loading = false;
                 console.log("trustLines: " + JSON.stringify(this.trustLines));
             } else {                

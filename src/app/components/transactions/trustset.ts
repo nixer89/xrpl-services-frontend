@@ -3,6 +3,7 @@ import { Encode } from 'xrpl-tagged-address-codec';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
+import { AccountInfoChanged, XrplAccountChanged } from 'src/app/utils/types';
 
 @Component({
   selector: 'trustset',
@@ -18,16 +19,13 @@ export class TrustSetComponent implements OnInit, OnDestroy {
   constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
-  accountInfoChanged: Observable<any>;
+  accountInfoChanged: Observable<AccountInfoChanged>;
 
   @Input()
-  transactionSuccessfull: Observable<void>;
+  transactionSuccessfull: Observable<any>;
   
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
-
-  @Input()
-  testMode: boolean;
 
   @ViewChild('inpisseraccount', {static: false}) inpisseraccount;
   issuerAccountInput: string;
@@ -41,10 +39,12 @@ export class TrustSetComponent implements OnInit, OnDestroy {
   maxFifthteenDigits:boolean = false;
 
   originalAccountInfo:any;
+  testMode:boolean = false;
+
   private accountInfoChangedSubscription: Subscription;
   private transactionSuccessfullSubscription: Subscription;
-  issuerAccountChangedSubject: Subject<string> = new Subject<string>();
-  xrplAccountInfoChangedSubject: Subject<string> = new Subject<string>();
+  issuerAccountChangedSubject: Subject<XrplAccountChanged> = new Subject<XrplAccountChanged>();
+  xrplAccountInfoChangedSubject: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
 
   showIssuedCurrencySelectedStyle:boolean = false;
   issuedCurrencySelected:boolean = false;
@@ -62,13 +62,15 @@ export class TrustSetComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       console.log("account info changed received: " + JSON.stringify(accountData));
-      this.originalAccountInfo = accountData;
+      this.originalAccountInfo = accountData.info;
+      this.testMode = accountData.mode;
+
       if(this.originalAccountInfo && this.originalAccountInfo.Account)
-        this.xrplAccountInfoChangedSubject.next(this.originalAccountInfo);
+        this.xrplAccountInfoChangedSubject.next(accountData);
       else
         this.xrplAccountInfoChangedSubject.next(null);
       setTimeout(() => {
-        this.issuerAccountChangedSubject.next(this.lastKnownAddress);
+        this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
       },500);
     });
 
@@ -83,6 +85,12 @@ export class TrustSetComponent implements OnInit, OnDestroy {
 
     if(this.transactionSuccessfullSubscription)
       this.transactionSuccessfullSubscription.unsubscribe();
+
+    if(this.xrplAccountInfoChangedSubject)
+      this.xrplAccountInfoChangedSubject.unsubscribe();
+
+    if(this.issuerAccountChangedSubject)
+      this.issuerAccountChangedSubject.unsubscribe();
   }
 
   sendPayloadToXumm() {
@@ -123,10 +131,10 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     if(this.validAddress && (this.issuerAccountInput.trim() != this.lastKnownAddress)) {
       this.lastKnownAddress = this.issuerAccountInput.trim();
       //console.log("emitting issuerAccountChanged event");
-      this.issuerAccountChangedSubject.next(this.lastKnownAddress);
+      this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
     } else if(!this.validAddress) {
       this.lastKnownAddress = null;
-      this.issuerAccountChangedSubject.next(null);
+      this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
     }
   }
 
@@ -134,9 +142,9 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     this.checkChanges();
 
     if(!this.validCurrency && this.lastKnownCurrency && this.validAddress) {
-      //sequence change
-      console.log("send sequence changed");
-      this.issuerAccountChangedSubject.next(this.issuerAccountInput.trim());
+      //currency changed
+      console.log("send currency changed");
+      this.issuerAccountChangedSubject.next({account: this.issuerAccountInput.trim(), mode: this.testMode});
     }
 
   }
@@ -197,7 +205,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     this.lastKnownAddress = null;
     this.isEditMode = false;
     
-    this.issuerAccountChangedSubject.next(null);
+    this.issuerAccountChangedSubject.next({account: null, mode: this.testMode});
   }
 
   onTrustLineEdit(trustline:any) {

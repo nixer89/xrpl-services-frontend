@@ -4,6 +4,7 @@ import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
+import { AccountInfoChanged, AccountObjectsChanged } from 'src/app/utils/types';
 
 @Component({
   selector: 'setregularkey',
@@ -14,10 +15,10 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
-  accountInfoChanged: Observable<any>;
+  accountInfoChanged: Observable<AccountInfoChanged>;
 
   @Input()
-  accountObjectsChanged: Observable<any>;
+  accountObjectsChanged: Observable<AccountObjectsChanged>;
 
   @Input()
   transactionSuccessfull: Observable<void>;
@@ -46,7 +47,8 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
-      this.originalAccountInfo = accountData;
+      this.originalAccountInfo = accountData.info;
+
       if(this.originalAccountInfo && this.originalAccountInfo.RegularKey) {
         this.regularKeyInput = this.originalAccountInfo.RegularKey;
         this.checkChanges();
@@ -57,7 +59,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
 
     this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(accountObjects => {
       //console.log("account objects changed received")
-      this.originalAccountObjects = accountObjects;
+      this.originalAccountObjects = accountObjects.object;
     });
 
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {

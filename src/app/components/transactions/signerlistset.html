@@ -51,6 +51,7 @@
               <input #inpaddress matInput name="signeraddress" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address to add to the signer list" [(ngModel)]="signer.SignerEntry.Account" (ngModelChange)="checkSignerChanges(signer)">
               <mat-hint *ngIf="signer.SignerEntry.Account && !isValidXRPAddress(signer.SignerEntry.Account)">Not a valid XRPL address</mat-hint>
               <mat-hint *ngIf="signer.SignerEntry.Account && isValidXRPAddress(signer.SignerEntry.Account) && isDuplicateAccount(signer.SignerEntry.Account)">The same XRPL address can only be added once!</mat-hint>
+              <mat-hint *ngIf="signer.SignerEntry.Account && isValidXRPAddress(signer.SignerEntry.Account) && !isDuplicateAccount(signer.SignerEntry.Account) && isSameAsLoggedIn(signer.SignerEntry.Account)">The logged in account cannot be one of the signers.</mat-hint>
             </mat-form-field>
             <mat-form-field>
               <input #inpaddress matInput name="signerweight" placeholder="The weight of a signature from this signer" [(ngModel)]="signer.SignerEntry.SignerWeight" (ngModelChange)="checkSignerChanges(signer)">

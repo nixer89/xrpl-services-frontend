@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angu
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Observable, Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
+import { XrplAccountChanged } from 'src/app/utils/types';
 
 @Component({
     selector: "escrowList",
@@ -11,10 +12,7 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 export class EscrowList implements OnInit, OnDestroy {
 
     @Input()
-    escrowAccountChanged: Observable<string>;
-
-    @Input()
-    testMode: boolean;
+    escrowAccountChanged: Observable<XrplAccountChanged>;
 
     @Input()
     isCancel: boolean;
@@ -26,7 +24,8 @@ export class EscrowList implements OnInit, OnDestroy {
     escrowData:any[] = [];
     displayedColumns: string[] = ['destination', 'amount', 'finishafter', 'cancelafter', 'condition'];
     loading:boolean = false;
-    originalTestModeValue:boolean;
+    testMode:boolean = false;
+    originalTestModeValue:boolean = false;
     escrowClicked:boolean = false;
 
     private escrowAccountChangedSubscription: Subscription;
@@ -34,11 +33,13 @@ export class EscrowList implements OnInit, OnDestroy {
     constructor(private googleAnalytics: GoogleAnalyticsService) {}
 
     ngOnInit() {
-        this.escrowAccountChangedSubscription = this.escrowAccountChanged.subscribe(xrplAccount => {
+        this.escrowAccountChangedSubscription = this.escrowAccountChanged.subscribe(accountData => {
             //console.log("escrow account changed received: " + xrplAccount);
             //console.log("test mode: " + this.testMode);
-            if(xrplAccount)
-                this.loadEscrowList(xrplAccount);
+            if(accountData) {
+                this.testMode = accountData.mode;
+                this.loadEscrowList(accountData.account);
+            }
             else
                 this.escrowData = [];
         });

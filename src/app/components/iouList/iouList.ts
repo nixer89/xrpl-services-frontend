@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angu
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Observable, Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
+import { XrplAccountChanged } from 'src/app/utils/types';
 
 interface IOU {
     currency: string,
@@ -16,10 +17,7 @@ interface IOU {
 export class IouList implements OnInit, OnDestroy {
 
     @Input()
-    issuerAccountChanged: Observable<string>;
-
-    @Input()
-    testMode: boolean;
+    issuerAccountChanged: Observable<XrplAccountChanged>;
 
     @Output()
     issuerCurrencySelected: EventEmitter<any> = new EventEmitter();
@@ -28,7 +26,9 @@ export class IouList implements OnInit, OnDestroy {
     iouList:IOU[] = [];
     displayedColumns: string[] = ['currency', 'amount'];
     loading:boolean = false;
-    originalTestModeValue:boolean;
+    testMode:boolean = false;
+    originalIsserAccount:string;
+    originalTestModeValue:boolean = false;
     iouClicked:boolean = false;
 
     private iouAccountChangedSubscription: Subscription;
@@ -36,11 +36,15 @@ export class IouList implements OnInit, OnDestroy {
     constructor(private googleAnalytics: GoogleAnalyticsService) {}
 
     ngOnInit() {
-        this.iouAccountChangedSubscription = this.issuerAccountChanged.subscribe(xrplAccount => {
-            console.log("iou account changed received: " + xrplAccount);
-            console.log("test mode: " + this.testMode);
-            if(xrplAccount)
-                this.loadIOUList(xrplAccount);
+        this.iouAccountChangedSubscription = this.issuerAccountChanged.subscribe(accountData => {
+            console.log("iou account changed received: " + JSON.stringify(accountData));
+            
+            if(accountData) {
+                this.originalIsserAccount = accountData.account;
+                this.testMode = accountData.mode;
+                
+                this.loadIOUList(this.originalIsserAccount);
+            }   
             else
                 this.iouList = [];
         });

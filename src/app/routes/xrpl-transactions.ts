@@ -7,7 +7,7 @@ import { Subject } from 'rxjs'
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
-import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
+import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged, AccountObjectsChanged } from '../utils/types';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
@@ -28,8 +28,8 @@ export class XrplTransactionsComponent implements OnInit {
   lastTrxLinkXrpScan:string;
   lastTrxLinkXrp1ntel:string;
 
-  accountInfoChanged: Subject<any> = new Subject<any>();
-  accountObjectsChanged: Subject<any> = new Subject<any>();
+  accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
+  accountObjectsChanged: Subject<AccountObjectsChanged> = new Subject<AccountObjectsChanged>();
   transactionSuccessfull: Subject<any> = new Subject<any>();
   websocket: WebSocketSubject<any>;
 
@@ -55,8 +55,8 @@ export class XrplTransactionsComponent implements OnInit {
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
     }
 
-    this.xrplAccount="rnK4ybo1Gu4gcNpvnWy74Y16kpwhYepsMr";
-    this.isTestMode = true;
+    //this.xrplAccount="rnK4ybo1Gu4gcNpvnWy74Y16kpwhYepsMr";
+    //this.isTestMode = true;
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
     await this.loadAccountData(false);
@@ -257,12 +257,12 @@ export class XrplTransactionsComponent implements OnInit {
 
   emitAccountInfoChanged() {
     //console.log("emit account info changed");
-    this.accountInfoChanged.next(this.xrplAccount_Info);
+    this.accountInfoChanged.next({info: this.xrplAccount_Info, mode: this.isTestMode});
   }
 
   emitAccountObjectsChanged() {
     //console.log("emit account objects changed");
-    this.accountObjectsChanged.next(this.xrplAccount_Objects);
+    this.accountObjectsChanged.next({object: this.xrplAccount_Objects, mode: this.isTestMode});
   }
 
   async onPayloadReceived(xummPayload:XummPostPayloadBodyJson) {

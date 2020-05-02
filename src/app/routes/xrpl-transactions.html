@@ -60,10 +60,10 @@
     <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
         <accountset [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" (onPayload)="onPayloadReceived($event)"></accountset>
         <escrowcreate [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowcreate>
-        <escrowfinish [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)" [testMode]="isTestMode"></escrowfinish>
-        <escrowcancel [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)" [testMode]="isTestMode"></escrowcancel>
+        <escrowfinish [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowfinish>
+        <escrowcancel [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowcancel>
         <setregularkey [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></setregularkey>
         <signerlistset [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></signerlistset>
-        <trustset [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)" [testMode]="isTestMode"></trustset>
+        <trustset [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></trustset>
     </mat-accordion>
 </mat-card>

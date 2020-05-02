@@ -20,7 +20,7 @@
   <div fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.xs="0.3em">
     <a href="https://xrpl.org/trustset.html" target="_blank" rel="noreferrer">Trust Set Documentation</a><br/>
     <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
-      <trustlineList [xrplAccountInfoChanged]="xrplAccountInfoChangedSubject.asObservable()" (trustLineEdit)="onTrustLineEdit($event)" (trustLineDelete)="deleteTrustLine($event)" (disableRippling)="onDisableRippling($event)" [testMode]="testMode"></trustlineList>
+      <trustlineList [xrplAccountInfoChanged]="xrplAccountInfoChangedSubject.asObservable()" (trustLineEdit)="onTrustLineEdit($event)" (trustLineDelete)="deleteTrustLine($event)" (disableRippling)="onDisableRippling($event)"></trustlineList>
     </div>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
@@ -28,7 +28,7 @@
         <mat-hint *ngIf="issuerAccountInput && !validAddress">Not a valid XRPL address</mat-hint>
       </mat-form-field>
       <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
-        <iouList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" (issuerCurrencySelected)="onIssuedCurrencyFound($event)" [testMode]="testMode"></iouList>
+        <iouList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></iouList>
       </div>
       <mat-form-field [ngClass]="{'changed': showIssuedCurrencySelectedStyle}">
         <input #inpissuedcurrency matInput name="issuedcurrency" matInput placeholder="IOU currency code" [(ngModel)]="issuedCurrencyInput" (ngModelChange)="currencyChanged()" [disabled]="isEditMode">

@@ -25,3 +25,18 @@ export interface TransactionValidation {
     account?: string,
     payloadId?: string
 }
+
+export interface AccountInfoChanged {
+    info: any,
+    mode: boolean
+}
+
+export interface AccountObjectsChanged {
+    object: any,
+    mode: boolean
+}
+
+export interface XrplAccountChanged {
+    account: string,
+    mode: boolean
+}

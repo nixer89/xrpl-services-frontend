@@ -84,6 +84,16 @@ body .snackbar-failed {
     color: #f44336 !important;
 }
 
+// adds breaks to the mat-checkboxes with long labels
+.mat-checkbox-layout {
+    white-space: normal !important;
+}
+
+// rather than center the checkbox, put the checkbox in the first line
+.mat-checkbox-inner-container {
+    margin-top: 3px !important;
+}
+
 @media (max-width:599px) {
     
     .mat-expansion-panel-header {

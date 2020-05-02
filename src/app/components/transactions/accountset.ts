@@ -5,6 +5,7 @@ import * as emailValidator from 'email-validator'
 import * as flagsutil from '../../utils/flagutils';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { XummPostPayloadBodyJson } from 'xumm-api';
+import { AccountObjectsChanged, AccountInfoChanged } from 'src/app/utils/types';
 
 @Component({
   selector: 'accountset',
@@ -19,10 +20,10 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
-  accountInfoChanged: Observable<any>;
+  accountInfoChanged: Observable<AccountInfoChanged>;
 
   @Input()
-  accountObjectsChanged: Observable<any>;
+  accountObjectsChanged: Observable<AccountObjectsChanged>;
 
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
@@ -68,13 +69,13 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   ngOnInit(){
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received: " + JSON.stringify(accountData));
-      this.originalAccountInfo = accountData;
+      this.originalAccountInfo = accountData.info;
       this.reloadData()
     });
 
     this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(accountObjects => {
       //console.log("account objects changed received")
-      this.originalAccountObjects = accountObjects;
+      this.originalAccountObjects = accountObjects.object;
       this.reloadData()
     });
 

@@ -25,7 +25,7 @@
       <mat-hint *ngIf="escrowOwnerChangedAutomatically">Escrow Owner changed. Your inserted account was the destination address.</mat-hint>
     </mat-form-field>
     <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validSequence ? 'block':'none' }">
-      <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" (escrowSequenceFound)="onEscrowSequenceFound($event)" [testMode]="testMode"></escrowList>
+      <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" (escrowSequenceFound)="onEscrowSequenceFound($event)"></escrowList>
     </div>
     <mat-form-field [ngClass]="{'changed': showEscrowSequenceSelectedStyle}">
       <input #inpescrowsequence matInput name="escrowsequence" min="0" matInput placeholder="Escrow Sequence Number" [(ngModel)]="escrowSequenceInput" (ngModelChange)="sequenceChanged()">

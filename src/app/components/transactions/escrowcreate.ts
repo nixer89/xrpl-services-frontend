@@ -4,6 +4,7 @@ import { Subscription, Observable } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
+import { AccountInfoChanged } from 'src/app/utils/types';
 
 @Component({
   selector: 'escrowcreate',
@@ -14,10 +15,10 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   constructor(private device:DeviceDetectorService, private googleAnalytics: GoogleAnalyticsService) {}
 
   @Input()
-  accountInfoChanged: Observable<any>;
+  accountInfoChanged: Observable<AccountInfoChanged>;
 
   @Input()
-  transactionSuccessfull: Observable<void>;
+  transactionSuccessfull: Observable<any>;
 
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
@@ -76,7 +77,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
-      this.originalAccountInfo = accountData;
+      this.originalAccountInfo = accountData.info;
     });
 
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
@@ -87,6 +88,9 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy() {
+    if(this.accountInfoChangedSubscription)
+      this.accountInfoChangedSubscription.unsubscribe();
+
     if(this.transactionSuccessfullSubscription)
       this.transactionSuccessfullSubscription.unsubscribe();
   }

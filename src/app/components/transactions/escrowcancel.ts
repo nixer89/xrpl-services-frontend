@@ -3,6 +3,7 @@ import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
+import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
 
 @Component({
   selector: 'escrowcancel',
@@ -13,10 +14,10 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
-  accountInfoChanged: Observable<any>;
+  accountInfoChanged: Observable<AccountInfoChanged>;
 
   @Input()
-  transactionSuccessfull: Observable<void>;
+  transactionSuccessfull: Observable<AccountObjectsChanged>;
 
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
@@ -27,13 +28,12 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   @ViewChild('inpescrowsequence', {static: false}) inpescrowsequence;
   escrowSequenceInput: any;
 
-  @Input()
-  testMode: boolean;
-
   originalAccountInfo:any;
+  testMode: boolean = false;
+  
   private accountInfoChangedSubscription: Subscription;
   private transactionSuccessfullSubscription: Subscription;
-  escrowAccountChanged: Subject<any> = new Subject<any>();
+  escrowAccountChanged: Subject<XrplAccountChanged> = new Subject<XrplAccountChanged>();
 
   isValidEscrowCancel = false;
   validAddress = false;
@@ -56,10 +56,11 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
-      this.originalAccountInfo = accountData;
+      this.originalAccountInfo = accountData.info;
+      this.testMode = accountData.mode
       setTimeout(() => {
-        this.escrowAccountChanged.next(this.lastKnownAddress);
-      },500);
+        this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.testMode});
+      },200);
     });
 
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
@@ -100,10 +101,10 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
     if(this.validAddress && (this.escrowOwnerInput.trim() != this.lastKnownAddress)) {
       this.lastKnownAddress = this.escrowOwnerInput.trim();
       //console.log("emitting escrowAccountChanged event");
-      this.escrowAccountChanged.next(this.lastKnownAddress);
+      this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.testMode});
     } else if(!this.validAddress) {
       this.lastKnownAddress = null;
-      this.escrowAccountChanged.next(null);
+      this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.testMode});
     }
   }
 
@@ -113,7 +114,7 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
     if(!this.validSequence && this.lastKnownSequence && this.validAddress) {
       //sequence change
       console.log("send sequence changed");
-      this.escrowAccountChanged.next(this.escrowOwnerInput.trim());
+      this.escrowAccountChanged.next({account: this.escrowOwnerInput.trim(), mode: this.testMode});
     }
 
   }
@@ -154,7 +155,7 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
     this.isValidEscrowCancel = this.validAddress = this.validSequence = this.escrowOwnerChangedAutomatically = false;
     this.lastKnownAddress = null;
     
-    this.escrowAccountChanged.next(null);
+    this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.testMode});
   }
 
   onEscrowSequenceFound(escrowInfo:any) {

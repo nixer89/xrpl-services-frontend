@@ -6,7 +6,7 @@ import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
 import { XummService } from '../../services/xumm.service'
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Subject } from 'rxjs';
-import { TransactionValidation, GenericBackendPostRequest } from '../../utils/types';
+import { TransactionValidation, GenericBackendPostRequest, XrplAccountChanged } from '../../utils/types';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
@@ -30,10 +30,7 @@ export class IssueMoreIOU implements OnInit {
 
   constructor(
     private matDialog: MatDialog,
-    private xummApi: XummService,
-    private googleAnalytics: GoogleAnalyticsService,
-    private device: DeviceDetectorService) {
-
+    private googleAnalytics: GoogleAnalyticsService) {
   }
 
   @ViewChild('inpdestination', {static: false}) inpdestination;
@@ -47,19 +44,19 @@ export class IssueMoreIOU implements OnInit {
 
   checkBoxIssuingText:boolean = false;
 
-  xrplAccount_Info:any;
   websocket: WebSocketSubject<any>;
   isTestMode:boolean = false;
 
-  issuerAccount: string = "rwAmSBNQcpscqz1ZeVbvtvHFDfVsoJAAgg";
+  issuerAccount: string;
   //private issuerAccount: string;
-  validIssuer:boolean = true;
+  validIssuer:boolean = false;
   validAddress:boolean = false;
 
   currencyCode:string;
   numberOfTokens:number;
   validCurrencyCode:boolean = false;
   validNumberOfTokens:boolean = false;
+  notEnoughLimit:boolean = false;
 
   recipientToIssuerTrustLine:TrustLine;
   loadingRecipientToIssuerTL:boolean = false;
@@ -72,12 +69,9 @@ export class IssueMoreIOU implements OnInit {
 
   weHaveIssued:boolean = false;
 
-  issuerAccountChangedSubject: Subject<string> = new Subject<string>();
-  networkChangedSubject: Subject<boolean> = new Subject<boolean>();
+  issuerAccountChangedSubject: Subject<XrplAccountChanged> = new Subject<XrplAccountChanged>();
 
   ngOnInit(): void {
-    this.validIssuer = true;
-    this.issuerAccountChangedSubject.next(this.issuerAccount);
   }
 
   getIssuer(): string {
@@ -96,16 +90,17 @@ export class IssueMoreIOU implements OnInit {
       this.loadingIssuerAccount = true;
 
       if(info && info.success && info.account && this.isValidXRPAddress(info.account)) {
+        console.log("valid issuer");
         this.issuerAccount = info.account;
         this.validIssuer = true;
         this.loadingIssuerAccount = false;
-        this.issuerAccountChangedSubject.next(this.issuerAccount);
       } else {
         this.issuerAccount = null;
         this.validIssuer = false;
         this.loadingIssuerAccount = false;
-        this.issuerAccountChangedSubject.next(null);
       }
+
+      this.issuerAccountChangedSubject.next({account: this.issuerAccount, mode: this.isTestMode});
     });
   }
   
@@ -122,51 +117,8 @@ export class IssueMoreIOU implements OnInit {
     }
   }
 
-  async loadAccountData() {
-    if(this.issuerAccount) {
-      this.loadingIssuerAccount = true;
-      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'easy_iou', 'easy_iou_component');
-
-      if(this.websocket) {
-        this.websocket.unsubscribe();
-        this.websocket.complete();
-      }
-
-      //console.log("connecting websocket");
-      this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
-
-      this.websocket.asObservable().subscribe(async message => {
-        //console.log("websocket message: " + JSON.stringify(message));
-        if(message.status && message.type && message.type === 'response') {
-          if(message.status === 'success') {
-            if(message.result && message.result.account_data) {
-              this.xrplAccount_Info = message.result.account_data;
-              console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
-              this.issuerAccountChangedSubject.next(this.xrplAccount_Info.Account);
-            }
-
-          } else {
-            if(message.request.command === 'account_info') {
-              this.xrplAccount_Info = message;
-              this.issuerAccountChangedSubject.next(null);
-            }
-          }
-
-        } else {
-          this.xrplAccount_Info = null;
-        }
-        this.loadingIssuerAccount = false;
-
-      });
-
-      let account_info_request:any = {
-        command: "account_info",
-        account: this.issuerAccount,
-        "strict": true,
-      }
-
-      this.websocket.next(account_info_request);
-    }
+  networkSwitched() {
+    this.issuerAccountChangedSubject.next({account: this.issuerAccount, mode: this.isTestMode});
   }
 
   onIssuedCurrencyFound(iou:any) {
@@ -175,15 +127,18 @@ export class IssueMoreIOU implements OnInit {
   }
 
   checkChangesCurrencyCode() {
-    this.validCurrencyCode = this.currencyCode && /^[A-Z]{3}$/.test(this.currencyCode) && this.currencyCode != "XRP";
+    this.validCurrencyCode = this.currencyCode && this.currencyCode != "XRP";
     this.numberOfTokens = null;
     this.validNumberOfTokens = false;
+    this.notEnoughLimit = false;
 
     this.loadTrustLines();
   }
 
   checkChangesNumberOfTokens() {
-    this.validNumberOfTokens = this.numberOfTokens && !(/[^.0-9]|\d*\.\d{16,}/.test(this.numberOfTokens.toString())) && this.numberOfTokens > 0 && this.numberOfTokens > 0 && this.numberOfTokens <= this.getMaxIssuerTokens();
+    this.validNumberOfTokens = this.numberOfTokens && !(/[^.0-9]|\d*\.\d{16,}/.test(this.numberOfTokens.toString())) && this.numberOfTokens > 0;
+
+    this.notEnoughLimit = this.validNumberOfTokens && this.numberOfTokens > this.getMaxIssuerTokens();
   }
 
   checkChangesDestination() {
@@ -236,7 +191,7 @@ export class IssueMoreIOU implements OnInit {
   loadTrustLines() {
     if(!this.loadingRecipientToIssuerTL && this.validCurrencyCode && this.validAddress && this.validIssuer) {
       this.loadingRecipientToIssuerTL = true;
-      this.googleAnalytics.analyticsEventEmitter('check_trust_lines', 'issue_more_iou', 'more_iou_component');
+      this.googleAnalytics.analyticsEventEmitter('load_trust_lines', 'issue_more_iou', 'more_iou_component');
 
       let websocketTL:WebSocketSubject<any> = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
 
@@ -264,9 +219,18 @@ export class IssueMoreIOU implements OnInit {
           } else if(message.status && message.status === 'error' && message.error === 'actNotFound') {
             this.recipientAccountNotFound = true;
             this.loadingRecipientToIssuerTL = false;
-          }else {
+
+            websocketTL.unsubscribe();
+            websocketTL.complete();
+            websocketTL = null;  
+          } else {
             this.recipientToIssuerTrustLine = null;
+            this.recipientAccountNotFound = false;
             this.loadingRecipientToIssuerTL = false;
+
+            websocketTL.unsubscribe();
+            websocketTL.complete();
+            websocketTL = null;
           }
       });
 
@@ -292,7 +256,6 @@ export class IssueMoreIOU implements OnInit {
     this.issuerAccount = null;
     this.loadingIssuerAccount = false;
     this.validIssuer = false;
-    this.xrplAccount_Info = null;
   }
 
   reset() {
@@ -302,10 +265,9 @@ export class IssueMoreIOU implements OnInit {
     this.numberOfTokens = null;
     this.validCurrencyCode = false;
     this.validNumberOfTokens = false;
-    this.issuerAccount = this.xrplAccount_Info = null;
+    this.issuerAccount = null;
     this.validIssuer = false;
     this.destinationInput = null;
     this.weHaveIssued = false;
   }
-
 }

@@ -14,7 +14,7 @@ import { MatStepper } from '@angular/material/stepper';
 
 @Component({
   selector: 'createIOU',
-  templateUrl: './createIOU.html',
+  templateUrl: './createIOU.html'
 })
 export class CreateIOU implements OnInit {
 
@@ -78,7 +78,8 @@ export class CreateIOU implements OnInit {
     let genericBackendRequest:GenericBackendPostRequest = {
       payload: {
         txjson: {
-          TransactionType: "Payment"
+          TransactionType: "Payment",
+          Memos : [{Memo: {MemoType: Buffer.from("https://xumm.community", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for creating IOU: '"+this.currencyCode.trim()+"'", 'utf8').toString('hex').toUpperCase()}}]
         },
         custom_meta: {
           instruction: "Please pay with the account you want to issue your IOU from!"
@@ -249,7 +250,10 @@ export class CreateIOU implements OnInit {
   }
 
   checkChangesLimit() {
-    this.validLimit = this.limit && this.limit > 0 && Number.isInteger(Number(this.limit)) && /[^.0-9]|\d*\.\d{16,}/.test(this.limit.toString());
+    this.validLimit = this.limit && this.limit > 0 && !(/[^.0-9]|\d*\.\d{16,}/.test(this.limit.toString()));
+
+    if(this.validLimit && this.limit.toString().includes('.') && this.limit.toString().substring(0,this.limit.toString().indexOf('.')).length > 40)
+      this.validLimit = false;
   }
 
   setTrustline() {

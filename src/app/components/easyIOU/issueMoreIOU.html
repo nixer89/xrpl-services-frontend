@@ -5,77 +5,78 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <mat-card fxLayout="column" fxLayoutGap="0.3em">
-    After you have initially created your IOU, you can issue more tokens to accounts which have a TrustLine to your issuer account.
+  <mat-card fxLayout="column" fxLayoutGap="0.5em">
+    <label>After you have initially created your IOU, you can issue more tokens to accounts which have a Trust Line to your issuer account.</label>
     <div *ngIf="!getIssuer() || !validIssuer">
       <button mat-button matTooltip="Sign In via XUMM." matTooltipPosition="above" (click)="signInWithIssuer()" style="padding:0px;">
         <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
       </button>
       &nbsp;<label class="loading">Please sign in with the issuer account.</label>
     </div>
-    <div *ngIf="getIssuer() && validIssuer" fxLayout="column" fxLayoutGap="0.3em">
-      <label class="loading">Do you want to create an IOU on the live network or test network?</label>
-      <div fxLayout="row" fxLayoutGap="0.5em">
-        <mat-card class="theme-background">
-          <div fxLayout="column" fxLayoutAlign="start center">
-              <label>Network</label>
-              <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
-                <label>Live</label>&nbsp;
-                <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
-                <label>Test</label>
-              </div>
-          </div>
-        </mat-card>
-        <span style="flex: 1 1 auto;"></span>
-      </div>
-      <form fxLayout="column" fxLayoutGap="0.3em" style="padding-top: 0.8em;">
-        <mat-form-field>
-          <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the IOU" [(ngModel)]="issuerAccount" [disabled]="true">
-          <mat-hint *ngIf="getIssuer() && !validIssuer">Not a valid XRPL address</mat-hint>
-        </mat-form-field>
-
-        <div style="margin-bottom: 1em;">
-          <iouList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" [testMode]="isTestMode" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></iouList>
+    <div [ngStyle]="{'display': !validIssuer ? 'none':'block' }">
+      <div fxLayout="column" fxLayoutGap="0.3em">
+        <label class="loading">Do you want to create your tokens on the live network or test network?</label>
+        <div fxLayout="row" fxLayoutGap="0.5em">
+          <mat-card class="theme-background">
+            <div fxLayout="column" fxLayoutAlign="start center">
+                <label>Network</label>
+                <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
+                  <label>Live</label>&nbsp;
+                  <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkSwitched()" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
+                  <label>Test</label>
+                </div>
+            </div>
+          </mat-card>
+          <span style="flex: 1 1 auto;"></span>
         </div>
-      
-        <label class="loading">Currency to issue:</label>
-        <mat-form-field style="padding-top: 0.5em;">
-          <input matInput name="Currency Code" placeholder="Currency Code" [(ngModel)]="currencyCode" (ngModelChange)="checkChangesCurrencyCode()" [disabled]="true">
-          <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode != 'XRP'">Not a valid Currency Code. Please use 3 capital letters for the Currency Code (like 'USD')</mat-hint>
-          <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode === 'XRP'">You cannot issue any XRP!</mat-hint>
-        </mat-form-field>
+        <form fxLayout="column" fxLayoutGap="0.3em" style="padding-top: 0.8em;">
+          <mat-form-field>
+            <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the IOU" [(ngModel)]="issuerAccount" [disabled]="true">
+            <mat-hint *ngIf="getIssuer() && !validIssuer">Not a valid XRPL address</mat-hint>
+          </mat-form-field>
 
-        <label class="loading">Which address shall the IOU be sent to?</label>
-        <mat-form-field>
-          <input #inpdestination matInput name="destination" placeholder="IOU recipient" [(ngModel)]="destinationInput" (ngModelChange)="checkChangesDestination()">
-          <mat-hint *ngIf="destinationInput && !validAddress">Not a valid XRP address</mat-hint>
-          <mat-hint *ngIf="destinationInput && validAddress && recipientAccountNotFound">Recipient address not found on XRP Ledger <b>{{isTestMode ? 'test' : 'live'}}</b> net.</mat-hint>
-          <mat-hint *ngIf="destinationInput && validAddress && noTrustLineFound">No trust line found for the selected currency with the issuer account on the XRP Ledger <b>{{isTestMode ? 'test' : 'live'}}</b> net.</mat-hint>
-          
-        </mat-form-field>
+          <div style="margin-bottom: 1em;">
+            <iouList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></iouList>
+          </div>
+        
+          <label style="padding-top: 0.3em;" class="loading">Currency to issue:</label>
+          <mat-form-field>
+            <input matInput name="Currency Code" placeholder="Currency Code" [(ngModel)]="currencyCode" (ngModelChange)="checkChangesCurrencyCode()" [disabled]="true">
+            <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode === 'XRP'">You cannot issue any XRP!</mat-hint>
+          </mat-form-field>
 
-        <div *ngIf="validCurrencyCode && validAddress && loadingRecipientToIssuerTL" fxLayout="row" fxLayoutGap="0.3em">
-          <label>Checking some things...</label>
-          <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
-        </div>
-        <div *ngIf="validCurrencyCode && validAddress && !loadingRecipientToIssuerTL && recipientToIssuerTrustLine" fxLayout="column" fxLayoutGap="0.3em">
-          <label class="loading">How many more tokens you want to issue? (Max: {{getMaxIssuerTokens()}})</label>
-          <div *ngIf="getMaxIssuerTokens() <= 0">
-            <label class="warning">The trustline from the recipient to the issuer account does not have enough limit anymore. Please ask the recipient to increase the limit of this trustline.</label>
+          <label class="loading">Which address shall the IOU be sent to?</label>
+          <mat-form-field>
+            <input #inpdestination matInput name="destination" placeholder="IOU recipient" [(ngModel)]="destinationInput" (ngModelChange)="checkChangesDestination()">
+            <mat-hint *ngIf="destinationInput && !validAddress">Not a valid XRP address</mat-hint>
+            <mat-hint *ngIf="destinationInput && validAddress && recipientAccountNotFound">Recipient address not found on XRP Ledger <b>{{isTestMode ? 'test' : 'live'}}</b> net.</mat-hint>
+            <mat-hint *ngIf="destinationInput && validAddress && noTrustLineFound">No trust line found for the selected currency with the issuer account on the XRP Ledger <b>{{isTestMode ? 'test' : 'live'}}</b> net.</mat-hint>
+          </mat-form-field>
+
+          <div *ngIf="validCurrencyCode && validAddress && loadingRecipientToIssuerTL" fxLayout="row" fxLayoutGap="0.3em">
+            <label>Checking some things...</label>
+            <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
           </div>
-          <div *ngIf="getMaxIssuerTokens() > 0" fxLayout="column" fxLayoutGap="0.3em">
-            <mat-form-field>
-              <input matInput name="Number of tokens" placeholder="Number of tokens" [(ngModel)]="numberOfTokens" (ngModelChange)="checkChangesNumberOfTokens()">
-              <mat-hint *ngIf="numberOfTokens && !validNumberOfTokens && getMaxIssuerTokens() >= numberOfTokens">Not a valid number. Please choose a whole number with a maximum of 15 decimal places!</mat-hint>
-            </mat-form-field>
+          <div *ngIf="validCurrencyCode && validAddress && !loadingRecipientToIssuerTL && recipientToIssuerTrustLine" fxLayout="column" fxLayoutGap="0.3em">
+            <label class="loading">How many more tokens you want to issue? (Max: {{getMaxIssuerTokens()}} {{currencyCode}})</label>
+            <div *ngIf="getMaxIssuerTokens() <= 0">
+              <label class="warning">The trust line from the recipient to the issuer account does not have enough limit. Please ask the recipient to increase the limit of this trust line.</label>
+            </div>
+            <div *ngIf="getMaxIssuerTokens() > 0" fxLayout="column" fxLayoutGap="0.3em">
+              <mat-form-field>
+                <input matInput name="Number of tokens" placeholder="Number of tokens" [(ngModel)]="numberOfTokens" (ngModelChange)="checkChangesNumberOfTokens()">
+                <mat-hint *ngIf="numberOfTokens && !validNumberOfTokens && !notEnoughLimit">Not a valid number. Please choose a whole number with a maximum of 15 decimal places!</mat-hint>
+                <mat-hint *ngIf="numberOfTokens && validNumberOfTokens && notEnoughLimit">The trust line from the recipient has not enough limit to send this amount. (Max: {{getMaxIssuerTokens()}} {{currencyCode}})</mat-hint>
+              </mat-form-field>
+            </div>
           </div>
+        </form>
+        <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
+          <button mat-raised-button color="primary" (click)="issueIOU()" [disabled]="!validAddress || !validIssuer || !validCurrencyCode || !validNumberOfTokens">
+            Send IOU via XUMM
+          </button>
+          <label *ngIf="!destinationInput || !validAddress">Please enter a valid XRPL address as recipient.</label>
         </div>
-      </form>
-      <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
-        <button mat-raised-button color="primary" (click)="issueIOU()" [disabled]="!validAddress || !validIssuer || !validCurrencyCode || !validNumberOfTokens">
-          Send IOU via XUMM
-        </button>
-        <label *ngIf="!destinationInput || !validAddress">Please enter a valid XRPL address as recipient.</label>
       </div>
     </div>
   </mat-card>

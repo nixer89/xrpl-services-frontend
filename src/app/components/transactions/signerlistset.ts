@@ -4,6 +4,7 @@ import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
+import { AccountInfoChanged, AccountObjectsChanged } from 'src/app/utils/types';
 
 interface SignerListQuorumValidation {
   valid: boolean,
@@ -28,13 +29,13 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
-  accountObjectsChanged: Observable<any>;
+  accountObjectsChanged: Observable<AccountObjectsChanged>;
 
   @Input()
-  accountInfoChanged: Observable<any>;
+  accountInfoChanged: Observable<AccountInfoChanged>;
 
   @Input()
-  transactionSuccessfull: Observable<void>;
+  transactionSuccessfull: Observable<any>;
 
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
@@ -73,7 +74,8 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
     this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(accountObjects => {
       //console.log("account objects changed received: " + JSON.stringify(accountObjects))
       this.clearInputs();
-      this.originalAccountObjects = accountObjects;
+      this.originalAccountObjects = accountObjects.object;
+
       if(this.originalAccountObjects && this.originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType==="SignerList") {
         this.signerList = this.originalAccountObjects[0].SignerEntries;
         this.signerList.forEach(signerEntry => {
@@ -87,7 +89,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
 
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received: " + JSON.stringify(accountData))
-      this.originalAccountInfo = accountData;
+      this.originalAccountInfo = accountData.info;
     });
   }
 
@@ -172,11 +174,11 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   isValidSigner(signer: SignerEntry) {
-    return signer && signer.SignerEntry && this.isValidXRPAddress(signer.SignerEntry.Account) && this.isValidWeight(signer.SignerEntry.SignerWeight);
+    return signer && signer.SignerEntry && this.isValidXRPAddress(signer.SignerEntry.Account) && !this.isDuplicateAccount(signer.SignerEntry.Account) && !this.isSameAsLoggedIn(signer.SignerEntry.Account) && this.isValidWeight(signer.SignerEntry.SignerWeight) ;
   }
 
   isValidXRPAddress(address: string): boolean {
-    if(!address || address.trim().length <= 0 || this.isDuplicateAccount(address))
+    if(!address || address.trim().length <= 0)
       return false;
     try {
       //console.log("encoding address: " + address);
@@ -199,6 +201,10 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
 
   isDuplicateAccount(address: string): boolean {
     return this.signerList.filter(signer => signer.SignerEntry.Account === address).length > 1;
+  }
+
+  isSameAsLoggedIn(address: string): boolean {
+    return this.originalAccountInfo && this.originalAccountInfo.Account === address.trim();
   }
 
   isValidInteger(weight: string): boolean {

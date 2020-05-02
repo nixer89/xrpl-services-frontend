@@ -3,6 +3,7 @@ import { Encode } from 'xrpl-tagged-address-codec';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
+import { AccountInfoChanged, XrplAccountChanged } from 'src/app/utils/types';
 
 @Component({
   selector: 'escrowfinish',
@@ -13,16 +14,13 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
-  accountInfoChanged: Observable<any>;
+  accountInfoChanged: Observable<AccountInfoChanged>;
 
   @Input()
   transactionSuccessfull: Observable<void>;
   
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
-
-  @Input()
-  testMode: boolean;
 
   @ViewChild('inpescrowowner', {static: false}) inpescrowowner;
   escrowOwnerInput: string;
@@ -34,9 +32,11 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   passwordInput: string;
 
   originalAccountInfo:any;
+  isTestMode:boolean = false;
+
   private accountInfoChangedSubscription: Subscription;
   private transactionSuccessfullSubscription: Subscription;
-  escrowAccountChanged: Subject<string> = new Subject<string>();
+  escrowAccountChanged: Subject<XrplAccountChanged> = new Subject<XrplAccountChanged>();
 
   showEscrowSequenceSelectedStyle:boolean = false;
   escrowSequenceSelected:boolean = false;
@@ -64,10 +64,11 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
-      this.originalAccountInfo = accountData;
+      this.originalAccountInfo = accountData.info;
+      this.isTestMode = accountData.mode
       setTimeout(() => {
-        this.escrowAccountChanged.next(this.lastKnownAddress);
-      },500);
+        this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.isTestMode});
+      },200);
     });
 
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
@@ -147,10 +148,10 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     if(this.validAddress && (this.escrowOwnerInput.trim() != this.lastKnownAddress)) {
       this.lastKnownAddress = this.escrowOwnerInput.trim();
       //console.log("emitting escrowAccountChanged event");
-      this.escrowAccountChanged.next(this.lastKnownAddress);
+      this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.isTestMode});
     } else if(!this.validAddress) {
       this.lastKnownAddress = null;
-      this.escrowAccountChanged.next(null);
+      this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.isTestMode});
     }
   }
 
@@ -160,7 +161,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     if(!this.validSequence && this.lastKnownSequence && this.validAddress) {
       //sequence change
       console.log("send sequence changed");
-      this.escrowAccountChanged.next(this.escrowOwnerInput.trim());
+      this.escrowAccountChanged.next({account: this.escrowOwnerInput.trim(), mode: this.isTestMode});
     }
 
   }
@@ -204,7 +205,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     this.isValidEscrowFinish = this.validAddress = this.validSequence = this.escrowOwnerChangedAutomatically = false;
     this.lastKnownAddress = null;
     
-    this.escrowAccountChanged.next(null);
+    this.escrowAccountChanged.next({account: null, mode: this.isTestMode});
   }
 
   onEscrowSequenceFound(escrowInfo:any) {

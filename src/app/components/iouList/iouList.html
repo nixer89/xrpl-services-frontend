@@ -2,8 +2,8 @@
     <label>Loading IOUs ...&nbsp;</label>
     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
 </div>
-<label style="color: darkorange" *ngIf="!loading && !iouList">This account does not issue any currencies (IOUs).</label>
-<mat-accordion *ngIf="!loading && iouList && iouList.length > 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+<label style="color: darkorange" *ngIf="originalIsserAccount && ((!loading && !iouList) || (iouList && iouList.length == 0))">This account does not issue any currencies (IOUs) on the XRP Ledger <b>{{testMode ? 'test' : 'live'}}</b> net.</label>
+<mat-accordion *ngIf="originalIsserAccount && !loading && iouList && iouList.length > 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
     <mat-expansion-panel #mep>
         <mat-expansion-panel-header>
           <mat-panel-title>
