@@ -6,7 +6,7 @@
                 <h4>Summary:</h4>
                 <label class="break-words">{{genericPayload.payload.custom_meta.instruction}}</label>
             </mat-card>
-            <mat-card class="theme-background" ngStyle.gt-xs="width: 90%;">
+            <mat-card class="theme-background" ngStyle.gt-xs="width: 90%;" *ngIf="!genericPayload.payload.txjson.Memos">
                 <h4>Transaction Memo (optional):</h4>
                 <mat-form-field style="width: 100%;">
                     <input matInput type="text" [(ngModel)]="memoInput" placeholder="Memo" aria-label="XRPL Transaction Memo">

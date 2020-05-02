@@ -89,7 +89,7 @@ export class GenericPayloadQRDialog implements OnInit {
             this.genericPayload.options.referer = refererURL;
         }
 
-        if(this.memoInput && this.memoInput.trim().length > 0) {
+        if(this.memoInput && this.memoInput.trim().length > 0 && !this.genericPayload.payload.txjson.Memos) {
             this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xumm.community]Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(this.memoInput.trim(), 'utf8').toString('hex').toUpperCase()}}];
         }
 

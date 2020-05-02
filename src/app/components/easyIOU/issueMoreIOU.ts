@@ -12,6 +12,8 @@ import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
 import { isNumber } from 'util';
+import { ActivatedRoute } from '@angular/router';
+import { MatSnackBar } from '@angular/material';
 
 interface TrustLine {
   account:string,
@@ -30,7 +32,10 @@ export class IssueMoreIOU implements OnInit {
 
   constructor(
     private matDialog: MatDialog,
-    private googleAnalytics: GoogleAnalyticsService) {
+    private googleAnalytics: GoogleAnalyticsService,
+    private route: ActivatedRoute,
+    private xummApi: XummService,
+    private snackBar: MatSnackBar) {
   }
 
   @ViewChild('inpdestination', {static: false}) inpdestination;
@@ -72,6 +77,25 @@ export class IssueMoreIOU implements OnInit {
   issuerAccountChangedSubject: Subject<XrplAccountChanged> = new Subject<XrplAccountChanged>();
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(async params => {
+      let payloadId = params.payloadId;
+      let signinToValidate = params.signinToValidate;
+      if(payloadId) {
+        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'xrpl_transactions_component');
+        //check if transaction was successfull and redirect user to stats page right away:
+        this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
+        //console.log(JSON.stringify(payloadInfo));
+        if(signinToValidate) {
+            this.loadingIssuerAccount = true;
+            let signInCheck:TransactionValidation = await this.xummApi.checkSignIn(payloadId);
+
+            this.handleSignInInfo(signInCheck);
+        } else {
+          let transactionResult:TransactionValidation = await this.xummApi.validateTransaction(payloadId);
+          this.handleTransactionInfo(transactionResult);
+        }
+      }
+    });
   }
 
   getIssuer(): string {
@@ -79,6 +103,8 @@ export class IssueMoreIOU implements OnInit {
   }
 
   signInWithIssuer() {
+    this.loadingIssuerAccount = true;
+
     const dialogRef = this.matDialog.open(XummSignDialogComponent, {
       width: 'auto',
       height: 'auto;',
@@ -87,21 +113,37 @@ export class IssueMoreIOU implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
       console.log('The signin dialog was closed: ' + JSON.stringify(info));
-      this.loadingIssuerAccount = true;
-
-      if(info && info.success && info.account && this.isValidXRPAddress(info.account)) {
-        console.log("valid issuer");
-        this.issuerAccount = info.account;
-        this.validIssuer = true;
-        this.loadingIssuerAccount = false;
-      } else {
-        this.issuerAccount = null;
-        this.validIssuer = false;
-        this.loadingIssuerAccount = false;
-      }
-
-      this.issuerAccountChangedSubject.next({account: this.issuerAccount, mode: this.isTestMode});
+      this.handleSignInInfo(info)
     });
+  }
+
+  handleSignInInfo(info: TransactionValidation) {
+    if(info && info.success && info.account && this.isValidXRPAddress(info.account)) {
+      console.log("valid issuer");
+      this.snackBar.dismiss();
+      this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 3000, horizontalPosition: 'center', verticalPosition: 'top'});
+      this.issuerAccount = info.account;
+      this.validIssuer = true;
+      this.loadingIssuerAccount = false;
+    } else {
+      this.issuerAccount = null;
+      this.validIssuer = false;
+      this.loadingIssuerAccount = false;
+      this.snackBar.open("Login not successfull. Please try again", null, {panelClass: 'snackbar-failed', duration: 3000, horizontalPosition: 'center', verticalPosition: 'top'});
+    }
+
+    this.issuerAccountChangedSubject.next({account: this.issuerAccount, mode: this.isTestMode});
+  }
+
+  handleTransactionInfo(info: TransactionValidation) {
+    this.snackBar.dismiss();
+    if(info && info.success) {
+      this.snackBar.open("Your transaction was successfull on " + (info.testnet ? 'test net.' : 'live net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+    } else {
+      this.snackBar.open("Your transaction was not successfull. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
+    }
+
+    this.reset();
   }
   
   isValidXRPAddress(address: string): boolean {
@@ -180,11 +222,7 @@ export class IssueMoreIOU implements OnInit {
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
       console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
-      if(info && info.success && info.account && info.testnet == this.isTestMode) {
-        this.weHaveIssued = true;
-      } else {
-        this.weHaveIssued = false;
-      }
+      this.handleTransactionInfo(info);
     });
   }
 
@@ -196,11 +234,11 @@ export class IssueMoreIOU implements OnInit {
       let websocketTL:WebSocketSubject<any> = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
 
       websocketTL.asObservable().subscribe(async message => {
-        console.log("websocket message: " + JSON.stringify(message));
+        //console.log("websocket message: " + JSON.stringify(message));
           if(message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.lines) {
               let trustLines:TrustLine[] = message.result.lines;
 
-              console.log("trustLines: " + JSON.stringify(trustLines));
+              //console.log("trustLines: " + JSON.stringify(trustLines));
 
               if(trustLines && trustLines.length > 0) {
                 for(let i = 0; i < trustLines.length; i++) {
@@ -215,7 +253,7 @@ export class IssueMoreIOU implements OnInit {
                 this.noTrustLineFound = true;
 
               this.loadingRecipientToIssuerTL = false;
-              console.log("recipientToIssuerTrustLine: " + JSON.stringify(this.recipientToIssuerTrustLine));
+              //console.log("recipientToIssuerTrustLine: " + JSON.stringify(this.recipientToIssuerTrustLine));
           } else if(message.status && message.status === 'error' && message.error === 'actNotFound') {
             this.recipientAccountNotFound = true;
             this.loadingRecipientToIssuerTL = false;

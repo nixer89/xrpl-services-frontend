@@ -49,6 +49,9 @@ export class TopbarComponent implements OnInit {
     let xummPayload:XummPostPayloadBodyJson = {
       txjson: {
           TransactionType: "Payment"
+      },
+      custom_meta: {
+        instruction: "Thank you for your donation!"
       }
     }
 
