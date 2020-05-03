@@ -13,7 +13,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
 import { isNumber } from 'util';
 import { ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatExpansionPanel } from '@angular/material';
 
 interface TrustLine {
   account:string,
@@ -40,6 +40,8 @@ export class IssueMoreIOU implements OnInit {
 
   @ViewChild('inpdestination', {static: false}) inpdestination;
   destinationInput: string;
+
+  @ViewChild('mep', {static: true}) mep: MatExpansionPanel;
 
   checkBoxTwoAccounts:boolean = false;
   checkBoxSufficientFunds:boolean = false;
@@ -82,6 +84,7 @@ export class IssueMoreIOU implements OnInit {
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
         this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'xrpl_transactions_component');
+        this.mep.expanded = true;
         //check if transaction was successfull and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
         //console.log(JSON.stringify(payloadInfo));
