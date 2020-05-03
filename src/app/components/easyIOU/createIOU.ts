@@ -33,6 +33,7 @@ export class CreateIOU implements OnInit {
   checkBoxFiveXrp:boolean = false;
   checkBoxNetwork:boolean = false;
   checkBoxNoLiability:boolean = false;
+  checkBoxDisclaimer:boolean = false;
 
   checkBoxIssuingText:boolean = false;
 

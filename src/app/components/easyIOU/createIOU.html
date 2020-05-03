@@ -44,9 +44,10 @@
             <mat-checkbox [(ngModel)]="checkBoxSufficientFunds" [ngClass]="(checkBoxSufficientFunds ? 'success': 'warning')">The issuing and recipient accounts have enough funds.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxNetwork" [ngClass]="(checkBoxNetwork ? 'success': 'warning')">Your XUMM app is connected to the LIVE/TEST network, depending on where you want to issue your IOU.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxNoLiability" [ngClass]="(checkBoxNoLiability ? 'success': 'warning')">We take no liability if you are not able to issue your own IOU. Just proceed if you know what your are doing!</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxDisclaimer" [ngClass]="(checkBoxDisclaimer ? 'success': 'warning')">We take no liability if you are not able to issue your own IOU. Just proceed if you know what your are doing!</mat-checkbox>
 
             <div style="padding-top: 0.5em;" fxLayoutGap="0.5em">
-                <button mat-raised-button color="primary" [disabled]="!checkBoxTwoAccounts || !checkBoxFiveXrp || !checkBoxSufficientFunds || !checkBoxNetwork || !checkBoxNoLiability" (click)="moveNext()">Next</button>
+                <button mat-raised-button color="primary" [disabled]="!checkBoxTwoAccounts || !checkBoxFiveXrp || !checkBoxSufficientFunds || !checkBoxNetwork || !checkBoxNoLiability || !checkBoxDisclaimer" (click)="moveNext()">Next</button>
                 <button mat-raised-button (click)="moveBack()">Back</button>
             </div>
         </mat-card>

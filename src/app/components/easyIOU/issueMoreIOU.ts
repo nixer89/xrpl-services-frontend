@@ -43,14 +43,6 @@ export class IssueMoreIOU implements OnInit {
 
   @ViewChild('mep', {static: true}) mep: MatExpansionPanel;
 
-  checkBoxTwoAccounts:boolean = false;
-  checkBoxSufficientFunds:boolean = false;
-  checkBoxFiveXrp:boolean = false;
-  checkBoxNetwork:boolean = false;
-  checkBoxNoLiability:boolean = false;
-
-  checkBoxIssuingText:boolean = false;
-
   websocket: WebSocketSubject<any>;
   isTestMode:boolean = false;
 
@@ -73,8 +65,6 @@ export class IssueMoreIOU implements OnInit {
 
   transactionSuccessfull: Subject<void> = new Subject<void>();
   loadingIssuerAccount:boolean = false;
-
-  weHaveIssued:boolean = false;
 
   issuerAccountChangedSubject: Subject<XrplAccountChanged> = new Subject<XrplAccountChanged>();
 
@@ -142,6 +132,7 @@ export class IssueMoreIOU implements OnInit {
     this.snackBar.dismiss();
     if(info && info.success) {
       this.snackBar.open("Your transaction was successfull on " + (info.testnet ? 'test net.' : 'live net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+      this.reset();
     } else {
       this.snackBar.open("Your transaction was not successfull. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
     }
@@ -301,7 +292,6 @@ export class IssueMoreIOU implements OnInit {
 
   reset() {
     this.isTestMode = false;
-    this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = false;
     this.currencyCode = null;
     this.numberOfTokens = null;
     this.validCurrencyCode = false;
@@ -309,6 +299,5 @@ export class IssueMoreIOU implements OnInit {
     this.issuerAccount = null;
     this.validIssuer = false;
     this.destinationInput = null;
-    this.weHaveIssued = false;
   }
 }
