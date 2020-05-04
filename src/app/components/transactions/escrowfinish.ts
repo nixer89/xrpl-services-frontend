@@ -131,7 +131,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
 
         this.payload.txjson.Condition = condition
         this.payload.txjson.Fulfillment = fulfillment;
-        this.payload.txjson.Fee = (330 + (10 * Math.ceil(fulfillment_bytes.length/16))).toString();
+        this.payload.txjson.Fee = (330 + (10 * Math.ceil(Buffer.byteLength(fulfillment_bytes)/16))).toString();
 
         this.payload.custom_meta.instruction += "\n- With a password ✓"
 

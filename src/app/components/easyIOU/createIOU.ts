@@ -35,9 +35,17 @@ export class CreateIOU implements OnInit {
   checkBoxNoLiability:boolean = false;
   checkBoxDisclaimer:boolean = false;
 
+  checkBoxBlackhole1:boolean = false;
+  checkBoxBlackhole2:boolean = false;
+  checkBoxBlackhole3:boolean = false;
+  checkBoxBlackhole4:boolean = false;
+
   checkBoxIssuingText:boolean = false;
 
-  xrplAccount_Info:any;
+  blackholeRegularKeySet:boolean = false;
+  blackholeMasterDisabled:boolean = false;
+
+  issuer_account_info:any;
   websocket: WebSocketSubject<any>;
   isTestMode:boolean = false;
 
@@ -183,24 +191,29 @@ export class CreateIOU implements OnInit {
         if(message.status && message.type && message.type === 'response') {
           if(message.status === 'success') {
             if(message.result && message.result.account_data) {
-              this.xrplAccount_Info = message.result.account_data;
-              console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
-              console.log("this.needDefaultRipple: " + this.needDefaultRipple);
-              this.needDefaultRipple = !flagUtil.isDefaultRippleEnabled(this.xrplAccount_Info.Flags)
-              console.log("this.needDefaultRipple: " + this.needDefaultRipple);
+              this.issuer_account_info = message.result.account_data;
+              console.log("isser_account_info: " + JSON.stringify(this.issuer_account_info));
+              this.needDefaultRipple = !flagUtil.isDefaultRippleEnabled(this.issuer_account_info.Flags)
+              this.blackholeMasterDisabled = flagUtil.isMasterKeyDisabled(this.issuer_account_info.Flags)
+
+            } else {
+              console.log(JSON.stringify(message));
             }
+            
+            this.loadingIssuerAccount = false;
 
           } else {
             if(message.request.command === 'account_info') {
-              this.xrplAccount_Info = message;
+              this.issuer_account_info = message;
+              this.loadingIssuerAccount = false;
             }
           }
-
         } else {
-          this.xrplAccount_Info = null;
+          this.issuer_account_info = null;
+          this.needDefaultRipple = true;
+          this.blackholeMasterDisabled = false;
+          this.loadingIssuerAccount = false;
         }
-        this.loadingIssuerAccount = false;
-
       });
 
       let account_info_request:any = {
@@ -259,6 +272,9 @@ export class CreateIOU implements OnInit {
 
   setTrustline() {
     let genericBackendRequest:GenericBackendPostRequest = {
+      options: {
+        xrplAccount: this.issuerAccount
+      },
       payload: {
         txjson: {
           TransactionType: "TrustSet",
@@ -296,7 +312,8 @@ export class CreateIOU implements OnInit {
   issueIOU() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
-        issuing: true
+        issuing: true,
+        xrplAccount: this.issuerAccount
       },
       payload: {
         txjson: {
@@ -329,6 +346,76 @@ export class CreateIOU implements OnInit {
         this.weHaveIssued = false;
       }
     });
+  }
+
+  setBlackholeAddress() {
+    let genericBackendRequest:GenericBackendPostRequest = {
+      options: {
+        issuing: true,
+        xrplAccount: this.getIssuer()
+      },
+      payload: {
+        txjson: {
+          TransactionType: "SetRegularKey",
+          RegularKey: "rrrrrrrrrrrrrrrrrrrrBZbvji"
+        },
+        custom_meta: {
+          instruction: "Set RegularKey to: rrrrrrrrrrrrrrrrrrrrBZbvji"
+        }
+      }
+    }
+
+    const dialogRef = this.matDialog.open(GenericPayloadQRDialog, {
+      width: 'auto',
+      height: 'auto;',
+      data: genericBackendRequest
+    });
+
+    dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
+      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+
+      if(info && info.success && info.account && info.testnet == this.isTestMode) {
+        this.blackholeRegularKeySet = true;
+      } else {
+        this.blackholeRegularKeySet = false;
+      }
+    });
+
+  }
+
+  disableMasterKeyForIssuer() {
+    let genericBackendRequest:GenericBackendPostRequest = {
+      options: {
+        issuing: true,
+        xrplAccount: this.getIssuer()
+      },
+      payload: {
+        txjson: {
+          TransactionType: "AccountSet",
+          SetFlag: 4
+        },
+        custom_meta: {
+          instruction: "- Disable Master Key\n"
+        }
+      }
+    }
+
+    const dialogRef = this.matDialog.open(GenericPayloadQRDialog, {
+      width: 'auto',
+      height: 'auto;',
+      data: genericBackendRequest
+    });
+
+    dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
+      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+
+      if(info && info.success && info.account && info.testnet == this.isTestMode) {
+        this.blackholeMasterDisabled = true;
+      } else {
+        this.blackholeMasterDisabled = false;
+      }
+    });
+
   }
 
   moveNext() {
@@ -370,13 +457,13 @@ export class CreateIOU implements OnInit {
         this.validLimit = false;
       }
       case 4: {
-        this.issuerAccount = this.xrplAccount_Info = null;
+        this.issuerAccount = this.issuer_account_info = null;
         this.validIssuer = false;
         this.paymentNotFound = this.paymentNotSuccessfull = false;
+        this.needDefaultRipple = true;
         break;
       }
       case 5: {
-        this.needDefaultRipple = true;
         break;
       }
       case 6: {
@@ -387,7 +474,12 @@ export class CreateIOU implements OnInit {
       case 7: {
         this.weHaveIssued = false;
       }
-      case 8: break;
+      case 8: {
+        this.checkBoxBlackhole1 = this.checkBoxBlackhole2 = this.checkBoxBlackhole3 = this.checkBoxBlackhole4 = false;
+        this.blackholeRegularKeySet = this.blackholeMasterDisabled = false;
+        break;
+      }
+      case 9: break;
     }
 
     this.stepper.previous();
@@ -399,7 +491,7 @@ export class CreateIOU implements OnInit {
     this.paymentNotFound = false;
     this.paymentNotSuccessfull = false;
     this.validIssuer = false;
-    this.xrplAccount_Info = null;
+    this.issuer_account_info = null;
     this.needDefaultRipple = true;
   }
 
@@ -410,7 +502,7 @@ export class CreateIOU implements OnInit {
     this.limit = null;
     this.validCurrencyCode = false;
     this.validLimit = false;
-    this.issuerAccount = this.xrplAccount_Info = null;
+    this.issuerAccount = this.issuer_account_info = null;
     this.validIssuer = false;
     this.paymentNotFound = this.paymentNotSuccessfull = false;
     this.needDefaultRipple = true;

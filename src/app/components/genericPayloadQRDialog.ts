@@ -51,13 +51,7 @@ export class GenericPayloadQRDialog implements OnInit {
         } else {
             this.overlayContainer.getContainerElement().classList.remove('light-theme');
             this.overlayContainer.getContainerElement().classList.add('dark-theme');
-        }
-        
-        if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() != "payment") {
-            this.isOverview = true;
-        } else {
-            this.sendToXumm();
-        }
+        }        
 
         window.scrollTo(0,0);
     }

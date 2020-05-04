@@ -1,7 +1,8 @@
 <mat-expansion-panel>
   <mat-expansion-panel-header>
     <mat-panel-title>
-      Create a new IOU here!
+      <span> <mat-icon>add</mat-icon> </span>
+      <span style="margin-left: 0.5em;"> Create a new IOU </span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
@@ -38,13 +39,13 @@
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
             <ng-template matStepLabel>Requirements</ng-template>
             <label class="loading">The following requirements need to be met to create your IOU.</label>
-            <label>Please read and accept every checkbox to make sure you are good to go!</label><br/><br/>
+            <label>Please read and accept every checkbox to make sure understand what you are doing and you are good to go!</label><br/><br/>
             <mat-checkbox [(ngModel)]="checkBoxTwoAccounts" [ngClass]="(checkBoxTwoAccounts ? 'success': 'warning')">You have the keys of two accounts. One for issuing and one for receiving your IOU.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxFiveXrp" [ngClass]="(checkBoxFiveXrp ? 'success': 'warning')">You accept paying 5 XRP for this service, helping you issue your own IOU.</mat-checkbox>
-            <mat-checkbox [(ngModel)]="checkBoxSufficientFunds" [ngClass]="(checkBoxSufficientFunds ? 'success': 'warning')">The issuing and recipient accounts have enough funds.</mat-checkbox>
-            <mat-checkbox [(ngModel)]="checkBoxNetwork" [ngClass]="(checkBoxNetwork ? 'success': 'warning')">Your XUMM app is connected to the LIVE/TEST network, depending on where you want to issue your IOU.</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxSufficientFunds" [ngClass]="(checkBoxSufficientFunds ? 'success': 'warning')">The issuing and recipient accounts have enough funds. (at least ~6 XRP available, excluding account reserve!)</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxNetwork" [ngClass]="(checkBoxNetwork ? 'success': 'warning')">Your XUMM app is connected to the LIVE or TEST network, depending on where you want to issue your IOU.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxNoLiability" [ngClass]="(checkBoxNoLiability ? 'success': 'warning')">We take no liability if you are not able to issue your own IOU. Just proceed if you know what your are doing!</mat-checkbox>
-            <mat-checkbox [(ngModel)]="checkBoxDisclaimer" [ngClass]="(checkBoxDisclaimer ? 'success': 'warning')">We take no liability if you are not able to issue your own IOU. Just proceed if you know what your are doing!</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxDisclaimer" [ngClass]="(checkBoxDisclaimer ? 'success': 'warning')">We offer "basic" IOU/TrustLine management. If you are going to issue your IOU for commercial use, we recommend to NOT use this tool. We are not liable for any regulatory implications, depending on the juristication you live in.</mat-checkbox>
 
             <div style="padding-top: 0.5em;" fxLayoutGap="0.5em">
                 <button mat-raised-button color="primary" [disabled]="!checkBoxTwoAccounts || !checkBoxFiveXrp || !checkBoxSufficientFunds || !checkBoxNetwork || !checkBoxNoLiability || !checkBoxDisclaimer" (click)="moveNext()">Next</button>
@@ -134,7 +135,7 @@
             <mat-hint *ngIf="paymentNotSuccessfull">Please try again or use "Sign In with XUMM" if you think the payment was successfull.</mat-hint>
             <mat-hint *ngIf="paymentNotFound" style="padding-top: 0.5em;">No valid payment found for account {{getIssuer()}} withing the last 24h.</mat-hint>
 
-            <div fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !paymentNotSuccessfull && !paymentNotFound">
+            <div fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !paymentNotSuccessfull && !paymentNotFound && !loadingIssuerAccount">
               <label>The account you want to issue an IOU with is: </label>
               <div fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
                 <label class="warning">{{getIssuer()}}</label>
@@ -144,9 +145,12 @@
               </div>
             </div>
           </div>
-          <mat-progress-spinner *ngIf="loadingIssuerAccount" color="primary" mode="indeterminate" diameter=40></mat-progress-spinner>
+          <div *ngIf="loadingIssuerAccount" fxLayout="row" fxLayoutGap="0.3em">
+            <label>Loading account data... </label>
+            <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+          </div>          
           <div fxLayoutGap="0.5em">
-              <button mat-raised-button color="primary" [disabled]="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound" (click)="moveNext()">Next</button>
+              <button mat-raised-button color="primary" [disabled]="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound || loadingIssuerAccount" (click)="moveNext()">Next</button>
               <button mat-raised-button (click)="moveBack()">Back</button>
           </div>
         </mat-card>
@@ -214,8 +218,8 @@
             <label>to: <b>{{this.recipientAddress}}</b></label>
             <label></label>
             <label class="loading">You have to switch the signing account from the <b>recipient</b> to the <b>issuing</b> in the XUMM app!</label>
-            <label class="loading">Please keep in mind this is just an inital issuing. You can issue more of your IOU at any time with a normal "payment".</label>
-            <label class="loading"> (The recipient needs to have a TrustLine to your issueing account with a proper limit!)</label>
+            <label>Please keep in mind this is just an inital issuing. You can issue more of your IOU at any time through this website with "Issue more if your created IOU".</label>
+            <label> (The recipient needs to have a TrustLine to your issueing account with a proper limit!)</label>
             <label></label>
             <mat-checkbox [(ngModel)]="checkBoxIssuingText" [ngClass]="(checkBoxIssuingText ? 'success': 'warning')">I have read and understand the above text. Let me issue now!</mat-checkbox>
             <div>
@@ -240,11 +244,51 @@
 
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
+          <ng-template matStepLabel>Blackhole Issuer (optional!)</ng-template>
+          <label class="loading">This is an optional step. You can "black hole" the issuer account. That means you would not be able to issue more tokens (fixed supply) AND you would loose access to this account!</label>
+          <label class="warning">Please skip this step if you don't know what that means!</label>
+          <mat-checkbox [(ngModel)]="checkBoxBlackhole1" [ngClass]="(checkBoxBlackhole1 ? 'success': 'warning')">I understand the implications and want to blackhole the issuer account.</mat-checkbox>
+          <mat-checkbox [(ngModel)]="checkBoxBlackhole2" [ngClass]="(checkBoxBlackhole2 ? 'success': 'warning')">I understand that I can not create more tokens. The supply of my IOU will be fixed.</mat-checkbox>
+          <mat-checkbox [(ngModel)]="checkBoxBlackhole3" [ngClass]="(checkBoxBlackhole3 ? 'success': 'warning')">I understand that I will loose access to the issuer account: {{getIssuer()}}. I WON'T BE ABLE TO RECOVER THE ACCESS!</mat-checkbox>
+          <mat-card *ngIf="checkBoxBlackhole1 && checkBoxBlackhole2 && checkBoxBlackhole3 && (!blackholeRegularKeySet || !blackholeMasterDisabled)" fxLayout="column" fxLayoutGap="0.5em">
+            <label>Okay, lets blackhole the issuer account!</label>
+            <label class="warning">We are going to set the RegularKey of the issuer account to the black hole address: <b>rrrrrrrrrrrrrrrrrrrrBZbvji</b> (Called 'ADDRESS_ONE'. <a href="https://xrpl.org/accounts.html#special-addresses" target="_blank">more info...</a> )</label>
+            <label>No one has the secret keys to this account because the address is not derived from a known secret key.</label>
+            <label class="loading">Additionally we will disable all other signing methods. This removes all access to this account.</label>
+            <mat-checkbox [(ngModel)]="checkBoxBlackhole4" [ngClass]="(checkBoxBlackhole4 ? 'success': 'warning')">I have read and understand the above text. Let me remove all access to the account: {{getIssuer()}}!</mat-checkbox>
+            <div>
+              <button mat-raised-button color="primary" (click)="setBlackholeAddress()" [disabled]="!checkBoxBlackhole4 || blackholeRegularKeySet">
+                Set black hole address as RegularKey
+              </button>
+              <span style="flex: 1 1 auto;"></span>
+            </div>
+            <div>
+              <button mat-raised-button color="primary" (click)="disableMasterKeyForIssuer()" [disabled]="!checkBoxBlackhole4 || !blackholeRegularKeySet || blackholeMasterDisabled">
+                Disable MaterKey of Issuer account
+              </button>
+              <span style="flex: 1 1 auto;"></span>
+            </div>
+          </mat-card>
+          <div *ngIf="blackholeRegularKeySet && blackholeMasterDisabled" fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
+            <i class="material-icons" style="color: green; font-size: 3em;">
+                check_circle_outline
+            </i>
+            <label>You have successfully lost all access to the issuer account {{getIssuer()}}</label>
+          </div>
+          <div fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+            <button mat-raised-button color="primary" (click)="moveNext()" [disabled]="checkBoxBlackhole4 && !blackholeRegularKeySet && !blackholeMasterDisabled">{{blackholeRegularKeySet && blackholeMasterDisabled ? 'Next' : 'Skip'}}</button>
+            <button mat-raised-button (click)="moveBack()">Back</button>
+          </div>
+        </mat-card>
+      </mat-step>
+
+      <mat-step completed="false" editable="false">
+        <mat-card fxLayout="column" fxLayoutGap="0.5em">
           <ng-template matStepLabel>Finished!</ng-template>
           <label>You can now send your IOU through the XRP Ledger to accounts which also have added a TrustLine with your issuer account: <b>{{getIssuer()}}</b></label><br>
-          <label>People can setup a TrustLine to your issuer account via the "Trust Set" transaction on the page "XRPL Transactions"!</label>
-          <label>Then you can send your IOU from your receipient account to other accounts which have setup a TrustLine.</label>
-          <label>Or your can issue more tokens with your issuer account.</label>
+          <label>People can setup a Trust Line to your issuer account via the "Trust Set" transaction on the page "XRPL Transactions"!</label>
+          <label>Then you can send your IOU from your recipient account to other accounts which have setup a Trust Line.</label>
+          <label *ngIf="blackholeRegularKeySet && blackholeMasterDisabled">Or your can issue more tokens with your issuer account.</label>
           <div>
             <button mat-raised-button color="primary" (click)="reset()">Create another IOU</button>
             <button mat-raised-button (click)="moveBack()">Back</button>
