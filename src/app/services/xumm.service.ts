@@ -67,7 +67,7 @@ export class XummService {
 
     async checkTimedPaymentReferer(payloadId:string, referer?:string): Promise<TransactionValidation> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/referer/"+payloadId+(referer ? "?referer="+referer : ""));
+            return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/referer/" + payloadId + (referer ? ("?referer="+referer) : ""));
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }
@@ -83,9 +83,10 @@ export class XummService {
         }
     }
 
-    async signInToValidateTimedPayment(payloadId:any, referer:string): Promise<TransactionValidation> {
+    async signInToValidateTimedPayment(payloadId:any, referer?:string): Promise<TransactionValidation> {
+        console.log("referer: " + referer);
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/signinToValidatePayment/"+payloadId+(referer ? "?referer="+referer:""));
+            return this.app.get(this.xummBackendURL+"/api/v1/check/signinToValidatePayment/" + payloadId + (referer ? ("?referer="+referer) :""));
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }

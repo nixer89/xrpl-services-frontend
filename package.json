@@ -1,12 +1,14 @@
 {
   "name": "xumm-community",
-  "version": "1.2.7",
+  "version": "1.2.9",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
     "build": "ng build --prod",
-    "upload": "ng build --prod & aws s3 --profile myevride rm s3://test.xumm.community/ --recursive & aws s3 --profile myevride cp ./dist/xumm-community s3://test.xumm.community/ --recursive --include '*' --acl public-read --cache-control public,max-age=8640000,no-transform",
-    "invalidate": "aws cloudfront --profile myevride create-invalidation --distribution-id E1W458BY5YIPAH --paths /*",
+    "upload": "ng build --prod & aws s3 --profile myevride rm s3://xumm.community/ --recursive & aws s3 --profile myevride cp ./dist/xumm-community s3://xumm.community/ --recursive --include '*' --acl public-read --cache-control public,max-age=8640000,no-transform",
+    "invalidate": "aws cloudfront --profile myevride create-invalidation --distribution-id E1OAMTM9ZNSNWC --paths /*",
+    "upload-test": "ng build --prod & aws s3 --profile myevride rm s3://test.xumm.community/ --recursive & aws s3 --profile myevride cp ./dist/xumm-community s3://test.xumm.community/ --recursive --include '*' --acl public-read --cache-control public,max-age=8640000,no-transform",
+    "invalidate-test": "aws cloudfront --profile myevride create-invalidation --distribution-id E1W458BY5YIPAH --paths /*",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

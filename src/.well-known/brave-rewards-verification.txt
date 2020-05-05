@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: xumm.community
+Token: 4e9a74e377816ff3b4cdf450e975fdded52c7871836df904a88e917da96ed9fc

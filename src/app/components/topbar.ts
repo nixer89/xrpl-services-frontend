@@ -80,7 +80,7 @@ export class TopbarComponent implements OnInit {
         if(!transactionInfo.testnet)
           this.snackBar.open("Thank you so much for your donation!", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
         else
-          this.snackBar.open("Your donation was submitted to the testnet. Please consider sending a 'real' donation. Thank you :-)", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+          this.snackBar.open("Your donation was submitted to the testnet. Thank you! But please consider sending a 'real' donation. :-)", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
       }
     });
   }

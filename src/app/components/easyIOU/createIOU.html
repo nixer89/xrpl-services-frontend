@@ -45,7 +45,7 @@
             <mat-checkbox [(ngModel)]="checkBoxSufficientFunds" [ngClass]="(checkBoxSufficientFunds ? 'success': 'warning')">The issuing and recipient accounts have enough funds. (at least ~6 XRP available, excluding account reserve!)</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxNetwork" [ngClass]="(checkBoxNetwork ? 'success': 'warning')">Your XUMM app is connected to the LIVE or TEST network, depending on where you want to issue your IOU.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxNoLiability" [ngClass]="(checkBoxNoLiability ? 'success': 'warning')">We take no liability if you are not able to issue your own IOU. Just proceed if you know what your are doing!</mat-checkbox>
-            <mat-checkbox [(ngModel)]="checkBoxDisclaimer" [ngClass]="(checkBoxDisclaimer ? 'success': 'warning')">We offer "basic" IOU/TrustLine management. If you are going to issue your IOU for commercial use, we recommend to NOT use this tool. We are not liable for any regulatory implications, depending on the juristication you live in.</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxDisclaimer" [ngClass]="(checkBoxDisclaimer ? 'success': 'warning')">We offer "basic" IOU/TrustLine management. If you are going to issue your IOU for commercial use, we recommend to NOT use this tool. We are not liable for any regulatory implications, depending on the jurisdiction you live in.</mat-checkbox>
 
             <div style="padding-top: 0.5em;" fxLayoutGap="0.5em">
                 <button mat-raised-button color="primary" [disabled]="!checkBoxTwoAccounts || !checkBoxFiveXrp || !checkBoxSufficientFunds || !checkBoxNetwork || !checkBoxNoLiability || !checkBoxDisclaimer" (click)="moveNext()">Next</button>
@@ -134,6 +134,7 @@
             <mat-hint *ngIf="paymentNotSuccessfull" style="padding-top: 0.5em;">You payment was not successfull on the XRP Ledger {{isTestMode ? 'test' : 'live'}} net.</mat-hint>
             <mat-hint *ngIf="paymentNotSuccessfull">Please try again or use "Sign In with XUMM" if you think the payment was successfull.</mat-hint>
             <mat-hint *ngIf="paymentNotFound" style="padding-top: 0.5em;">No valid payment found for account {{getIssuer()}} withing the last 24h.</mat-hint>
+            <mat-hint *ngIf="paymentNotFound">Please make a 5 XRP payment or login with a different account.</mat-hint>
 
             <div fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !paymentNotSuccessfull && !paymentNotFound && !loadingIssuerAccount">
               <label>The account you want to issue an IOU with is: </label>
@@ -244,14 +245,14 @@
 
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
-          <ng-template matStepLabel>Blackhole Issuer (optional!)</ng-template>
+          <ng-template matStepLabel>Black hole Issuer (optional!)</ng-template>
           <label class="loading">This is an optional step. You can "black hole" the issuer account. That means you would not be able to issue more tokens (fixed supply) AND you would loose access to this account!</label>
           <label class="warning">Please skip this step if you don't know what that means!</label>
-          <mat-checkbox [(ngModel)]="checkBoxBlackhole1" [ngClass]="(checkBoxBlackhole1 ? 'success': 'warning')">I understand the implications and want to blackhole the issuer account.</mat-checkbox>
+          <mat-checkbox [(ngModel)]="checkBoxBlackhole1" [ngClass]="(checkBoxBlackhole1 ? 'success': 'warning')">I understand the implications and want to black hole the issuer account.</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole2" [ngClass]="(checkBoxBlackhole2 ? 'success': 'warning')">I understand that I can not create more tokens. The supply of my IOU will be fixed.</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole3" [ngClass]="(checkBoxBlackhole3 ? 'success': 'warning')">I understand that I will loose access to the issuer account: {{getIssuer()}}. I WON'T BE ABLE TO RECOVER THE ACCESS!</mat-checkbox>
           <mat-card *ngIf="checkBoxBlackhole1 && checkBoxBlackhole2 && checkBoxBlackhole3 && (!blackholeRegularKeySet || !blackholeMasterDisabled)" fxLayout="column" fxLayoutGap="0.5em">
-            <label>Okay, lets blackhole the issuer account!</label>
+            <label>Okay, lets black hole the issuer account!</label>
             <label class="warning">We are going to set the RegularKey of the issuer account to the black hole address: <b>rrrrrrrrrrrrrrrrrrrrBZbvji</b> (Called 'ADDRESS_ONE'. <a href="https://xrpl.org/accounts.html#special-addresses" target="_blank">more info...</a> )</label>
             <label>No one has the secret keys to this account because the address is not derived from a known secret key.</label>
             <label class="loading">Additionally we will disable all other signing methods. This removes all access to this account.</label>

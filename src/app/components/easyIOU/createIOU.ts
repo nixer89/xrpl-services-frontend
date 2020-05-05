@@ -131,7 +131,13 @@ export class CreateIOU implements OnInit {
       this.loadingIssuerAccount = true;
 
       if(info && info.success && info.account && this.isValidXRPAddress(info.account)) {
-        let checkPayment:TransactionValidation = await this.xummApi.signInToValidateTimedPayment(info.payloadId,null);
+        let refererURL:string;
+        if(document.URL.includes('?')) {
+            refererURL = document.URL.substring(0, document.URL.indexOf('?'));
+        } else {
+            refererURL = document.URL;
+        }
+        let checkPayment:TransactionValidation = await this.xummApi.signInToValidateTimedPayment(info.payloadId, refererURL);
         console.log("login to validate payment: " + JSON.stringify(checkPayment));
         if(checkPayment && checkPayment.success && (!checkPayment.testnet || this.isTestMode)) {
           this.issuerAccount = info.account;
@@ -251,8 +257,12 @@ export class CreateIOU implements OnInit {
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
       console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
-      if(info && info.success && info.account && info.testnet == this.isTestMode) {
-         await this.loadAccountData();
+      if(info && info.success && info.testnet == this.isTestMode) {
+        if(this.issuerAccount === info.account)
+          await this.loadAccountData();
+        else { //signed with wrong account
+
+        }
       } else {
 
       }
@@ -497,18 +507,17 @@ export class CreateIOU implements OnInit {
 
   reset() {
     this.isTestMode = false;
-    this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = false;
-    this.currencyCode = null;
-    this.limit = null;
-    this.validCurrencyCode = false;
-    this.validLimit = false;
+    this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = this.checkBoxDisclaimer = false;
+    this.currencyCode = this.limit = null;
+    this.validCurrencyCode = this.validLimit = false;
     this.issuerAccount = this.issuer_account_info = null;
-    this.validIssuer = false;
-    this.paymentNotFound = this.paymentNotSuccessfull = false;
+    this.validIssuer = this.paymentNotFound = this.paymentNotSuccessfull = false;
     this.needDefaultRipple = true;
     this.recipientTrustlineSet = false;
     this.recipientAddress = null;
     this.weHaveIssued = false;
+    this.checkBoxBlackhole1 = this.checkBoxBlackhole2 = this.checkBoxBlackhole3 = this.checkBoxBlackhole4 = false;
+    this.blackholeMasterDisabled = this.blackholeRegularKeySet = false;
     this.stepper.reset();
 
   }

@@ -134,7 +134,7 @@ export class GenericPayloadQRDialog implements OnInit {
                     //get xrpl account
                     let txInfo:TransactionValidation;
                     if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment' && !this.genericPayload.options.issuing) {
-                        txInfo = await this.xummApi.checkTimedPaymentReferer(message.payload_uuidv4);
+                        txInfo = await this.xummApi.checkTimedPaymentReferer(message.payload_uuidv4, this.genericPayload.options.referer);
                     } else {
                         txInfo = await this.xummApi.validateTransaction(message.payload_uuidv4);
                     }
