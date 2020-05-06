@@ -65,10 +65,8 @@ export class TrustSetComponent implements OnInit, OnDestroy {
       this.originalAccountInfo = accountData.info;
       this.testMode = accountData.mode;
 
-      if(this.originalAccountInfo && this.originalAccountInfo.Account)
-        this.xrplAccountInfoChangedSubject.next(accountData);
-      else
-        this.xrplAccountInfoChangedSubject.next(null);
+      this.xrplAccountInfoChangedSubject.next(accountData);
+      
       setTimeout(() => {
         this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
       },500);

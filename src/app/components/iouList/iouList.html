@@ -2,7 +2,7 @@
     <label>Loading IOUs ...&nbsp;</label>
     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
 </div>
-<label style="color: darkorange" *ngIf="originalIsserAccount && ((!loading && !iouList) || (iouList && iouList.length == 0))">This account does not issue any currencies (IOUs) on the XRP Ledger <b>{{testMode ? 'test' : 'live'}}</b> net.</label>
+<label style="color: darkorange" *ngIf="originalIsserAccount && ((!loading && !iouList) || (iouList && iouList.length == 0))">This account does not issue any currencies (IOUs) on the XRP Ledger {{testMode ? 'TEST' : 'LIVE'}} net.</label>
 <mat-accordion *ngIf="originalIsserAccount && !loading && iouList && iouList.length > 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
     <mat-expansion-panel #mep>
         <mat-expansion-panel-header>
@@ -23,8 +23,8 @@
             <ng-container matColumnDef="amount">
                 <mat-header-cell *matHeaderCellDef > Total issued value of this currency: </mat-header-cell>
                 <mat-cell *matCellDef="let iou" (click)="mep.expanded=false">
-                    <span fxShow fxHide.xs >{{iou.amount}} {{iou.currency}}</span>
-                    <span fxShow.xs fxHide ><b>Total issued value:</b><br>{{iou.amount}} {{iou.currency}}</span>
+                    <span fxShow fxHide.xs >{{stringToFloat(iou.amount)}} {{iou.currency}}</span>
+                    <span fxShow.xs fxHide ><b>Total issued value:</b><br>{{stringToFloat(iou.amount)}} {{iou.currency}}</span>
                 </mat-cell>
             </ng-container>
 

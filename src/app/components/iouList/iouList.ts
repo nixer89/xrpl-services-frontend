@@ -39,7 +39,7 @@ export class IouList implements OnInit, OnDestroy {
         this.iouAccountChangedSubscription = this.issuerAccountChanged.subscribe(accountData => {
             console.log("iou account changed received: " + JSON.stringify(accountData));
             
-            if(accountData) {
+            if(accountData.account) {
                 this.originalIsserAccount = accountData.account;
                 this.testMode = accountData.mode;
                 
@@ -124,5 +124,9 @@ export class IouList implements OnInit, OnDestroy {
         this.googleAnalytics.analyticsEventEmitter('iou_list_selected', 'iou_list', 'iou_list_component');
         //console.log("iou selected: " + JSON.stringify(iou));
         this.issuerCurrencySelected.emit(iou)
+    }
+
+    stringToFloat(number: string): number {
+        return parseFloat(number);
     }
 }

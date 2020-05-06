@@ -20,6 +20,7 @@ import { GenericPayloadQRDialog } from './components/genericPayloadQRDialog';
 import { EscrowList } from './components/escrowList/escrowList';
 import { IouList } from './components/iouList/iouList';
 import { TrustLineList } from './components/trustlineList/trustlineList';
+import { TrustLineListIssuing } from './components/trustlineList/trustlineListIssuing';
 import { CreateIOU } from './components/easyIOU/createIOU';
 import { IssueMoreIOU } from './components/easyIOU/issueMoreIOU';
 
@@ -79,6 +80,7 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     EscrowList,
     IouList,
     TrustLineList,
+    TrustLineListIssuing,
     CreateIOU,
     IssueMoreIOU,
     AccountSetComponent,

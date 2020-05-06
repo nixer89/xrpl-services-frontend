@@ -31,24 +31,24 @@
             <ng-container matColumnDef="balance">
                 <mat-header-cell *matHeaderCellDef> Balance of this TrustLine </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
-                    <span fxShow fxHide.xs > {{trustline.balance}}</span>
-                    <span fxShow.xs fxHide ><b>Balance:</b>&nbsp;{{trustline.balance}}</span>
+                    <span fxShow fxHide.xs > {{stringToFloat(trustline.balance)}}</span>
+                    <span fxShow.xs fxHide ><b>Balance:</b>&nbsp;{{stringToFloat(trustline.balance)}}</span>
                 </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="limit">
                 <mat-header-cell *matHeaderCellDef > Limit of this TrustLine </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
-                    <span fxShow fxHide.xs >{{trustline.limit}}</span>
-                    <span fxShow.xs fxHide ><b>Limit:</b>&nbsp;{{trustline.limit}}</span>
+                    <span fxShow fxHide.xs >{{stringToFloat(trustline.limit)}}</span>
+                    <span fxShow.xs fxHide ><b>Limit:</b>&nbsp;{{stringToFloat(trustline.limit)}}</span>
                 </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="limit_peer">
                 <mat-header-cell *matHeaderCellDef > Limit from counterparty </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
-                    <span fxShow fxHide.xs >{{trustline.limit_peer}}</span>
-                    <span fxShow.xs fxHide ><b>Limit Counterparty:</b>&nbsp;{{trustline.limit_peer}}</span>
+                    <span fxShow fxHide.xs >{{stringToFloat(trustline.limit_peer)}}</span>
+                    <span fxShow.xs fxHide ><b>Limit Counterparty:</b>&nbsp;{{stringToFloat(trustline.limit_peer)}}</span>
                 </mat-cell>
             </ng-container>
 

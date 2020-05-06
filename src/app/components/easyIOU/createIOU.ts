@@ -19,6 +19,7 @@ import { MatStepper } from '@angular/material/stepper';
 export class CreateIOU implements OnInit {
 
   private ACCOUNT_FLAG_DEFAULT_RIPPLE:number = 8;
+  private ACCOUNT_FLAG_DISABLE_MASTER_KEY:number = 4;
 
   constructor(
     private matDialog: MatDialog,
@@ -270,7 +271,7 @@ export class CreateIOU implements OnInit {
   }
 
   checkChangesCurrencyCode() {
-    this.validCurrencyCode = this.currencyCode && /^[A-Z]{3}$/.test(this.currencyCode) && this.currencyCode != "XRP";
+    this.validCurrencyCode = this.currencyCode && /^[a-zA-Z\d?!@#$%^&*<>(){}[\]|]{3}$/.test(this.currencyCode) && this.currencyCode != "XRP";
   }
 
   checkChangesLimit() {
@@ -402,7 +403,7 @@ export class CreateIOU implements OnInit {
       payload: {
         txjson: {
           TransactionType: "AccountSet",
-          SetFlag: 4
+          SetFlag: this.ACCOUNT_FLAG_DISABLE_MASTER_KEY
         },
         custom_meta: {
           instruction: "- Disable Master Key\n"
@@ -507,7 +508,7 @@ export class CreateIOU implements OnInit {
 
   reset() {
     this.isTestMode = false;
-    this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = this.checkBoxDisclaimer = false;
+    this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = this.checkBoxDisclaimer = this.checkBoxIssuingText = false;
     this.currencyCode = this.limit = null;
     this.validCurrencyCode = this.validLimit = false;
     this.issuerAccount = this.issuer_account_info = null;

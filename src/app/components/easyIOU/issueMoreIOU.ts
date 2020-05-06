@@ -38,8 +38,8 @@ export class IssueMoreIOU implements OnInit {
     private snackBar: MatSnackBar) {
   }
 
-  @ViewChild('inpdestination', {static: false}) inpdestination;
-  destinationInput: string;
+  @ViewChild('inpdestination', {static: false}) recipientAccount;
+  recipientAccountInput: string;
 
   @ViewChild('mep', {static: true}) mep: MatExpansionPanel;
 
@@ -59,14 +59,13 @@ export class IssueMoreIOU implements OnInit {
 
   recipientToIssuerTrustLine:TrustLine;
   loadingRecipientToIssuerTL:boolean = false;
-  noTrustLineFound:boolean = false;
-
-  recipientAccountNotFound:boolean = false;
+  recipientSameAsIssuer:boolean = false;
 
   transactionSuccessfull: Subject<void> = new Subject<void>();
   loadingIssuerAccount:boolean = false;
 
   issuerAccountChangedSubject: Subject<XrplAccountChanged> = new Subject<XrplAccountChanged>();
+  recipientAccountChangedSubject: Subject<XrplAccountChanged> = new Subject<XrplAccountChanged>();
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(async params => {
@@ -157,18 +156,21 @@ export class IssueMoreIOU implements OnInit {
     this.issuerAccountChangedSubject.next({account: this.issuerAccount, mode: this.isTestMode});
   }
 
-  onIssuedCurrencyFound(iou:any) {
-    this.currencyCode = iou.currency;
+  onTrustLineSelected(trustLine:TrustLine) {
+    this.recipientToIssuerTrustLine = trustLine;
+    this.currencyCode = this.recipientToIssuerTrustLine.currency;
     this.checkChangesCurrencyCode();
   }
 
   checkChangesCurrencyCode() {
     this.validCurrencyCode = this.currencyCode && this.currencyCode != "XRP";
+
+    if(!this.currencyCode || this.currencyCode.trim().length==0)
+      this.recipientToIssuerTrustLine = null;
+      
     this.numberOfTokens = null;
     this.validNumberOfTokens = false;
     this.notEnoughLimit = false;
-
-    this.loadTrustLines();
   }
 
   checkChangesNumberOfTokens() {
@@ -177,13 +179,14 @@ export class IssueMoreIOU implements OnInit {
     this.notEnoughLimit = this.validNumberOfTokens && this.numberOfTokens > this.getMaxIssuerTokens();
   }
 
-  checkChangesDestination() {
-    this.validAddress = this.destinationInput && this.destinationInput.trim().length > 0 && this.isValidXRPAddress(this.destinationInput.trim());
+  checkChangesRecipientAccount() {
+    this.validAddress = this.recipientAccountInput && this.recipientAccountInput.trim().length > 0 && this.isValidXRPAddress(this.recipientAccountInput.trim());
+    this.recipientSameAsIssuer = this.issuerAccount && this.recipientAccountInput &&  this.issuerAccount.trim() === this.recipientAccountInput.trim();
 
-    this.noTrustLineFound = false;
-    this.recipientAccountNotFound = false;
-
-    this.loadTrustLines();
+    if(this.validAddress && !this.recipientSameAsIssuer)
+      this.recipientAccountChangedSubject.next({account: this.recipientAccountInput.trim(), mode: this.isTestMode});
+    else
+      this.recipientAccountChangedSubject.next({account: null, mode: this.isTestMode});
   }
 
   issueIOU() {
@@ -194,7 +197,7 @@ export class IssueMoreIOU implements OnInit {
       payload: {
         txjson: {
           TransactionType: "Payment",
-          Destination: this.destinationInput.trim(),
+          Destination: this.recipientAccountInput.trim(),
           Amount: {
             currency: this.currencyCode.trim(),
             issuer: this.issuerAccount.trim(),
@@ -202,7 +205,7 @@ export class IssueMoreIOU implements OnInit {
           }
         },
         custom_meta: {
-          instruction: "- Issuing " + this.numberOfTokens + " " + this.currencyCode + " to: " + this.destinationInput.trim() + "\n\n- Please sign with the ISSUER account!"
+          instruction: "- Issuing " + this.numberOfTokens + " " + this.currencyCode + " to: " + this.recipientAccountInput.trim() + "\n\n- Please sign with the ISSUER account!"
         }
       }
     } 
@@ -220,63 +223,6 @@ export class IssueMoreIOU implements OnInit {
     });
   }
 
-  loadTrustLines() {
-    if(!this.loadingRecipientToIssuerTL && this.validCurrencyCode && this.validAddress && this.validIssuer) {
-      this.loadingRecipientToIssuerTL = true;
-      this.googleAnalytics.analyticsEventEmitter('load_trust_lines', 'issue_more_iou', 'more_iou_component');
-
-      let websocketTL:WebSocketSubject<any> = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
-
-      websocketTL.asObservable().subscribe(async message => {
-        //console.log("websocket message: " + JSON.stringify(message));
-          if(message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.lines) {
-              let trustLines:TrustLine[] = message.result.lines;
-
-              //console.log("trustLines: " + JSON.stringify(trustLines));
-
-              if(trustLines && trustLines.length > 0) {
-                for(let i = 0; i < trustLines.length; i++) {
-                  if(trustLines[i].currency === this.currencyCode) {
-                    this.recipientToIssuerTrustLine = trustLines[i];
-                    break;
-                  }
-                }
-              }
-
-              if(!this.recipientToIssuerTrustLine)
-                this.noTrustLineFound = true;
-
-              this.loadingRecipientToIssuerTL = false;
-              //console.log("recipientToIssuerTrustLine: " + JSON.stringify(this.recipientToIssuerTrustLine));
-          } else if(message.status && message.status === 'error' && message.error === 'actNotFound') {
-            this.recipientAccountNotFound = true;
-            this.loadingRecipientToIssuerTL = false;
-
-            websocketTL.unsubscribe();
-            websocketTL.complete();
-            websocketTL = null;  
-          } else {
-            this.recipientToIssuerTrustLine = null;
-            this.recipientAccountNotFound = false;
-            this.loadingRecipientToIssuerTL = false;
-
-            websocketTL.unsubscribe();
-            websocketTL.complete();
-            websocketTL = null;
-          }
-      });
-
-      let account_lines_request:any = {
-        command: "account_lines",
-        account: this.destinationInput.trim(),
-        peer: this.issuerAccount.trim(),
-        ledger_index: "validated",
-      }
-
-      websocketTL.next(account_lines_request);
-    }
-  }
-
   getMaxIssuerTokens(): number {
     if(this.recipientToIssuerTrustLine && (Number(this.recipientToIssuerTrustLine.limit) - Number(this.recipientToIssuerTrustLine.balance)) > 0)
       return Number(this.recipientToIssuerTrustLine.limit) - Number(this.recipientToIssuerTrustLine.balance);
@@ -290,6 +236,11 @@ export class IssueMoreIOU implements OnInit {
     this.validIssuer = false;
   }
 
+  clearCurrencyCode() {
+    this.currencyCode = null;
+    this.checkChangesCurrencyCode()
+  }
+
   reset() {
     this.isTestMode = false;
     this.currencyCode = null;
@@ -298,6 +249,6 @@ export class IssueMoreIOU implements OnInit {
     this.validNumberOfTokens = false;
     this.issuerAccount = null;
     this.validIssuer = false;
-    this.destinationInput = null;
+    this.recipientAccountInput = null;
   }
 }

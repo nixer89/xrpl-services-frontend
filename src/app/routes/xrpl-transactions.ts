@@ -59,7 +59,7 @@ export class XrplTransactionsComponent implements OnInit {
     //this.isTestMode = true;
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
-    await this.loadAccountData(false);
+    //await this.loadAccountData(false);
 
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;
@@ -97,13 +97,13 @@ export class XrplTransactionsComponent implements OnInit {
       
       if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
         this.xrplAccount = this.localStorage.get("xrplAccount");
-        this.loadAccountData(false);
+        this.loadAccountData(true);
       }
     });
   }
 
   changeNetwork() {
-    this.loadAccountData(true);
+    this.loadAccountData(false);
   }
 
   async loadAccountData(isInit?: boolean) {
