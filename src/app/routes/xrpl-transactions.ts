@@ -19,9 +19,9 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 })
 export class XrplTransactionsComponent implements OnInit {
   
-  xrplAccount:string;
-  xrplAccount_Info:any;
-  xrplAccount_Objects: any;
+  xrplAccount:string = null;
+  xrplAccount_Info:any = null;
+  xrplAccount_Objects: any = null;
 
   lastTrxLinkBithomp:string;
   lastTrxLinkXrplOrg:string;
@@ -55,11 +55,11 @@ export class XrplTransactionsComponent implements OnInit {
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
     }
 
-    //this.xrplAccount="rnK4ybo1Gu4gcNpvnWy74Y16kpwhYepsMr";
-    //this.isTestMode = true;
+    this.xrplAccount="rnK4ybo1Gu4gcNpvnWy74Y16kpwhYepsMr";
+    this.isTestMode = true;
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
-    //await this.loadAccountData(false);
+    await this.loadAccountData(false);
 
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;

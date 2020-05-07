@@ -61,7 +61,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
-      console.log("account info changed received: " + JSON.stringify(accountData));
+      //console.log("account info changed received: " + JSON.stringify(accountData));
       this.originalAccountInfo = accountData.info;
       this.testMode = accountData.mode;
 

@@ -37,7 +37,7 @@ export class IouList implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.iouAccountChangedSubscription = this.issuerAccountChanged.subscribe(accountData => {
-            console.log("iou account changed received: " + JSON.stringify(accountData));
+            //console.log("iou account changed received: " + JSON.stringify(accountData));
             
             if(accountData.account) {
                 this.originalIsserAccount = accountData.account;

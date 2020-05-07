@@ -32,6 +32,7 @@ import { EscrowCancelComponent } from './components/transactions/escrowcancel';
 import { SetRegularKeyComponent } from './components/transactions/setregularkey';
 import { SignerListSetComponent } from './components/transactions/signerlistset';
 import { TrustSetComponent } from './components/transactions/trustset';
+import { AccountDeleteComponent } from './components/transactions/accountdelete';
 
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -89,7 +90,8 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     EscrowCancelComponent,
     SetRegularKeyComponent,
     SignerListSetComponent,
-    TrustSetComponent
+    TrustSetComponent,
+    AccountDeleteComponent
   ],
   imports: [
     BrowserModule,
