@@ -33,14 +33,14 @@
       <button mat-button [routerLink]="['']" matTooltip="XRPL Transactions">
         <i class="material-icons topbar-menu-icon">mobile_friendly</i> XRPL Transactions
       </button>
-      <button mat-button [routerLink]="['/scheduler']" matTooltip="Xumm Scheduler">
-        <i class="material-icons topbar-menu-icon">schedule</i> Transaction Scheduler
+      <button mat-button [routerLink]="['/easy-iou']" matTooltip="Issue your own IOU!">
+        <i class="material-icons topbar-menu-icon">attach_money</i> Easy IOUs!
+      </button>
+      <button mat-button [routerLink]="['/tools']" matTooltip="Tools">
+        <i class="material-icons topbar-menu-icon">build</i> Tools
       </button>
       <button mat-button [routerLink]="['/generic-backend']" matTooltip="Xumm Community Generic Backend">
         <i class="material-icons topbar-menu-icon">device_hub</i> Generic Backend
-      </button>
-      <button mat-button [routerLink]="['/easy-iou']" matTooltip="Issue your own IOU!">
-        <i class="material-icons topbar-menu-icon">attach_money</i> Easy IOUs!
       </button>
     </div>
 
@@ -52,14 +52,14 @@
         <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['']" matTooltip="XRPL Transactions">
           <i class="material-icons">mobile_friendly</i> XRPL Transactions
         </button>
-        <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/scheduler']" matTooltip="Xumm Scheduler">
-          <i class="material-icons">schedule</i> Transaction Scheduler
+        <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/easy-iou']" matTooltip="Issue your own IOU!">
+          <i class="material-icons">attach_money</i> Easy IOUs!
+        </button>
+        <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tools']" matTooltip="Tools">
+          <i class="material-icons">build</i> Tools
         </button>
         <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/generic-backend']" matTooltip="Xumm Community Generic Backend">
           <i class="material-icons">device_hub</i> Generic Backend
-        </button>
-        <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/easy-iou']" matTooltip="Issue your own IOU!">
-          <i class="material-icons">attach_money</i> Easy IOUs!
         </button>
       </mat-menu>
     </div>

@@ -14,14 +14,13 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
-  selector: 'xrpl-transactions',
-  templateUrl: './xrpl-transactions.html',
+  selector: 'tools',
+  templateUrl: './tools.html',
 })
-export class XrplTransactionsComponent implements OnInit {
+export class Tools implements OnInit {
   
   xrplAccount:string;
   xrplAccount_Info:any;
-  xrplAccount_Objects: any;
 
   lastTrxLinkBithomp:string;
   lastTrxLinkXrplOrg:string;
@@ -29,7 +28,6 @@ export class XrplTransactionsComponent implements OnInit {
   lastTrxLinkXrp1ntel:string;
 
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
-  accountObjectsChanged: Subject<AccountObjectsChanged> = new Subject<AccountObjectsChanged>();
   transactionSuccessfull: Subject<any> = new Subject<any>();
   websocket: WebSocketSubject<any>;
 
@@ -65,7 +63,7 @@ export class XrplTransactionsComponent implements OnInit {
       let payloadId = params.payloadId;
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
-        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'xrpl_transactions_component');
+        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'tools_component');
         //check if transaction was successfull and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
         //console.log(JSON.stringify(payloadInfo));
@@ -109,7 +107,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   async loadAccountData(isInit?: boolean) {
     if(this.xrplAccount) {
-      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'xrpl_transactions_component');
+      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'tools_component');
       this.loadingData = true;
 
       if(this.websocket) {
@@ -129,29 +127,16 @@ export class XrplTransactionsComponent implements OnInit {
               //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
               this.emitAccountInfoChanged();
             }
-
-            if(message.result && message.result.account_objects) {
-              this.xrplAccount_Objects = message.result.account_objects;
-              //console.log("xrplAccount_Objects: " + JSON.stringify(this.xrplAccount_Objects));
-              this.emitAccountObjectsChanged();
-            }
           } else {
             if(message.request.command === 'account_info') {
               this.xrplAccount_Info = message;
               this.emitAccountInfoChanged();
             }
-
-            if(message.request.command === 'account_objects') {
-              this.xrplAccount_Objects = message;
-              this.emitAccountObjectsChanged();
-            }
           }
 
         } else {
           this.xrplAccount_Info = null;
-          this.xrplAccount_Objects = null;
           this.emitAccountInfoChanged();
-          this.emitAccountObjectsChanged();
         }
 
         if(isInit && this.snackBar)
@@ -166,14 +151,7 @@ export class XrplTransactionsComponent implements OnInit {
         "strict": true,
       }
 
-      let account_objects_request:any = {
-        command: "account_objects",
-        account: this.xrplAccount,
-        type: "signer_list",
-      }
-
       this.websocket.next(account_info_request);
-      this.websocket.next(account_objects_request);
     } else {
       this.emitAccountInfoChanged();
     }
@@ -227,7 +205,7 @@ export class XrplTransactionsComponent implements OnInit {
     }
 
     if(trxInfo && trxInfo.success) {
-      this.googleAnalytics.analyticsEventEmitter('handle_transaction_success', 'handle_transaction', 'xrpl_transactions_component');
+      this.googleAnalytics.analyticsEventEmitter('handle_transaction_success', 'handle_transaction', 'tools_component');
       this.isTestMode = trxInfo.testnet;
 
       if(trxInfo.txid) {
@@ -244,7 +222,7 @@ export class XrplTransactionsComponent implements OnInit {
         this.transactionSuccessfull.next();
       }
     } else {
-      this.googleAnalytics.analyticsEventEmitter('handle_transaction_failed', 'handle_transaction', 'xrpl_transactions_component');
+      this.googleAnalytics.analyticsEventEmitter('handle_transaction_failed', 'handle_transaction', 'tools_component');
       this.lastTrxLinkBithomp = null;
       this.lastTrxLinkXrplOrg = null;
       this.lastTrxLinkXrpScan = null;
@@ -252,7 +230,6 @@ export class XrplTransactionsComponent implements OnInit {
 
     if(this.xrplAccount) {
       this.localStorage.set("xrplAccount", this.xrplAccount);
-      this.localStorage.set("testMode", this.isTestMode);
       await this.loadAccountData(false);
     }
   }
@@ -260,11 +237,6 @@ export class XrplTransactionsComponent implements OnInit {
   emitAccountInfoChanged() {
     //console.log("emit account info changed");
     this.accountInfoChanged.next({info: this.xrplAccount_Info, mode: this.isTestMode});
-  }
-
-  emitAccountObjectsChanged() {
-    //console.log("emit account objects changed");
-    this.accountObjectsChanged.next({object: this.xrplAccount_Objects, mode: this.isTestMode});
   }
 
   async onPayloadReceived(xummPayload:XummPostPayloadBodyJson) {
@@ -300,12 +272,10 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   logoutAccount() {
-    this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'xrpl_transactions_component');
-    this.xrplAccount = this.xrplAccount_Info = this.xrplAccount_Objects = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = null;
+    this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'tools_component');
+    this.xrplAccount = this.xrplAccount_Info = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = null;
     this.localStorage.remove("xrplAccount");
-    this.localStorage.remove("testMode");
     this.emitAccountInfoChanged();
-    this.emitAccountObjectsChanged();
   }
 
 }

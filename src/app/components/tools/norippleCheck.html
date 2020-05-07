@@ -1,0 +1,59 @@
+<mat-expansion-panel [disabled]="originalAccountInfo && originalAccountInfo.error">
+  <mat-expansion-panel-header fxShow fxHide.xs>
+    <mat-panel-title>
+      <span> <mat-icon style="transform: scale(0.9);">swap_horiz</mat-icon> </span>
+      <span class="loading" style="margin-left: 0.5em;"> Trust Set (TrustLines) </span>
+    </mat-panel-title>
+    <mat-panel-description>
+      Create or modify a TrustLine linking two accounts.
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <mat-expansion-panel-header fxShow.xs fxHide>
+    <mat-panel-title>
+      <label class="loading">Trust Set</label>
+    </mat-panel-title>
+    <mat-panel-description>
+      Create or modify a TrustLine
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <div fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.xs="0.3em">
+    <a href="https://xrpl.org/trustset.html" target="_blank" rel="noreferrer">Trust Set Documentation</a><br/>
+    <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
+      <trustlineList [xrplAccountInfoChanged]="xrplAccountInfoChangedSubject.asObservable()" (trustLineEdit)="onTrustLineEdit($event)" (trustLineDelete)="deleteTrustLine($event)" (disableRippling)="onDisableRippling($event)"></trustlineList>
+    </div>
+    <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
+      <mat-form-field>
+        <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the IOU" [(ngModel)]="issuerAccountInput" (ngModelChange)="issuerAccountChanged()" [disabled]="isEditMode">
+        <mat-hint *ngIf="issuerAccountInput && !validAddress">Not a valid XRPL address</mat-hint>
+      </mat-form-field>
+      <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
+        <iouList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></iouList>
+      </div>
+      <mat-form-field [ngClass]="{'changed': showIssuedCurrencySelectedStyle}">
+        <input #inpissuedcurrency matInput name="issuedcurrency" matInput placeholder="IOU currency code" [(ngModel)]="issuedCurrencyInput" (ngModelChange)="currencyChanged()" [disabled]="isEditMode">
+        <mat-hint *ngIf="issuedCurrencyInput && !validCurrency">Not a valid IOU currency</mat-hint>
+      </mat-form-field>
+      <mat-form-field>
+        <input #inplimit matInput type="text" name="limit" placeholder="Limit to set on this TrustLine." [(ngModel)]="limitInput" (ngModelChange)="checkChanges()">
+        <mat-hint *ngIf="limitInput && !validLimit && maxFifthteenDigits">Limit cannot have more than 15 decimals.</mat-hint>
+        <mat-hint *ngIf="limitInput && !validLimit && !maxFifthteenDigits && limitInput.toString().includes(',')">Not a valid amount. Please use '.' as decimal operator.</mat-hint>
+        <mat-hint *ngIf="limitInput && !validLimit && !maxFifthteenDigits && !limitInput.toString().includes(',')">Not a valid amount</mat-hint>
+      </mat-form-field>
+    </form>
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em" style="padding-top: 2em;">
+      <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidTrustSet">
+        Send Trust Set to Xumm
+      </button>
+      <button *ngIf="isEditMode" mat-raised-button color="secondary" (click)="cancelEdit()">
+        Cancel Edit
+      </button>
+      <button *ngIf="isValidTrustSet" mat-raised-button color="secondary" (click)="clearInputs()">
+        Clear Inputs
+      </button>
+      <label *ngIf="!issuerAccountInput || !validAddress">Please enter a valid XRPL address.</label>
+      <label *ngIf="validAddress && ( !issuedCurrencyInput || !validCurrency )">Please enter a valid IOU currency code.</label>
+      <label *ngIf="validAddress && validCurrency && ( !limitInput || !validLimit )">Please enter a valid Limit for this TrustLine.</label>
+    </div>
+  </div>
+</mat-expansion-panel>

@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 import { TermsComponent } from './routes/specific/terms';
 import { PrivacyComponent } from './routes/specific/privacy'
 import { XrplTransactionsComponent } from './routes/xrpl-transactions';
-import { TransactionScheduler } from './routes/transaction-scheduler';
+import { Tools } from './routes/tools';
 import { GenericBackendDefinition } from './routes/generic-backend';
 import { EasyIOU } from './routes/easyIOU';
 import { TopbarComponent } from './components/topbar';
@@ -32,6 +32,9 @@ import { EscrowCancelComponent } from './components/transactions/escrowcancel';
 import { SetRegularKeyComponent } from './components/transactions/setregularkey';
 import { SignerListSetComponent } from './components/transactions/signerlistset';
 import { TrustSetComponent } from './components/transactions/trustset';
+
+//Tools
+import { NoRippleCheckComponent } from './components/tools/norippleCheck';
 
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -70,7 +73,7 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     TermsComponent,
     PrivacyComponent,
     XrplTransactionsComponent,
-    TransactionScheduler,
+    Tools,
     GenericBackendDefinition,
     EasyIOU,
     TopbarComponent,
@@ -89,7 +92,8 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     EscrowCancelComponent,
     SetRegularKeyComponent,
     SignerListSetComponent,
-    TrustSetComponent
+    TrustSetComponent,
+    NoRippleCheckComponent
   ],
   imports: [
     BrowserModule,
