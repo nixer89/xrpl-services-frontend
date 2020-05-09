@@ -32,6 +32,7 @@ import { EscrowCancelComponent } from './components/transactions/escrowcancel';
 import { SetRegularKeyComponent } from './components/transactions/setregularkey';
 import { SignerListSetComponent } from './components/transactions/signerlistset';
 import { TrustSetComponent } from './components/transactions/trustset';
+import { AccountDeleteComponent } from './components/transactions/accountdelete';
 
 //Tools
 import { NoRippleCheckComponent } from './components/tools/norippleCheck';
@@ -93,7 +94,8 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     SetRegularKeyComponent,
     SignerListSetComponent,
     TrustSetComponent,
-    NoRippleCheckComponent
+    NoRippleCheckComponent,
+    AccountDeleteComponent
   ],
   imports: [
     BrowserModule,

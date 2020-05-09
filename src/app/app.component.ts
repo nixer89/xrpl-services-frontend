@@ -31,7 +31,9 @@ export class AppComponent implements OnInit {
     let title = "Xumm Community";
 
     switch(page_path) {
-      case'': case '/': title = "XRPL Transactions"; break;
+      case '': case '/': title = "XRPL Transactions"; break;
+      case '/easy-iou': title = "Easy-IOU"; break;
+      case '/tools': title = "Tools"; break;
       case '/terms': title = "Xumm Community Terms"; break;
       case '/privacy': title = "Xumm Community Privacy"; break;
       default: title = "Xumm Community"; break;

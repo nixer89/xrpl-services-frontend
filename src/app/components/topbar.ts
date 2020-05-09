@@ -6,6 +6,7 @@ import { GenericBackendPostRequest, TransactionValidation } from '../utils/types
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { LocalStorageService } from 'angular-2-local-storage'
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { TypeWriter } from '../utils/TypeWriter';
 
 @Component({
   selector: 'app-topbar',
@@ -18,6 +19,9 @@ export class TopbarComponent implements OnInit {
 
   isDarkTheme: boolean;
 
+  title: string;
+  tw: TypeWriter
+
   constructor( private supportDialog: MatDialog, private snackBar: MatSnackBar, private localStorage: LocalStorageService, private overlayContainer: OverlayContainer) {
     
   }
@@ -25,6 +29,12 @@ export class TopbarComponent implements OnInit {
   ngOnInit(): void {
     this.isDarkTheme = this.localStorage.get("darkMode");
     this.setOverlayClass();
+
+    this.tw = new TypeWriter(["created by nixerFFM", "Xumm Community"], t => {
+      this.title = t;
+    })
+
+    this.tw.start();
   }
 
   toggleDarkTheme() {
