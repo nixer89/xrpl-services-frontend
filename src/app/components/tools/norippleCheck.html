@@ -24,18 +24,17 @@
         <input #inpxrplaccount matInput name="xrplaccount" matInput placeholder="XRPL address you want to run the check for" [(ngModel)]="xrplAccountInput" (ngModelChange)="checkChanges()">
         <mat-hint *ngIf="xrplAccountInput && !validAddress">Not a valid XRPL address</mat-hint>
       </mat-form-field>
-      <div fxLayout="column">
-        <mat-checkbox name="gatewayOrUser" style="padding-top: 1em;" [(ngModel)]="isGateWayRole" (change)="checkChanges()">The account has created its own IOU</mat-checkbox>
-      </div>
     </form>
+    <label class="warning" *ngIf="validAddress && !loadingProblems && isGateway">We have detected that your account does issue some IOU. If this is NOT correct, please DO NOT PROCEED!</label>
+    <label class="warning" *ngIf="validAddress && !loadingProblems && !isGateway">We have detected that your account does NOT issue any IOU. If this is NOT correct, please DO NOT PROCEED!</label>
   </div>
 
-  <mat-card *ngIf="xrplAccountInput && validAddress">
+  <mat-card *ngIf="validAddress" fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.xs="0.3em" style="margin-top: 1em;">
     <div *ngIf="loadingProblems" fxLayout="row" fxLayoutAlign="start center">
-      <label>Checking your Trust Line settings ...&nbsp;</label>
+      <label>Checking your Account and Trust Line settings...&nbsp;</label>
       <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
     </div>
-    <label style="color: darkorange" *ngIf="!loadingProblems && (!problemsAndTransactions || problemsAndTransactions.length == 0)">No problems detected. All your settings are perfect! You are good to go.</label>
+    <label class="success" *ngIf="!loadingProblems && (!problemsAndTransactions || problemsAndTransactions.length == 0)">No problems detected. All your settings are perfect! You are good to go.</label>
     <div *ngIf="!loadingProblems && problemsAndTransactions && problemsAndTransactions.length > 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
       <mat-table [dataSource]="problemsAndTransactions" class="mat-elevation-z8">
 

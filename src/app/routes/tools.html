@@ -58,6 +58,6 @@
         <span *ngIf="lastTrxLinkXrp1ntel"><a  [href]="lastTrxLinkXrp1ntel" target="_blank;" rel="noreferrer">xrp1ntel</a></span>
     </div>
     <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
-        <norippleCheck [accountInfoChanged]="accountInfoChanged.asObservable()" (onPayload)="onPayloadReceived($event)"></norippleCheck>
+        <norippleCheck [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></norippleCheck>
     </mat-accordion>
 </mat-card>

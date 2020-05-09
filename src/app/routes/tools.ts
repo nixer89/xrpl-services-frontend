@@ -19,8 +19,8 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 })
 export class Tools implements OnInit {
   
-  xrplAccount:string;
-  xrplAccount_Info:any;
+  xrplAccount:string = null;
+  xrplAccount_Info:any = null;
 
   lastTrxLinkBithomp:string;
   lastTrxLinkXrplOrg:string;

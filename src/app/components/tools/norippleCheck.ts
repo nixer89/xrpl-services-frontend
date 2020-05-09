@@ -33,10 +33,10 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
   xrplAccountInput: string;
 
   originalAccountInfo:any;
+  originalTestModeValue:boolean = false;
   isTestMode:boolean = false;
 
-  isGateWayRole:boolean = false;
-  isUserRole:boolean = false;
+  isGateway:boolean = false;
 
   private accountInfoChangedSubscription: Subscription;
   private transactionSuccessfullSubscription: Subscription;
@@ -47,17 +47,22 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['problem', 'fix'];
   problemsAndTransactions:NoRippleCheck[] = [];
 
+  websocket: WebSocketSubject<any>;
+
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       console.log("account info changed received: " + JSON.stringify(accountData));
-      if(accountData && accountData.info && !accountData.info.error) {
+      if(accountData) {
         this.originalAccountInfo = accountData.info;
         this.isTestMode = accountData.mode;
 
-        this.xrplAccountInput = this.originalAccountInfo.Account;
+        if(this.originalAccountInfo && this.originalAccountInfo.Account)
+          this.xrplAccountInput = this.originalAccountInfo.Account;
       } else {
         this.originalAccountInfo = null;
       }
+
+      this.loadProblems();
     });
 
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
@@ -71,19 +76,25 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
 
     if(this.transactionSuccessfullSubscription)
       this.transactionSuccessfullSubscription.unsubscribe();
+
+    if(this.websocket) {
+      this.websocket.unsubscribe();
+      this.websocket.complete();
+      this.websocket = null;
+    }
   }
 
-  loadProblems() {
-    if(this.xrplAccountInput && this.validAddress) {
-      this.googleAnalytics.analyticsEventEmitter('load_noripple_check', 'noripple_check', 'noripple_check_component');
-      this.loadingProblems = true;
+  setupWebsocket() {
+    this.originalTestModeValue = this.isTestMode;
+    console.log("connecting websocket");
+    //console.log("connecting websocket");
+    this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
 
-      //console.log("connecting websocket");
-      let websocket:WebSocketSubject<any> = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
+    this.websocket.asObservable().subscribe(async message => {
+      console.log("websocket message: " + JSON.stringify(message));
+      if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result) {
 
-      websocket.asObservable().subscribe(async message => {
-        console.log("websocket message: " + JSON.stringify(message));
-        if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.problems && message.result.transactions) {
+        if(message.result.problems && message.result.transactions) {
           let problems:string[] = message.result.problems;
           let transactions:any[] = message.result.transactions;
 
@@ -93,31 +104,53 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
 
           console.log("problemsAndTransactions: " + JSON.stringify(this.problemsAndTransactions));
 
-          websocket.unsubscribe();
-          websocket.complete();
-          websocket = null;
-
           this.loadingProblems = false;
         } else {
-          this.problemsAndTransactions = [];
+          console.log("account has obligations: " + message.result.obligations);
 
-          websocket.unsubscribe();
-          websocket.complete();
-          websocket = null;
+          this.isGateway = message.result.obligations != null;
+          
+          let noripple_check_command:any = {
+            command: "noripple_check",
+            account: this.xrplAccountInput.trim(),
+            role: message.result.obligations,
+            ledger_index: "validated",
+            transactions: true
+          }
 
-          this.loadingProblems = false;
+          this.websocket.next(noripple_check_command);
         }
-      });
+      } else {
+        this.problemsAndTransactions = [];
 
-      let noripple_check_command:any = {
-        command: "noripple_check",
-        account: this.xrplAccountInput.trim(),
-        role: this.isGateWayRole ? 'gateway' : 'user',
-        ledger_index: "validated",
-        transactions: true
+        this.loadingProblems = false;
+      }
+    });
+  }
+
+  loadProblems() {
+    if(this.xrplAccountInput && this.validAddress) {
+      this.googleAnalytics.analyticsEventEmitter('load_noripple_check', 'noripple_check', 'noripple_check_component');
+      this.loadingProblems = true;
+
+      if(this.websocket && this.originalTestModeValue != this.isTestMode) {
+        this.websocket.unsubscribe();
+        this.websocket.complete();
+        this.websocket = null;
       }
 
-      websocket.next(noripple_check_command);
+      if(!this.websocket || this.websocket.closed)
+          this.setupWebsocket();
+
+      this.loadingProblems = true;
+
+      let gateway_balances_request:any = {
+        command: "gateway_balances",
+        account: this.xrplAccountInput.trim(),
+        ledger_index: "validated",
+      }
+
+      this.websocket.next(gateway_balances_request);
     }
   }
 
@@ -141,6 +174,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
   }
 
   checkChanges() {
+    this.problemsAndTransactions = [];
     this.validAddress = this.xrplAccountInput && this.xrplAccountInput.trim().length > 0 && this.isValidXRPAddress(this.xrplAccountInput.trim());
 
     if(this.validAddress)
@@ -162,9 +196,6 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
 
   clearInputs() {
     this.xrplAccountInput = null;
-    this.isGateWayRole = this.validAddress = false;
-  }
-
-  solveProblem(problem: NoRippleCheck) {
+    this.validAddress = false;
   }
 }
