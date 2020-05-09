@@ -37,6 +37,8 @@ export class XrplTransactionsComponent implements OnInit {
 
   loadingData:boolean = false;
 
+  dismissInfo:boolean = false;
+
   constructor(
     private matDialog: MatDialog,
     private route: ActivatedRoute,
@@ -55,8 +57,10 @@ export class XrplTransactionsComponent implements OnInit {
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
     }
 
-    this.xrplAccount="rnK4ybo1Gu4gcNpvnWy74Y16kpwhYepsMr";
-    this.isTestMode = true;
+    this.dismissInfo = this.localStorage && this.localStorage.get("dismissInfo");
+
+    //this.xrplAccount="raPHuN1xhgm48B7WGNNFWMXZTqJAHLiV8t";
+    //this.isTestMode = true;
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
     await this.loadAccountData(false);
@@ -291,7 +295,13 @@ export class XrplTransactionsComponent implements OnInit {
       let balance:number = Number(this.xrplAccount_Info.Balance);
       balance = balance - (20*1000000); //deduct acc reserve
       balance = balance - (this.xrplAccount_Info.OwnerCount * 5 * 1000000); //deduct owner count
-      return balance/1000000;
+      balance = balance/1000000;
+
+      if(balance >= 0.000001)
+        return balance;
+      else
+        return 0;
+        
     } else {
       return 0;
     }
@@ -305,4 +315,8 @@ export class XrplTransactionsComponent implements OnInit {
     this.emitAccountObjectsChanged();
   }
 
+  gotIt() {
+    this.dismissInfo = true;
+    this.localStorage.set("dismissInfo", true);
+  }
 }

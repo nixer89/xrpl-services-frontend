@@ -98,7 +98,10 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
             //check sequence number
             this.preconditionsFullFilled = (this.originalAccountInfo.Sequence+256) < message.result.ledger_index;
 
+            console.log("sequence check: " + this.preconditionsFullFilled)
+
             if(accountObjects.length > 1000) {
+              console.log("too many objects");
               this.preconditionsFullFilled = false;
             } else if(message.result.account_objects.marker) {
               websocket.next({
@@ -113,25 +116,26 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
               let filteredObject:any[] = accountObjects.filter(object => object.LedgerEntryType === "Escrow" || object.LedgerEntryType === "PayChannel" || object.LedgerEntryType === "RippleState" || object.LedgerEntryType === "Check")
 
               if(filteredObject && filteredObject.length > 1) {
+                console.log("forbidden object detected");
                 // we have one of the "forbidden" objects still attached to our account. Preconditions are not met.
                 this.preconditionsFullFilled = false;
               } else {
                 this.preconditionsFullFilled = true;
               }
 
-              this.preconditionsFullFilled = false;
+              this.loadingPreconditions = false;
               websocket.unsubscribe();
               websocket.complete();
               websocket = null;  
-            }           
+            }
+          } else {
+            websocket.unsubscribe();
+            websocket.complete();
+            websocket = null; 
           }
-
-          websocket.unsubscribe();
-          websocket.complete();
-          websocket = null; 
         } else {
-          this.destinationAccountExists = false;
-          this.loadingDestinationAccount = false;
+          this.preconditionsFullFilled = false;
+          this.loadingPreconditions = false;
           websocket.unsubscribe();
           websocket.complete();
           websocket = null;
@@ -197,7 +201,8 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
     let payload:any = {
       txjson: {
         TransactionType: "AccountDelete",
-        Fee: "5000000"
+        Fee: "5000000",
+        Flags: 2147483648
       }
     }
 

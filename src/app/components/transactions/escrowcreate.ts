@@ -269,7 +269,13 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       balance = balance - (20*1000000); //deduct acc reserve
       balance = balance - (this.originalAccountInfo.OwnerCount * 5 * 1000000); //deduct owner count
       balance = balance - 5 * 1000000; //deduct account reserve for escrow
-      return balance/1000000;
+      balance = balance/1000000;
+
+      if(balance >= 0.000001)
+        return balance
+      else
+        return 0;
+      
     } else {
       return 0;
     }
