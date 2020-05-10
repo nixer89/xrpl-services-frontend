@@ -17,34 +17,37 @@
     </mat-panel-description>
   </mat-expansion-panel-header>
 
-  <a href="https://xrpl.org/accountdelete.html" target="_blank" rel="noreferrer">Account Delete Documentation</a><br/>
-  <div *ngIf="loadingPreconditions" fxLayout="row" fxLayoutGap="0.3em">
-    <label>Checking if your logged in account can be deleted... </label>
-    <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
-  </div>
-  <div *ngIf="!loadingPreconditions && !preconditionsFullFilled" fxLayout="column" fxLayoutGap="0.3em">
-    <label class="warning">Your account does not meet the Account Delete requirements! </label>
-    <label>You can view the AccountDelete requirements <a href="https://xrpl.org/accounts.html#deletion-of-accounts" target="_blank">here.</a></label>
-  </div>
-  <form *ngIf="!loadingPreconditions && preconditionsFullFilled" fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
-    <mat-form-field>
-      <input #inpdestinationaccount matInput name="destinationaccount" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address where remaining XRP should be sent to" [(ngModel)]="destinationAccountInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
-      <mat-hint *ngIf="destinationAccountInput && !validDestinationAddress">Not a valid XRPL address</mat-hint>
-      <mat-hint *ngIf="originalAccountInfo && destinationAccountInput == originalAccountInfo.Account">You cannot set the Destination address to the logged in address.</mat-hint>
-      <mat-hint *ngIf="destinationAccountInput && validDestinationAddress && !destinationAccountExists && !loadingDestinationAccount">This account does not exist on the XRP Ledger {{isTestMode? 'TEST' : 'LIVE'}} net.</mat-hint>
-    </mat-form-field>
-    <div *ngIf="loadingDestinationAccount" fxLayout="row" fxLayoutGap="0.3em">
-      <label>Loading destination account...</label>
+  <div fxLayout="column" fxLayoutGap="0.3em">
+    <a href="https://xrpl.org/accountdelete.html" target="_blank" rel="noreferrer">Account Delete Documentation</a>
+    <label>An AccountDelete transaction deletes an account and any objects it owns in the XRP Ledger, if possible, sending the account's remaining XRP to a specified destination account.</label>
+    <div *ngIf="loadingPreconditions" fxLayout="row" fxLayoutGap="0.3em">
+      <label>Checking if your logged in account can be deleted... </label>
       <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
     </div>
-    <mat-form-field>
-      <input #inpdestinationtag matInput name="destinationtag" ngStyle.xs="font-size: 0.8em;" placeholder="Destination Tag for the XRPL address (optional)" [(ngModel)]="destinationTagInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
-      <mat-hint *ngIf="destinationTagInput && !validTag">Not a valid Destination Tag. Only whole numbers between 0 and 4294967295 allowed!</mat-hint>
-    </mat-form-field>
-  </form>
-  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
-    <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validDestinationAddress || loadingDestinationAccount || !destinationAccountExists || (destinationTagInput && !validTag) || (originalAccountInfo && (destinationTagInput && destinationTagInput.trim() === originalAccountInfo.Account))">
-      Send Account Delete to Xumm
-    </button>
+    <div *ngIf="!loadingPreconditions && !preconditionsFullFilled" fxLayout="column" fxLayoutGap="0.3em">
+      <label class="warning" style="white-space: pre-wrap;">{{this.errorMsg}}</label>
+      <label>You can view the AccountDelete requirements <a href="https://xrpl.org/accounts.html#deletion-of-accounts" target="_blank">here.</a></label>
+    </div>
+    <form *ngIf="!loadingPreconditions && preconditionsFullFilled" fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
+      <mat-form-field>
+        <input #inpdestinationaccount matInput name="destinationaccount" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address where remaining XRP should be sent to" [(ngModel)]="destinationAccountInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
+        <mat-hint *ngIf="destinationAccountInput && !validDestinationAddress">Not a valid XRPL address</mat-hint>
+        <mat-hint *ngIf="originalAccountInfo && destinationAccountInput == originalAccountInfo.Account">You cannot set the Destination address to the logged in address.</mat-hint>
+        <mat-hint *ngIf="destinationAccountInput && validDestinationAddress && !destinationAccountExists && !loadingDestinationAccount">This account does not exist on the XRP Ledger {{isTestMode? 'TEST' : 'LIVE'}} net.</mat-hint>
+      </mat-form-field>
+      <div *ngIf="loadingDestinationAccount" fxLayout="row" fxLayoutGap="0.3em">
+        <label>Loading destination account...</label>
+        <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+      </div>
+      <mat-form-field>
+        <input #inpdestinationtag matInput name="destinationtag" ngStyle.xs="font-size: 0.8em;" placeholder="Destination Tag for the XRPL address (optional)" [(ngModel)]="destinationTagInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
+        <mat-hint *ngIf="destinationTagInput && !validTag">Not a valid Destination Tag. Only whole numbers between 0 and 4294967295 allowed!</mat-hint>
+      </mat-form-field>
+    </form>
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
+      <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validDestinationAddress || loadingDestinationAccount || !destinationAccountExists || (destinationTagInput && !validTag) || (originalAccountInfo && (destinationTagInput && destinationTagInput.trim() === originalAccountInfo.Account))">
+        Send Account Delete to Xumm
+      </button>
+    </div>
   </div>
 </mat-expansion-panel>

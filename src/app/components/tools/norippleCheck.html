@@ -1,7 +1,7 @@
 <mat-expansion-panel>
   <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
-      <span> <mat-icon style="transform: scale(0.9);">swap_horiz</mat-icon> </span>
+      <span> <mat-icon style="transform: scale(0.9);">playlist_add_check</mat-icon> </span>
       <span class="loading" style="margin-left: 0.5em;"> Check Trust Lines Settings </span>
     </mat-panel-title>
     <mat-panel-description>
@@ -13,23 +13,26 @@
       <label class="loading">Check Trust Lines</label>
     </mat-panel-title>
     <mat-panel-description>
-      Check DefaultRipple field and NoRipple Flag
+      Checks DefaultRipple and NoRipple Flag
     </mat-panel-description>
   </mat-expansion-panel-header>
 
   <div fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.xs="0.3em">
-    <a href="https://xrpl.org/noripple_check.html" target="_blank" rel="noreferrer">noripple_check Documentation</a><br/>
+    <a href="https://xrpl.org/noripple_check.html" target="_blank" rel="noreferrer">no-ripple check Documentation</a><br/>
+    <label>It is very important that you know if you issued some IOU with your account or not. Depending on that, different checks are made.</label>
+    <label>We are trying to detect if you have issued an IOU or not. If the detection does not reflect your account status, please do not proceed with fixing the problems!</label>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
         <input #inpxrplaccount matInput name="xrplaccount" matInput placeholder="XRPL address you want to run the check for" [(ngModel)]="xrplAccountInput" (ngModelChange)="checkChanges()">
         <mat-hint *ngIf="xrplAccountInput && !validAddress">Not a valid XRPL address</mat-hint>
       </mat-form-field>
     </form>
-    <label class="warning" *ngIf="validAddress && !loadingProblems && isGateway">We have detected that your account does issue some IOU. If this is NOT correct, please DO NOT PROCEED!</label>
-    <label class="warning" *ngIf="validAddress && !loadingProblems && !isGateway">We have detected that your account does NOT issue any IOU. If this is NOT correct, please DO NOT PROCEED!</label>
+    <label class="warning" *ngIf="validAddress && !loadingProblems && accountNotFound">This account does not exist on the XRP Ledger {{isTestMode ? 'TEST' : 'LIVE'}} network.</label>
+    <label class="warning" *ngIf="validAddress && !loadingProblems && !accountNotFound && isGateway">We have detected that your account does issue some IOU. If this is NOT correct, please DO NOT PROCEED!</label>
+    <label class="warning" *ngIf="validAddress && !loadingProblems && !accountNotFound && !isGateway">We have detected that your account does NOT issue any IOU. If this is NOT correct, please DO NOT PROCEED!</label>
   </div>
 
-  <mat-card *ngIf="validAddress" fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.xs="0.3em" style="margin-top: 1em;">
+  <mat-card *ngIf="validAddress && !accountNotFound" fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.xs="0.3em" style="margin-top: 1em;">
     <div *ngIf="loadingProblems" fxLayout="row" fxLayoutAlign="start center">
       <label>Checking your Account and Trust Line settings...&nbsp;</label>
       <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>

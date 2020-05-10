@@ -7,7 +7,7 @@ import { Subject } from 'rxjs'
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
-import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged, AccountObjectsChanged } from '../utils/types';
+import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged } from '../utils/types';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
@@ -53,7 +53,7 @@ export class Tools implements OnInit {
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
     }
 
-    //this.xrplAccount="rnK4ybo1Gu4gcNpvnWy74Y16kpwhYepsMr";
+    //this.xrplAccount="r3K1TgPvTPkWZR2Lhawpvv9YR7yYuqSXBp";
     //this.isTestMode = true;
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";

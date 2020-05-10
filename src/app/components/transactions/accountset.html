@@ -16,58 +16,62 @@
       Change settings.
     </mat-panel-description>
   </mat-expansion-panel-header>
-  <a href="https://xrpl.org/accountset.html" target="_blank" rel="noreferrer">AccountSet Documentation</a>
-  <form fxLayout="column" fxLayoutGap="0.5em" style="padding-bottom: 1em;padding-top: 1em;">
-    <mat-form-field>
-      <input #inpdomain matInput type="url" name="domain" matInput placeholder="Domain" [(ngModel)]="domainInput" (ngModelChange)="checkChanges()">
-      <mat-hint *ngIf="domainChangeDetected && !validDomain">Not a valid domain</mat-hint>
-    </mat-form-field>
-    <mat-form-field>
-      <input #inpemail matInput type="email" name="email" matInput placeholder="Email (cannot be displayed, only changed)" [(ngModel)]="emailInput" (ngModelChange)="checkChanges()">
-      <mat-hint *ngIf="emailChangeDetected && !validEmail">Not a valid email</mat-hint>
-    </mat-form-field>
-    <div *ngIf="originalAccountInfo && originalAccountInfo.EmailHash && originalAccountInfo.urlgravatar" fxLayout="column">
-      <label >Your current <a href="https://en.gravatar.com/support/what-is-gravatar/" target="_blank" rel="noreferrer">Gravatar</a> URL: </label>
-      <a fxShow fxHide.xs href="{{originalAccountInfo.urlgravatar}}.replace('http','https')" target="_blank" rel="noreferrer">
-        {{originalAccountInfo.urlgravatar}}
-      </a>
-      <a fxShow.xs fxHide href="{{originalAccountInfo.urlgravatar}}.replace('http','https')" target="_blank" rel="noreferrer">
-        Gravatar Link
-      </a>
+
+  <div fxLayout="column" fxLayoutGap="0.3em">
+    <a href="https://xrpl.org/accountset.html" target="_blank" rel="noreferrer">AccountSet Documentation</a>
+    <label>An AccountSet transaction modifies the properties of an account in the XRP Ledger.</label>
+    <form fxLayout="column" fxLayoutGap="0.5em" style="padding-bottom: 1em;padding-top: 1em;">
+      <mat-form-field>
+        <input #inpdomain matInput type="url" name="domain" matInput placeholder="Domain" [(ngModel)]="domainInput" (ngModelChange)="checkChanges()">
+        <mat-hint *ngIf="domainChangeDetected && !validDomain">Not a valid domain</mat-hint>
+      </mat-form-field>
+      <mat-form-field>
+        <input #inpemail matInput type="email" name="email" matInput placeholder="Email (cannot be displayed, only changed)" [(ngModel)]="emailInput" (ngModelChange)="checkChanges()">
+        <mat-hint *ngIf="emailChangeDetected && !validEmail">Not a valid email</mat-hint>
+      </mat-form-field>
+      <div *ngIf="originalAccountInfo && originalAccountInfo.EmailHash && originalAccountInfo.urlgravatar" fxLayout="column">
+        <label >Your current <a href="https://en.gravatar.com/support/what-is-gravatar/" target="_blank" rel="noreferrer">Gravatar</a> URL: </label>
+        <a fxShow fxHide.xs href="{{originalAccountInfo.urlgravatar}}.replace('http','https')" target="_blank" rel="noreferrer">
+          {{originalAccountInfo.urlgravatar}}
+        </a>
+        <a fxShow.xs fxHide href="{{originalAccountInfo.urlgravatar}}.replace('http','https')" target="_blank" rel="noreferrer">
+          Gravatar Link
+        </a>
+      </div>
+      <mat-card fxLayout="column">
+        <h3><b>Account Flags:</b></h3>
+        <div fxLayout="column">
+          <mat-checkbox name="requireDestTag" style="padding-top: 1em;" [(ngModel)]="requireDestTagInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || defaultRippleChangeDetected">Require Destination Tag</mat-checkbox>
+          <mat-hint *ngIf="disableMasterKeyChangeDetected || defaultRippleChangeDetected" style="color: grey !important">You can change only one Account Flag at a time.</mat-hint>
+          <mat-hint *ngIf="!disableMasterKeyChangeDetected && !defaultRippleChangeDetected && requireDestTagChangeDetected && requireDestTagInput">Attention! Transactions without <b>Destination Tag</b> will be rejected!</mat-hint>
+          <mat-hint *ngIf="!(requireDestTagChangeDetected && disableMasterKeyChangeDetected) && !(requireDestTagChangeDetected && defaultRippleChangeDetected) && requireDestTagChangeDetected && !requireDestTagInput">Attention! Users will be able to send transactions without <b>Destination Tag</b>!</mat-hint>
+        </div>
+        <div fxLayout="column">
+          <mat-checkbox name="disableMasterkey" style="padding-top: 1em;" [(ngModel)]="disableMasterKeyInput" (change)="checkChanges()" [disabled]="originalAccountInfo && !hasAlternativeSigningMethod() || requireDestTagChangeDetected || defaultRippleChangeDetected">Disable Master Key</mat-checkbox>
+          <mat-hint *ngIf="(requireDestTagChangeDetected || defaultRippleChangeDetected) && (!originalAccountInfo || hasAlternativeSigningMethod())" style="color: grey !important">You can change only one Account Flag at a time.</mat-hint>
+          <mat-hint *ngIf="originalAccountInfo && !originalAccountInfo.error && !hasAlternativeSigningMethod() && !disableMasterKeyInput && !disableMasterKeyChangeDetected">Before you can disable your <b>Master Key</b> you have to set an alternative signing method. (Regular Key or SignerList)</mat-hint>
+          <mat-hint *ngIf="!requireDestTagChangeDetected && !defaultRippleChangeDetected && disableMasterKeyChangeDetected && disableMasterKeyInput">Attention! You are going to disable the <b>Master Key</b> of your account. You could loose access to your account. Make sure you know what you are doing!</mat-hint>
+          <mat-hint *ngIf="!requireDestTagChangeDetected && !defaultRippleChangeDetected && disableMasterKeyChangeDetected && !disableMasterKeyInput">Attention! You are going to reactivate your <b>Master Key</b>! If it was compromised, attackers have the possibility to steal your funds!</mat-hint>
+        </div>
+        <div fxLayout="column">
+          <mat-checkbox name="defaultRipple" style="padding-top: 1em;" [(ngModel)]="defaultRippleInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || requireDestTagChangeDetected">Default Ripple</mat-checkbox>
+          <mat-hint *ngIf="requireDestTagChangeDetected || disableMasterKeyChangeDetected" style="color: grey !important">You can change only one Account Flag at a time.</mat-hint>
+          <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && defaultRippleChangeDetected && defaultRippleInput">Careful! You are going to set the <b>Default Ripple</b> flag to your account. This enables <a href="https://xrpl.org/rippling.html" target="_blank">rippling</a> on new Trust Lines by default!</mat-hint>
+          <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && defaultRippleChangeDetected && !defaultRippleInput">You are going to disable the <b>Default Ripple</b> flag of your account. New Trust Lines won't allow <a href="https://xrpl.org/rippling.html" target="_blank">rippling</a> by default anymore!</mat-hint>
+        </div>
+    </mat-card>
+    <mat-hint *ngIf="requireDestTagChangeDetected && disableMasterKeyChangeDetected" style="color: orangered">You can change only one Account Flag at a time. To change two account flags, you have to execute two transactions.</mat-hint>
+    </form>
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
+      <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!isValidAccountSet">
+        Send Account Settings to Xumm
+      </button>
+      <button mat-raised-button color="warn" (click)="deleteDomain()" matTooltip="{{originalAccountInfo && originalAccountInfo.Domain ? 'Delete Domain: ' : 'Delete Domain'}}{{hexToString(originalAccountInfo && originalAccountInfo.Domain)}}" [disabled]="originalAccountInfo && !originalAccountInfo.Domain">
+        Delete Domain
+      </button>
+      <button mat-raised-button color="warn" (click)="deleteEmailHash()" matTooltip="Delete Email Hash" [disabled]="originalAccountInfo && !originalAccountInfo.EmailHash">
+        Delete EmailHash
+      </button>
     </div>
-    <mat-card fxLayout="column">
-      <h3><b>Account Flags:</b></h3>
-      <div fxLayout="column">
-        <mat-checkbox name="requireDestTag" style="padding-top: 1em;" [(ngModel)]="requireDestTagInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || defaultRippleChangeDetected">Require Destination Tag</mat-checkbox>
-        <mat-hint *ngIf="disableMasterKeyChangeDetected || defaultRippleChangeDetected" style="color: grey !important">You can change only one Account Flag at a time.</mat-hint>
-        <mat-hint *ngIf="!disableMasterKeyChangeDetected && !defaultRippleChangeDetected && requireDestTagChangeDetected && requireDestTagInput">Attention! Transactions without <b>Destination Tag</b> will be rejected!</mat-hint>
-        <mat-hint *ngIf="!(requireDestTagChangeDetected && disableMasterKeyChangeDetected) && !(requireDestTagChangeDetected && defaultRippleChangeDetected) && requireDestTagChangeDetected && !requireDestTagInput">Attention! Users will be able to send transactions without <b>Destination Tag</b>!</mat-hint>
-      </div>
-      <div fxLayout="column">
-        <mat-checkbox name="disableMasterkey" style="padding-top: 1em;" [(ngModel)]="disableMasterKeyInput" (change)="checkChanges()" [disabled]="originalAccountInfo && !hasAlternativeSigningMethod() || requireDestTagChangeDetected || defaultRippleChangeDetected">Disable Master Key</mat-checkbox>
-        <mat-hint *ngIf="(requireDestTagChangeDetected || defaultRippleChangeDetected) && (!originalAccountInfo || hasAlternativeSigningMethod())" style="color: grey !important">You can change only one Account Flag at a time.</mat-hint>
-        <mat-hint *ngIf="originalAccountInfo && !originalAccountInfo.error && !hasAlternativeSigningMethod() && !disableMasterKeyInput && !disableMasterKeyChangeDetected">Before you can disable your <b>Master Key</b> you have to set an alternative signing method. (Regular Key or SignerList)</mat-hint>
-        <mat-hint *ngIf="!requireDestTagChangeDetected && !defaultRippleChangeDetected && disableMasterKeyChangeDetected && disableMasterKeyInput">Attention! You are going to disable the <b>Master Key</b> of your account. You could loose access to your account. Make sure you know what you are doing!</mat-hint>
-        <mat-hint *ngIf="!requireDestTagChangeDetected && !defaultRippleChangeDetected && disableMasterKeyChangeDetected && !disableMasterKeyInput">Attention! You are going to reactivate your <b>Master Key</b>! If it was compromised, attackers have the possibility to steal your funds!</mat-hint>
-      </div>
-      <div fxLayout="column">
-        <mat-checkbox name="defaultRipple" style="padding-top: 1em;" [(ngModel)]="defaultRippleInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || requireDestTagChangeDetected">Default Ripple</mat-checkbox>
-        <mat-hint *ngIf="requireDestTagChangeDetected || disableMasterKeyChangeDetected" style="color: grey !important">You can change only one Account Flag at a time.</mat-hint>
-        <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && defaultRippleChangeDetected && defaultRippleInput">You are going to set the <b>Default Ripple</b> flag to your account. This enables <a href="https://xrpl.org/rippling.html" target="_blank">rippling</a> on new TrustLines by default!</mat-hint>
-        <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && defaultRippleChangeDetected && !defaultRippleInput">You are going to disable the <b>Default Ripple</b> flag of your account. New TrustLines won't allow <a href="https://xrpl.org/rippling.html" target="_blank">rippling</a> by default anymore!</mat-hint>
-      </div>
-  </mat-card>
-  <mat-hint *ngIf="requireDestTagChangeDetected && disableMasterKeyChangeDetected" style="color: orangered">You can change only one Account Flag at a time. To change two account flags, you have to execute two transactions.</mat-hint>
-  </form>
-  <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
-    <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!isValidAccountSet">
-      Send Account Settings to Xumm
-    </button>
-    <button mat-raised-button color="warn" (click)="deleteDomain()" matTooltip="{{originalAccountInfo && originalAccountInfo.Domain ? 'Delete Domain: ' : 'Delete Domain'}}{{hexToString(originalAccountInfo && originalAccountInfo.Domain)}}" [disabled]="originalAccountInfo && !originalAccountInfo.Domain">
-      Delete Domain
-    </button>
-    <button mat-raised-button color="warn" (click)="deleteEmailHash()" matTooltip="Delete Email Hash" [disabled]="originalAccountInfo && !originalAccountInfo.EmailHash">
-      Delete EmailHash
-    </button>
   </div>
 </mat-expansion-panel>

@@ -87,6 +87,11 @@ export class GenericPayloadQRDialog implements OnInit {
             this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xumm.community]Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(this.memoInput.trim(), 'utf8').toString('hex').toUpperCase()}}];
         }
 
+        //set account and force it
+        if(this.genericPayload.options.xrplAccount) {
+            this.genericPayload.payload.txjson.Account = this.genericPayload.options.xrplAccount;
+        }
+
         this.googleAnalytics.analyticsEventEmitter(this.genericPayload.payload.txjson.TransactionType.toLowerCase()+'_transaction', 'sendToXummGeneric', 'generic_payload_dialog_component');
 
         let xummResponse:XummPostPayloadResponse;

@@ -59,11 +59,11 @@ export class XrplTransactionsComponent implements OnInit {
 
     this.dismissInfo = this.localStorage && this.localStorage.get("dismissInfo");
 
-    //this.xrplAccount="raPHuN1xhgm48B7WGNNFWMXZTqJAHLiV8t";
+    //this.xrplAccount="rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF";
     //this.isTestMode = true;
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
-    await this.loadAccountData(false);
+    //await this.loadAccountData(false);
 
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;

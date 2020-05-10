@@ -57,6 +57,10 @@ a.footerlink {
     align-items: center;
 }
 
+.mat-expansion-panel-body {
+    padding-top: 6px !important;
+}
+
 body .snackbar-success {
     color: green !important;
     display: flex;
@@ -122,6 +126,7 @@ body .snackbar-failed {
     .mat-expansion-panel-body {
         padding-right: 12px !important;
         padding-left: 12px !important;
+        padding-top: 6px !important;
     }
 
     .mat-card {

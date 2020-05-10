@@ -70,6 +70,11 @@ export class XummSignDialogComponent implements OnInit{
             }
         }
 
+        //set account and force it
+        if(backendPayload.options.xrplAccount) {
+            backendPayload.payload.txjson.Account = backendPayload.options.xrplAccount;
+        }
+
         this.googleAnalytics.analyticsEventEmitter(backendPayload.payload.txjson.TransactionType.toLowerCase(), 'sendToXummSignIn', 'signin_dialog_component');
 
         let xummResponse:XummPostPayloadResponse;

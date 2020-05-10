@@ -18,6 +18,7 @@
   </mat-expansion-panel-header>
 
   <a href="https://xrpl.org/escrowfinish.html" target="_blank" rel="noreferrer">Escrow Finish Documentation</a><br/>
+  <label>Deliver XRP from a held payment to the recipient.</label>
   <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
     <mat-form-field>
       <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="xrplAccountChanged()">

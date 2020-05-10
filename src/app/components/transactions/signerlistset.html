@@ -19,6 +19,7 @@
 
   <div fxFlex fxLayout="column" fxLayoutGap="0.8em">
     <a href="https://xrpl.org/signerlistset.html" target="_blank" rel="noreferrer">Signer List Set Documentation</a>
+    <label>The SignerListSet transaction creates, replaces, or removes a list of signers that can be used to multi-sign a transaction.</label>
     <form fxLayout="column" fxLayoutGap="0.5em">
       <mat-form-field style="margin-bottom: 15px;" ngStyle.xs="margin-bottom: 25px;">
         <input #inpsignerquorum matInput name="signerquorum" matInput placeholder="Signer Quorum. A target number for the signer weights" [(ngModel)]="signerQuorumInput" (ngModelChange)="checkChanges()">

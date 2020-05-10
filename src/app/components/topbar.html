@@ -48,18 +48,22 @@
       <button mat-icon-button [matMenuTriggerFor]="appMenu">
         <i class="material-icons topbar-menu-icon">menu</i>
       </button>
-      <mat-menu #appMenu="matMenu" yPosition="below" xPosition="after">
-        <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['']" matTooltip="XRPL Transactions">
-          <i class="material-icons">mobile_friendly</i> XRPL Transactions
+      <mat-menu #appMenu="matMenu" yPosition="below" xPosition="after" fxLayout="column">
+        <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['']" matTooltip="XRPL Transactions">
+          <mat-icon class="material-icons">mobile_friendly</mat-icon>
+          <span>XRPL Transactions</span>
         </button>
-        <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/easy-iou']" matTooltip="Issue your own IOU!">
-          <i class="material-icons">attach_money</i> Easy IOUs!
+        <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/easy-iou']" matTooltip="Issue your own IOU!">
+          <mat-icon class="material-icons">attach_money</mat-icon>
+          <span>Easy IOUs!</span>
         </button>
-        <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tools']" matTooltip="Tools">
-          <i class="material-icons">build</i> Tools
+        <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tools']" matTooltip="Tools">
+          <mat-icon class="material-icons">build</mat-icon>
+          <span>Tools</span>
         </button>
-        <button mat-button [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/generic-backend']" matTooltip="Xumm Community Generic Backend">
-          <i class="material-icons">device_hub</i> Generic Backend
+        <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/generic-backend']" matTooltip="Xumm Community Generic Backend">
+          <mat-icon class="material-icons">device_hub</mat-icon>
+          <span>Generic Backend</span>
         </button>
       </mat-menu>
     </div>

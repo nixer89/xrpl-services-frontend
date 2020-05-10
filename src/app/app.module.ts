@@ -36,6 +36,7 @@ import { AccountDeleteComponent } from './components/transactions/accountdelete'
 
 //Tools
 import { NoRippleCheckComponent } from './components/tools/norippleCheck';
+import { TransactionSchedulerComponent } from './components/tools/transactionScheduler';
 
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -95,6 +96,7 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     SignerListSetComponent,
     TrustSetComponent,
     NoRippleCheckComponent,
+    TransactionSchedulerComponent,
     AccountDeleteComponent
   ],
   imports: [

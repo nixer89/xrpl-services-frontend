@@ -47,6 +47,8 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   loadingPreconditions:boolean = false;
   preconditionsFullFilled:boolean = true;
 
+  errorMsg:string = null;
+
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
@@ -97,8 +99,10 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
 
             //check sequence number
             this.preconditionsFullFilled = (this.originalAccountInfo.Sequence+256) < message.result.ledger_index;
-
             console.log("sequence check: " + this.preconditionsFullFilled)
+
+            if(!this.preconditionsFullFilled)
+              this.errorMsg = "Your account cannot be deleted. You need to wait " + (this.originalAccountInfo.Sequence+256-message.result.ledger_index) + " more validated ledgers to delete your account."
 
             if(accountObjects.length > 1000) {
               console.log("too many objects");
@@ -119,6 +123,31 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
                 console.log("forbidden object detected");
                 // we have one of the "forbidden" objects still attached to our account. Preconditions are not met.
                 this.preconditionsFullFilled = false;
+
+                let escrows:number = accountObjects.filter(object => object.LedgerEntryType === "Escrow").length;
+                let paychans:number = accountObjects.filter(object => object.LedgerEntryType === "PayChannel").length;
+                let trustLines:number = accountObjects.filter(object => object.LedgerEntryType === "RippleState").length;
+                let checks:number = accountObjects.filter(object => object.LedgerEntryType === "Check").length;
+
+                if(this.errorMsg)
+                  this.errorMsg += "\n\n"
+                else
+                  this.errorMsg = ""
+
+                this.errorMsg += "Your account still has:"
+                if(escrows > 0)
+                  this.errorMsg += "\n- Escrows: " + escrows;
+
+                if(paychans > 0)
+                  this.errorMsg += "\n- Payment Channels: " + paychans;
+
+                if(trustLines > 0)
+                  this.errorMsg += "\n- Trust Lines: " + trustLines;
+
+                if(checks > 0)
+                  this.errorMsg += "\n- Checks: " + checks;
+
+                this.errorMsg+= "\n\nYou can delete your account only if you have non of the above objects linked to your account."
               } else {
                 this.preconditionsFullFilled = true;
               }

@@ -18,6 +18,7 @@
   </mat-expansion-panel-header>
 
   <a href="https://xrpl.org/setregularkey.html" target="_blank" rel="noreferrer">Set Regular Key Documentation</a><br/>
+  <label>A SetRegularKey transaction assigns, changes, or removes the regular key pair associated with an account.</label>
   <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
     <mat-form-field>
       <input #inpregularkey matInput name="regularkey" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address which will be able to sign transactions" [(ngModel)]="regularKeyInput" (ngModelChange)="checkChanges()">

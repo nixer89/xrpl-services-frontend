@@ -19,7 +19,7 @@ export class TopbarComponent implements OnInit {
 
   isDarkTheme: boolean;
 
-  title: string;
+  title: string = "Xumm Community";
   tw: TypeWriter
 
   constructor( private supportDialog: MatDialog, private snackBar: MatSnackBar, private localStorage: LocalStorageService, private overlayContainer: OverlayContainer) {
@@ -30,7 +30,7 @@ export class TopbarComponent implements OnInit {
     this.isDarkTheme = this.localStorage.get("darkMode");
     this.setOverlayClass();
 
-    this.tw = new TypeWriter(["created by nixerFFM", "Xumm Community"], t => {
+    this.tw = new TypeWriter(["Xumm Community", "created by nixerFFM", "Xumm Community"], t => {
       this.title = t;
     })
 
