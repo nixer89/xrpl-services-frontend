@@ -98,17 +98,12 @@ body .snackbar-failed {
     margin-top: 3px !important;
 }
 
-.title, .title-long {
+.title {
     font-weight: bold;
 }
 
 @media (max-width:599px) {
     
-    .title-long {
-        font-weight: bold;
-        font-size: .8em;
-    }
-
     .mat-expansion-panel-header {
         padding: 0 12px !important;
     }
