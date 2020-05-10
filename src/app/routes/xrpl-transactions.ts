@@ -27,6 +27,7 @@ export class XrplTransactionsComponent implements OnInit {
   lastTrxLinkXrplOrg:string;
   lastTrxLinkXrpScan:string;
   lastTrxLinkXrp1ntel:string;
+  lastTrxLinkXrplorer:string;
 
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
   accountObjectsChanged: Subject<AccountObjectsChanged> = new Subject<AccountObjectsChanged>();
@@ -243,6 +244,7 @@ export class XrplTransactionsComponent implements OnInit {
           this.lastTrxLinkXrplOrg = "https://livenet.xrpl.org/transactions/"+trxInfo.txid;
           this.lastTrxLinkXrpScan = "https://xrpscan.com/tx/"+trxInfo.txid;
           this.lastTrxLinkXrp1ntel = "https://xrp1ntel.com/tx/"+trxInfo.txid;
+          this.lastTrxLinkXrplorer = "https://xrplorer.com/transaction/"+trxInfo.txid;
         }
 
         this.transactionSuccessfull.next();
@@ -311,7 +313,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   logoutAccount() {
     this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'xrpl_transactions_component');
-    this.xrplAccount = this.xrplAccount_Info = this.xrplAccount_Objects = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = null;
+    this.xrplAccount = this.xrplAccount_Info = this.xrplAccount_Objects = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = this.lastTrxLinkXrplorer = null;
     this.localStorage.remove("xrplAccount");
     this.localStorage.remove("testMode");
     this.emitAccountInfoChanged();
