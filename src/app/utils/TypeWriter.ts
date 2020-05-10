@@ -22,7 +22,7 @@ export class TypeWriter {
             var doContinue = true;
             if (!_this.currentDir && _this.currentLength == _this.phrases[_this.currentIndex].length) {
                 _this.currentDir = true;
-                waitMs = 4000;
+                waitMs = 3000;
                 if (_this.currentIndex == _this.phrases.length-1)
                     doContinue = false;
             }
