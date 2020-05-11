@@ -2,9 +2,9 @@ import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } 
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
-import { XummPostPayloadBodyJson } from 'xumm-api';
+import { XummPostPayloadBodyJson, XummJsonTransaction } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { AccountInfoChanged } from 'src/app/utils/types';
+import { AccountInfoChanged, GenericBackendPostRequest } from 'src/app/utils/types';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { MatExpansionPanel } from '@angular/material';
 
@@ -225,13 +225,12 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
 
   sendPayloadToXumm() {
 
-    this.googleAnalytics.analyticsEventEmitter('set_regular_key', 'sendToXumm', 'set_regular_key_component');
+    this.googleAnalytics.analyticsEventEmitter('delete_account', 'sendToXumm', 'account_delete_component');
 
-    let payload:any = {
+    let payload:XummPostPayloadBodyJson = {
       txjson: {
         TransactionType: "AccountDelete",
-        Fee: "5000000",
-        Flags: 2147483648
+        Fee: "5000000"
       }
     }
 
@@ -243,7 +242,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
       }
 
       payload.custom_meta = {}
-      payload.custom_meta.instruction = "Delete Account: ";
+      payload.custom_meta.instruction = "Delete your XRPL Account";
     }
 
     this.onPayload.emit(payload);

@@ -150,12 +150,12 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
     if(this.domainInput && this.validDomain && (!this.originalAccountInfo || this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain)) {
       this.payload.txjson.Domain = this.stringToHex(this.domainInput.trim());
-      this.payload.custom_meta.instruction += "- Set Domain to '"+this.domainInput.trim()+'\n'
+      this.payload.custom_meta.instruction += "- Set Domain to '"+this.domainInput.trim()+"'\n"
     }
 
     if(this.emailInput && this.validEmail && (!this.originalAccountInfo || md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash)) {
       this.payload.txjson.EmailHash = md5(this.emailInput.trim()).toUpperCase();
-      this.payload.custom_meta.instruction += "- Set Email to '"+this.emailInput.trim()+'\n'
+      this.payload.custom_meta.instruction += "- Set Email to '"+this.emailInput.trim()+"'\n"
     }
 
     if(this.requireDestTagChangeDetected) {

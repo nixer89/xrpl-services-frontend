@@ -52,9 +52,10 @@
           <ng-container matColumnDef="fix">
               <mat-header-cell *matHeaderCellDef > Fix Problem </mat-header-cell>
               <mat-cell *matCellDef="let problem">
-                <button mat-raised-button color="primary" aria-label="Edit" matTooltip="Fix Problem" matTooltipPosition="above" (click)="sendPayloadToXumm(problem.txJson)">
+                <button *ngIf="problem.txJson" mat-raised-button color="primary" aria-label="Edit" matTooltip="Fix Problem" matTooltipPosition="above" (click)="sendPayloadToXumm(problem.txJson)">
                   Fix problem
-              </button>
+                </button>
+                <label *ngIf="!problem.txJson">Needs manual fix.</label>
               </mat-cell>
           </ng-container>
 

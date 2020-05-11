@@ -78,7 +78,7 @@ export class IouList implements OnInit, OnDestroy {
                         }
                     }
 
-                    this.iouList = this.iouList.sort((iouA, iouB) => iouA.currency.localeCompare(iouB.currency));
+                    this.iouList = this.iouList.sort((iouA, iouB) => this.getCurrencyCode(iouA.currency).localeCompare(this.getCurrencyCode(iouB.currency)));
                 }
             
                 //if data 0 (no available ious) -> show message "no ious available"
@@ -95,7 +95,7 @@ export class IouList implements OnInit, OnDestroy {
     }
 
     loadIOUList(xrplAccount: string) {
-        console.log("loading IOU list for: " + xrplAccount);
+        //console.log("loading IOU list for: " + xrplAccount);
         this.googleAnalytics.analyticsEventEmitter('load_iou_list', 'iou_list', 'iou_list_component');
 
         if(this.websocket && this.originalTestModeValue != this.testMode) {
@@ -128,5 +128,16 @@ export class IouList implements OnInit, OnDestroy {
 
     stringToFloat(number: string): number {
         return parseFloat(number);
+    }
+
+    getCurrencyCode(currency: string): string {
+        if(currency) {
+            if(currency.length == 40)
+                //hex to ascii
+                return Buffer.from(currency, 'hex').toString('ascii').trim();
+            else
+                return currency;
+        } else
+            return ""
     }
 }

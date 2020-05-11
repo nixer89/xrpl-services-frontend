@@ -26,6 +26,7 @@ export class Tools implements OnInit {
   lastTrxLinkXrplOrg:string;
   lastTrxLinkXrpScan:string;
   lastTrxLinkXrp1ntel:string;
+  lastTrxLinkXrplorer:string;
 
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
   transactionSuccessfull: Subject<any> = new Subject<any>();
@@ -45,6 +46,7 @@ export class Tools implements OnInit {
     private overlayContainer: OverlayContainer) { }
 
   async ngOnInit() {
+    console.log("on init");
     if(this.localStorage && !this.localStorage.get("darkMode")) {
       this.overlayContainer.getContainerElement().classList.remove('dark-theme');
       this.overlayContainer.getContainerElement().classList.add('light-theme');
@@ -60,6 +62,7 @@ export class Tools implements OnInit {
     //await this.loadAccountData(false);
 
     this.route.queryParams.subscribe(async params => {
+      console.log("subscribe");
       let payloadId = params.payloadId;
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
@@ -92,7 +95,10 @@ export class Tools implements OnInit {
         }
       }
 
-      
+      console.log("check logged in account tools");
+      console.log(this.localStorage.get("xrplAccount"));
+      console.log(this.localStorage.get("testMode"));
+
       if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
         this.xrplAccount = this.localStorage.get("xrplAccount");
         this.isTestMode = this.localStorage.get("testMode");
@@ -114,6 +120,9 @@ export class Tools implements OnInit {
         this.websocket.unsubscribe();
         this.websocket.complete();
       }
+
+      this.localStorage.set("xrplAccount", this.xrplAccount);
+      this.localStorage.set("testMode", this.isTestMode);
 
       //console.log("connecting websocket");
       this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
@@ -217,6 +226,7 @@ export class Tools implements OnInit {
           this.lastTrxLinkXrplOrg = "https://livenet.xrpl.org/transactions/"+trxInfo.txid;
           this.lastTrxLinkXrpScan = "https://xrpscan.com/tx/"+trxInfo.txid;
           this.lastTrxLinkXrp1ntel = "https://xrp1ntel.com/tx/"+trxInfo.txid;
+          this.lastTrxLinkXrplorer = "https://xrplorer.com/transaction/"+trxInfo.txid;
         }
 
         this.transactionSuccessfull.next();
@@ -226,10 +236,10 @@ export class Tools implements OnInit {
       this.lastTrxLinkBithomp = null;
       this.lastTrxLinkXrplOrg = null;
       this.lastTrxLinkXrpScan = null;
+      this.lastTrxLinkXrplorer = null;
     }
 
     if(this.xrplAccount) {
-      this.localStorage.set("xrplAccount", this.xrplAccount);
       await this.loadAccountData(false);
     }
   }
@@ -273,8 +283,9 @@ export class Tools implements OnInit {
 
   logoutAccount() {
     this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'tools_component');
-    this.xrplAccount = this.xrplAccount_Info = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = null;
+    this.xrplAccount = this.xrplAccount_Info = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = this.lastTrxLinkXrplorer = null;
     this.localStorage.remove("xrplAccount");
+    this.localStorage.remove("testMode");
     this.emitAccountInfoChanged();
   }
 

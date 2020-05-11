@@ -284,7 +284,7 @@ export class CreateIOU implements OnInit {
   setTrustline() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
-        xrplAccount: this.issuerAccount
+        xrplAccount: null
       },
       payload: {
         txjson: {
@@ -371,7 +371,7 @@ export class CreateIOU implements OnInit {
           RegularKey: "rrrrrrrrrrrrrrrrrrrrBZbvji"
         },
         custom_meta: {
-          instruction: "Set RegularKey to: rrrrrrrrrrrrrrrrrrrrBZbvji"
+          instruction: "Set RegularKey to: rrrrrrrrrrrrrrrrrrrrBZbvji\n\n- Please sign with the ISSUER account!"
         }
       }
     }
@@ -406,7 +406,7 @@ export class CreateIOU implements OnInit {
           SetFlag: this.ACCOUNT_FLAG_DISABLE_MASTER_KEY
         },
         custom_meta: {
-          instruction: "- Disable Master Key\n"
+          instruction: "- Disable Master Key\n\n- Please sign with the ISSUER account!"
         }
       }
     }
@@ -520,7 +520,5 @@ export class CreateIOU implements OnInit {
     this.checkBoxBlackhole1 = this.checkBoxBlackhole2 = this.checkBoxBlackhole3 = this.checkBoxBlackhole4 = false;
     this.blackholeMasterDisabled = this.blackholeRegularKeySet = false;
     this.stepper.reset();
-
   }
-
 }

@@ -16,8 +16,8 @@
             <ng-container matColumnDef="currency">
                 <mat-header-cell *matHeaderCellDef> IOU Currency Code </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
-                    <span fxShow fxHide.xs > {{trustline.currency}}</span>
-                    <span fxShow.xs fxHide ><b>IOU Currency Code:</b>&nbsp;{{trustline.currency}}</span>
+                    <span fxShow fxHide.xs > {{getCurrencyCode(trustline.currency)}}</span>
+                    <span fxShow.xs fxHide ><b>IOU Currency Code:</b>&nbsp;{{getCurrencyCode(trustline.currency)}}</span>
                 </mat-cell>
             </ng-container>
 

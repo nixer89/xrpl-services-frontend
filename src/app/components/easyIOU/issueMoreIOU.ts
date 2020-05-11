@@ -72,7 +72,7 @@ export class IssueMoreIOU implements OnInit {
       let payloadId = params.payloadId;
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
-        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'xrpl_transactions_component');
+        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'issue_more_iou_component');
         this.mep.expanded = true;
         //check if transaction was successfull and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});

@@ -63,6 +63,7 @@ export class XrplTransactionsComponent implements OnInit {
     //this.xrplAccount="rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF";
     //this.isTestMode = true;
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
+    
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
     //await this.loadAccountData(false);
 
@@ -99,7 +100,10 @@ export class XrplTransactionsComponent implements OnInit {
         }
       }
 
-      
+      console.log("check logged in account xrpl");
+      console.log(this.localStorage.get("xrplAccount"));
+      console.log(this.localStorage.get("testMode"));
+
       if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
         this.xrplAccount = this.localStorage.get("xrplAccount");
         this.isTestMode = this.localStorage.get("testMode");
@@ -122,11 +126,14 @@ export class XrplTransactionsComponent implements OnInit {
         this.websocket.complete();
       }
 
+      this.localStorage.set("xrplAccount", this.xrplAccount);
+      this.localStorage.set("testMode", this.isTestMode);
+
       //console.log("connecting websocket");
       this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
 
       this.websocket.asObservable().subscribe(async message => {
-        //console.log("websocket message: " + JSON.stringify(message));
+        console.log("websocket message: " + JSON.stringify(message));
         if(message.status && message.type && message.type === 'response') {
           if(message.status === 'success') {
             if(message.result && message.result.account_data) {
@@ -257,8 +264,6 @@ export class XrplTransactionsComponent implements OnInit {
     }
 
     if(this.xrplAccount) {
-      this.localStorage.set("xrplAccount", this.xrplAccount);
-      this.localStorage.set("testMode", this.isTestMode);
       await this.loadAccountData(false);
     }
   }

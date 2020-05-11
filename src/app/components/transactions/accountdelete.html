@@ -46,7 +46,7 @@
     </form>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validDestinationAddress || loadingDestinationAccount || !destinationAccountExists || (destinationTagInput && !validTag) || (originalAccountInfo && (destinationTagInput && destinationTagInput.trim() === originalAccountInfo.Account))">
-        Send Account Delete to Xumm
+        Send Account Delete to XUMM
       </button>
     </div>
   </div>

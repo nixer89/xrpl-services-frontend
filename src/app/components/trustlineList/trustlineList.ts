@@ -147,4 +147,15 @@ export class TrustLineList implements OnInit, OnDestroy {
     stringToFloat(number: string): number {
         return parseFloat(number);
     }
+
+    getCurrencyCode(currency: string): string {
+        if(currency) {
+            if(currency.length == 40)
+                //hex to ascii
+                return Buffer.from(currency, 'hex').toString('ascii').trim();
+            else
+                return currency;
+        } else
+            return ""
+    }
 }

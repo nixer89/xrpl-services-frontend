@@ -24,7 +24,7 @@
     <div *ngIf="!loading && !showError && waitingForPayment" fxLayout="column" fxLayoutGap="1.5em">
         <div *ngIf="qrLink" fxLayout="column" fxLayoutGap="0.5em" class="floatcenter">
             <span *ngIf="pushed">Push notification has been sent. If not received, scan QR code.</span>
-            <span *ngIf="!pushed">Scan QR code to show the Xumm Sign Request in your Xumm App:</span>
+            <span *ngIf="!pushed">Scan QR code to show the XUMM Sign Request in your XUMM App:</span>
             <mat-progress-spinner *ngIf="!showQR" color="primary" mode="indeterminate"></mat-progress-spinner>
             <img (load)="QRLoaded()" [src]="qrLink" width="150" height="150" style="vertical-align: middle;" alt="">
         </div>

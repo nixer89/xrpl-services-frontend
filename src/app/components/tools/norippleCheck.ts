@@ -69,7 +69,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
     });
 
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
-      this.clearInputs()
+      this.checkChanges();
     });
   }
 
@@ -104,13 +104,13 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
           let transactions:any[] = message.result.transactions;
 
           for(let i = 0; i < problems.length; i++) {
-            if(transactions[i].Account === this.xrplAccountInput.trim() && transactions[i].TransactionType === 'TrustSet'
+            if(transactions[i] && transactions[i].Account === this.xrplAccountInput.trim() && transactions[i].TransactionType === 'TrustSet'
                 && transactions[i].Flags == 262144 && transactions[i].LimitAmount.issuer != this.xrplAccountInput.trim()) {
                   //skip entry
                   break;
-                }
-                  
-            this.problemsAndTransactions.push({problem: problems[i], txJson: transactions[i]});
+            }
+
+            this.problemsAndTransactions.push({problem: problems[i], txJson: transactions[i] ? transactions[i] : null});
           }
 
           console.log("problemsAndTransactions: " + JSON.stringify(this.problemsAndTransactions));

@@ -43,7 +43,7 @@
   </form>
   <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em" style="padding-top: 2em;">
     <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowFinish">
-      Send Escrow Finish to Xumm
+      Send Escrow Finish to XUMM
     </button>
     <label *ngIf="!escrowOwnerInput || !validAddress">Please enter a valid XRPL address.</label>
     <label *ngIf="validAddress && ( !escrowSequenceInput || !validSequence )">Please enter a valid Escrow Sequence.</label>

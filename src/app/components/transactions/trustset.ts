@@ -152,7 +152,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     //console.log("destinationInput: " + this.destinationInput);
     //console.log(this.issuerAccountInput);
 
-    this.validCurrency = this.issuedCurrencyInput && this.issuedCurrencyInput.trim().length > 0;
+    this.validCurrency = this.issuedCurrencyInput && this.issuedCurrencyInput.trim().length >= 3;
     this.validAddress = this.issuerAccountInput && this.issuerAccountInput.trim().length > 0 && this.isValidXRPAddress(this.issuerAccountInput.trim());
 
     if(this.validCurrency) {
@@ -286,4 +286,16 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     this.checkChanges();
     this.isEditMode = false;
   }
+
+  getCurrencyCode(currency: string): string {
+    if(currency) {
+        if(currency.length == 40)
+            //hex to ascii
+            return Buffer.from(currency, 'hex').toString('ascii').trim();
+        else
+            return currency;
+    } else
+        return ""
+  }
+
 }

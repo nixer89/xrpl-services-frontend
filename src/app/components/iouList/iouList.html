@@ -15,16 +15,16 @@
             <ng-container matColumnDef="currency">
                 <mat-header-cell *matHeaderCellDef> IOU Currency Code </mat-header-cell>
                 <mat-cell *matCellDef="let iou" (click)="mep.expanded=false">
-                    <span fxShow fxHide.xs > {{iou.currency}}</span>
-                    <span fxShow.xs fxHide ><b>IOU Currency Code:</b><br>{{iou.currency}}</span>
+                    <span fxShow fxHide.xs > {{getCurrencyCode(iou.currency)}}</span>
+                    <span fxShow.xs fxHide ><b>IOU Currency Code:</b><br>{{getCurrencyCode(iou.currency)}}</span>
                 </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="amount">
                 <mat-header-cell *matHeaderCellDef > Total issued value of this currency: </mat-header-cell>
                 <mat-cell *matCellDef="let iou" (click)="mep.expanded=false">
-                    <span fxShow fxHide.xs >{{stringToFloat(iou.amount)}} {{iou.currency}}</span>
-                    <span fxShow.xs fxHide ><b>Total issued value:</b><br>{{stringToFloat(iou.amount)}} {{iou.currency}}</span>
+                    <span fxShow fxHide.xs >{{stringToFloat(iou.amount)}} {{getCurrencyCode(iou.currency)}}</span>
+                    <span fxShow.xs fxHide ><b>Total issued value:</b><br>{{stringToFloat(iou.amount)}} {{getCurrencyCode(iou.currency)}}</span>
                 </mat-cell>
             </ng-container>
 
