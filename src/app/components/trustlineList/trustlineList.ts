@@ -1,9 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Observable, Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import * as util from '../../utils/flagutils';
 import { AccountInfoChanged } from 'src/app/utils/types';
+import { XRPLWebsocket } from '../../services/xrplWebSocket';
 
 interface TrustLine {
     account:string,
@@ -33,7 +33,6 @@ export class TrustLineList implements OnInit, OnDestroy {
     @Output()
     disableRippling: EventEmitter<any> = new EventEmitter();
     
-    websocket: WebSocketSubject<any>;
     trustLines:TrustLine[] = [];
     displayedColumns: string[] = ['currency', 'account','balance', 'limit', 'limit_peer', 'no_ripple', 'actions'];
     loading:boolean = false;
@@ -45,7 +44,7 @@ export class TrustLineList implements OnInit, OnDestroy {
 
     private trustLineAccountChangedSubscription: Subscription;
 
-    constructor(private googleAnalytics: GoogleAnalyticsService) {}
+    constructor(private xrplWebSocket: XRPLWebsocket, private googleAnalytics: GoogleAnalyticsService) {}
 
     ngOnInit() {
         this.trustLineAccountChangedSubscription = this.xrplAccountInfoChanged.subscribe(account => {
@@ -64,19 +63,24 @@ export class TrustLineList implements OnInit, OnDestroy {
     ngOnDestroy() {
         if(this.trustLineAccountChangedSubscription)
           this.trustLineAccountChangedSubscription.unsubscribe();
-
-        if(this.websocket) {
-            this.websocket.unsubscribe();
-            this.websocket.complete();
-        }
     }
 
-    setupWebsocket() {
-        this.originalTestModeValue = this.testMode;
-        //console.log("connecting websocket");
-        this.websocket = webSocket(this.testMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
+    async loadTrustLineList(xrplAccount: string) {
+        this.googleAnalytics.analyticsEventEmitter('load_trustline_list', 'trustline_list', 'trustline_list_component');
 
-        this.websocket.asObservable().subscribe(async message => {
+        console.log("load trustlines");
+
+        if(xrplAccount) {
+            this.loading = true;
+
+            let account_lines_request:any = {
+              command: "account_lines",
+              account: xrplAccount,
+              ledger_index: "validated",
+            }
+
+            let message:any = await this.xrplWebSocket.getWebsocketMessage(account_lines_request, this.testMode);
+
             if(message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.lines) {
                 this.trustLines = message.result.lines;
 
@@ -92,31 +96,6 @@ export class TrustLineList implements OnInit, OnDestroy {
               this.trustLines = null;
               this.loading = false;
             }
-        });
-    }
-
-    loadTrustLineList(xrplAccount: string) {
-        this.googleAnalytics.analyticsEventEmitter('load_trustline_list', 'trustline_list', 'trustline_list_component');
-
-        if(this.websocket && this.originalTestModeValue != this.testMode) {
-            this.websocket.unsubscribe();
-            this.websocket.complete();
-            this.websocket = null;
-        }
-
-        if(!this.websocket || this.websocket.closed)
-            this.setupWebsocket();
-
-        if(xrplAccount) {
-            this.loading = true;
-
-            let account_lines_request:any = {
-              command: "account_lines",
-              account: xrplAccount,
-              ledger_index: "validated",
-            }
-      
-            this.websocket.next(account_lines_request);
         }
     }
 

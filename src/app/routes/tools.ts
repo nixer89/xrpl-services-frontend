@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Subject } from 'rxjs'
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -12,6 +11,7 @@ import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { XRPLWebsocket } from '../services/xrplWebSocket';
 
 @Component({
   selector: 'tools',
@@ -30,7 +30,6 @@ export class Tools implements OnInit {
 
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
   transactionSuccessfull: Subject<any> = new Subject<any>();
-  websocket: WebSocketSubject<any>;
 
   isTestMode:boolean = false;
 
@@ -43,10 +42,11 @@ export class Tools implements OnInit {
     private snackBar: MatSnackBar,
     private googleAnalytics: GoogleAnalyticsService,
     private localStorage: LocalStorageService,
-    private overlayContainer: OverlayContainer) { }
+    private overlayContainer: OverlayContainer,
+    private xrplWebSocket: XRPLWebsocket) { }
 
   async ngOnInit() {
-    console.log("on init");
+    //console.log("on init");
     if(this.localStorage && !this.localStorage.get("darkMode")) {
       this.overlayContainer.getContainerElement().classList.remove('dark-theme');
       this.overlayContainer.getContainerElement().classList.add('light-theme');
@@ -62,7 +62,6 @@ export class Tools implements OnInit {
     //await this.loadAccountData(false);
 
     this.route.queryParams.subscribe(async params => {
-      console.log("subscribe");
       let payloadId = params.payloadId;
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
@@ -95,9 +94,9 @@ export class Tools implements OnInit {
         }
       }
 
-      console.log("check logged in account tools");
-      console.log(this.localStorage.get("xrplAccount"));
-      console.log(this.localStorage.get("testMode"));
+      //console.log("check logged in account tools");
+      //console.log(this.localStorage.get("xrplAccount"));
+      //console.log(this.localStorage.get("testMode"));
 
       if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
         this.xrplAccount = this.localStorage.get("xrplAccount");
@@ -116,43 +115,8 @@ export class Tools implements OnInit {
       this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'tools_component');
       this.loadingData = true;
 
-      if(this.websocket) {
-        this.websocket.unsubscribe();
-        this.websocket.complete();
-      }
-
       this.localStorage.set("xrplAccount", this.xrplAccount);
       this.localStorage.set("testMode", this.isTestMode);
-
-      //console.log("connecting websocket");
-      this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
-
-      this.websocket.asObservable().subscribe(async message => {
-        //console.log("websocket message: " + JSON.stringify(message));
-        if(message.status && message.type && message.type === 'response') {
-          if(message.status === 'success') {
-            if(message.result && message.result.account_data) {
-              this.xrplAccount_Info = message.result.account_data;
-              //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
-              this.emitAccountInfoChanged();
-            }
-          } else {
-            if(message.request.command === 'account_info') {
-              this.xrplAccount_Info = message;
-              this.emitAccountInfoChanged();
-            }
-          }
-
-        } else {
-          this.xrplAccount_Info = null;
-          this.emitAccountInfoChanged();
-        }
-
-        if(isInit && this.snackBar)
-          this.snackBar.dismiss();
-
-        this.loadingData = false;
-      });
 
       let account_info_request:any = {
         command: "account_info",
@@ -160,7 +124,33 @@ export class Tools implements OnInit {
         "strict": true,
       }
 
-      this.websocket.next(account_info_request);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.isTestMode);
+      console.log("tools account info: " + JSON.stringify(message));
+
+      if(message.status && message.type && message.type === 'response') {
+        if(message.status === 'success') {
+          if(message.result && message.result.account_data) {
+            this.xrplAccount_Info = message.result.account_data;
+            //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
+            this.emitAccountInfoChanged();
+          }
+        } else {
+          if(message.request.command === 'account_info') {
+            this.xrplAccount_Info = message;
+            this.emitAccountInfoChanged();
+          }
+        }
+
+      } else {
+        this.xrplAccount_Info = null;
+        this.emitAccountInfoChanged();
+      }
+
+      if(isInit && this.snackBar)
+        this.snackBar.dismiss();
+
+      this.loadingData = false;
+
     } else {
       this.emitAccountInfoChanged();
     }

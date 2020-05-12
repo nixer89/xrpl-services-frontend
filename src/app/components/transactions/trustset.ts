@@ -141,7 +141,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
 
     if(!this.validCurrency && this.lastKnownCurrency && this.validAddress) {
       //currency changed
-      console.log("send currency changed");
+      //console.log("send currency changed");
       this.issuerAccountChangedSubject.next({account: this.issuerAccountInput.trim(), mode: this.testMode});
     }
 
@@ -215,7 +215,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
   }
 
   onDisableRippling(trustline:any) {
-    console.log("onDisableRippling");
+    //console.log("onDisableRippling");
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'onDisableRippling', 'trust_set_component');
 
     let payload:XummPostPayloadBodyJson = {

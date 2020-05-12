@@ -160,7 +160,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
 
     if(!this.validSequence && this.lastKnownSequence && this.validAddress) {
       //sequence change
-      console.log("send sequence changed");
+      //console.log("send sequence changed");
       this.escrowAccountChanged.next({account: this.escrowOwnerInput.trim(), mode: this.isTestMode});
     }
 

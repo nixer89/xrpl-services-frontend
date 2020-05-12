@@ -1,12 +1,10 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable } from 'rxjs';
-import * as flagsutil from '../../utils/flagutils';
-import { XummPostPayloadBodyJson, XummJsonTransaction } from 'xumm-api';
+import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { AccountInfoChanged, GenericBackendPostRequest } from 'src/app/utils/types';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { MatExpansionPanel } from '@angular/material';
+import { AccountInfoChanged } from 'src/app/utils/types';
+import { XRPLWebsocket } from '../../services/xrplWebSocket';
 
 @Component({
   selector: 'accountdelete',
@@ -14,7 +12,7 @@ import { MatExpansionPanel } from '@angular/material';
 })
 export class AccountDeleteComponent implements OnInit, OnDestroy {
 
-  constructor(private googleAnalytics: GoogleAnalyticsService) { }
+  constructor(private xrplWebSocket: XRPLWebsocket, private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -79,97 +77,13 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
       this.accountInfoChangedSubscription.unsubscribe();
   }
 
-  checkPreconditions() {
-    console.log("check preconditions");
+  async checkPreconditions() {
+    //console.log("check preconditions");
     if(this.originalAccountInfo && this.originalAccountInfo.Account) {
       this.googleAnalytics.analyticsEventEmitter('check_delete_preconditions', 'account_delete', 'account_delete_component');
       this.loadingPreconditions = true;
 
       let accountObjects:any[] = [];
-
-      //console.log("connecting websocket");
-      let websocket:WebSocketSubject<any> = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
-
-      websocket.asObservable().subscribe(async message => {
-        console.log("websocket message: " + JSON.stringify(message));
-        if(message.status && message.type && message.type === 'response') {
-          if(message.status === 'success' && message.result && message.result.account_objects && message.result.account === this.originalAccountInfo.Account) {
-            accountObjects = accountObjects.concat(message.result.account_objects);
-            console.log("accountObjects length: " + accountObjects.length);
-
-            //check sequence number
-            this.preconditionsFullFilled = (this.originalAccountInfo.Sequence+256) < message.result.ledger_index;
-            console.log("sequence check: " + this.preconditionsFullFilled)
-
-            if(!this.preconditionsFullFilled)
-              this.errorMsg = "Your account cannot be deleted. You need to wait " + (this.originalAccountInfo.Sequence+256-message.result.ledger_index) + " more validated ledgers to delete your account."
-
-            if(accountObjects.length > 1000) {
-              console.log("too many objects");
-              this.preconditionsFullFilled = false;
-            } else if(message.result.account_objects.marker) {
-              websocket.next({
-                command: "account_objects",
-                ledger_index: message.result.account_objects.ledger_index,
-                account: this.originalAccountInfo.Account,
-                limit: 400,
-                marker: message.result.account_objects.marker
-              });
-            } else {
-              //we are finished, check objects:
-              let filteredObject:any[] = accountObjects.filter(object => object.LedgerEntryType === "Escrow" || object.LedgerEntryType === "PayChannel" || object.LedgerEntryType === "RippleState" || object.LedgerEntryType === "Check")
-
-              if(filteredObject && filteredObject.length > 1) {
-                console.log("forbidden object detected");
-                // we have one of the "forbidden" objects still attached to our account. Preconditions are not met.
-                this.preconditionsFullFilled = false;
-
-                let escrows:number = accountObjects.filter(object => object.LedgerEntryType === "Escrow").length;
-                let paychans:number = accountObjects.filter(object => object.LedgerEntryType === "PayChannel").length;
-                let trustLines:number = accountObjects.filter(object => object.LedgerEntryType === "RippleState").length;
-                let checks:number = accountObjects.filter(object => object.LedgerEntryType === "Check").length;
-
-                if(this.errorMsg)
-                  this.errorMsg += "\n\n"
-                else
-                  this.errorMsg = ""
-
-                this.errorMsg += "Your account still has:"
-                if(escrows > 0)
-                  this.errorMsg += "\n- Escrows: " + escrows;
-
-                if(paychans > 0)
-                  this.errorMsg += "\n- Payment Channels: " + paychans;
-
-                if(trustLines > 0)
-                  this.errorMsg += "\n- Trust Lines: " + trustLines;
-
-                if(checks > 0)
-                  this.errorMsg += "\n- Checks: " + checks;
-
-                this.errorMsg+= "\n\nYou can delete your account only if you have non of the above objects linked to your account."
-              } else {
-                this.preconditionsFullFilled = true;
-              }
-
-              this.loadingPreconditions = false;
-              websocket.unsubscribe();
-              websocket.complete();
-              websocket = null;  
-            }
-          } else {
-            websocket.unsubscribe();
-            websocket.complete();
-            websocket = null; 
-          }
-        } else {
-          this.preconditionsFullFilled = false;
-          this.loadingPreconditions = false;
-          websocket.unsubscribe();
-          websocket.complete();
-          websocket = null;
-        }
-      });
 
       let account_objects_request:any = {
         command: "account_objects",
@@ -178,40 +92,94 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         limit: 400
       }
 
-      websocket.next(account_objects_request);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_objects_request, this.isTestMode);
+
+      this.handleWebSocketMessagePreconditions(message, accountObjects);
     }
   }
 
-  checkDestinationAccountExists() {
+  async handleWebSocketMessagePreconditions(message: any, accountObjects:any[]) {
+    //console.log("websocket message: " + JSON.stringify(message));
+    if(message.status && message.type && message.type === 'response') {
+      if(message.status === 'success' && message.result && message.result.account_objects && message.result.account === this.originalAccountInfo.Account) {
+        accountObjects = accountObjects.concat(message.result.account_objects);
+        //console.log("accountObjects length: " + accountObjects.length);
+
+        //check sequence number
+        this.preconditionsFullFilled = (this.originalAccountInfo.Sequence+256) < message.result.ledger_index;
+        //console.log("sequence check: " + this.preconditionsFullFilled)
+
+        if(!this.preconditionsFullFilled)
+          this.errorMsg = "Your account cannot be deleted. You need to wait " + (this.originalAccountInfo.Sequence+256-message.result.ledger_index) + " more validated ledgers to delete your account."
+
+        if(accountObjects.length > 1000) {
+          //console.log("too many objects");
+          this.preconditionsFullFilled = false;
+        } else if(message.result.account_objects.marker) {
+          let marker_command:any = {
+            command: "account_objects",
+            ledger_index: message.result.account_objects.ledger_index,
+            account: this.originalAccountInfo.Account,
+            limit: 400,
+            marker: message.result.account_objects.marker
+          };
+
+          let message_marker:any = await this.xrplWebSocket.getWebsocketMessage(marker_command, this.isTestMode);
+
+          this.handleWebSocketMessagePreconditions(message_marker, accountObjects);
+        } else {
+          //we are finished, check objects:
+          let filteredObject:any[] = accountObjects.filter(object => object.LedgerEntryType === "Escrow" || object.LedgerEntryType === "PayChannel" || object.LedgerEntryType === "RippleState" || object.LedgerEntryType === "Check")
+
+          if(filteredObject && filteredObject.length > 1) {
+            //console.log("forbidden object detected");
+            // we have one of the "forbidden" objects still attached to our account. Preconditions are not met.
+            this.preconditionsFullFilled = false;
+
+            let escrows:number = accountObjects.filter(object => object.LedgerEntryType === "Escrow").length;
+            let paychans:number = accountObjects.filter(object => object.LedgerEntryType === "PayChannel").length;
+            let trustLines:number = accountObjects.filter(object => object.LedgerEntryType === "RippleState").length;
+            let checks:number = accountObjects.filter(object => object.LedgerEntryType === "Check").length;
+
+            if(this.errorMsg)
+              this.errorMsg += "\n\n"
+            else
+              this.errorMsg = ""
+
+            this.errorMsg += "Your account still has:"
+            if(escrows > 0)
+              this.errorMsg += "\n- Escrows: " + escrows;
+
+            if(paychans > 0)
+              this.errorMsg += "\n- Payment Channels: " + paychans;
+
+            if(trustLines > 0)
+              this.errorMsg += "\n- Trust Lines: " + trustLines;
+
+            if(checks > 0)
+              this.errorMsg += "\n- Checks: " + checks;
+
+            this.errorMsg+= "\n\nYou can delete your account only if you have non of the above objects linked to your account."
+          } else {
+            this.preconditionsFullFilled = true;
+          }
+
+          this.loadingPreconditions = false;
+        }
+      } else {
+        this.preconditionsFullFilled = false;
+        this.loadingPreconditions = false;
+      }
+    } else {
+      this.preconditionsFullFilled = false;
+      this.loadingPreconditions = false;
+    }
+  }
+
+  async checkDestinationAccountExists() {
     if(this.destinationAccountInput && this.validDestinationAddress) {
       this.googleAnalytics.analyticsEventEmitter('check_destination_account', 'account_delete', 'account_delete_component');
       this.loadingDestinationAccount = true;
-
-      //console.log("connecting websocket");
-      let websocket:WebSocketSubject<any> = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
-
-      websocket.asObservable().subscribe(async message => {
-        //console.log("websocket message: " + JSON.stringify(message));
-        if(message.status && message.type && message.type === 'response') {
-          if(message.status === 'success') {
-            this.destinationAccountExists = message.result && message.result.account_data && message.result.account_data.Account === this.destinationAccountInput.trim();
-          } else {
-            this.destinationAccountExists = false;
-          }
-
-          this.loadingDestinationAccount = false;
-          websocket.unsubscribe();
-          websocket.complete();
-          websocket = null;
-
-        } else {
-          this.destinationAccountExists = false;
-          this.loadingDestinationAccount = false;
-          websocket.unsubscribe();
-          websocket.complete();
-          websocket = null;
-        }
-      });
 
       let account_info_request:any = {
         command: "account_info",
@@ -219,7 +187,21 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         "strict": true,
       }
 
-      websocket.next(account_info_request);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.isTestMode);
+
+      if(message.status && message.type && message.type === 'response') {
+        if(message.status === 'success') {
+          this.destinationAccountExists = message.result && message.result.account_data && message.result.account_data.Account === this.destinationAccountInput.trim();
+        } else {
+          this.destinationAccountExists = false;
+        }
+
+        this.loadingDestinationAccount = false;
+
+      } else {
+        this.destinationAccountExists = false;
+        this.loadingDestinationAccount = false;
+      }
     }
   }
 

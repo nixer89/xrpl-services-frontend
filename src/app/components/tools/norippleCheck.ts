@@ -1,10 +1,10 @@
 import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
-import { Observable, Subscription, Subject } from 'rxjs';
+import { Observable, Subscription} from 'rxjs';
 import { XummPostPayloadBodyJson, XummJsonTransaction } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged } from 'src/app/utils/types';
-import { WebSocketSubject, webSocket } from 'rxjs/webSocket';
+import { XRPLWebsocket } from '../../services/xrplWebSocket';
 
 interface NoRippleCheck {
   problem: string,
@@ -18,7 +18,7 @@ interface NoRippleCheck {
 })
 export class NoRippleCheckComponent implements OnInit, OnDestroy {
 
-  constructor(private googleAnalytics: GoogleAnalyticsService) { }
+  constructor(private xrplWebSocket: XRPLWebsocket, private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -49,11 +49,9 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
   problemsAndTransactions:NoRippleCheck[] = [];
   obligations:any;
 
-  websocket: WebSocketSubject<any>;
-
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
-      console.log("account info changed received: " + JSON.stringify(accountData));
+      //console.log("account info changed received: " + JSON.stringify(accountData));
       if(accountData) {
         this.originalAccountInfo = accountData.info;
         this.isTestMode = accountData.mode;
@@ -79,86 +77,11 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
 
     if(this.transactionSuccessfullSubscription)
       this.transactionSuccessfullSubscription.unsubscribe();
-
-    if(this.websocket) {
-      this.websocket.unsubscribe();
-      this.websocket.complete();
-      this.websocket = null;
-    }
   }
 
-  setupWebsocket() {
-    this.originalTestModeValue = this.isTestMode;
-    console.log("connecting websocket");
-    //console.log("connecting websocket");
-    this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
-
-    this.websocket.asObservable().subscribe(async message => {
-      console.log("websocket message: " + JSON.stringify(message));
-      if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result) {
-
-        this.accountNotFound = false;
-        
-        if(message.result.problems && message.result.transactions) {
-          let problems:string[] = message.result.problems;
-          let transactions:any[] = message.result.transactions;
-
-          for(let i = 0; i < problems.length; i++) {
-            if(transactions[i] && transactions[i].Account === this.xrplAccountInput.trim() && transactions[i].TransactionType === 'TrustSet'
-                && transactions[i].Flags == 262144 && transactions[i].LimitAmount.issuer != this.xrplAccountInput.trim()) {
-                  //skip entry
-                  break;
-            }
-
-            this.problemsAndTransactions.push({problem: problems[i], txJson: transactions[i] ? transactions[i] : null});
-          }
-
-          console.log("problemsAndTransactions: " + JSON.stringify(this.problemsAndTransactions));
-
-          this.loadingProblems = false;
-        } else {
-          console.log("account has obligations: " + JSON.stringify(message.result.obligations));
-
-          this.isGateway = message.result.obligations != null;
-          this.obligations = message.result.obligations;
-          
-          let noripple_check_command:any = {
-            command: "noripple_check",
-            account: this.xrplAccountInput.trim(),
-            role: this.isGateway ? "gateway" : "user",
-            ledger_index: "validated",
-            transactions: true
-          }
-
-          this.websocket.next(noripple_check_command);
-        }
-      } else if(message && message.error === 'actNotFound') {
-        this.accountNotFound = true
-        this.problemsAndTransactions = [];
-        this.obligations = null;
-        this.loadingProblems = false;
-      } else {
-        this.problemsAndTransactions = [];
-        this.obligations = null;
-        this.loadingProblems = false;
-      }
-    });
-  }
-
-  loadProblems() {
+  async loadProblems() {
     if(this.xrplAccountInput && this.validAddress) {
       this.googleAnalytics.analyticsEventEmitter('load_noripple_check', 'noripple_check', 'noripple_check_component');
-      this.loadingProblems = true;
-
-      if(this.websocket && this.originalTestModeValue != this.isTestMode) {
-        this.websocket.unsubscribe();
-        this.websocket.complete();
-        this.websocket = null;
-      }
-
-      if(!this.websocket || this.websocket.closed)
-          this.setupWebsocket();
-
       this.loadingProblems = true;
 
       let gateway_balances_request:any = {
@@ -167,7 +90,62 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
         ledger_index: "validated",
       }
 
-      this.websocket.next(gateway_balances_request);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage(gateway_balances_request, this.isTestMode);
+
+      this.handleWebsocketMessage(message);
+
+    }
+  }
+
+  async handleWebsocketMessage(message) {
+    if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result) {
+
+      this.accountNotFound = false;
+      
+      if(message.result.problems && message.result.transactions) {
+        let problems:string[] = message.result.problems;
+        let transactions:any[] = message.result.transactions;
+
+        for(let i = 0; i < problems.length; i++) {
+          if(transactions[i] && transactions[i].Account === this.xrplAccountInput.trim() && transactions[i].TransactionType === 'TrustSet'
+              && transactions[i].Flags == 262144 && transactions[i].LimitAmount.issuer != this.xrplAccountInput.trim()) {
+                //skip entry
+                break;
+          }
+
+          this.problemsAndTransactions.push({problem: problems[i], txJson: transactions[i] ? transactions[i] : null});
+        }
+
+        //console.log("problemsAndTransactions: " + JSON.stringify(this.problemsAndTransactions));
+
+        this.loadingProblems = false;
+      } else {
+        //console.log("account has obligations: " + JSON.stringify(message.result.obligations));
+
+        this.isGateway = message.result.obligations != null;
+        this.obligations = message.result.obligations;
+        
+        let noripple_check_command:any = {
+          command: "noripple_check",
+          account: this.xrplAccountInput.trim(),
+          role: this.isGateway ? "gateway" : "user",
+          ledger_index: "validated",
+          transactions: true
+        }
+
+        let no_ripple_message:any = await this.xrplWebSocket.getWebsocketMessage(noripple_check_command, this.isTestMode);
+
+        this.handleWebsocketMessage(no_ripple_message);
+      }
+    } else if(message && message.error === 'actNotFound') {
+      this.accountNotFound = true
+      this.problemsAndTransactions = [];
+      this.obligations = null;
+      this.loadingProblems = false;
+    } else {
+      this.problemsAndTransactions = [];
+      this.obligations = null;
+      this.loadingProblems = false;
     }
   }
 

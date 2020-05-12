@@ -4,14 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
 import { XummService } from '../../services/xumm.service'
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Subject } from 'rxjs';
 import { TransactionValidation, GenericBackendPostRequest, XrplAccountChanged } from '../../utils/types';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import * as flagUtil from '../../utils/flagutils';
-import { DeviceDetectorService } from 'ngx-device-detector';
-import { MatStepper } from '@angular/material/stepper';
-import { isNumber } from 'util';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar, MatExpansionPanel } from '@angular/material';
 
@@ -43,7 +38,6 @@ export class IssueMoreIOU implements OnInit {
 
   @ViewChild('mep', {static: true}) mep: MatExpansionPanel;
 
-  websocket: WebSocketSubject<any>;
   isTestMode:boolean = false;
 
   issuerAccount: string;
@@ -111,7 +105,7 @@ export class IssueMoreIOU implements OnInit {
 
   handleSignInInfo(info: TransactionValidation) {
     if(info && info.success && info.account && this.isValidXRPAddress(info.account)) {
-      console.log("valid issuer");
+      //("valid issuer");
       this.snackBar.dismiss();
       this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 3000, horizontalPosition: 'center', verticalPosition: 'top'});
       this.issuerAccount = info.account;

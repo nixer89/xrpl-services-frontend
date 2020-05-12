@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../../components/genericPayloadQRDialog';
 import { XummService } from '../../services/xumm.service'
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import { Subject } from 'rxjs';
 import { TransactionValidation, GenericBackendPostRequest } from '../../utils/types';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
@@ -25,9 +25,8 @@ export class CreateIOU implements OnInit {
     private matDialog: MatDialog,
     private xummApi: XummService,
     private googleAnalytics: GoogleAnalyticsService,
-    private device: DeviceDetectorService) {
-
-  }
+    private device: DeviceDetectorService,
+    private xrplWebSocket: XRPLWebsocket) { }
 
   checkBoxTwoAccounts:boolean = false;
   checkBoxSufficientFunds:boolean = false;
@@ -47,7 +46,6 @@ export class CreateIOU implements OnInit {
   blackholeMasterDisabled:boolean = false;
 
   issuer_account_info:any;
-  websocket: WebSocketSubject<any>;
   isTestMode:boolean = false;
 
   private issuerAccount: string;
@@ -139,7 +137,7 @@ export class CreateIOU implements OnInit {
             refererURL = document.URL;
         }
         let checkPayment:TransactionValidation = await this.xummApi.signInToValidateTimedPayment(info.payloadId, refererURL);
-        console.log("login to validate payment: " + JSON.stringify(checkPayment));
+        //console.log("login to validate payment: " + JSON.stringify(checkPayment));
         if(checkPayment && checkPayment.success && (!checkPayment.testnet || this.isTestMode)) {
           this.issuerAccount = info.account;
           this.validIssuer = true;
@@ -185,51 +183,40 @@ export class CreateIOU implements OnInit {
       this.loadingIssuerAccount = true;
       this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'easy_iou', 'easy_iou_component');
 
-      if(this.websocket) {
-        this.websocket.unsubscribe();
-        this.websocket.complete();
-      }
-
-      //console.log("connecting websocket");
-      this.websocket = webSocket(this.isTestMode ? 'wss://testnet.xrpl-labs.com' : 'wss://xrpl.ws');
-
-      this.websocket.asObservable().subscribe(async message => {
-        //console.log("websocket message: " + JSON.stringify(message));
-        if(message.status && message.type && message.type === 'response') {
-          if(message.status === 'success') {
-            if(message.result && message.result.account_data) {
-              this.issuer_account_info = message.result.account_data;
-              console.log("isser_account_info: " + JSON.stringify(this.issuer_account_info));
-              this.needDefaultRipple = !flagUtil.isDefaultRippleEnabled(this.issuer_account_info.Flags)
-              this.blackholeMasterDisabled = flagUtil.isMasterKeyDisabled(this.issuer_account_info.Flags)
-
-            } else {
-              console.log(JSON.stringify(message));
-            }
-            
-            this.loadingIssuerAccount = false;
-
-          } else {
-            if(message.request.command === 'account_info') {
-              this.issuer_account_info = message;
-              this.loadingIssuerAccount = false;
-            }
-          }
-        } else {
-          this.issuer_account_info = null;
-          this.needDefaultRipple = true;
-          this.blackholeMasterDisabled = false;
-          this.loadingIssuerAccount = false;
-        }
-      });
-
       let account_info_request:any = {
         command: "account_info",
         account: this.issuerAccount,
         "strict": true,
       }
 
-      this.websocket.next(account_info_request);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.isTestMode);
+      //console.log("websocket message: " + JSON.stringify(message));
+      if(message.status && message.type && message.type === 'response') {
+        if(message.status === 'success') {
+          if(message.result && message.result.account_data) {
+            this.issuer_account_info = message.result.account_data;
+            //console.log("isser_account_info: " + JSON.stringify(this.issuer_account_info));
+            this.needDefaultRipple = !flagUtil.isDefaultRippleEnabled(this.issuer_account_info.Flags)
+            this.blackholeMasterDisabled = flagUtil.isMasterKeyDisabled(this.issuer_account_info.Flags)
+
+          } else {
+            //console.log(JSON.stringify(message));
+          }
+          
+          this.loadingIssuerAccount = false;
+
+        } else {
+          if(message.request.command === 'account_info') {
+            this.issuer_account_info = message;
+            this.loadingIssuerAccount = false;
+          }
+        }
+      } else {
+        this.issuer_account_info = null;
+        this.needDefaultRipple = true;
+        this.blackholeMasterDisabled = false;
+        this.loadingIssuerAccount = false;
+      }
     }
   }
 
@@ -439,7 +426,7 @@ export class CreateIOU implements OnInit {
   }
 
   moveBack() {
-    console.log("steps: " + this.stepper.steps.length);
+    //console.log("steps: " + this.stepper.steps.length);
     // move to previous step
     this.stepper.selected.completed = false;
     this.stepper.selected.editable = false;

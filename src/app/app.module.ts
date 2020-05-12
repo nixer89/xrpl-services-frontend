@@ -62,6 +62,7 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { AppService } from './services/app.service';
 import { XummService } from './services/xumm.service';
 import { GoogleAnalyticsService } from './services/google-analytics.service';
+import { XRPLWebsocket } from './services/xrplWebSocket';
 
 //special
 import { DeviceDetectorModule } from 'ngx-device-detector';
@@ -136,7 +137,8 @@ import { LocalStorageModule } from 'angular-2-local-storage'
   providers: [
     AppService,
     XummService,
-    GoogleAnalyticsService
+    GoogleAnalyticsService,
+    XRPLWebsocket
   ],
   bootstrap: [AppComponent]
 })
