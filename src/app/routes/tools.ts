@@ -6,7 +6,7 @@ import { Subject } from 'rxjs'
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
-import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged } from '../utils/types';
+import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged, GenericBackendPostRequestOptions } from '../utils/types';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
@@ -35,6 +35,8 @@ export class Tools implements OnInit {
 
   loadingData:boolean = false;
 
+  dismissInfo:boolean = false;
+
   constructor(
     private matDialog: MatDialog,
     private route: ActivatedRoute,
@@ -54,6 +56,8 @@ export class Tools implements OnInit {
         this.overlayContainer.getContainerElement().classList.remove('light-theme');
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
     }
+
+    this.dismissInfo = this.localStorage && this.localStorage.get("dismissInfo");
 
     //this.xrplAccount="r3K1TgPvTPkWZR2Lhawpvv9YR7yYuqSXBp";
     //this.isTestMode = true;
@@ -239,14 +243,13 @@ export class Tools implements OnInit {
     this.accountInfoChanged.next({info: this.xrplAccount_Info, mode: this.isTestMode});
   }
 
-  async onPayloadReceived(xummPayload:XummPostPayloadBodyJson) {
+  async onPayloadReceived(genericBackendRequest: GenericBackendPostRequest) {
     //console.log("received payload: " + JSON.stringify(payload));
-    let genericBackendRequest:GenericBackendPostRequest = {
-      options: {
-        xrplAccount: this.xrplAccount ? this.xrplAccount : null
-      },
-      payload: xummPayload
-    }
+
+    if(!genericBackendRequest.options)
+      genericBackendRequest.options = {};
+      
+    genericBackendRequest.options.xrplAccount = this.xrplAccount ? this.xrplAccount : null
 
     this.openGenericDialog(genericBackendRequest);
   }
@@ -277,6 +280,11 @@ export class Tools implements OnInit {
     this.localStorage.remove("xrplAccount");
     this.localStorage.remove("testMode");
     this.emitAccountInfoChanged();
+  }
+
+  gotIt() {
+    this.dismissInfo = true;
+    this.localStorage.set("dismissInfo", true);
   }
 
 }

@@ -93,7 +93,8 @@ export class GenericPayloadQRDialog implements OnInit {
             this.genericPayload.payload.options.forceAccount = true;
         }
 
-        this.googleAnalytics.analyticsEventEmitter(this.genericPayload.payload.txjson.TransactionType.toLowerCase()+'_transaction', 'sendToXummGeneric', 'generic_payload_dialog_component');
+        if(this.genericPayload.payload.txjson.TransactionType)
+            this.googleAnalytics.analyticsEventEmitter(this.genericPayload.payload.txjson.TransactionType.toLowerCase()+'_transaction', 'sendToXummGeneric', 'generic_payload_dialog_component');
 
         let xummResponse:XummPostPayloadResponse;
         try {

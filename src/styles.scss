@@ -1,5 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import './theme';
+@import "~codemirror/lib/codemirror";
+@import "~codemirror/theme/material-darker";
 
 html, body { 
     height: 100%;
@@ -102,6 +104,10 @@ body .snackbar-failed {
     font-weight: bold;
 }
 
+.CodeMirror {
+    height: 400px;
+}
+
 @media (max-width:599px) {
     
     .mat-expansion-panel-header {
@@ -130,5 +136,9 @@ body .snackbar-failed {
 
     .mat-dialog-container {
         padding: 12px !important;
+    }
+
+    .CodeMirror {
+        height: 300px;
     }
 }

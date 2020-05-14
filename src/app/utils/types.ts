@@ -1,15 +1,18 @@
 import { XummPostPayloadBodyJson } from 'xumm-api';
 
+export interface GenericBackendPostRequestOptions {
+    frontendId?: string,
+    web?: boolean,
+    pushDisabled?: boolean,
+    referer?: string,
+    xrplAccount?: string,
+    signinToValidate?: boolean,
+    issuing?: boolean,
+    isRawTrx?: boolean
+}
+
 export interface GenericBackendPostRequest {
-    options?: {
-        frontendId?: string,
-        web?: boolean,
-        pushDisabled?: boolean,
-        referer?: string,
-        xrplAccount?: string,
-        signinToValidate?: boolean,
-        issuing?: boolean
-    },
+    options?: GenericBackendPostRequestOptions,
     payload: XummPostPayloadBodyJson
 }
 

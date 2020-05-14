@@ -37,6 +37,7 @@ import { AccountDeleteComponent } from './components/transactions/accountdelete'
 //Tools
 import { NoRippleCheckComponent } from './components/tools/norippleCheck';
 import { TransactionSchedulerComponent } from './components/tools/transactionScheduler';
+import { RawTransactionsComponent } from './components/tools/rawTransactions';
 
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -68,7 +69,8 @@ import { XRPLWebsocket } from './services/xrplWebSocket';
 import { DeviceDetectorModule } from 'ngx-device-detector';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
-import { LocalStorageModule } from 'angular-2-local-storage'
+import { LocalStorageModule } from 'angular-2-local-storage';
+import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 
 @NgModule({
   declarations: [
@@ -98,7 +100,8 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     TrustSetComponent,
     NoRippleCheckComponent,
     TransactionSchedulerComponent,
-    AccountDeleteComponent
+    AccountDeleteComponent,
+    RawTransactionsComponent
   ],
   imports: [
     BrowserModule,
@@ -125,10 +128,11 @@ import { LocalStorageModule } from 'angular-2-local-storage'
     MatPaginatorModule,
     MatMenuModule,
     MatStepperModule,
+    CodemirrorModule,
     //Special
     DeviceDetectorModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
-    LocalStorageModule.forRoot({ prefix: 'XummCommunity', storageType: 'localStorage' }),
+    LocalStorageModule.forRoot({ prefix: 'XummCommunity', storageType: 'localStorage', notifyOptions: {setItem: true, removeItem: false} }),
   ],
   entryComponents: [
     XummSignDialogComponent,

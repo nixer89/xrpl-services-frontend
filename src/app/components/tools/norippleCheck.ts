@@ -3,7 +3,7 @@ import { Encode } from 'xrpl-tagged-address-codec';
 import { Observable, Subscription} from 'rxjs';
 import { XummPostPayloadBodyJson, XummJsonTransaction } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { AccountInfoChanged } from 'src/app/utils/types';
+import { AccountInfoChanged, GenericBackendPostRequest } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 
 interface NoRippleCheck {
@@ -27,7 +27,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
   transactionSuccessfull: Observable<any>;
   
   @Output()
-  onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
+  onPayload: EventEmitter<GenericBackendPostRequest> = new EventEmitter();
 
   @ViewChild('inpxrplaccount', {static: false}) inpxrplaccount;
   xrplAccountInput: string;
@@ -99,6 +99,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
 
   async handleWebsocketMessage(message) {
     if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result) {
+      //console.log("message: " + JSON.stringify(message));
 
       this.accountNotFound = false;
       
@@ -113,7 +114,19 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
                 break;
           }
 
-          this.problemsAndTransactions.push({problem: problems[i], txJson: transactions[i] ? transactions[i] : null});
+          if(problems[i] === "You appear to have set your default ripple flag even though you are not a gateway. This is not recommended unless you are experimenting"
+            && transactions[i] && transactions[i].TransactionType != 'AccountSet' && (!transactions[i].SetFlag || transactions[i].SetFlag != 8)) {
+              //no account set trx here for default ripple! Skip!
+              console.log("skip it");
+              this.problemsAndTransactions.push({problem: problems[i], txJson: null});
+              transactions = [null].concat(transactions);
+
+              //console.log("problems: " + JSON.stringify(problems));
+              //console.log("transactions: " + JSON.stringify(transactions));
+
+          } else {
+            this.problemsAndTransactions.push({problem: problems[i], txJson: transactions[i] ? transactions[i] : null});
+          }
         }
 
         //console.log("problemsAndTransactions: " + JSON.stringify(this.problemsAndTransactions));
@@ -164,7 +177,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
       payload.custom_meta = {};
       payload.custom_meta.instruction = "- Sign with: " +this.xrplAccountInput.trim();
   
-      this.onPayload.emit(payload);
+      this.onPayload.emit({payload: payload});
     }
   }
 
