@@ -1,10 +1,10 @@
 import { Component, ViewChild, Output, EventEmitter, OnInit, OnDestroy, Input } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { AccountInfoChanged } from 'src/app/utils/types';
+import { AccountInfoChanged, XrplAccountChanged } from 'src/app/utils/types';
 
 @Component({
   selector: 'escrowcreate',
@@ -47,6 +47,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   originalAccountInfo:any;
   private accountInfoChangedSubscription: Subscription;
   private transactionSuccessfullSubscription: Subscription;
+  escrowAccountChanged: Subject<XrplAccountChanged> = new Subject<XrplAccountChanged>();
 
   isValidEscrow:boolean = false;
   validAmount:boolean = false;
@@ -62,22 +63,21 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   finishDateInFuture:boolean = false;
   cancelDateBeforeFinishDate:boolean = false;
 
+  escrowYears:number = 0;
   maxSixDigits:boolean = false;
 
   dateTimePickerSupported:boolean = true;
 
   hidePw = true;
 
-  private xummPayload:XummPostPayloadBodyJson = {
-    txjson: {
-      TransactionType: "EscrowCreate"
-    }
-  }
-
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
       this.originalAccountInfo = accountData.info;
+      if(this.originalAccountInfo && this.originalAccountInfo.Account && this.isValidXRPAddress(this.originalAccountInfo.Account)) {
+        this.escrowAccountChanged.next({account: this.originalAccountInfo.Account, mode: accountData.mode});
+      }
+
     });
 
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
@@ -122,6 +122,9 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     
     this.finishDateInFuture = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() < Date.now();
     this.validFinishAfter = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() > 0;
+    
+    if(this.finishAfterDateTime)
+      this.escrowYears = this.finishAfterDateTime.getFullYear() - (new Date()).getFullYear();
     
 
     if(this.validCancelAfter && this.validFinishAfter)
@@ -190,26 +193,36 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   sendPayloadToXumm() {
 
     this.googleAnalytics.analyticsEventEmitter('escrow_create', 'sendToXumm', 'escrow_create_component');
-    this.xummPayload.custom_meta = {};
+    let xummPayload:XummPostPayloadBodyJson = {
+      txjson: {
+        TransactionType: "EscrowCreate"
+      }, custom_meta: {
+        instruction: ""
+      }
+    }
+
+    if(this.escrowYears > 10) {
+      xummPayload.custom_meta.instruction += "ATTENTION: Your XRP will be inaccessible for " + this.escrowYears + "years!\n\n";
+    }
 
     if(this.destinationInput && this.destinationInput.trim().length>0 && this.isValidXRPAddress(this.destinationInput)) {
-      this.xummPayload.txjson.Destination = this.destinationInput.trim();
-      this.xummPayload.custom_meta.instruction = "- Escrow Destination: " + this.destinationInput.trim();
+      xummPayload.txjson.Destination = this.destinationInput.trim();
+      xummPayload.custom_meta.instruction += "- Escrow Destination: " + this.destinationInput.trim();
     }
 
     if(this.amountInput && parseFloat(this.amountInput) >= 0.000001) {
-      this.xummPayload.txjson.Amount = parseFloat(this.amountInput)*1000000+"";
-      this.xummPayload.custom_meta.instruction += "\n- Escrow Amount: " + this.amountInput;
+      xummPayload.txjson.Amount = parseFloat(this.amountInput)*1000000+"";
+      xummPayload.custom_meta.instruction += "\n- Escrow Amount: " + this.amountInput;
     }
  
     if(this.validCancelAfter) {
-      this.xummPayload.txjson.CancelAfter = (this.cancelAfterDateTime.getTime()/1000)-946684800;
-      this.xummPayload.custom_meta.instruction += "\n- Cancel After (UTC): " + this.cancelAfterDateTime.toUTCString();
+      xummPayload.txjson.CancelAfter = (this.cancelAfterDateTime.getTime()/1000)-946684800;
+      xummPayload.custom_meta.instruction += "\n- Cancel After (UTC): " + this.cancelAfterDateTime.toUTCString();
     }
 
     if(this.validFinishAfter) {
-      this.xummPayload.txjson.FinishAfter = (this.finishAfterDateTime.getTime()/1000)-946684800;
-      this.xummPayload.custom_meta.instruction += "\n- Finish After (UTC): " + this.finishAfterDateTime.toUTCString();
+      xummPayload.txjson.FinishAfter = (this.finishAfterDateTime.getTime()/1000)-946684800;
+      xummPayload.custom_meta.instruction += "\n- Finish After (UTC): " + this.finishAfterDateTime.toUTCString();
     }
 
     if(this.validCondition) {
@@ -240,13 +253,13 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
         //  )
         //)
 
-        this.xummPayload.txjson.Condition = condition
-        this.xummPayload.custom_meta.instruction += "\n- With a password ✓"
+        xummPayload.txjson.Condition = condition
+        xummPayload.custom_meta.instruction += "\n- With a password ✓"
 
-        this.onPayload.emit(this.xummPayload);
+        this.onPayload.emit(xummPayload);
       });      
     } else {
-      this.onPayload.emit(this.xummPayload);
+      this.onPayload.emit(xummPayload);
     }
   }
 

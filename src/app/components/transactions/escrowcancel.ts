@@ -58,9 +58,14 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
       //console.log("account info changed received")
       this.originalAccountInfo = accountData.info;
       this.testMode = accountData.mode
-      setTimeout(() => {
-        this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.testMode});
-      },200);
+
+      if(this.originalAccountInfo && this.originalAccountInfo.Account) {
+        this.escrowOwnerInput = this.originalAccountInfo.Account;
+        this.xrplAccountChanged();
+      } else {
+        this.escrowOwnerInput = null;
+        this.xrplAccountChanged();
+      }
     });
 
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {

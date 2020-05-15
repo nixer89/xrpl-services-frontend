@@ -17,26 +17,28 @@
     </mat-panel-description>
   </mat-expansion-panel-header>
 
-  <a href="https://xrpl.org/escrowcancel.html" target="_blank" rel="noreferrer">Escrow Cancel Documentation</a><br/>
-  <label>Return escrowed XRP to the sender.</label>
-  <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;padding-top: 1em;">
-    <mat-form-field>
-      <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="xrplAccountChanged()">
-      <mat-hint *ngIf="escrowOwnerInput && !validAddress">Not a valid XRPL address</mat-hint>
-    </mat-form-field>
-    <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validSequence ? 'block':'none' }">
-      <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" (escrowSequenceFound)="onEscrowSequenceFound($event)" [isCancel]="true"></escrowList>
+  <div fxLayout="column" fxLayoutGap="0.3em">
+    <a href="https://xrpl.org/escrowcancel.html" target="_blank" rel="noreferrer">Escrow Cancel Documentation</a><br/>
+    <label>Return escrowed XRP to the sender.</label>
+    <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;padding-top: 1em;">
+      <mat-form-field>
+        <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="xrplAccountChanged()">
+        <mat-hint *ngIf="escrowOwnerInput && !validAddress">Not a valid XRPL address</mat-hint>
+      </mat-form-field>
+      <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validSequence ? 'block':'none' }">
+        <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" (escrowSequenceFound)="onEscrowSequenceFound($event)" [isCancel]="true"></escrowList>
+      </div>
+      <mat-form-field [ngClass]="{'changed': showEscrowSequenceSelectedStyle}">
+        <input #inpescrowsequence matInput name="escrowsequence" min="0" matInput placeholder="Escrow Sequence Number" [(ngModel)]="escrowSequenceInput" (ngModelChange)="sequenceChanged()">
+        <mat-hint *ngIf="escrowSequenceInput && !validSequence">Not a valid Escrow Sequence</mat-hint>
+      </mat-form-field>
+    </form>
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
+      <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowCancel">
+        Send Escrow Cancel to XUMM
+      </button>
+      <label *ngIf="!escrowOwnerInput || !validAddress">Please enter a valid XRPL address.</label>
+      <label *ngIf="validAddress && ( !escrowSequenceInput || !validSequence )">Please enter a valid Escrow Sequence.</label>
     </div>
-    <mat-form-field [ngClass]="{'changed': showEscrowSequenceSelectedStyle}">
-      <input #inpescrowsequence matInput name="escrowsequence" min="0" matInput placeholder="Escrow Sequence Number" [(ngModel)]="escrowSequenceInput" (ngModelChange)="sequenceChanged()">
-      <mat-hint *ngIf="escrowSequenceInput && !validSequence">Not a valid Escrow Sequence</mat-hint>
-    </mat-form-field>
-  </form>
-  <div fxLayout="row" fxLayoutAlign="start center" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
-    <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowCancel">
-      Send Escrow Cancel to XUMM
-    </button>
-    <label *ngIf="!escrowOwnerInput || !validAddress">Please enter a valid XRPL address.</label>
-    <label *ngIf="validAddress && ( !escrowSequenceInput || !validSequence )">Please enter a valid Escrow Sequence.</label>
   </div>
 </mat-expansion-panel>

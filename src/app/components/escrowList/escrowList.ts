@@ -15,6 +15,9 @@ export class EscrowList implements OnInit, OnDestroy {
     escrowAccountChanged: Observable<XrplAccountChanged>;
 
     @Input()
+    isFinish: boolean;
+
+    @Input()
     isCancel: boolean;
 
     @Output()
@@ -24,7 +27,6 @@ export class EscrowList implements OnInit, OnDestroy {
     displayedColumns: string[] = ['destination', 'amount', 'finishafter', 'cancelafter', 'condition'];
     loading:boolean = false;
     testMode:boolean = false;
-    originalTestModeValue:boolean = false;
     escrowClicked:boolean = false;
 
     private escrowAccountChangedSubscription: Subscription;
@@ -50,9 +52,8 @@ export class EscrowList implements OnInit, OnDestroy {
     }
 
     async loadEscrowList(xrplAccount: string) {
-        this.googleAnalytics.analyticsEventEmitter('load_escrow_list', 'escrow_list', 'escrow_list_component');
-
         if(xrplAccount) {
+            this.googleAnalytics.analyticsEventEmitter('load_escrow_list', 'escrow_list', 'escrow_list_component');
             this.loading = true;
 
             let account_objects_request:any = {
@@ -80,17 +81,19 @@ export class EscrowList implements OnInit, OnDestroy {
     }
 
     async escrowSelected(escrow: any) {
-        this.googleAnalytics.analyticsEventEmitter('escrow_list_selected', 'escrow_list', 'escrow_list_component');
-        //console.log("escrow selected: " + JSON.stringify(escrow));
+        if(this.isCancel || this.isFinish) {
+            this.googleAnalytics.analyticsEventEmitter('escrow_list_selected', 'escrow_list', 'escrow_list_component');
+            //console.log("escrow selected: " + JSON.stringify(escrow));
 
-        let txInfo:any = {
-            command: "tx",
-            transaction: escrow.PreviousTxnID,
+            let txInfo:any = {
+                command: "tx",
+                transaction: escrow.PreviousTxnID,
+            }
+
+            let message:any = await this.xrplWebSocket.getWebsocketMessage(txInfo, this.testMode);
+
+            this.handleWebsocketMessage(message);
         }
-
-        let message:any = await this.xrplWebSocket.getWebsocketMessage(txInfo, this.testMode);
-
-        this.handleWebsocketMessage(message);
     }
 
     handleWebsocketMessage(message) {
@@ -99,8 +102,10 @@ export class EscrowList implements OnInit, OnDestroy {
                 let unfilteredList:any[] = message.result.account_objects;
                 if(this.isCancel)
                     this.escrowData = unfilteredList.filter(escrow => escrow.CancelAfter && (new Date((escrow.CancelAfter+946684800)*1000).getTime() < Date.now()));
+                else if(this.isFinish)
+                    this.escrowData = unfilteredList.filter(escrow => ((!escrow.FinishAfter && escrow.Condition) || (escrow.FinishAfter && new Date((escrow.FinishAfter+946684800)*1000).getTime() < Date.now())) && (!escrow.CancelAfter || new Date((escrow.CancelAfter+946684800)*1000).getTime() > Date.now()));
                 else
-                  this.escrowData = unfilteredList.filter(escrow => ((!escrow.FinishAfter && escrow.Condition) || (escrow.FinishAfter && new Date((escrow.FinishAfter+946684800)*1000).getTime() < Date.now())) && (!escrow.CancelAfter || new Date((escrow.CancelAfter+946684800)*1000).getTime() > Date.now()));
+                    this.escrowData = unfilteredList;
               
               //if data 0 (no available escrows) -> show message "no escrows available"
               if(this.escrowData.length == 0)

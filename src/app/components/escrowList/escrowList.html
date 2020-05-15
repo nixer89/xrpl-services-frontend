@@ -2,13 +2,14 @@
     <label>Loading escrows...&nbsp;</label>
     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
 </div>
-<label style="color: darkorange" *ngIf="!loading && !escrowData && !isCancel">No Escrows found that meet the EscrowFinish requirements.</label>
-<label style="color: darkorange" *ngIf="!loading && !escrowData && isCancel">No Escrows found that meet the EscrowCancel requirements.</label>
+<label style="color: darkorange" *ngIf="!loading && !escrowData && !isCancel && this.isFinish">No Escrows found that meet the EscrowFinish requirements.</label>
+<label style="color: darkorange" *ngIf="!loading && !escrowData && isCancel && !this.isFinish">No Escrows found that meet the EscrowCancel requirements.</label>
 <mat-accordion *ngIf="!loading && escrowData && escrowData.length > 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
     <mat-expansion-panel #mep>
         <mat-expansion-panel-header>
           <mat-panel-title>
-            Select Escrow from list
+            <span *ngIf="isCancel || isFinish">Select Escrow from list</span>
+            <span *ngIf="!isCancel && !isFinish">All escrows of the logged in account.</span>
           </mat-panel-title>
         </mat-expansion-panel-header>
         <mat-table [dataSource]="escrowData" class="mat-elevation-z8">
@@ -46,10 +47,10 @@
             </ng-container>
 
             <ng-container matColumnDef="condition">
-                <mat-header-cell *matHeaderCellDef > Has Condition </mat-header-cell>
+                <mat-header-cell *matHeaderCellDef > Has Password </mat-header-cell>
                 <mat-cell *matCellDef="let escrow" (click)="mep.expanded=false">
                     <span fxShow fxHide.xs ><mat-checkbox [checked]="escrow.Condition" [disabled]="true"></mat-checkbox></span>
-                    <span fxShow.xs fxHide><b>Has Condition:</b>&nbsp;<mat-checkbox [checked]="escrow.Condition" [disabled]="true"></mat-checkbox></span>
+                    <span fxShow.xs fxHide><b>Has Password:</b>&nbsp;<mat-checkbox [checked]="escrow.Condition" [disabled]="true"></mat-checkbox></span>
                 </mat-cell>
             </ng-container>
 
