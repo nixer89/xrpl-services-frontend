@@ -31,6 +31,9 @@
                     <label class="loading" ngStyle.xs="font-size: 0.8em;" >Loading account data...</label>
                     <mat-progress-spinner color="primary" mode="indeterminate" diameter=20></mat-progress-spinner>
                 </div>
+                <div fxLayout="row" fxLayoutAlign="center center" *ngIf="cannotConnectToNode">
+                    <label class="warning" ngStyle.xs="font-size: 0.8em;" >Cannot connect to the XRP Ledger! Check your internet connection!</label>
+                </div>
             </div>
         </div>
         <mat-card class="theme-background" fxShow fxHide.xs >

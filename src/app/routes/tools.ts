@@ -34,6 +34,7 @@ export class Tools implements OnInit {
   isTestMode:boolean = false;
 
   loadingData:boolean = false;
+  cannotConnectToNode:boolean = false;
 
   dismissInfo:boolean = false;
 
@@ -117,6 +118,8 @@ export class Tools implements OnInit {
   async loadAccountData(isInit?: boolean) {
     if(this.xrplAccount) {
       this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'tools_component');
+
+      this.cannotConnectToNode = false;
       this.loadingData = true;
 
       this.localStorage.set("xrplAccount", this.xrplAccount);
@@ -129,7 +132,7 @@ export class Tools implements OnInit {
       }
 
       let message:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.isTestMode);
-      console.log("tools account info: " + JSON.stringify(message));
+      //console.log("tools account info: " + JSON.stringify(message));
 
       if(message.status && message.type && message.type === 'response') {
         if(message.status === 'success') {
@@ -149,6 +152,8 @@ export class Tools implements OnInit {
         this.xrplAccount_Info = null;
         this.emitAccountInfoChanged();
       }
+
+      this.cannotConnectToNode = message && message.error && message.message === 'No node connection possible';
 
       if(isInit && this.snackBar)
         this.snackBar.dismiss();

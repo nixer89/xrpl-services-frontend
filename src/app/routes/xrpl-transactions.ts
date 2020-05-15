@@ -36,6 +36,7 @@ export class XrplTransactionsComponent implements OnInit {
   isTestMode:boolean = false;
 
   loadingData:boolean = false;
+  cannotConnectToNode:boolean = false;
 
   dismissInfo:boolean = false;
 
@@ -119,6 +120,7 @@ export class XrplTransactionsComponent implements OnInit {
   async loadAccountData(isInit?: boolean) {
     if(this.xrplAccount) {
       this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'xrpl_transactions_component');
+      this.cannotConnectToNode = false;
       this.loadingData = true;
 
       this.localStorage.set("xrplAccount", this.xrplAccount);
@@ -131,7 +133,7 @@ export class XrplTransactionsComponent implements OnInit {
       }
 
       let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage(account_info_request, this.isTestMode);
-      console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
+      //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
 
       if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
         if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
@@ -147,32 +149,37 @@ export class XrplTransactionsComponent implements OnInit {
         this.emitAccountInfoChanged();
       }
 
+      this.cannotConnectToNode = message_acc_info && message_acc_info.error && message_acc_info.message === 'No node connection possible';
 
-      let account_objects_request:any = {
-        command: "account_objects",
-        account: this.xrplAccount,
-        type: "signer_list",
-      }
+      if(!this.cannotConnectToNode) {
 
-      let message_acc_objects:any = await this.xrplWebsocket.getWebsocketMessage(account_objects_request, this.isTestMode);
-      console.log("xrpl-transactions account objects:: " + JSON.stringify(message_acc_objects));
+        let account_objects_request:any = {
+          command: "account_objects",
+          account: this.xrplAccount,
+          type: "signer_list",
+        }
 
-      if(message_acc_objects && message_acc_objects.status && message_acc_objects.type && message_acc_objects.type === 'response') {
-        if(message_acc_objects.status === 'success' && message_acc_objects.result && message_acc_objects.result.account_objects) {
-          this.xrplAccount_Objects = message_acc_objects.result.account_objects;
-          //console.log("xrplAccount_Objects: " + JSON.stringify(this.xrplAccount_Objects));
-          this.emitAccountObjectsChanged();
+        let message_acc_objects:any = await this.xrplWebsocket.getWebsocketMessage(account_objects_request, this.isTestMode);
+        //console.log("xrpl-transactions account objects:: " + JSON.stringify(message_acc_objects));
+
+        if(message_acc_objects && message_acc_objects.status && message_acc_objects.type && message_acc_objects.type === 'response') {
+          if(message_acc_objects.status === 'success' && message_acc_objects.result && message_acc_objects.result.account_objects) {
+            this.xrplAccount_Objects = message_acc_objects.result.account_objects;
+            //console.log("xrplAccount_Objects: " + JSON.stringify(this.xrplAccount_Objects));
+            this.emitAccountObjectsChanged();
+          } else {
+            this.xrplAccount_Objects = message_acc_objects;
+            this.emitAccountObjectsChanged();
+          }
         } else {
-          this.xrplAccount_Objects = message_acc_objects;
+          this.xrplAccount_Objects = null;
           this.emitAccountObjectsChanged();
         }
-      } else {
-        this.xrplAccount_Objects = null;
-        this.emitAccountObjectsChanged();
-      }
 
-      if(isInit && this.snackBar)
-        this.snackBar.dismiss();
+        if(isInit && this.snackBar)
+          this.snackBar.dismiss();
+
+      }
 
       this.loadingData = false;
     } else {
