@@ -68,6 +68,7 @@
     <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
         <norippleCheck [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></norippleCheck>
         <rawTransactions [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></rawTransactions>
+        <multiSignFlow></multiSignFlow>
         <transactionScheduler></transactionScheduler>
     </mat-accordion>
 </mat-card>

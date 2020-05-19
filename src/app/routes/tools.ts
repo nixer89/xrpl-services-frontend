@@ -6,8 +6,7 @@ import { Subject } from 'rxjs'
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
-import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged, GenericBackendPostRequestOptions } from '../utils/types';
-import { XummPostPayloadBodyJson } from 'xumm-api';
+import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged } from '../utils/types';
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -60,12 +59,6 @@ export class Tools implements OnInit {
 
     this.dismissInfo = this.localStorage && this.localStorage.get("dismissInfo");
 
-    //this.xrplAccount="r3K1TgPvTPkWZR2Lhawpvv9YR7yYuqSXBp";
-    //this.isTestMode = true;
-    //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
-    //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
-    //await this.loadAccountData(false);
-
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;
       let signinToValidate = params.signinToValidate;
@@ -109,6 +102,12 @@ export class Tools implements OnInit {
         this.loadAccountData(true);
       }
     });
+
+    //this.xrplAccount="r3K1TgPvTPkWZR2Lhawpvv9YR7yYuqSXBp";
+    //this.isTestMode = true;
+    //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
+    //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
+    //await this.loadAccountData(false);
   }
 
   changeNetwork() {

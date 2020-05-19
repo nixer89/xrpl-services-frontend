@@ -32,7 +32,7 @@
         <iouList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></iouList>
       </div>
       <mat-form-field [ngClass]="{'changed': showIssuedCurrencySelectedStyle}">
-        <input #inpissuedcurrency matInput name="issuedcurrency" matInput placeholder="IOU currency code" [(ngModel)]="issuedCurrencyInput" (ngModelChange)="currencyChanged()" [disabled]="isEditMode">
+        <input #inpissuedcurrency matInput name="issuedcurrency" matInput placeholder="IOU currency code" [(ngModel)]="currencyCodeAsAscii" (ngModelChange)="currencyChanged()" [disabled]="isEditMode">
         <mat-hint *ngIf="issuedCurrencyInput && !validCurrency">Not a valid IOU currency</mat-hint>
       </mat-form-field>
       <mat-form-field>

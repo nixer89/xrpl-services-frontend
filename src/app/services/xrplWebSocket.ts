@@ -4,12 +4,13 @@ import { Injectable, Optional, SkipSelf } from '@angular/core';
 @Injectable()
 export class XRPLWebsocket {
     
-    websocket: WebSocketSubject<any>;
     originalTestModeValue:boolean = false;
     liveNodes:string[] = ['wss://xrpl.ws', 'wss://s2.ripple.com'];
-    testNodes:string[] = ['wss://testneto.xrpl-labs.com', 'wss://s.altnet.rippletest.net'];
+    testNodes:string[] = ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net'];
     liveFirst:boolean = true;
     testFirst:boolean = true;
+
+    websocketMap:Map<string, any> = new Map();
 
     constructor (@Optional() @SkipSelf() parentModule?: XRPLWebsocket) {
         if (parentModule) {
@@ -20,26 +21,32 @@ export class XRPLWebsocket {
 
     getWebsocketMessage(command:any, newTestMode:boolean, retry?:boolean): Promise<any> {
 
-        if(this.websocket && this.originalTestModeValue != newTestMode) {
+        if(this.websocketMap.get(command.command) && this.websocketMap.get(command.command).mode != newTestMode) {
             //console.log("test mode changed")
-            this.websocket.unsubscribe();
-            this.websocket.complete();
-            this.websocket = null;
+            this.websocketMap.get(command.command).socket.unsubscribe();
+            this.websocketMap.get(command.command).socket.complete();
+            this.websocketMap.delete(command.command)
+
+            console.log("websockets: " + this.websocketMap.size);
         }
 
-        if(!this.websocket || this.websocket.closed) {
+        if(!this.websocketMap.get(command.command) || this.websocketMap.get(command.command).socket.closed) {
 
             this.originalTestModeValue = newTestMode;
             console.log("connecting websocket with testmode: " + this.originalTestModeValue);
-            this.websocket = webSocket(this.originalTestModeValue ? (this.testFirst ? this.testNodes[0] : this.testNodes[1]) : (this.liveFirst ? this.liveNodes[0] : this.liveNodes[1]));
+            let newWebsocket = webSocket(this.originalTestModeValue ? (this.testFirst ? this.testNodes[0] : this.testNodes[1]) : (this.liveFirst ? this.liveNodes[0] : this.liveNodes[1]));
+
+            this.websocketMap.set(command.command, {socket: newWebsocket, mode: newTestMode});
+
+            console.log("websockets: " + this.websocketMap.size);
         }
 
         return new Promise((resolve, reject) => {
-            this.websocket.asObservable().subscribe(async message => {
+            this.websocketMap.get(command.command).socket.asObservable().subscribe(async message => {
                 resolve(message);
             }, async error => {
-                this.websocket.complete();
-                this.websocket = null;
+                this.websocketMap.get(command.command).socket.complete();
+                this.websocketMap.delete(command.command)
                 
                 if(!retry) {
                     console.log("could not connect websocket! changing node!");
@@ -49,7 +56,8 @@ export class XRPLWebsocket {
                 }
             });
 
-            this.websocket.next(command);
+            console.log("setting up command: " + JSON.stringify(command))
+            this.websocketMap.get(command.command).socket.next(command);
         });        
     }
 

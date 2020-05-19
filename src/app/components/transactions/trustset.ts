@@ -30,11 +30,10 @@ export class TrustSetComponent implements OnInit, OnDestroy {
   @ViewChild('inpisseraccount', {static: false}) inpisseraccount;
   issuerAccountInput: string;
 
-  @ViewChild('inpissuedcurrency', {static: false}) inpissuedcurrency;
-  issuedCurrencyInput: string;
-
   @ViewChild('inplimit', {static: false}) inplimit;
   limitInput: string;
+
+  issuedCurrencyInput: string;
 
   maxFifthteenDigits:boolean = false;
 
@@ -152,7 +151,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     //console.log("destinationInput: " + this.destinationInput);
     //console.log(this.issuerAccountInput);
 
-    this.validCurrency = this.issuedCurrencyInput && this.issuedCurrencyInput.trim().length >= 3;
+    this.validCurrency = this.issuedCurrencyInput && this.issuedCurrencyInput.trim().length >= 3 && this.issuedCurrencyInput.length <= 40;
     this.validAddress = this.issuerAccountInput && this.issuerAccountInput.trim().length > 0 && this.isValidXRPAddress(this.issuerAccountInput.trim());
 
     if(this.validCurrency) {
@@ -245,7 +244,11 @@ export class TrustSetComponent implements OnInit, OnDestroy {
   }
 
   onIssuedCurrencyFound(iou:any) {
-    this.issuedCurrencyInput = iou.currency;
+    if(iou.currency.length === 3)
+      this.issuedCurrencyInput = iou.currency;
+    else
+      
+
     this.checkChanges();
 
     this.issuedCurrencySelected = true;
@@ -287,15 +290,21 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     this.isEditMode = false;
   }
 
-  getCurrencyCode(currency: string): string {
-    if(currency) {
-        if(currency.length == 40)
-            //hex to ascii
-            return Buffer.from(currency, 'hex').toString('ascii').trim();
-        else
-            return currency;
-    } else
-        return ""
+  get currencyCodeAsAscii() {
+    if(this.issuedCurrencyInput && this.issuedCurrencyInput.length > 3)
+      return Buffer.from(this.issuedCurrencyInput, "hex").toString().trim();
+    else
+      return this.issuedCurrencyInput;
+  }
+
+  set currencyCodeAsAscii(currency: string) {
+    console.log("currency to change: " + currency);
+    if(currency.length > 3)
+      this.issuedCurrencyInput = Buffer.from(currency.trim(), "ascii").toString("hex").toUpperCase(); 
+    else
+      this.issuedCurrencyInput = currency;
+
+    console.log("new currency code: " + this.issuedCurrencyInput);
   }
 
 }

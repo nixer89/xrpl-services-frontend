@@ -36,8 +36,9 @@ import { AccountDeleteComponent } from './components/transactions/accountdelete'
 
 //Tools
 import { NoRippleCheckComponent } from './components/tools/norippleCheck';
-import { TransactionSchedulerComponent } from './components/tools/transactionScheduler';
 import { RawTransactionsComponent } from './components/tools/rawTransactions';
+import { TransactionSchedulerComponent } from './components/tools/transactionScheduler';
+import { MultiSignFlowComponent } from './components/tools/multiSignFlow';
 
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -101,7 +102,8 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
     NoRippleCheckComponent,
     TransactionSchedulerComponent,
     AccountDeleteComponent,
-    RawTransactionsComponent
+    RawTransactionsComponent,
+    MultiSignFlowComponent
   ],
   imports: [
     BrowserModule,

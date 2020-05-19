@@ -61,13 +61,6 @@ export class XrplTransactionsComponent implements OnInit {
 
     this.dismissInfo = this.localStorage && this.localStorage.get("dismissInfo");
 
-    //this.xrplAccount="rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF";
-    //this.isTestMode = true;
-    //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
-    
-    //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
-    //await this.loadAccountData(false);
-
     this.route.queryParams.subscribe(async params => {
       let payloadId = params.payloadId;
       let signinToValidate = params.signinToValidate;
@@ -111,6 +104,13 @@ export class XrplTransactionsComponent implements OnInit {
         this.loadAccountData(true);
       }
     });
+
+    this.xrplAccount="rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF";
+    //this.isTestMode = true;
+    //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
+    
+    //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
+    await this.loadAccountData(false);
   }
 
   changeNetwork() {
