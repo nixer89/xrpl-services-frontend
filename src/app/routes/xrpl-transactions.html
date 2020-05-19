@@ -38,7 +38,7 @@
         </div>
         <mat-card class="theme-background" fxShow fxHide.xs >
             <div fxLayout="column" fxLayoutAlign="start center">
-                <label>Network</label>
+                <label>XRPL Network</label>
                 <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
                     <label>Live</label>&nbsp;
                     <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()" [disabled]="loadingData" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
@@ -49,7 +49,7 @@
     </div>
     <mat-card fxShow.xs fxHide class="theme-background floatcenter" style="font-size: 0.8em;">
         <div fxLayout="column" fxLayoutAlign="start center">
-            <label>Network</label>
+            <label>XRPL Network</label>
             <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
                 <label>Live</label>&nbsp;
                 <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="loadAccountData()" [disabled]="loadingData" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
