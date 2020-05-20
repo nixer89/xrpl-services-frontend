@@ -130,7 +130,7 @@ export class Tools implements OnInit {
         "strict": true,
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage("tools", account_info_request, this.isTestMode);
       //console.log("tools account info: " + JSON.stringify(message));
 
       if(message.status && message.type && message.type === 'response') {

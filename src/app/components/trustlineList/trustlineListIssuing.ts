@@ -1,17 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { XrplAccountChanged } from 'src/app/utils/types';
+import { XrplAccountChanged, TrustLine } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
-
-interface TrustLine {
-    account:string,
-    balance: string,
-    currency: string,
-    limit: string,
-    limit_peer: string,
-    no_ripple: boolean
-}
 
 @Component({
     selector: "trustlineListIssuing",
@@ -47,8 +38,8 @@ export class TrustLineListIssuing implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.recipientAccountChangedSubscription = this.recipientAccountChanged.subscribe(recipientAccountInfo => {
-            //console.log("trustline account changed received: " + xrplAccount);
-            //console.log("test mode: " + this.testMode);
+            //console.log("recipientAccountChanged " + JSON.stringify(recipientAccountInfo));
+            //console.log("test mode: " + recipientAccountInfo.mode);
             this.recipientAccount = recipientAccountInfo.account;
             this.testMode = recipientAccountInfo.mode;
             
@@ -59,8 +50,8 @@ export class TrustLineListIssuing implements OnInit, OnDestroy {
         });
 
         this.issuerAccountChangedSubscription = this.issuerAccountChanged.subscribe(isserAccountInfo => {
-            //console.log("trustline account changed received: " + xrplAccount);
-            //console.log("test mode: " + this.testMode);
+            //console.log("issuerAccountChanged: " + JSON.stringify(isserAccountInfo));
+            //console.log("test mode: " + isserAccountInfo.mode);
             this.issuerAccount = isserAccountInfo.account;
             this.testMode = isserAccountInfo.mode;
             
@@ -94,18 +85,24 @@ export class TrustLineListIssuing implements OnInit, OnDestroy {
               peer: this.issuerAccount
             }
 
-            let message:any = await this.xrplWebSocket.getWebsocketMessage(account_lines_request, this.testMode);
+            let message:any = await this.xrplWebSocket.getWebsocketMessage("trustlineListIssuing", account_lines_request, this.testMode);
       
             if(message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.lines) {
                 this.trustLines = message.result.lines;
 
-                if(this.trustLines && this.trustLines.length > 0)
+                if(this.trustLines && this.trustLines.length > 0) {
                     this.trustLines = this.trustLines.sort((lineA, lineB) => lineA.currency.localeCompare(lineB.currency));
+                    this.trustLines.forEach(trustline => {
+                        trustline.balanceN = Number(trustline.balance);
+                        trustline.limitN = Number(trustline.limit);
+                    })
+                }
             
                 //if data 0 (no available trustlines) -> show message "no trustlines available"
                 if(this.trustLines && this.trustLines.length == 0)
                     this.trustLines = null;
                     
+                //console.log("Trust lines: " + JSON.stringify(this.trustLines));
                 this.loading = false;
             } else if(message.status && message.status === 'error' && message.error === 'actNotFound') {
                 this.trustLines = null;
@@ -128,10 +125,13 @@ export class TrustLineListIssuing implements OnInit, OnDestroy {
 
     getCurrencyCode(currency: string): string {
         if(currency) {
-            if(currency.length == 40)
+            if(currency.length == 40) {
+                while(currency.endsWith("00")) {
+                    currency = currency.substring(0, currency.length-2);
+                }
                 //hex to ascii
                 return Buffer.from(currency, 'hex').toString('ascii').trim();
-            else
+            } else
                 return currency;
         } else
             return ""

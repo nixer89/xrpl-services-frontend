@@ -82,6 +82,11 @@ export class IssueMoreIOU implements OnInit {
         }
       }
     });
+
+    //this.issuerAccount = "r3K1TgPvTPkWZR2Lhawpvv9YR7yYuqSXBp";
+    //this.isTestMode = true;
+    //this.validIssuer = true;
+    //this.issuerAccountChangedSubject.next({account: this.issuerAccount, mode: this.isTestMode});
   }
 
   getIssuer(): string {
@@ -98,7 +103,7 @@ export class IssueMoreIOU implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
-      console.log('The signin dialog was closed: ' + JSON.stringify(info));
+      //console.log('The signin dialog was closed: ' + JSON.stringify(info));
       this.handleSignInInfo(info)
     });
   }
@@ -186,20 +191,21 @@ export class IssueMoreIOU implements OnInit {
   issueIOU() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
-        issuing: true
+        issuing: true,
+        xrplAccount: this.getIssuer()
       },
       payload: {
         txjson: {
           TransactionType: "Payment",
           Destination: this.recipientAccountInput.trim(),
           Amount: {
-            currency: this.currencyCode.trim(),
+            currency: this.currencyCode,
             issuer: this.issuerAccount.trim(),
             value: this.numberOfTokens.toString().trim()
           }
         },
         custom_meta: {
-          instruction: "- Issuing " + this.numberOfTokens + " " + this.currencyCode + " to: " + this.recipientAccountInput.trim() + "\n\n- Please sign with the ISSUER account!"
+          instruction: "- Issuing " + this.numberOfTokens + " " + this.getCurrencyCodeAscii(this.currencyCode) + " to: " + this.recipientAccountInput.trim() + "\n\n- Please sign with the ISSUER account!"
         }
       }
     } 
@@ -211,7 +217,7 @@ export class IssueMoreIOU implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
-      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+      //console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
       this.handleTransactionInfo(info);
     });
@@ -223,6 +229,21 @@ export class IssueMoreIOU implements OnInit {
     else
       return 0;
   }
+
+  getCurrencyCodeAscii(currency: string): string {
+    if(currency) {
+        if(currency.length == 40) {
+            while(currency.endsWith("00")) {
+                currency = currency.substring(0, currency.length-2);
+            }
+
+            //hex to ascii
+            return Buffer.from(currency, 'hex').toString('ascii').trim();
+        } else
+            return currency;
+    } else
+        return ""
+}
 
   clearIssuerAccount() {
     this.issuerAccount = null;

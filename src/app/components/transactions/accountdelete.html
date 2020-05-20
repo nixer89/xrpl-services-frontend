@@ -5,7 +5,7 @@
       <span class="loading" style="margin-left: 0.5em;"> Account Delete </span>
     </mat-panel-title>
     <mat-panel-description>
-      An AccountDelete transaction deletes an account and any objects it owns in the XRP Ledger, if possible, sending the account's remaining XRP to a specified destination account.
+      Delete your XRP Ledger account to get back 15 XRP of the wallet reserve.
     </mat-panel-description>
   </mat-expansion-panel-header>
   <mat-expansion-panel-header fxShow.xs fxHide>
@@ -25,8 +25,10 @@
       <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
     </div>
     <div *ngIf="!loadingPreconditions && !preconditionsFullFilled" fxLayout="column" fxLayoutGap="0.3em">
-      <label class="warning" style="white-space: pre-wrap;">{{this.errorMsg}}</label>
-      <label>You can view the AccountDelete requirements <a href="https://xrpl.org/accounts.html#deletion-of-accounts" target="_blank">here.</a></label>
+      <mat-card fxLayout="column" fxLayoutGap="0.3em">
+        <label class="warning" style="white-space: pre-wrap;">{{this.errorMsg}}</label>
+        <label>You can view the AccountDelete requirements <a href="https://xrpl.org/accounts.html#deletion-of-accounts" target="_blank">here.</a></label>
+      </mat-card>
     </div>
     <form *ngIf="!loadingPreconditions && preconditionsFullFilled" fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
@@ -45,7 +47,7 @@
       </mat-form-field>
     </form>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
-      <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validDestinationAddress || loadingDestinationAccount || !destinationAccountExists || (destinationTagInput && !validTag) || (originalAccountInfo && (destinationTagInput && destinationTagInput.trim() === originalAccountInfo.Account))">
+      <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validDestinationAddress || loadingDestinationAccount || !destinationAccountExists || (destinationTagInput && !validTag) || (originalAccountInfo && (originalAccountInfo.error || (destinationTagInput && destinationTagInput.trim() === originalAccountInfo.Account)))">
         Send Account Delete to XUMM
       </button>
     </div>

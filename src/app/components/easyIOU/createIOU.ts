@@ -102,7 +102,7 @@ export class CreateIOU implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
-      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+      //console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
       if(info && info.success && info.account && (!info.testnet || this.isTestMode)) {
         if(this.isValidXRPAddress(info.account))
@@ -126,7 +126,7 @@ export class CreateIOU implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
-      console.log('The signin dialog was closed: ' + JSON.stringify(info));
+      //console.log('The signin dialog was closed: ' + JSON.stringify(info));
       this.loadingIssuerAccount = true;
 
       if(info && info.success && info.account && this.isValidXRPAddress(info.account)) {
@@ -189,7 +189,7 @@ export class CreateIOU implements OnInit {
         "strict": true,
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage("easyIOU", account_info_request, this.isTestMode);
       //console.log("websocket message: " + JSON.stringify(message));
       if(message.status && message.type && message.type === 'response') {
         if(message.status === 'success') {
@@ -243,7 +243,7 @@ export class CreateIOU implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
-      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+      //console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
       if(info && info.success && info.testnet == this.isTestMode) {
         if(this.issuerAccount === info.account)
@@ -258,7 +258,23 @@ export class CreateIOU implements OnInit {
   }
 
   checkChangesCurrencyCode() {
-    this.validCurrencyCode = this.currencyCode && /^[a-zA-Z\d?!@#$%^&*<>(){}[\]|]{3}$/.test(this.currencyCode) && this.currencyCode != "XRP";
+    this.validCurrencyCode = this.currencyCode && /^[a-zA-Z\d?!@#$%^&*<>(){}[\]|]{3,20}$/.test(this.currencyCode) && this.currencyCode != "XRP";
+  }
+
+  getCurrencyCodeForXRPL() {
+    let currency = this.currencyCode.trim();
+
+    if(currency && currency.length > 3) {
+      currency = Buffer.from(currency, 'ascii').toString('hex').toUpperCase();
+
+      while(currency.length < 40)
+        currency+="0";
+
+      return currency
+
+    } else {
+      return currency;
+    }
   }
 
   checkChangesLimit() {
@@ -278,7 +294,7 @@ export class CreateIOU implements OnInit {
           TransactionType: "TrustSet",
           Flags: 131072, //no ripple
           LimitAmount: {
-            currency: this.currencyCode.trim(),
+            currency: this.getCurrencyCodeForXRPL(),
             issuer: this.issuerAccount.trim(),
             value: this.limit.toString().trim()
           }
@@ -296,7 +312,7 @@ export class CreateIOU implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
-      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+      //console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
          this.recipientTrustlineSet = true;
@@ -318,7 +334,7 @@ export class CreateIOU implements OnInit {
           TransactionType: "Payment",
           Destination: this.recipientAddress,
           Amount: {
-            currency: this.currencyCode.trim(),
+            currency: this.getCurrencyCodeForXRPL(),
             issuer: this.issuerAccount.trim(),
             value: this.limit.toString().trim()
           }
@@ -336,7 +352,7 @@ export class CreateIOU implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
-      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+      //console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.weHaveIssued = true;
@@ -370,7 +386,7 @@ export class CreateIOU implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
-      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+      //console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.blackholeRegularKeySet = true;
@@ -405,7 +421,7 @@ export class CreateIOU implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
-      console.log('The generic dialog was closed: ' + JSON.stringify(info));
+      //console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.blackholeMasterDisabled = true;

@@ -49,7 +49,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
-      //console.log("account info changed received")
+      console.log("account info changed received: " + JSON.stringify(accountData.info));
       this.originalAccountInfo = accountData.info;
       this.isTestMode = accountData.mode;
       
@@ -89,10 +89,10 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         command: "account_objects",
         ledger_index: "validated",
         account: this.originalAccountInfo.Account,
-        limit: 400
+        limit: 201
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_objects_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", account_objects_request, this.isTestMode);
 
       this.handleWebSocketMessagePreconditions(message, accountObjects);
     }
@@ -115,16 +115,18 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         if(accountObjects.length > 1000) {
           //console.log("too many objects");
           this.preconditionsFullFilled = false;
-        } else if(message.result.account_objects.marker) {
+          this.errorMsg = "Your account owns too many objects and cannot be deleted."
+          this.loadingPreconditions = false;
+        } else if(message.result.marker) {
           let marker_command:any = {
             command: "account_objects",
-            ledger_index: message.result.account_objects.ledger_index,
+            ledger_index: message.result.ledger_index,
             account: this.originalAccountInfo.Account,
             limit: 400,
-            marker: message.result.account_objects.marker
+            marker: message.result.marker
           };
 
-          let message_marker:any = await this.xrplWebSocket.getWebsocketMessage(marker_command, this.isTestMode);
+          let message_marker:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", marker_command, this.isTestMode);
 
           this.handleWebSocketMessagePreconditions(message_marker, accountObjects);
         } else {
@@ -159,7 +161,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
             if(checks > 0)
               this.errorMsg += "\n- Checks: " + checks;
 
-            this.errorMsg+= "\n\nYou can delete your account only if you have non of the above objects linked to your account."
+            this.errorMsg+= "\n\nYou can only delete your account if you have not linked any of the above objects to your account."
           } else {
             this.preconditionsFullFilled = true;
           }
@@ -187,7 +189,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         "strict": true,
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", account_info_request, this.isTestMode);
 
       if(message.status && message.type && message.type === 'response') {
         if(message.status === 'success') {

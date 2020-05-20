@@ -1,13 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { XrplAccountChanged } from 'src/app/utils/types';
+import { XrplAccountChanged, IOU } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
-
-interface IOU {
-    currency: string,
-    amount: string
-}
 
 @Component({
     selector: "iouList",
@@ -20,7 +15,7 @@ export class IouList implements OnInit, OnDestroy {
     issuerAccountChanged: Observable<XrplAccountChanged>;
 
     @Output()
-    issuerCurrencySelected: EventEmitter<any> = new EventEmitter();
+    issuerCurrencySelected: EventEmitter<IOU> = new EventEmitter();
     
     iouList:IOU[] = [];
     displayedColumns: string[] = ['currency', 'amount'];
@@ -67,7 +62,7 @@ export class IouList implements OnInit, OnDestroy {
               ledger_index: "validated",
             }
       
-            let message:any = await this.xrplWebSocket.getWebsocketMessage(gateway_balances_request, this.testMode);
+            let message:any = await this.xrplWebSocket.getWebsocketMessage("iouList", gateway_balances_request, this.testMode);
 
             if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.obligations) {
                 this.iouList = [];
@@ -96,7 +91,7 @@ export class IouList implements OnInit, OnDestroy {
         }
     }
 
-    iouSelected(iou: any) {
+    iouSelected(iou: IOU) {
         this.googleAnalytics.analyticsEventEmitter('iou_list_selected', 'iou_list', 'iou_list_component');
         //console.log("iou selected: " + JSON.stringify(iou));
         this.issuerCurrencySelected.emit(iou)
@@ -108,10 +103,14 @@ export class IouList implements OnInit, OnDestroy {
 
     getCurrencyCode(currency: string): string {
         if(currency) {
-            if(currency.length == 40)
+            if(currency.length == 40) {
+                while(currency.endsWith("00")) {
+                    currency = currency.substring(0, currency.length-2);
+                }
+
                 //hex to ascii
                 return Buffer.from(currency, 'hex').toString('ascii').trim();
-            else
+            } else
                 return currency;
         } else
             return ""

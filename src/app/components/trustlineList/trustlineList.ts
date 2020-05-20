@@ -2,17 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angu
 import { Observable, Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import * as util from '../../utils/flagutils';
-import { AccountInfoChanged } from 'src/app/utils/types';
+import { AccountInfoChanged, TrustLine } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
-
-interface TrustLine {
-    account:string,
-    balance: string,
-    currency: string,
-    limit: string,
-    limit_peer: string,
-    no_ripple: boolean
-}
 
 @Component({
     selector: "trustlineList",
@@ -25,13 +16,13 @@ export class TrustLineList implements OnInit, OnDestroy {
     xrplAccountInfoChanged: Observable<AccountInfoChanged>;
 
     @Output()
-    trustLineEdit: EventEmitter<any> = new EventEmitter();
+    trustLineEdit: EventEmitter<TrustLine> = new EventEmitter();
 
     @Output()
-    trustLineDelete: EventEmitter<any> = new EventEmitter();
+    trustLineDelete: EventEmitter<TrustLine> = new EventEmitter();
 
     @Output()
-    disableRippling: EventEmitter<any> = new EventEmitter();
+    disableRippling: EventEmitter<TrustLine> = new EventEmitter();
     
     trustLines:TrustLine[] = [];
     displayedColumns: string[] = ['currency', 'account','balance', 'limit', 'limit_peer', 'no_ripple', 'actions'];
@@ -68,7 +59,7 @@ export class TrustLineList implements OnInit, OnDestroy {
     async loadTrustLineList(xrplAccount: string) {
         this.googleAnalytics.analyticsEventEmitter('load_trustline_list', 'trustline_list', 'trustline_list_component');
 
-        console.log("load trustlines");
+        //console.log("load trustlines");
 
         if(xrplAccount) {
             this.loading = true;
@@ -79,7 +70,7 @@ export class TrustLineList implements OnInit, OnDestroy {
               ledger_index: "validated",
             }
 
-            let message:any = await this.xrplWebSocket.getWebsocketMessage(account_lines_request, this.testMode);
+            let message:any = await this.xrplWebSocket.getWebsocketMessage("trustlineList", account_lines_request, this.testMode);
 
             if(message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.lines) {
                 this.trustLines = message.result.lines;
@@ -129,10 +120,14 @@ export class TrustLineList implements OnInit, OnDestroy {
 
     getCurrencyCode(currency: string): string {
         if(currency) {
-            if(currency.length == 40)
+            if(currency.length == 40) {
+
+                while(currency.endsWith("00")) {
+                    currency = currency.substring(0, currency.length-2);
+                }
                 //hex to ascii
                 return Buffer.from(currency, 'hex').toString('ascii').trim();
-            else
+            } else
                 return currency;
         } else
             return ""

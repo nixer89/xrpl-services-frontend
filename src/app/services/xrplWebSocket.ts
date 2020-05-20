@@ -1,4 +1,4 @@
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
+import { webSocket } from 'rxjs/webSocket';
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 
 @Injectable()
@@ -19,34 +19,35 @@ export class XRPLWebsocket {
         }
     }
 
-    getWebsocketMessage(command:any, newTestMode:boolean, retry?:boolean): Promise<any> {
+    getWebsocketMessage(componentname:string, command:any, newTestMode:boolean, retry?:boolean): Promise<any> {
 
-        if(this.websocketMap.get(command.command) && this.websocketMap.get(command.command).mode != newTestMode) {
+        if(this.websocketMap.get(componentname) && this.websocketMap.get(componentname).mode != newTestMode) {
             //console.log("test mode changed")
-            this.websocketMap.get(command.command).socket.unsubscribe();
-            this.websocketMap.get(command.command).socket.complete();
-            this.websocketMap.delete(command.command)
+            this.websocketMap.get(componentname).socket.unsubscribe();
+            this.websocketMap.get(componentname).socket.complete();
+            this.websocketMap.delete(componentname)
 
-            console.log("websockets: " + this.websocketMap.size);
+            //console.log("websockets: " + this.websocketMap.size);
         }
 
-        if(!this.websocketMap.get(command.command) || this.websocketMap.get(command.command).socket.closed) {
+        if(!this.websocketMap.get(componentname) || this.websocketMap.get(componentname).socket.closed) {
 
             this.originalTestModeValue = newTestMode;
             console.log("connecting websocket with testmode: " + this.originalTestModeValue);
             let newWebsocket = webSocket(this.originalTestModeValue ? (this.testFirst ? this.testNodes[0] : this.testNodes[1]) : (this.liveFirst ? this.liveNodes[0] : this.liveNodes[1]));
 
-            this.websocketMap.set(command.command, {socket: newWebsocket, mode: newTestMode});
+            this.websocketMap.set(componentname, {socket: newWebsocket, mode: newTestMode, isBusy: false});
 
-            console.log("websockets: " + this.websocketMap.size);
+            //console.log("websockets: " + this.websocketMap.size);
         }
 
         return new Promise((resolve, reject) => {
-            this.websocketMap.get(command.command).socket.asObservable().subscribe(async message => {
+            this.websocketMap.get(componentname).socket.asObservable().subscribe(async message => {
+                //console.log(JSON.stringify(message));
                 resolve(message);
             }, async error => {
-                this.websocketMap.get(command.command).socket.complete();
-                this.websocketMap.delete(command.command)
+                this.websocketMap.get(componentname).socket.complete();
+                this.websocketMap.delete(componentname)
                 
                 if(!retry) {
                     console.log("could not connect websocket! changing node!");
@@ -56,8 +57,8 @@ export class XRPLWebsocket {
                 }
             });
 
-            console.log("setting up command: " + JSON.stringify(command))
-            this.websocketMap.get(command.command).socket.next(command);
+            //console.log("setting up command: " + JSON.stringify(command))
+            this.websocketMap.get(componentname).socket.next(command);
         });        
     }
 

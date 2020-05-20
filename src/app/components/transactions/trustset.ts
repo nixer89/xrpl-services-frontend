@@ -3,7 +3,7 @@ import { Encode } from 'xrpl-tagged-address-codec';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { AccountInfoChanged, XrplAccountChanged } from 'src/app/utils/types';
+import { AccountInfoChanged, XrplAccountChanged, IOU, TrustLine } from 'src/app/utils/types';
 
 @Component({
   selector: 'trustset',
@@ -110,8 +110,13 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     }
 
     if(this.issuedCurrencyInput && this.validCurrency) {
-      payload.txjson.LimitAmount.currency = this.issuedCurrencyInput.trim();
-      payload.custom_meta.instruction += "\n- IOU currency code: " + this.issuedCurrencyInput.trim();
+      let currencyCode = this.issuedCurrencyInput;
+      if(currencyCode.length > 3) {
+        while(currencyCode.length < 40)
+          currencyCode+="0";
+      }
+      payload.txjson.LimitAmount.currency = currencyCode;
+      payload.custom_meta.instruction += "\n- IOU currency code: " + this.currencyCodeAsAscii;
     }
 
     if(this.limitInput && this.validLimit) {
@@ -205,7 +210,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     this.issuerAccountChangedSubject.next({account: null, mode: this.testMode});
   }
 
-  onTrustLineEdit(trustline:any) {
+  onTrustLineEdit(trustline:TrustLine) {
     this.isEditMode = true;
     this.issuerAccountInput = trustline.account;
     this.issuedCurrencyInput = trustline.currency;
@@ -213,7 +218,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     this.checkChanges();
   }
 
-  onDisableRippling(trustline:any) {
+  onDisableRippling(trustline:TrustLine) {
     //console.log("onDisableRippling");
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'onDisableRippling', 'trust_set_component');
 
@@ -232,8 +237,13 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     payload.txjson.LimitAmount.issuer = trustline.account;
     payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
 
-    payload.txjson.LimitAmount.currency = trustline.currency;
-    payload.custom_meta.instruction += "\n- IOU currency code: " + trustline.currency;
+    let currencyCode = trustline.currency;
+    if(currencyCode.length > 3) {
+      while(currencyCode.length < 40)
+        currencyCode+="0";
+    }
+    payload.txjson.LimitAmount.currency = currencyCode;
+    payload.custom_meta.instruction += "\n- IOU currency code: " + trustline.currency
 
     payload.txjson.LimitAmount.value = trustline.limit
     payload.custom_meta.instruction += "\n- Limit: " + trustline.limit;
@@ -243,11 +253,11 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     this.onPayload.emit(payload);
   }
 
-  onIssuedCurrencyFound(iou:any) {
-    if(iou.currency.length === 3)
-      this.issuedCurrencyInput = iou.currency;
-    else
-      
+  onIssuedCurrencyFound(iou:IOU) {
+
+    
+
+    this.issuedCurrencyInput = iou.currency;
 
     this.checkChanges();
 
@@ -257,7 +267,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     setTimeout(() => this.showIssuedCurrencySelectedStyle = false, 1000);
   }
 
-  deleteTrustLine(trustline: any) {
+  deleteTrustLine(trustline: TrustLine) {
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'deleteTrustLine', 'trust_set_component');
 
     let payload:XummPostPayloadBodyJson = {
@@ -275,7 +285,12 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     payload.txjson.LimitAmount.issuer = trustline.account;
     payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
 
-    payload.txjson.LimitAmount.currency = trustline.currency;
+    let currencyCode = trustline.currency;
+    if(currencyCode.length > 3) {
+      while(currencyCode.length < 40)
+        currencyCode+="0";
+    }
+    payload.txjson.LimitAmount.currency = currencyCode;
     payload.custom_meta.instruction += "\n- IOU currency code: " + trustline.currency;
 
     payload.txjson.LimitAmount.value = "0"
@@ -291,6 +306,12 @@ export class TrustSetComponent implements OnInit, OnDestroy {
   }
 
   get currencyCodeAsAscii() {
+    if(this.issuedCurrencyInput && this.issuedCurrencyInput.length == 40) { //remove trailing zeros
+      while(this.issuedCurrencyInput.endsWith("00")) {
+        this.issuedCurrencyInput = this.issuedCurrencyInput.substring(0, this.issuedCurrencyInput.length-2);
+      }
+    }
+
     if(this.issuedCurrencyInput && this.issuedCurrencyInput.length > 3)
       return Buffer.from(this.issuedCurrencyInput, "hex").toString().trim();
     else
@@ -298,13 +319,20 @@ export class TrustSetComponent implements OnInit, OnDestroy {
   }
 
   set currencyCodeAsAscii(currency: string) {
-    console.log("currency to change: " + currency);
+
+    if(currency && currency.length == 40) { //remove trailing zeros
+      while(currency.endsWith("00")) {
+        currency = currency.substring(0, currency.length-2);
+      }
+    }
+
+    //console.log("currency to change: " + currency);
     if(currency.length > 3)
       this.issuedCurrencyInput = Buffer.from(currency.trim(), "ascii").toString("hex").toUpperCase(); 
     else
       this.issuedCurrencyInput = currency;
 
-    console.log("new currency code: " + this.issuedCurrencyInput);
+    //console.log("new currency code: " + this.issuedCurrencyInput);
   }
 
 }

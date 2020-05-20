@@ -44,7 +44,7 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
       this.editorOptions.theme = "default";
 
       this.darkModeChangedSubscription = this.localStorage.setItems$.subscribe(value => {
-        console.log(JSON.stringify(value));
+        //console.log(JSON.stringify(value));
 
         if(value.key === "darkMode") {
           if(value.newvalue === "true")

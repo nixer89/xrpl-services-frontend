@@ -105,12 +105,13 @@ export class XrplTransactionsComponent implements OnInit {
       }
     });
 
-    this.xrplAccount="rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF";
+    //this.xrplAccount="rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"; //bitstamp
+    //this.xrplAccount="rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF";
     //this.isTestMode = true;
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
-    await this.loadAccountData(false);
+    //await this.loadAccountData(false);
   }
 
   changeNetwork() {
@@ -132,7 +133,7 @@ export class XrplTransactionsComponent implements OnInit {
         "strict": true,
       }
 
-      let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage(account_info_request, this.isTestMode);
+      let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage("xrpl-transactions", account_info_request, this.isTestMode);
       //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
 
       if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
@@ -159,7 +160,7 @@ export class XrplTransactionsComponent implements OnInit {
           type: "signer_list",
         }
 
-        let message_acc_objects:any = await this.xrplWebsocket.getWebsocketMessage(account_objects_request, this.isTestMode);
+        let message_acc_objects:any = await this.xrplWebsocket.getWebsocketMessage("xrpl-transactions", account_objects_request, this.isTestMode);
         //console.log("xrpl-transactions account objects:: " + JSON.stringify(message_acc_objects));
 
         if(message_acc_objects && message_acc_objects.status && message_acc_objects.type && message_acc_objects.type === 'response') {

@@ -43,3 +43,19 @@ export interface XrplAccountChanged {
     account: string,
     mode: boolean
 }
+
+export interface IOU {
+    currency: string,
+    amount: string
+}
+
+export interface TrustLine {
+    account:string,
+    balance: string,
+    currency: string,
+    limit: string,
+    limit_peer: string,
+    no_ripple: boolean,
+    balanceN?: number,
+    limitN?: number
+}

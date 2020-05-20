@@ -90,7 +90,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
         ledger_index: "validated",
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage(gateway_balances_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage("norippleCheck", gateway_balances_request, this.isTestMode);
 
       this.handleWebsocketMessage(message);
 
@@ -117,7 +117,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
           if(problems[i] === "You appear to have set your default ripple flag even though you are not a gateway. This is not recommended unless you are experimenting"
             && transactions[i] && transactions[i].TransactionType != 'AccountSet' && (!transactions[i].SetFlag || transactions[i].SetFlag != 8)) {
               //no account set trx here for default ripple! Skip!
-              console.log("skip it");
+              //console.log("skip it");
               this.problemsAndTransactions.push({problem: problems[i], txJson: null});
               transactions = [null].concat(transactions);
 
@@ -146,7 +146,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
           transactions: true
         }
 
-        let no_ripple_message:any = await this.xrplWebSocket.getWebsocketMessage(noripple_check_command, this.isTestMode);
+        let no_ripple_message:any = await this.xrplWebSocket.getWebsocketMessage("norippleCheck", noripple_check_command, this.isTestMode);
 
         this.handleWebsocketMessage(no_ripple_message);
       }

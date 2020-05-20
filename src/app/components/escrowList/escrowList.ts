@@ -63,7 +63,7 @@ export class EscrowList implements OnInit, OnDestroy {
               ledger_index: "validated",
             }
       
-            let message:any = await this.xrplWebSocket.getWebsocketMessage(account_objects_request, this.testMode);
+            let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowList", account_objects_request, this.testMode);
             this.handleWebsocketMessage(message);
         }
     }
@@ -90,7 +90,7 @@ export class EscrowList implements OnInit, OnDestroy {
                 transaction: escrow.PreviousTxnID,
             }
 
-            let message:any = await this.xrplWebSocket.getWebsocketMessage(txInfo, this.testMode);
+            let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowList", txInfo, this.testMode);
 
             this.handleWebsocketMessage(message);
         }
