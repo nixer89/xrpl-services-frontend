@@ -120,7 +120,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     }
 
     if(this.limitInput && this.validLimit) {
-      payload.txjson.LimitAmount.value = this.limitInput.trim()
+      payload.txjson.LimitAmount.value = this.limitInput.trim().length > 15 ? Number(this.limitInput).toExponential(0) : this.limitInput.trim()
       payload.custom_meta.instruction += "\n- Limit: " + this.limitInput.trim();
     }
 

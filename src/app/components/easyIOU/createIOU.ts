@@ -296,7 +296,7 @@ export class CreateIOU implements OnInit {
           LimitAmount: {
             currency: this.getCurrencyCodeForXRPL(),
             issuer: this.issuerAccount.trim(),
-            value: this.limit.toString().trim()
+            value: this.limit.toString().trim().length > 15 ? this.limit.toExponential(0) : this.limit.toString().trim()
           }
         },
         custom_meta: {
@@ -336,7 +336,7 @@ export class CreateIOU implements OnInit {
           Amount: {
             currency: this.getCurrencyCodeForXRPL(),
             issuer: this.issuerAccount.trim(),
-            value: this.limit.toString().trim()
+            value: this.limit.toString().trim().length > 15 ? this.limit.toExponential(0) : this.limit.toString().trim()
           }
         },
         custom_meta: {

@@ -46,7 +46,7 @@ export class IssueMoreIOU implements OnInit {
   validAddress:boolean = false;
 
   currencyCode:string;
-  numberOfTokens:number;
+  numberOfTokens:string;
   validCurrencyCode:boolean = false;
   validNumberOfTokens:boolean = false;
   notEnoughLimit:boolean = false;
@@ -83,10 +83,11 @@ export class IssueMoreIOU implements OnInit {
       }
     });
 
-    //this.issuerAccount = "r3K1TgPvTPkWZR2Lhawpvv9YR7yYuqSXBp";
-    //this.isTestMode = true;
-    //this.validIssuer = true;
-    //this.issuerAccountChangedSubject.next({account: this.issuerAccount, mode: this.isTestMode});
+    this.issuerAccount = "r3K1TgPvTPkWZR2Lhawpvv9YR7yYuqSXBp";
+    this.isTestMode = true;
+    this.validIssuer = true;
+    this.recipientAccountInput = "rDn65vS7Hw2g4WHMTHdgbQ3HTyaqQ7ADmJ"
+    this.issuerAccountChangedSubject.next({account: this.issuerAccount, mode: this.isTestMode});
   }
 
   getIssuer(): string {
@@ -173,9 +174,12 @@ export class IssueMoreIOU implements OnInit {
   }
 
   checkChangesNumberOfTokens() {
-    this.validNumberOfTokens = this.numberOfTokens && !(/[^.0-9]|\d*\.\d{16,}/.test(this.numberOfTokens.toString())) && this.numberOfTokens > 0;
+    this.validNumberOfTokens = this.numberOfTokens && !(/[^.0-9]|\d*\.\d{16,}/.test(this.numberOfTokens.toString())) && Number(this.numberOfTokens) > 0;
 
-    this.notEnoughLimit = this.validNumberOfTokens && this.numberOfTokens > this.getMaxIssuerTokens();
+    console.log(Number(this.numberOfTokens));
+    console.log(Number(this.numberOfTokens).toExponential(0));
+
+    this.notEnoughLimit = this.validNumberOfTokens && Number(this.numberOfTokens) > this.getMaxIssuerTokens();
   }
 
   checkChangesRecipientAccount() {
@@ -201,7 +205,7 @@ export class IssueMoreIOU implements OnInit {
           Amount: {
             currency: this.currencyCode,
             issuer: this.issuerAccount.trim(),
-            value: this.numberOfTokens.toString().trim()
+            value: this.numberOfTokens.trim().length > 15 ? Number(this.numberOfTokens).toExponential(0) : this.numberOfTokens.trim()
           }
         },
         custom_meta: {
