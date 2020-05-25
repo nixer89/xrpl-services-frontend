@@ -84,11 +84,11 @@ export class IssueMoreIOU implements OnInit {
       }
     });
 
-    this.issuerAccount = "r3K1TgPvTPkWZR2Lhawpvv9YR7yYuqSXBp";
-    this.isTestMode = true;
-    this.validIssuer = true;
-    this.recipientAccountInput = "rDn65vS7Hw2g4WHMTHdgbQ3HTyaqQ7ADmJ"
-    this.issuerAccountChangedSubject.next({account: this.issuerAccount, mode: this.isTestMode});
+    //this.issuerAccount = "r3K1TgPvTPkWZR2Lhawpvv9YR7yYuqSXBp";
+    //this.isTestMode = true;
+    //this.validIssuer = true;
+    //this.recipientAccountInput = "rDn65vS7Hw2g4WHMTHdgbQ3HTyaqQ7ADmJ"
+    //this.issuerAccountChangedSubject.next({account: this.issuerAccount, mode: this.isTestMode});
   }
 
   getIssuer(): string {
