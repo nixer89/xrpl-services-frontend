@@ -1,22 +1,25 @@
-import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummPostPayloadBodyJson } from 'xumm-api';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, XrplAccountChanged, IOU, TrustLine } from 'src/app/utils/types';
+import * as normalizer from '../../utils/normalizers';
+import { ActivatedRoute } from '@angular/router';
+import { MatExpansionPanel } from '@angular/material';
 
 @Component({
   selector: 'trustset',
   templateUrl: './trustset.html'
 })
-export class TrustSetComponent implements OnInit, OnDestroy {
+export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private TRUST_SET_FLAG_SET_NO_RIPPLE:number = 131072;
   private TRUST_SET_FLAG_CLEAR_NO_RIPPLE:number = 262144;
   private TRUST_SET_FLAG_SET_FREEZE:number = 1048576;
   private TRUST_SET_FLAG_CLEAR_FREEZE:number = 2097152;
 
-  constructor(private googleAnalytics: GoogleAnalyticsService) { }
+  constructor(private route: ActivatedRoute,private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -32,6 +35,8 @@ export class TrustSetComponent implements OnInit, OnDestroy {
 
   @ViewChild('inplimit', {static: false}) inplimit;
   limitInput: string;
+
+  @ViewChild('mep', {static: false}) mep: MatExpansionPanel
 
   issuedCurrencyInput: string;
 
@@ -74,6 +79,25 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
       this.clearInputs()
     });
+
+    this.route.queryParams.subscribe(async params => {
+      if(params.issuer && params.currency && params.limit) {
+        this.issuerAccountInput = params.issuer;
+        this.issuedCurrencyInput = normalizer.currencyCodeAsciiToHex(params.currency);
+        this.limitInput = params.limit;
+
+        this.checkChanges();
+      }
+    });
+  }
+
+  ngAfterViewInit() {
+    if(this.isValidTrustSet) {
+      setTimeout(() => {
+        this.mep.open();
+        this.sendPayloadToXumm()
+      });
+    }
   }
 
   ngOnDestroy() {
@@ -120,7 +144,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     }
 
     if(this.limitInput && this.validLimit) {
-      payload.txjson.LimitAmount.value = this.limitInput.trim().length > 15 ? Number(this.limitInput).toExponential(0) : this.limitInput.trim()
+      payload.txjson.LimitAmount.value = normalizer.iouTokenNormalizer(this.limitInput.trim());
       payload.custom_meta.instruction += "\n- Limit: " + this.limitInput.trim();
     }
 
@@ -306,33 +330,11 @@ export class TrustSetComponent implements OnInit, OnDestroy {
   }
 
   get currencyCodeAsAscii() {
-    if(this.issuedCurrencyInput && this.issuedCurrencyInput.length == 40) { //remove trailing zeros
-      while(this.issuedCurrencyInput.endsWith("00")) {
-        this.issuedCurrencyInput = this.issuedCurrencyInput.substring(0, this.issuedCurrencyInput.length-2);
-      }
-    }
-
-    if(this.issuedCurrencyInput && this.issuedCurrencyInput.length > 3)
-      return Buffer.from(this.issuedCurrencyInput, "hex").toString().trim();
-    else
-      return this.issuedCurrencyInput;
+    return normalizer.currencyCodeHexToAsciiTrimmed(this.issuedCurrencyInput);
   }
 
   set currencyCodeAsAscii(currency: string) {
-
-    if(currency && currency.length == 40) { //remove trailing zeros
-      while(currency.endsWith("00")) {
-        currency = currency.substring(0, currency.length-2);
-      }
-    }
-
-    //console.log("currency to change: " + currency);
-    if(currency.length > 3)
-      this.issuedCurrencyInput = Buffer.from(currency.trim(), "ascii").toString("hex").toUpperCase(); 
-    else
-      this.issuedCurrencyInput = currency;
-
-    //console.log("new currency code: " + this.issuedCurrencyInput);
+    this.issuedCurrencyInput = normalizer.currencyCodeAsciiToHex(currency);
   }
 
 }

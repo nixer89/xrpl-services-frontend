@@ -1,6 +1,6 @@
 {
   "name": "xumm-community",
-  "version": "1.5.5",
+  "version": "1.6.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
@@ -36,7 +36,7 @@
     "five-bells-condition": "^5.0.1",
     "hammerjs": "^2.0.8",
     "md5": "^2.2.1",
-    "ngx-device-detector": "^1.4.2",
+    "ngx-device-detector": "^1.4.3",
     "rxjs": "~6.4.0",
     "tslib": "^1.12.0",
     "xrpl-tagged-address-codec": "^0.2.1",

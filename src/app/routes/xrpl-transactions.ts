@@ -108,7 +108,7 @@ export class XrplTransactionsComponent implements OnInit {
     //this.xrplAccount="rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"; //bitstamp
     //this.xrplAccount="rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF";
     //this.isTestMode = true;
-    //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
+    //this.xrplAccount="rpPVUDK8xSYejBHA1431nKDaaM8wnKt3Rc";
     
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
     //await this.loadAccountData(false);

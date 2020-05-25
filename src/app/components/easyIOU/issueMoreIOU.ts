@@ -6,6 +6,7 @@ import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
 import { XummService } from '../../services/xumm.service'
 import { Subject } from 'rxjs';
 import { TransactionValidation, GenericBackendPostRequest, XrplAccountChanged } from '../../utils/types';
+import * as normalizer from '../../utils/normalizers';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar, MatExpansionPanel } from '@angular/material';
@@ -174,10 +175,7 @@ export class IssueMoreIOU implements OnInit {
   }
 
   checkChangesNumberOfTokens() {
-    this.validNumberOfTokens = this.numberOfTokens && !(/[^.0-9]|\d*\.\d{16,}/.test(this.numberOfTokens.toString())) && Number(this.numberOfTokens) > 0;
-
-    console.log(Number(this.numberOfTokens));
-    console.log(Number(this.numberOfTokens).toExponential(0));
+    this.validNumberOfTokens = this.numberOfTokens && !(/[^.0-9]|\d*\.\d{15,}/.test(this.numberOfTokens.toString())) && Number(this.numberOfTokens) > 0;
 
     this.notEnoughLimit = this.validNumberOfTokens && Number(this.numberOfTokens) > this.getMaxIssuerTokens();
   }
@@ -205,7 +203,7 @@ export class IssueMoreIOU implements OnInit {
           Amount: {
             currency: this.currencyCode,
             issuer: this.issuerAccount.trim(),
-            value: this.numberOfTokens.trim().length > 15 ? Number(this.numberOfTokens).toExponential(0) : this.numberOfTokens.trim()
+            value: normalizer.iouTokenNormalizer(this.numberOfTokens)
           }
         },
         custom_meta: {
@@ -235,18 +233,7 @@ export class IssueMoreIOU implements OnInit {
   }
 
   getCurrencyCodeAscii(currency: string): string {
-    if(currency) {
-        if(currency.length == 40) {
-            while(currency.endsWith("00")) {
-                currency = currency.substring(0, currency.length-2);
-            }
-
-            //hex to ascii
-            return Buffer.from(currency, 'hex').toString('ascii').trim();
-        } else
-            return currency;
-    } else
-        return ""
+    return normalizer.currencyCodeHexToAsciiTrimmed(currency);
 }
 
   clearIssuerAccount() {

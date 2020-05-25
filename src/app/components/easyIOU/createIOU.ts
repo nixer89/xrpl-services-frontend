@@ -11,6 +11,7 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
+import * as normalizer from '../../utils/normalizers';
 
 @Component({
   selector: 'createIOU',
@@ -261,20 +262,8 @@ export class CreateIOU implements OnInit {
     this.validCurrencyCode = this.currencyCode && /^[a-zA-Z\d?!@#$%^&*<>(){}[\]|]{3,20}$/.test(this.currencyCode) && this.currencyCode != "XRP";
   }
 
-  getCurrencyCodeForXRPL() {
-    let currency = this.currencyCode.trim();
-
-    if(currency && currency.length > 3) {
-      currency = Buffer.from(currency, 'ascii').toString('hex').toUpperCase();
-
-      while(currency.length < 40)
-        currency+="0";
-
-      return currency
-
-    } else {
-      return currency;
-    }
+  getCurrencyCodeForXRPL(): string {
+    return normalizer.getCurrencyCodeForXRPL(this.currencyCode);
   }
 
   checkChangesLimit() {
@@ -294,9 +283,9 @@ export class CreateIOU implements OnInit {
           TransactionType: "TrustSet",
           Flags: 131072, //no ripple
           LimitAmount: {
-            currency: this.getCurrencyCodeForXRPL(),
+            currency: normalizer.getCurrencyCodeForXRPL(this.currencyCode),
             issuer: this.issuerAccount.trim(),
-            value: this.limit.toString().trim().length > 15 ? this.limit.toExponential(0) : this.limit.toString().trim()
+            value: normalizer.iouTokenNormalizer(this.limit.toString())
           }
         },
         custom_meta: {
@@ -334,9 +323,9 @@ export class CreateIOU implements OnInit {
           TransactionType: "Payment",
           Destination: this.recipientAddress,
           Amount: {
-            currency: this.getCurrencyCodeForXRPL(),
+            currency: normalizer.getCurrencyCodeForXRPL(this.currencyCode),
             issuer: this.issuerAccount.trim(),
-            value: this.limit.toString().trim().length > 15 ? this.limit.toExponential(0) : this.limit.toString().trim()
+            value: normalizer.iouTokenNormalizer(this.limit.toString())
           }
         },
         custom_meta: {

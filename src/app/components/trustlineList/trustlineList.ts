@@ -2,8 +2,10 @@ import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angu
 import { Observable, Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import * as util from '../../utils/flagutils';
+import * as normalizer from 'src/app/utils/normalizers';
 import { AccountInfoChanged, TrustLine } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
+import { normalize } from 'path';
 
 @Component({
     selector: "trustlineList",
@@ -119,17 +121,6 @@ export class TrustLineList implements OnInit, OnDestroy {
     }
 
     getCurrencyCode(currency: string): string {
-        if(currency) {
-            if(currency.length == 40) {
-
-                while(currency.endsWith("00")) {
-                    currency = currency.substring(0, currency.length-2);
-                }
-                //hex to ascii
-                return Buffer.from(currency, 'hex').toString('ascii').trim();
-            } else
-                return currency;
-        } else
-            return ""
+        return normalizer.currencyCodeHexToAsciiTrimmed(currency);
     }
 }
