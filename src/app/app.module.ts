@@ -136,10 +136,6 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
     LocalStorageModule.forRoot({ prefix: 'XummCommunity', storageType: 'localStorage', notifyOptions: {setItem: true, removeItem: false} }),
   ],
-  entryComponents: [
-    XummSignDialogComponent,
-    GenericPayloadQRDialog
-  ],
   providers: [
     AppService,
     XummService,
