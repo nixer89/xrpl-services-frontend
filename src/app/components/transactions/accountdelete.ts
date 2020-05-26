@@ -265,5 +265,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   clearInputs() {
     this.destinationAccountInput = this.destinationTagInput = null;
     this.validTag = this.validDestinationAddress = false;
+    this.preconditionsFullFilled= this.loadingDestinationAccount = this.loadingPreconditions = false;
+    this.errorMsg = this.lastKnownDestinationAccount = null;
   }
 }
