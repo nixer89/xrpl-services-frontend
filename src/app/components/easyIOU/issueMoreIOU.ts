@@ -34,7 +34,7 @@ export class IssueMoreIOU implements OnInit {
     private snackBar: MatSnackBar) {
   }
 
-  @ViewChild('inpdestination', {static: false}) recipientAccount;
+  @ViewChild('inpdestination') recipientAccount;
   recipientAccountInput: string;
 
   @ViewChild('mep', {static: true}) mep: MatExpansionPanel;

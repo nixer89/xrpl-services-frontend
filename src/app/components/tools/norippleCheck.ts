@@ -29,7 +29,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
   @Output()
   onPayload: EventEmitter<GenericBackendPostRequest> = new EventEmitter();
 
-  @ViewChild('inpxrplaccount', {static: false}) inpxrplaccount;
+  @ViewChild('inpxrplaccount') inpxrplaccount;
   xrplAccountInput: string;
 
   originalAccountInfo:any;

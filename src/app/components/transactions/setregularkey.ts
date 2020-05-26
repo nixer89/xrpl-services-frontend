@@ -26,7 +26,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
 
-  @ViewChild('inpregularkey', {static: false}) inpregularkey;
+  @ViewChild('inpregularkey') inpregularkey;
   regularKeyInput: string;
 
   private accountInfoChangedSubscription: Subscription;

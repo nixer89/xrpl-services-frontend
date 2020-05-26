@@ -21,7 +21,7 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
   @Output()
   onPayload: EventEmitter<GenericBackendPostRequest> = new EventEmitter();
 
-  @ViewChild('inprawjsontransaction', {static: false}) inprawjsontransaction;
+  @ViewChild('inprawjsontransaction') inprawjsontransaction;
   rawJsonTransaction: string = "{}";
 
   isValidJson:boolean = false;

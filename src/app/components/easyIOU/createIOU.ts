@@ -69,7 +69,7 @@ export class CreateIOU implements OnInit {
   recipientTrustlineSet:boolean = false;
   weHaveIssued:boolean = false;
 
-  @ViewChild('stepper', {static: false}) stepper: MatStepper;
+  @ViewChild('stepper') stepper: MatStepper;
 
   ngOnInit(): void {
     this.loadAccountData();

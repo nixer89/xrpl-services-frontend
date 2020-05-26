@@ -30,13 +30,13 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
 
-  @ViewChild('inpisseraccount', {static: false}) inpisseraccount;
+  @ViewChild('inpisseraccount') inpisseraccount;
   issuerAccountInput: string;
 
-  @ViewChild('inplimit', {static: false}) inplimit;
+  @ViewChild('inplimit') inplimit;
   limitInput: string;
 
-  @ViewChild('mep', {static: false}) mep: MatExpansionPanel
+  @ViewChild('mep') mep: MatExpansionPanel
 
   issuedCurrencyInput: string;
 

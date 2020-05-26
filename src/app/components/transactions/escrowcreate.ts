@@ -23,25 +23,25 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
 
-  @ViewChild('inpamount', {static: false}) inpamount;
+  @ViewChild('inpamount') inpamount;
   amountInput: string;
 
-  @ViewChild('inpdestination', {static: false}) inpdestination;
+  @ViewChild('inpdestination') inpdestination;
   destinationInput: string;
 
-  @ViewChild('inpcancelafterdate', {static: false}) inpcancelafterdate;
+  @ViewChild('inpcancelafterdate') inpcancelafterdate;
   cancelafterDateInput: any;
 
-  @ViewChild('inpcancelaftertime', {static: false}) inpcancelaftertime;
+  @ViewChild('inpcancelaftertime') inpcancelaftertime;
   cancelafterTimeInput: any;
 
-  @ViewChild('inpfinishafterdate', {static: false}) inpfinishafterdate;
+  @ViewChild('inpfinishafterdate') inpfinishafterdate;
   finishafterDateInput: any;
 
-  @ViewChild('inpfinishaftertime', {static: false}) inpfinishaftertime;
+  @ViewChild('inpfinishaftertime') inpfinishaftertime;
   finishafterTimeInput: any;
 
-  @ViewChild('inppassword', {static: false}) password;
+  @ViewChild('inppassword') password;
   passwordInput: string;
 
   originalAccountInfo:any;

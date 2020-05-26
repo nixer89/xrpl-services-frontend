@@ -28,19 +28,19 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
 
-  @ViewChild('inpdomain', {static: false}) inpdomain;
+  @ViewChild('inpdomain') inpdomain;
   domainInput: string = "";
 
-  @ViewChild('inpemail', {static: false}) inpemail;
+  @ViewChild('inpemail') inpemail;
   emailInput: string = "";
 
-  @ViewChild('inprequiredesttag', {static: false}) inprequiredesttag;
+  @ViewChild('inprequiredesttag') inprequiredesttag;
   requireDestTagInput: boolean = false;
 
-  @ViewChild('inpdisablemasterkey', {static: false}) inpdisablemasterkey;
+  @ViewChild('inpdisablemasterkey') inpdisablemasterkey;
   disableMasterKeyInput: boolean = false;
 
-  @ViewChild('inpdefaultripple', {static: false}) inpdefaultripple;
+  @ViewChild('inpdefaultripple') inpdefaultripple;
   defaultRippleInput: boolean = false;
 
   private accountInfoChangedSubscription: Subscription;

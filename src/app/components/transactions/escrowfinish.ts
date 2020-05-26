@@ -22,13 +22,13 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
 
-  @ViewChild('inpescrowowner', {static: false}) inpescrowowner;
+  @ViewChild('inpescrowowner') inpescrowowner;
   escrowOwnerInput: string;
 
-  @ViewChild('inpescrowsequence', {static: false}) inpescrowsequence;
+  @ViewChild('inpescrowsequence') inpescrowsequence;
   escrowSequenceInput: any;
 
-  @ViewChild('inppassword', {static: false}) password;
+  @ViewChild('inppassword') password;
   passwordInput: string;
 
   originalAccountInfo:any;

@@ -40,7 +40,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
 
-  @ViewChild('inpsignerquorum', {static: false}) inpsignerquorum;
+  @ViewChild('inpsignerquorum') inpsignerquorum;
   signerQuorumInput: string;
 
   private accountInfoChangedSubscription: Subscription;

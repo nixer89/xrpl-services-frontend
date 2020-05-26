@@ -23,10 +23,10 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   @Output()
   onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
 
-  @ViewChild('inpdestinationaccount', {static: false}) inpdestinationaccount;
+  @ViewChild('inpdestinationaccount') inpdestinationaccount;
   destinationAccountInput: string;
 
-  @ViewChild('inpdestinationtag', {static: false}) inpdestinationtag;
+  @ViewChild('inpdestinationtag') inpdestinationtag;
   destinationTagInput: string;
 
   private accountInfoChangedSubscription: Subscription;
