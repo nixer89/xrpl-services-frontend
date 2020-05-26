@@ -6,7 +6,7 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import { AccountInfoChanged, XrplAccountChanged, IOU, TrustLine } from 'src/app/utils/types';
 import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute } from '@angular/router';
-import { MatExpansionPanel } from '@angular/material';
+import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
   selector: 'trustset',

@@ -9,7 +9,8 @@ import { TransactionValidation, GenericBackendPostRequest, XrplAccountChanged } 
 import * as normalizer from '../../utils/normalizers';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { ActivatedRoute } from '@angular/router';
-import { MatSnackBar, MatExpansionPanel } from '@angular/material';
+import { MatExpansionPanel } from '@angular/material/expansion';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 interface TrustLine {
   account:string,
