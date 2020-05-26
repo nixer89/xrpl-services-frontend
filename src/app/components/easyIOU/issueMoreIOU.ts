@@ -232,6 +232,10 @@ export class IssueMoreIOU implements OnInit {
       return 0;
   }
 
+  getNewLimit(): number {
+    return Number(this.numberOfTokens) + Number(this.recipientToIssuerTrustLine.balance);
+  }
+
   getCurrencyCodeAscii(currency: string): string {
     return normalizer.currencyCodeHexToAsciiTrimmed(currency);
 }

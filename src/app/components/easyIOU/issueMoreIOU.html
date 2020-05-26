@@ -49,7 +49,7 @@
 
           <label *ngIf="recipientToIssuerTrustLine" style="padding-top: 0.3em;" class="loading">Selected Currency Code:</label>
           <mat-form-field *ngIf="recipientToIssuerTrustLine">
-            <input matInput name="Currency Code" placeholder="Selected Currency Code" [value]="getCurrencyCodeAscii(currencyCode)" [readonly]="true">
+            <input matInput name="Currency Code" [value]="getCurrencyCodeAscii(currencyCode)" [readonly]="true">
             <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode === 'XRP'">You cannot issue any XRP!</mat-hint>
           </mat-form-field>
 
@@ -59,18 +59,17 @@
           </div>
           <div *ngIf="validCurrencyCode && validAddress && !loadingRecipientToIssuerTL && recipientToIssuerTrustLine" fxLayout="column" fxLayoutGap="0.3em">
             <label class="loading">How many more tokens you want to issue? (Max: {{getMaxIssuerTokens()}} {{getCurrencyCodeAscii(currencyCode)}})</label>
-            <div *ngIf="getMaxIssuerTokens() <= 0">
-              <label class="warning">The TrustLine from the recipient to the issuer account does not have enough limit. Please ask the recipient to increase the limit of this TrustLine.</label>
-            </div>
-            <div *ngIf="getMaxIssuerTokens() > 0" fxLayout="column" fxLayoutGap="0.3em">
-              <mat-form-field>
-                <input matInput name="Number of tokens" placeholder="Number of tokens" [(ngModel)]="numberOfTokens" (ngModelChange)="checkChangesNumberOfTokens()">
-                <mat-hint *ngIf="numberOfTokens && !validNumberOfTokens && !notEnoughLimit">Not a valid number. Please choose a number with a maximum of 15 decimal places!</mat-hint>
-                <mat-hint *ngIf="numberOfTokens && validNumberOfTokens && notEnoughLimit">The TrustLine from the recipient has not enough limit to send this amount. (Max: {{getMaxIssuerTokens()}} {{getCurrencyCodeAscii(currencyCode)}})</mat-hint>
-              </mat-form-field>
-            </div>
+            <mat-form-field>
+              <input matInput name="Number of tokens" placeholder="Number of tokens" [(ngModel)]="numberOfTokens" (ngModelChange)="checkChangesNumberOfTokens()">
+              <mat-hint *ngIf="numberOfTokens && !validNumberOfTokens && !notEnoughLimit">Not a valid number. Please choose a number with a maximum of 15 decimal places!</mat-hint>
+              <mat-hint *ngIf="numberOfTokens && validNumberOfTokens && notEnoughLimit">The TrustLine from the recipient has not enough limit to send this amount. (Max: {{getMaxIssuerTokens()}} {{getCurrencyCodeAscii(currencyCode)}})</mat-hint>
+            </mat-form-field>
           </div>
         </form>
+        <div *ngIf="(recipientToIssuerTrustLine && getMaxIssuerTokens() == 0) || (numberOfTokens && validNumberOfTokens && notEnoughLimit)" fxLayout="column" fxLayoutGap="0.3em">
+          <label>You can share the following link with the recipient to update his trustline with the limit of tokens you want to issue:</label>
+          <a href="https://xumm.community?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}" target="_blank">https://xumm.community?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}</a>
+        </div>
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
           <button mat-raised-button color="primary" (click)="issueIOU()" [disabled]="!validAddress || !validIssuer || !validCurrencyCode || !validNumberOfTokens || notEnoughLimit">
             Send IOU via XUMM
