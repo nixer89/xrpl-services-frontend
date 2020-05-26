@@ -11,7 +11,7 @@
         </div>
         <div fxLayout="column" fxLayoutAlign="start center" class="floatcenter">
             <div *ngIf="!xrplAccount">
-                <button mat-raised-button class="theme-background" style="height: 50px; border-radius: 10px; padding: 5px;" matTooltip="Login with XUMM to load your account data." matTooltipPosition="right" (click)="openSignInDialog()">
+                <button mat-raised-button class="theme-background" style="height: 50px; border-radius: 12px; padding: 5px 5px 5px 5px;" matTooltip="Login with XUMM to load your account data." matTooltipPosition="right" (click)="openSignInDialog()">
                     <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with XUMM">
                 </button>
             </div>
@@ -73,6 +73,6 @@
         <setregularkey [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></setregularkey>
         <signerlistset [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></signerlistset>
         <trustset [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></trustset>
-        <!--accountdelete [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></accountdelete-->
+        <accountdelete [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></accountdelete>
     </mat-accordion>
 </mat-card>

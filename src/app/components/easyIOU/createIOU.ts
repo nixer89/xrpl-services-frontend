@@ -30,6 +30,7 @@ export class CreateIOU implements OnInit {
     private xrplWebSocket: XRPLWebsocket) { }
 
   checkBoxTwoAccounts:boolean = false;
+  checkBoxIssuerInfo:boolean = false;
   checkBoxSufficientFunds:boolean = false;
   checkBoxFiveXrp:boolean = false;
   checkBoxNetwork:boolean = false;
@@ -446,7 +447,7 @@ export class CreateIOU implements OnInit {
     switch(this.stepper.selectedIndex) {
       case 0: break;
       case 1: {
-        this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = false;
+        this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = this.checkBoxIssuerInfo = false;
         break;
       }
       case 2: {
@@ -500,7 +501,7 @@ export class CreateIOU implements OnInit {
 
   reset() {
     this.isTestMode = false;
-    this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = this.checkBoxDisclaimer = this.checkBoxIssuingText = false;
+    this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = this.checkBoxDisclaimer = this.checkBoxIssuingText = this.checkBoxIssuerInfo = false;
     this.currencyCode = this.limit = null;
     this.validCurrencyCode = this.validLimit = false;
     this.issuerAccount = this.issuer_account_info = null;

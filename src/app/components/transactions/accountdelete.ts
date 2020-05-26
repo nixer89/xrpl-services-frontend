@@ -213,8 +213,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
 
     let payload:XummPostPayloadBodyJson = {
       txjson: {
-        TransactionType: "AccountDelete",
-        Fee: "5000000"
+        TransactionType: "AccountDelete"
       }
     }
 
@@ -226,7 +225,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
       }
 
       payload.custom_meta = {}
-      payload.custom_meta.instruction = "Delete your XRPL Account";
+      payload.custom_meta.instruction = "Delete your XRPL Account\n\n - please sign with the account you want to delete!";
     }
 
     this.onPayload.emit(payload);
