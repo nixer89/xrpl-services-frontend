@@ -235,7 +235,7 @@ export class XrplTransactionsComponent implements OnInit {
       this.xrplAccount = trxInfo.account;
     }
 
-    if(trxInfo && trxInfo.success) {
+    if(trxInfo) {
       this.googleAnalytics.analyticsEventEmitter('handle_transaction_success', 'handle_transaction', 'xrpl_transactions_component');
       this.isTestMode = trxInfo.testnet;
 
@@ -251,7 +251,9 @@ export class XrplTransactionsComponent implements OnInit {
           this.lastTrxLinkXrplorer = "https://xrplorer.com/transaction/"+trxInfo.txid;
         }
 
-        this.transactionSuccessfull.next();
+        if(trxInfo.success)
+          this.transactionSuccessfull.next();
+          
       }
     } else {
       this.googleAnalytics.analyticsEventEmitter('handle_transaction_failed', 'handle_transaction', 'xrpl_transactions_component');
