@@ -48,19 +48,19 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   errorMsg:string = null;
 
   ngOnInit() {
-    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
+    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(async accountData => {
       console.log("account info changed received: " + JSON.stringify(accountData.info));
       this.originalAccountInfo = accountData.info;
       this.isTestMode = accountData.mode;
       
       if(this.originalAccountInfo && this.originalAccountInfo.Account) {
-        this.checkPreconditions();
+        await this.checkPreconditions();
       } else if(!this.originalAccountInfo || !this.originalAccountInfo.Account) {
         this.preconditionsFullFilled = true;
         this.loadingPreconditions = false;
       }
 
-      this.checkDestinationAccountExists();
+      await this.checkDestinationAccountExists();
 
     });
 
@@ -77,7 +77,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
       this.accountInfoChangedSubscription.unsubscribe();
   }
 
-  async checkPreconditions() {
+  async checkPreconditions(): Promise<void> {
     //console.log("check preconditions");
     if(this.originalAccountInfo && this.originalAccountInfo.Account) {
       this.googleAnalytics.analyticsEventEmitter('check_delete_preconditions', 'account_delete', 'account_delete_component');
@@ -94,12 +94,12 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
 
       let message:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", account_objects_request, this.isTestMode);
 
-      this.handleWebSocketMessagePreconditions(message, accountObjects);
+      await this.handleWebSocketMessagePreconditions(message, accountObjects);
     }
   }
 
-  async handleWebSocketMessagePreconditions(message: any, accountObjects:any[]) {
-    //console.log("websocket message: " + JSON.stringify(message));
+  async handleWebSocketMessagePreconditions(message: any, accountObjects:any[]): Promise<void> {
+    console.log("websocket message: " + JSON.stringify(message));
     if(message.status && message.type && message.type === 'response') {
       if(message.status === 'success' && message.result && message.result.account_objects && message.result.account === this.originalAccountInfo.Account) {
         accountObjects = accountObjects.concat(message.result.account_objects);
@@ -128,12 +128,12 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
 
           let message_marker:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", marker_command, this.isTestMode);
 
-          this.handleWebSocketMessagePreconditions(message_marker, accountObjects);
+          await this.handleWebSocketMessagePreconditions(message_marker, accountObjects);
         } else {
           //we are finished, check objects:
           let filteredObject:any[] = accountObjects.filter(object => object.LedgerEntryType === "Escrow" || object.LedgerEntryType === "PayChannel" || object.LedgerEntryType === "RippleState" || object.LedgerEntryType === "Check")
 
-          if(filteredObject && filteredObject.length > 1) {
+          if(filteredObject && filteredObject.length > 0) {
             //console.log("forbidden object detected");
             // we have one of the "forbidden" objects still attached to our account. Preconditions are not met.
             this.preconditionsFullFilled = false;
@@ -178,7 +178,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
     }
   }
 
-  async checkDestinationAccountExists() {
+  async checkDestinationAccountExists(): Promise<void> {
     if(this.destinationAccountInput && this.validDestinationAddress) {
       this.googleAnalytics.analyticsEventEmitter('check_destination_account', 'account_delete', 'account_delete_component');
       this.loadingDestinationAccount = true;
@@ -190,6 +190,8 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
       }
 
       let message:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", account_info_request, this.isTestMode);
+
+      console.log("check destination account: " + JSON.stringify(message));
 
       if(message.status && message.type && message.type === 'response') {
         if(message.status === 'success') {
@@ -231,12 +233,12 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
     this.onPayload.emit(payload);
   }
 
-  checkChanges() {   
+  async checkChanges() {   
     this.validDestinationAddress = this.destinationAccountInput && this.destinationAccountInput.trim().length > 0 && this.isValidXRPAddress(this.destinationAccountInput.trim());
 
     if(this.lastKnownDestinationAccount != this.destinationAccountInput.trim()) {
       this.lastKnownDestinationAccount = this.destinationAccountInput.trim()
-      this.checkDestinationAccountExists();
+      await this.checkDestinationAccountExists();
     }
 
     this.validTag = this.destinationTagInput && /^[0-9]+$/.test(this.destinationTagInput);
@@ -267,5 +269,23 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
     this.validTag = this.validDestinationAddress = false;
     this.preconditionsFullFilled= this.loadingDestinationAccount = this.loadingPreconditions = false;
     this.errorMsg = this.lastKnownDestinationAccount = null;
+  }
+
+  getAccountBalance(): number {
+    if(this.originalAccountInfo && this.originalAccountInfo.Balance) {
+      let balance:number = Number(this.originalAccountInfo.Balance);
+      return balance/1000000;
+    } else {
+      return 0;
+    }
+  }
+
+  getTransferBalance(): number {
+    if(this.originalAccountInfo && this.originalAccountInfo.Balance) {
+      let balance:number = Number(this.originalAccountInfo.Balance);
+      return (balance-5000000)/1000000;
+    } else {
+      return 0;
+    }
   }
 }
