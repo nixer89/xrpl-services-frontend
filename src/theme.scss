@@ -113,6 +113,10 @@
   .snackbar-success {
     background-color: #303030 !important;
   }
-  
+
+  .mat-option.mat-selected:not(.mat-option-disabled) {
+    color: #FF8F00 !important
+  }
+
   @include angular-material-theme($dark-theme);
 }

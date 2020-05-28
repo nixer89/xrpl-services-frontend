@@ -59,10 +59,12 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatSelectModule } from '@angular/material/select';
 
 //my services
 import { AppService } from './services/app.service';
 import { XummService } from './services/xumm.service';
+import { UtilService } from './services/util.service';
 import { GoogleAnalyticsService } from './services/google-analytics.service';
 import { XRPLWebsocket } from './services/xrplWebSocket';
 
@@ -130,6 +132,7 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
     MatPaginatorModule,
     MatMenuModule,
     MatStepperModule,
+    MatSelectModule,
     CodemirrorModule,
     //Special
     DeviceDetectorModule.forRoot(),
@@ -139,6 +142,7 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
   providers: [
     AppService,
     XummService,
+    UtilService,
     GoogleAnalyticsService,
     XRPLWebsocket
   ],

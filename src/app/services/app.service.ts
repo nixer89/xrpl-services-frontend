@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders} from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -20,6 +20,10 @@ export class AppService {
 
     get(url): Promise<any>  {
         return this.handleResponse(this.http.get(url, this.requestOptions()));
+    }
+
+    getText(url): Promise<any>  {
+        return this.handleResponse(this.http.get(url, {responseType: "text"}));
     }
 
     post(url, data): Promise<any>  {

@@ -1,7 +1,7 @@
 <div fxFlex fxLayout="column">
   <mat-toolbar fxLayout="row" fxLayout.xs="column" color="primary" style="background-color:#1744A1;" class="mat-elevation-z4">  
     <mat-toolbar-row fxLayout="row">
-      <div fxLayout="row" fxLayoutGap="0.5em" style="align-items: center;">
+      <div fxLayout="row" fxLayoutGap="0.3em" style="align-items: center;">
         <a [routerLink]="['/']" fxLayoutAlign="center center" fxLayoutGap="1em;" style="text-decoration: none; color: white;">
           <img src="../../assets/topbar_logo.png" width="50px" height="50px" alt="Xumm Logo" style="margin-right: 0.5em;">
           <div class="title">{{title}}</div>
@@ -10,7 +10,7 @@
         <!-- This fills the remaining space of the current row -->
       <span style="flex: 1 1 auto;"></span>
       <div fxHide.xs>
-        <span fxLayout="row" fxLayoutGap="5em" fxLayoutAlign="center center">
+        <span fxLayout="row" fxLayoutAlign="center center">
           Support this project:&nbsp;
           <button mat-button matTooltip="Make a Donation." matTooltipPosition="below" (click)="supportViaXumm()" style="padding:0px;">
             <img src="../../assets/xummDonate.svg" style="width: 150px; height: 45px;" alt="Support via XUMM">

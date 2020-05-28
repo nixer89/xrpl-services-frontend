@@ -84,6 +84,8 @@ export class TrustLineList implements OnInit, OnDestroy {
                 if(this.trustLines && this.trustLines.length == 0)
                     this.trustLines = null;
                     
+                
+                //console.log("account trust lines: " + JSON.stringify(this.trustLines));
                 this.loading = false;
             } else {                
               this.trustLines = null;

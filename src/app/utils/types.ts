@@ -59,3 +59,10 @@ export interface TrustLine {
     balanceN?: number,
     limitN?: number
 }
+
+export interface TransactionTemplate {
+    transactionType: string,
+    docLink: string,
+    requiresAmendment: boolean,
+    codeSamples: any[]
+}
