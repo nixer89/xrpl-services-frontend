@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 import { Subject } from 'rxjs'
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged, AccountObjectsChanged } from '../utils/types';
@@ -42,6 +42,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   constructor(
     private matDialog: MatDialog,
+    private router: Router,
     private route: ActivatedRoute,
     private xummApi: XummService,
     private snackBar: MatSnackBar,
@@ -323,6 +324,7 @@ export class XrplTransactionsComponent implements OnInit {
     this.localStorage.remove("testMode");
     this.emitAccountInfoChanged();
     this.emitAccountObjectsChanged();
+    this.router.navigate(['/'])
   }
 
   gotIt() {

@@ -156,7 +156,7 @@
           <div *ngIf="loadingIssuerAccount" fxLayout="row" fxLayoutGap="0.3em">
             <label>Loading account data... </label>
             <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
-          </div>          
+          </div>
           <div fxLayoutGap="0.5em">
               <button mat-raised-button color="primary" [disabled]="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound || loadingIssuerAccount" (click)="moveNext()">Next</button>
               <button mat-raised-button (click)="moveBack()">Back</button>

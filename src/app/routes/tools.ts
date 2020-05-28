@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 import { Subject } from 'rxjs'
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged } from '../utils/types';
@@ -39,6 +39,7 @@ export class Tools implements OnInit {
 
   constructor(
     private matDialog: MatDialog,
+    private router: Router,
     private route: ActivatedRoute,
     private xummApi: XummService,
     private snackBar: MatSnackBar,
@@ -173,7 +174,7 @@ export class Tools implements OnInit {
 
     dialogRef.afterClosed().subscribe((info:TransactionValidation) => {
       //console.log('The dialog was closed');
-      //console.log(info);
+      console.log(info);
       if(info && info.redirect) {
         //nothing to do
       } else if(info && info.account) {
@@ -205,7 +206,8 @@ export class Tools implements OnInit {
     });
   }
 
-  async handleTransactionInfo(trxInfo:TransactionValidation) {
+  async handleTransactionInfo(trxInfo:TransactionValidation) {    
+
     if(trxInfo && trxInfo.account) {
       this.loadingData = true;
       this.xrplAccount = trxInfo.account;
@@ -285,6 +287,7 @@ export class Tools implements OnInit {
     this.localStorage.remove("xrplAccount");
     this.localStorage.remove("testMode");
     this.emitAccountInfoChanged();
+    this.router.navigate(['/tools'])
   }
 
   gotIt() {
