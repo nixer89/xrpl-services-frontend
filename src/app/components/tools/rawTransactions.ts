@@ -65,8 +65,6 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
 
     this.transactionTemplates = await this.utilService.getTransactionTypes();
 
-    console.log(this.transactionTemplates);
-
     for(let i = 0; i < this.transactionTemplates.length; i++) {
       delete this.transactionTemplates[i].codeSamples[0].Sequence;
       delete this.transactionTemplates[i].codeSamples[0].Fee;

@@ -9,10 +9,18 @@ export class UtilService {
         let dirList:any[] = await this.app.get('https://api.github.com/repos/ripple/xrpl-dev-portal/contents/content/references/rippled-api/transaction-formats/transaction-types');       
         let relevantFiles:any[] = dirList.filter(r => r.name.match(/^[a-zA-Z]+\.md$/))
 
+        let sources:any[] = [];
+    
+        for(let i = 0; i < relevantFiles.length; i++) {
+            sources.push(this.app.getText(relevantFiles[i].download_url));
+        }
+
+        sources = await Promise.all(sources);
+
         let result:any[] = [];
 
-        for(let i = 0; i < relevantFiles.length; i++) {
-            let source:string = await this.app.getText(relevantFiles[i].download_url);
+        for(let i = 0; i < sources.length; i++) {
+            let source:string = sources[i];
 
             result.push({
                 transactionType: source.match(/^# ([a-zA-Z]+)/gm)[0].slice(2),
