@@ -84,6 +84,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
       this.loadingPreconditions = true;
 
       let accountObjects:any[] = [];
+      this.errorMsg = null;
 
       let account_objects_request:any = {
         command: "account_objects",
@@ -99,20 +100,20 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   }
 
   async handleWebSocketMessagePreconditions(message: any, accountObjects:any[]): Promise<void> {
-    console.log("websocket message: " + JSON.stringify(message));
+    //console.log("websocket message: " + JSON.stringify(message));
     if(message.status && message.type && message.type === 'response') {
       if(message.status === 'success' && message.result && message.result.account_objects && message.result.account === this.originalAccountInfo.Account) {
         accountObjects = accountObjects.concat(message.result.account_objects);
         //console.log("accountObjects length: " + accountObjects.length);
 
         //check sequence number
-        this.preconditionsFullFilled = (this.originalAccountInfo.Sequence+256) < message.result.ledger_index;
-        //console.log("sequence check: " + this.preconditionsFullFilled)
-
-        if(!this.preconditionsFullFilled)
-          this.errorMsg = "Your account cannot be deleted. You need to wait " + (this.originalAccountInfo.Sequence+256-message.result.ledger_index) + " more validated ledgers to delete your account."
-
-        if(accountObjects.length > 1000) {
+        this.preconditionsFullFilled = (parseInt(this.originalAccountInfo.Sequence) + 256) < message.result.ledger_index;
+        
+        if(!this.preconditionsFullFilled) {
+          let ledgersToWait = (parseInt(this.originalAccountInfo.Sequence) + 256) - message.result.ledger_index
+          this.errorMsg = "Your account is too young and cannot be deleted. You need to wait " + ledgersToWait + " more validated ledgers to delete your account. That is around " + Math.ceil(ledgersToWait * 4 / 60) + " minutes.";
+          this.loadingPreconditions = false;
+        } else if(accountObjects.length > 1000) {
           //console.log("too many objects");
           this.preconditionsFullFilled = false;
           this.errorMsg = "Your account owns too many objects and cannot be deleted."
@@ -162,8 +163,6 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
               this.errorMsg += "\n- Checks: " + checks;
 
             this.errorMsg+= "\n\nYou can only delete your account if you have not linked any of the above objects to your account."
-          } else {
-            this.preconditionsFullFilled = true;
           }
 
           this.loadingPreconditions = false;

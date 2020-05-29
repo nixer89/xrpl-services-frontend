@@ -47,7 +47,7 @@
         <input #inpdestinationtag matInput name="destinationtag" ngStyle.xs="font-size: 0.8em;" placeholder="Destination Tag for the XRPL address (optional)" [(ngModel)]="destinationTagInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
         <mat-hint *ngIf="destinationTagInput && !validTag">Not a valid Destination Tag. Only whole numbers between 0 and 4294967295 allowed!</mat-hint>
       </mat-form-field>
-      <label *ngIf="originalAccountInfo && originalAccountInfo.Balance && destinationAccountInput" class="loading">Your account balance is: {{getAccountBalance()}} XRP. 5 XRP will be burnt in transaction fee, so {{getTransferBalance()}} XRP will be sent do '{{destinationAccountInput.trim()}}''.</label>
+      <label *ngIf="originalAccountInfo && originalAccountInfo.Balance && destinationAccountInput" class="loading">Your account balance is: {{getAccountBalance()}} XRP. 5 XRP will be burnt in transaction fee, so {{getTransferBalance()}} XRP will be sent do '{{destinationAccountInput.trim()}}'.</label>
     </form>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validDestinationAddress || loadingDestinationAccount || !destinationAccountExists || (destinationTagInput && !validTag) || (originalAccountInfo && (originalAccountInfo.error || (destinationTagInput && destinationTagInput.trim() === originalAccountInfo.Account)))">
