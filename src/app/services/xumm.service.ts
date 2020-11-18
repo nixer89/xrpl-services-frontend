@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AppService } from './app.service';
-import { XummPostPayloadResponse, XummGetPayloadResponse, XummDeletePayloadResponse } from 'xumm-api';
+import { XummPostPayloadResponse, XummGetPayloadResponse, XummDeletePayloadResponse } from 'xumm-sdk';
 import { TransactionValidation } from '../utils/types';
 
 @Injectable()

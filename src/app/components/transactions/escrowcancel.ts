@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable, Subject } from 'rxjs';
-import { XummPostPayloadBodyJson } from 'xumm-api';
+import { XummPostPayloadBodyJson } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
 

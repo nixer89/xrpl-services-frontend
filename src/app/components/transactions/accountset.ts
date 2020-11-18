@@ -4,7 +4,7 @@ import * as md5 from 'md5';
 import * as emailValidator from 'email-validator'
 import * as flagsutil from '../../utils/flagutils';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { XummPostPayloadBodyJson } from 'xumm-api';
+import { XummPostPayloadBodyJson } from 'xumm-sdk';
 import { AccountObjectsChanged, AccountInfoChanged } from 'src/app/utils/types';
 
 @Component({

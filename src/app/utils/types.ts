@@ -1,4 +1,4 @@
-import { XummPostPayloadBodyJson } from 'xumm-api';
+import { XummPostPayloadBodyJson } from 'xumm-sdk';
 
 export interface GenericBackendPostRequestOptions {
     frontendId?: string,

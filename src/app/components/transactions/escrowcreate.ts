@@ -2,7 +2,7 @@ import { Component, ViewChild, Output, EventEmitter, OnInit, OnDestroy, Input } 
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { XummPostPayloadBodyJson } from 'xumm-api';
+import { XummPostPayloadBodyJson } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, XrplAccountChanged } from 'src/app/utils/types';
 
@@ -295,7 +295,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   }
 
   escrowBiggerThanAvailable(): boolean {
-    return this.amountInput && parseFloat(this.amountInput) > this.getAvailableBalanceForEscrow();
+    return this.originalAccountInfo && this.amountInput && parseFloat(this.amountInput) > this.getAvailableBalanceForEscrow();
   }
 
   clearInputs() {
