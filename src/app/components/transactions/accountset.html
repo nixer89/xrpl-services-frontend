@@ -29,12 +29,13 @@
         <input #inpemail matInput type="email" name="email" matInput placeholder="Email (cannot be displayed, only changed)" [(ngModel)]="emailInput" (ngModelChange)="checkChanges()">
         <mat-hint *ngIf="emailChangeDetected && !validEmail">Not a valid email</mat-hint>
       </mat-form-field>
-      <div *ngIf="originalAccountInfo && originalAccountInfo.EmailHash && originalAccountInfo.urlgravatar" fxLayout="column">
-        <label >Your current <a href="https://en.gravatar.com/support/what-is-gravatar/" target="_blank" rel="noreferrer">Gravatar</a> URL: </label>
-        <a fxShow fxHide.xs href="{{originalAccountInfo.urlgravatar}}.replace('http','https')" target="_blank" rel="noreferrer">
+      <div *ngIf="originalAccountInfo && originalAccountInfo.EmailHash && originalAccountInfo.urlgravatar" fxLayout="column" fxLayoutGap="0.3em">
+        <label >Your current <a href="https://en.gravatar.com/support/what-is-gravatar/" target="_blank" rel="noreferrer">Gravatar</a>:</label>
+        <img width="80" height="80" src="{{originalAccountInfo.urlgravatar}}"/>
+        <a fxShow fxHide.xs href="{{originalAccountInfo.urlgravatar}}" target="_blank" rel="noreferrer">
           {{originalAccountInfo.urlgravatar}}
         </a>
-        <a fxShow.xs fxHide href="{{originalAccountInfo.urlgravatar}}.replace('http','https')" target="_blank" rel="noreferrer">
+        <a fxShow.xs fxHide href="{{originalAccountInfo.urlgravatar}}" target="_blank" rel="noreferrer">
           Gravatar Link
         </a>
       </div>

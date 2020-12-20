@@ -27,6 +27,7 @@
     </div>
     <div *ngIf="!loadingPreconditions && !preconditionsFullFilled" fxLayout="column" fxLayoutGap="0.3em">
       <mat-card fxLayout="column" fxLayoutGap="0.3em">
+        <label class="loading" style="white-space: pre-wrap;"><b>ACCOUNT DELETION NOT POSSIBLE!</b></label>
         <label class="warning" style="white-space: pre-wrap;">{{this.errorMsg}}</label>
         <label>You can view the AccountDelete requirements <a href="https://xrpl.org/accounts.html#deletion-of-accounts" target="_blank">here.</a></label>
       </mat-card>
@@ -49,10 +50,16 @@
       </mat-form-field>
       <label *ngIf="originalAccountInfo && originalAccountInfo.Balance && destinationAccountInput" class="loading">Your account balance is: {{getAccountBalance()}} XRP. 5 XRP will be burnt in transaction fee, so {{getTransferBalance()}} XRP will be sent do '{{destinationAccountInput.trim()}}''.</label>
     </form>
-    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
-      <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validDestinationAddress || loadingDestinationAccount || !destinationAccountExists || (destinationTagInput && !validTag) || (originalAccountInfo && (originalAccountInfo.error || (destinationTagInput && destinationTagInput.trim() === originalAccountInfo.Account)))">
-        Send Account Delete to XUMM
-      </button>
+    <div fxLayout="column" style="padding-top: 2em;">
+      <mat-checkbox [(ngModel)]="checkBoxHint" [ngClass]="(checkBoxHint ? 'success': 'warning')">I understand not to use an exchange or other custodial wallet as destination account.</mat-checkbox>
+    </div>
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
+      <div fxLayout="column">
+        <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!checkBoxHint || !validDestinationAddress || loadingDestinationAccount || !destinationAccountExists || (destinationTagInput && !validTag) || (originalAccountInfo && (originalAccountInfo.error || (destinationTagInput && destinationTagInput.trim() === originalAccountInfo.Account)))">
+          Send Account Delete to XUMM
+        </button>
+        <mat-hint *ngIf="!checkBoxHint && validDestinationAddress && !loadingDestinationAccount && destinationAccountExists && (!destinationTagInput || validTag) && (!originalAccountInfo || (originalAccountInfo && (!originalAccountInfo.error && (!destinationTagInput || destinationTagInput.trim() != originalAccountInfo.Account))))">Please confirm the checkbox above.</mat-hint>
+      </div>
     </div>
   </div>
 </mat-expansion-panel>

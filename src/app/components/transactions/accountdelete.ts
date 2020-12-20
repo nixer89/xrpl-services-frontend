@@ -46,6 +46,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   preconditionsFullFilled:boolean = true;
 
   errorMsg:string = null;
+  checkBoxHint:boolean = false;
 
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(async accountData => {
@@ -110,7 +111,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         //console.log("sequence check: " + this.preconditionsFullFilled)
 
         if(!this.preconditionsFullFilled)
-          this.errorMsg = "Your account cannot be deleted. You need to wait " + (this.originalAccountInfo.Sequence+256-message.result.ledger_index) + " more validated ledgers to delete your account."
+          this.errorMsg = "You need to wait " + (this.originalAccountInfo.Sequence+256-message.result.ledger_index) + " more validated ledgers to delete your account."
 
         if(accountObjects.length > 1000) {
           //console.log("too many objects");
@@ -148,7 +149,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
             else
               this.errorMsg = ""
 
-            this.errorMsg += "Your account still has:"
+            this.errorMsg += "Account deletion is prevented by:"
             if(escrows > 0)
               this.errorMsg += "\n- Escrows: " + escrows;
 
@@ -267,7 +268,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   clearInputs() {
     this.destinationAccountInput = this.destinationTagInput = null;
     this.validTag = this.validDestinationAddress = false;
-    this.preconditionsFullFilled= this.loadingDestinationAccount = this.loadingPreconditions = false;
+    this.preconditionsFullFilled= this.loadingDestinationAccount = this.loadingPreconditions = this.checkBoxHint = false;
     this.errorMsg = this.lastKnownDestinationAccount = null;
   }
 
