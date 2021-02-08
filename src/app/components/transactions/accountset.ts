@@ -4,7 +4,7 @@ import * as md5 from 'md5';
 import * as emailValidator from 'email-validator'
 import * as flagsutil from '../../utils/flagutils';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { XummPostPayloadBodyJson } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 import { AccountObjectsChanged, AccountInfoChanged } from 'src/app/utils/types';
 
 @Component({
@@ -26,7 +26,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   accountObjectsChanged: Observable<AccountObjectsChanged>;
 
   @Output()
-  onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
+  onPayload: EventEmitter<XummTypes.XummPostPayloadBodyJson> = new EventEmitter();
 
   @ViewChild('inpdomain') inpdomain;
   domainInput: string = "";
@@ -60,7 +60,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   validDomain:boolean = false;
   validEmail:boolean = false;
 
-  payload:XummPostPayloadBodyJson = {
+  payload:XummTypes.XummPostPayloadBodyJson = {
     txjson: {
       TransactionType: "AccountSet"
     }

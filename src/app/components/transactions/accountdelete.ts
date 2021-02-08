@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable } from 'rxjs';
-import { XummPostPayloadBodyJson } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
@@ -21,7 +21,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   transactionSuccessfull: Observable<void>;
 
   @Output()
-  onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
+  onPayload: EventEmitter<XummTypes.XummPostPayloadBodyJson> = new EventEmitter();
 
   @ViewChild('inpdestinationaccount') inpdestinationaccount;
   destinationAccountInput: string;
@@ -214,7 +214,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
 
     this.googleAnalytics.analyticsEventEmitter('delete_account', 'sendToXumm', 'account_delete_component');
 
-    let payload:XummPostPayloadBodyJson = {
+    let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
         TransactionType: "AccountDelete"
       }

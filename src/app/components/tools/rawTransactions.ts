@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, ViewChild, OnInit, OnDestroy } 
 import { GoogleAnalyticsService } from 'src/app/services/google-analytics.service';
 import { Observable, Subscription } from 'rxjs';
 import { AccountInfoChanged, GenericBackendPostRequest, TransactionTemplate } from 'src/app/utils/types';
-import { XummPostPayloadBodyJson } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { UtilService } from '../../services/util.service';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
@@ -98,7 +98,7 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
   sendToXumm() {
     this.googleAnalytics.analyticsEventEmitter('raw_transaction', 'sendToXumm', 'raw_transaction_component');
 
-    let payload:XummPostPayloadBodyJson = {
+    let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: JSON.parse(this.rawJsonTransaction)
     }
     this.onPayload.next({options: {isRawTrx: true} ,payload: payload});

@@ -45,7 +45,7 @@
             <mat-checkbox [(ngModel)]="checkBoxFiveXrp" [ngClass]="(checkBoxFiveXrp ? 'success': 'warning')">You accept paying 5 XRP for this service, helping you issue your own IOU.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxSufficientFunds" [ngClass]="(checkBoxSufficientFunds ? 'success': 'warning')">The issuing and recipient accounts have enough funds. (at least ~6 XRP available, excluding account reserves!)</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxNetwork" [ngClass]="(checkBoxNetwork ? 'success': 'warning')">Your XUMM app is connected to the LIVE or TEST network, depending on where you want to issue your IOU.</mat-checkbox>
-            <mat-checkbox [(ngModel)]="checkBoxNoLiability" [ngClass]="(checkBoxNoLiability ? 'success': 'warning')">We take no liability if you are not able to issue your own IOU. Just proceed if you know what your are doing!</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxNoLiability" [ngClass]="(checkBoxNoLiability ? 'success': 'warning')">We take no liability if you are not able to issue your own IOU. Only proceed if you know what your are doing!</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxDisclaimer" [ngClass]="(checkBoxDisclaimer ? 'success': 'warning')">We offer "basic" IOU/TrustLine management. If you are going to issue your IOU for commercial use, we recommend to NOT use this tool. We are not liable for any regulatory implications, depending on the jurisdiction you live in.</mat-checkbox>
 
             <div style="padding-top: 0.5em;" fxLayoutGap="0.5em">
@@ -93,15 +93,16 @@
             <ng-template matStepLabel>Information about your IOU</ng-template>
             <label>We need to define some details about the IOU you want to create.</label>
             <form fxLayout="column" fxLayoutGap="0.5em">
-              <label class="loading">What is the currency code (3 letters) you want to use for your IOU? As Example: 'ABC'</label>
+              <label class="loading">What is the currency code you want to use for your IOU? As Example: 'ABC' or 'NixerCoin'</label>
               <mat-form-field style="padding-top: 0.5em;">
                 <input matInput name="Currency Code" placeholder="Currency Code" [(ngModel)]="currencyCode" (ngModelChange)="checkChangesCurrencyCode()">
                 <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode != 'XRP' && currencyCode.length < 3">Not a valid Currency Code. Please choose between 3 and 20 characters (like 'USD' or 'SOLO')</mat-hint>
                 <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode === 'XRP'">You cannot issue any XRP!</mat-hint>
                 <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode.length > 20">The currency code can have a maximum of 20 characters.</mat-hint>
+                <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode.length >= 3 && currencyCode.length <=20">The currency code contains invalid characters.</mat-hint>
               </mat-form-field>
               <div *ngIf="currencyCode && validCurrencyCode && currencyCode.length > 3 && currencyCode.length < 21" fxLayout="column" fxLayoutGap="0.3em" style="margin-bottom: 1.5em;">
-                <label class="warning">Attention! Your currency code will be represented as HEX string in the XRP Ledger. Some software does translate this into human readable character! </label>
+                <label class="warning">Attention! Your currency code will be represented as HEX string on the XRP Ledger but most software does translate this into human readable characters! </label>
                 <label class="warning">HEX representation of your currency code: {{getCurrencyCodeForXRPL()}}</label>
               </div>
               

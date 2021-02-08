@@ -27,6 +27,7 @@
             <span *ngIf="!pushed">Scan QR code to show the XUMM Sign Request in your XUMM App:</span>
             <mat-progress-spinner *ngIf="!showQR" color="primary" mode="indeterminate"></mat-progress-spinner>
             <img (load)="QRLoaded()" [src]="qrLink" width="150" height="150" style="vertical-align: middle;" alt="">
+            <span *ngIf="showQR">Alternatively click the following link: <a [href]="payloadLink">Open in XUMM</a></span>
         </div>
         <div class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
             <span>Waiting for you to sign the request...</span>

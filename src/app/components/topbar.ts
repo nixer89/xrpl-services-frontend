@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
-import { XummPostPayloadBodyJson } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 import { LocalStorageService } from 'angular-2-local-storage'
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { TypeWriter } from '../utils/TypeWriter';
@@ -56,7 +56,7 @@ export class TopbarComponent implements OnInit {
 
   async supportViaXumm() {
     //setting up xumm payload and waiting for websocket
-    let xummPayload:XummPostPayloadBodyJson = {
+    let xummPayload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
           TransactionType: "Payment"
       },
@@ -68,7 +68,7 @@ export class TopbarComponent implements OnInit {
     this.openGenericDialog(xummPayload);
   }
 
-  openGenericDialog(xummPayload: XummPostPayloadBodyJson):void {
+  openGenericDialog(xummPayload: XummTypes.XummPostPayloadBodyJson):void {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
         xrplAccount: this.localStorage.get("xrplAccount"),

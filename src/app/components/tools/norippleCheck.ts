@@ -1,14 +1,14 @@
 import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Observable, Subscription} from 'rxjs';
-import { XummPostPayloadBodyJson, XummJsonTransaction } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, GenericBackendPostRequest } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 
 interface NoRippleCheck {
   problem: string,
-  txJson: XummJsonTransaction
+  txJson: XummTypes.XummJsonTransaction
 }
 
 @Component({
@@ -162,7 +162,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
     }
   }
 
-  sendPayloadToXumm(txJson: XummJsonTransaction) {
+  sendPayloadToXumm(txJson: XummTypes.XummJsonTransaction) {
 
     this.googleAnalytics.analyticsEventEmitter('no_ripple_check', 'sendToXumm', 'no_ripple_check_component');
 
@@ -170,7 +170,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
       delete txJson.Sequence;
       delete txJson.Fee;
 
-      let payload:XummPostPayloadBodyJson = {
+      let payload:XummTypes.XummPostPayloadBodyJson = {
         txjson: txJson
       }
   

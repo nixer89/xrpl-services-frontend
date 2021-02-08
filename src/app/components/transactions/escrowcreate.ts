@@ -2,7 +2,7 @@ import { Component, ViewChild, Output, EventEmitter, OnInit, OnDestroy, Input } 
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { XummPostPayloadBodyJson } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, XrplAccountChanged } from 'src/app/utils/types';
 
@@ -21,7 +21,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   transactionSuccessfull: Observable<any>;
 
   @Output()
-  onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
+  onPayload: EventEmitter<XummTypes.XummPostPayloadBodyJson> = new EventEmitter();
 
   @ViewChild('inpamount') inpamount;
   amountInput: string;
@@ -193,7 +193,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   sendPayloadToXumm() {
 
     this.googleAnalytics.analyticsEventEmitter('escrow_create', 'sendToXumm', 'escrow_create_component');
-    let xummPayload:XummPostPayloadBodyJson = {
+    let xummPayload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
         TransactionType: "EscrowCreate"
       }, custom_meta: {

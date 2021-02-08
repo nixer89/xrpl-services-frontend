@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged, AccountObjectsChanged } from '../utils/types';
-import { XummPostPayloadBodyJson } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -280,7 +280,7 @@ export class XrplTransactionsComponent implements OnInit {
     this.accountObjectsChanged.next({object: this.xrplAccount_Objects, mode: this.isTestMode});
   }
 
-  async onPayloadReceived(xummPayload:XummPostPayloadBodyJson) {
+  async onPayloadReceived(xummPayload:XummTypes.XummPostPayloadBodyJson) {
     //console.log("received payload: " + JSON.stringify(payload));
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {

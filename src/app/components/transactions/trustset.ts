@@ -1,7 +1,7 @@
 import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Observable, Subscription, Subject } from 'rxjs';
-import { XummPostPayloadBodyJson } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, XrplAccountChanged, IOU, TrustLine } from 'src/app/utils/types';
 import * as normalizer from '../../utils/normalizers';
@@ -28,7 +28,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   transactionSuccessfull: Observable<any>;
   
   @Output()
-  onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
+  onPayload: EventEmitter<XummTypes.XummPostPayloadBodyJson> = new EventEmitter();
 
   @ViewChild('inpisseraccount') inpisseraccount;
   issuerAccountInput: string;
@@ -118,7 +118,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'sendToXumm', 'trust_set_component');
 
-    let payload:XummPostPayloadBodyJson = {
+    let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
         TransactionType: "TrustSet",
         Flags: this.TRUST_SET_FLAG_SET_NO_RIPPLE
@@ -129,7 +129,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     payload.custom_meta = {};
 
     if(this.issuerAccountInput && this.issuerAccountInput.trim().length>0 && this.validAddress) {
-      payload.txjson.LimitAmount.issuer = this.issuerAccountInput.trim();
+      payload.txjson.LimitAmount['issuer'] = this.issuerAccountInput.trim();
       payload.custom_meta.instruction = "- Issuer Address: " +this.issuerAccountInput.trim();
     }
 
@@ -139,12 +139,12 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         while(currencyCode.length < 40)
           currencyCode+="0";
       }
-      payload.txjson.LimitAmount.currency = currencyCode;
+      payload.txjson.LimitAmount['currency'] = currencyCode;
       payload.custom_meta.instruction += "\n- IOU currency code: " + this.currencyCodeAsAscii;
     }
 
     if(this.limitInput && this.validLimit) {
-      payload.txjson.LimitAmount.value = normalizer.iouTokenNormalizer(this.limitInput.trim());
+      payload.txjson.LimitAmount['value'] = normalizer.iouTokenNormalizer(this.limitInput.trim());
       payload.custom_meta.instruction += "\n- Limit: " + this.limitInput.trim();
     }
 
@@ -246,7 +246,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     //console.log("onDisableRippling");
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'onDisableRippling', 'trust_set_component');
 
-    let payload:XummPostPayloadBodyJson = {
+    let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
         TransactionType: "TrustSet",
         Flags: this.TRUST_SET_FLAG_SET_NO_RIPPLE
@@ -258,7 +258,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       instruction: "Set 'NoRipple' Flag on this TrustLine\n\n"
     };
 
-    payload.txjson.LimitAmount.issuer = trustline.account;
+    payload.txjson.LimitAmount['issuer'] = trustline.account;
     payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
 
     let currencyCode = trustline.currency;
@@ -266,10 +266,10 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       while(currencyCode.length < 40)
         currencyCode+="0";
     }
-    payload.txjson.LimitAmount.currency = currencyCode;
+    payload.txjson.LimitAmount['currency'] = currencyCode;
     payload.custom_meta.instruction += "\n- IOU currency code: " + trustline.currency
 
-    payload.txjson.LimitAmount.value = trustline.limit
+    payload.txjson.LimitAmount['value'] = trustline.limit
     payload.custom_meta.instruction += "\n- Limit: " + trustline.limit;
 
     payload.custom_meta.instruction += "\n- Disable Rippling: true";
@@ -294,7 +294,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   deleteTrustLine(trustline: TrustLine) {
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'deleteTrustLine', 'trust_set_component');
 
-    let payload:XummPostPayloadBodyJson = {
+    let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
         TransactionType: "TrustSet",
         Flags: this.TRUST_SET_FLAG_SET_NO_RIPPLE
@@ -306,7 +306,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       instruction: "Deleting TrustLine\n\n"
     };
 
-    payload.txjson.LimitAmount.issuer = trustline.account;
+    payload.txjson.LimitAmount['issuer'] = trustline.account;
     payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
 
     let currencyCode = trustline.currency;
@@ -314,10 +314,10 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       while(currencyCode.length < 40)
         currencyCode+="0";
     }
-    payload.txjson.LimitAmount.currency = currencyCode;
+    payload.txjson.LimitAmount['currency'] = currencyCode;
     payload.custom_meta.instruction += "\n- IOU currency code: " + trustline.currency;
 
-    payload.txjson.LimitAmount.value = "0"
+    payload.txjson.LimitAmount['value'] = "0"
     payload.custom_meta.instruction += "\n- Limit: 0";
 
     this.onPayload.emit(payload);

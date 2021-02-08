@@ -1,4 +1,4 @@
-import { XummPostPayloadBodyJson } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 
 export interface GenericBackendPostRequestOptions {
     frontendId?: string,
@@ -13,7 +13,7 @@ export interface GenericBackendPostRequestOptions {
 
 export interface GenericBackendPostRequest {
     options?: GenericBackendPostRequestOptions,
-    payload: XummPostPayloadBodyJson
+    payload: XummTypes.XummPostPayloadBodyJson
 }
 
 export interface TransactionValidation {

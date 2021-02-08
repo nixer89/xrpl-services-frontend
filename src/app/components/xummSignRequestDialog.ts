@@ -3,7 +3,7 @@ import { XummService } from '../services/xumm.service';
 import { webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef } from '@angular/material/dialog';
-import { XummPostPayloadResponse } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
@@ -16,6 +16,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 export class XummSignDialogComponent implements OnInit{
 
     qrLink:string;
+    payloadLink:string;
 
     websocket: WebSocketSubject<any>;
     payloadUUID: string;
@@ -77,7 +78,7 @@ export class XummSignDialogComponent implements OnInit{
 
         this.googleAnalytics.analyticsEventEmitter(backendPayload.payload.txjson.TransactionType.toLowerCase(), 'sendToXummSignIn', 'signin_dialog_component');
 
-        let xummResponse:XummPostPayloadResponse;
+        let xummResponse:XummTypes.XummPostPayloadResponse;
         try {
             //console.log("sending xumm payload: " + JSON.stringify(xummPayload));
             xummResponse = await this.xummApi.submitPayload(backendPayload);
@@ -103,6 +104,7 @@ export class XummSignDialogComponent implements OnInit{
         }
         else {
             this.qrLink = xummResponse.refs.qr_png;
+            this.payloadLink = xummResponse.next.always;
             this.initSocket(xummResponse.refs.websocket_status);
         }
     }

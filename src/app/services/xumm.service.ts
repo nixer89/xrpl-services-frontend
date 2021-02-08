@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AppService } from './app.service';
-import { XummPostPayloadResponse, XummGetPayloadResponse, XummDeletePayloadResponse } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 import { TransactionValidation } from '../utils/types';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class XummService {
     isTestMode = false;
     xummBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://api.xumm.community';
 
-    async submitPayload(payload:any): Promise<XummPostPayloadResponse> {
+    async submitPayload(payload:any): Promise<XummTypes.XummPostPayloadResponse> {
         try {
             console.log("submitting payload: " + JSON.stringify(payload));
             return this.app.post(this.xummBackendURL+"/api/v1/platform/payload", payload);
@@ -21,7 +21,7 @@ export class XummService {
         }
     }
 
-    async getPayloadInfo(payloadId:string): Promise<XummGetPayloadResponse> {
+    async getPayloadInfo(payloadId:string): Promise<XummTypes.XummGetPayloadResponse> {
         try {
             return this.app.get(this.xummBackendURL+"/api/v1/platform/payload/"+payloadId);
         } catch(err) {
@@ -30,7 +30,7 @@ export class XummService {
         }
     }
 
-    async deletePayload(payloadId:string): Promise<XummDeletePayloadResponse> {
+    async deletePayload(payloadId:string): Promise<XummTypes.XummDeletePayloadResponse> {
         try {
             return this.app.delete(this.xummBackendURL+"/api/v1/platform/payload/"+payloadId);
         } catch(err) {

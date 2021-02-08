@@ -1,7 +1,7 @@
 import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import { Observable, Subscription, Subject } from 'rxjs';
-import { XummPostPayloadBodyJson } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, XrplAccountChanged } from 'src/app/utils/types';
 
@@ -20,7 +20,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   transactionSuccessfull: Observable<void>;
   
   @Output()
-  onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
+  onPayload: EventEmitter<XummTypes.XummPostPayloadBodyJson> = new EventEmitter();
 
   @ViewChild('inpescrowowner') inpescrowowner;
   escrowOwnerInput: string;
@@ -55,7 +55,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   lastKnownSequence:string = null;
   showPwField:boolean = true;
 
-  private payload:XummPostPayloadBodyJson = {
+  private payload:XummTypes.XummPostPayloadBodyJson = {
     txjson: {
       TransactionType: "EscrowFinish"
     }
