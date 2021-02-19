@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Encode } from 'xrpl-tagged-address-codec';
 import { MatDialog } from '@angular/material/dialog';
-import { XummSignDialogComponent } from '../../components/xummSignRequestDialog';
-import { GenericPayloadQRDialog } from '../../components/genericPayloadQRDialog';
+import { XummSignDialogComponent } from '../xummSignRequestDialog';
+import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
 import { XummService } from '../../services/xumm.service'
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import { Subject } from 'rxjs';
@@ -14,10 +14,10 @@ import { MatStepper } from '@angular/material/stepper';
 import * as normalizer from '../../utils/normalizers';
 
 @Component({
-  selector: 'createIOU',
-  templateUrl: './createIOU.html'
+  selector: 'createToken',
+  templateUrl: './createToken.html'
 })
-export class CreateIOU implements OnInit {
+export class CreateToken implements OnInit {
 
   private ACCOUNT_FLAG_DEFAULT_RIPPLE:number = 8;
   private ACCOUNT_FLAG_DISABLE_MASTER_KEY:number = 4;
@@ -84,15 +84,15 @@ export class CreateIOU implements OnInit {
     return this.issuerAccount;
   }
 
-  payForIOU() {
+  payForToken() {
     let genericBackendRequest:GenericBackendPostRequest = {
       payload: {
         txjson: {
           TransactionType: "Payment",
-          Memos : [{Memo: {MemoType: Buffer.from("[https://xumm.community]-Memo:", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for creating IOU: '"+this.currencyCode.trim()+"'", 'utf8').toString('hex').toUpperCase()}}]
+          Memos : [{Memo: {MemoType: Buffer.from("[https://xumm.community]-Memo:", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for creating Token: '"+this.currencyCode.trim()+"'", 'utf8').toString('hex').toUpperCase()}}]
         },
         custom_meta: {
-          instruction: "Please pay with the account you want to issue your IOU from!"
+          instruction: "Please pay with the account you want to issue your Token from!"
         }
       }
     } 
@@ -120,7 +120,7 @@ export class CreateIOU implements OnInit {
     });
   }
 
-  loginForIOU() {
+  loginForToken() {
     const dialogRef = this.matDialog.open(XummSignDialogComponent, {
       width: 'auto',
       height: 'auto;',
@@ -183,7 +183,7 @@ export class CreateIOU implements OnInit {
   async loadAccountData() {
     if(this.issuerAccount) {
       this.loadingIssuerAccount = true;
-      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'easy_iou', 'easy_iou_component');
+      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'easy_token', 'easy_token_component');
 
       let account_info_request:any = {
         command: "account_info",
@@ -191,7 +191,7 @@ export class CreateIOU implements OnInit {
         "strict": true,
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("easyIOU", account_info_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage("easyToken", account_info_request, this.isTestMode);
       //console.log("websocket message: " + JSON.stringify(message));
       if(message.status && message.type && message.type === 'response') {
         if(message.status === 'success') {
@@ -286,11 +286,11 @@ export class CreateIOU implements OnInit {
           LimitAmount: {
             currency: normalizer.getCurrencyCodeForXRPL(this.currencyCode),
             issuer: this.issuerAccount.trim(),
-            value: normalizer.iouTokenNormalizer(this.limit.toString())
+            value: normalizer.tokenNormalizer(this.limit.toString())
           }
         },
         custom_meta: {
-          instruction: "- Set TrustLine between IOU recipient and issuer\n\n- Please sign with the RECIPIENT account!"
+          instruction: "- Set TrustLine between Token recipient and issuer\n\n- Please sign with the RECIPIENT account!"
         }
       }
     } 
@@ -313,7 +313,7 @@ export class CreateIOU implements OnInit {
     });
   }
 
-  issueIOU() {
+  issueToken() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
         issuing: true,
@@ -326,7 +326,7 @@ export class CreateIOU implements OnInit {
           Amount: {
             currency: normalizer.getCurrencyCodeForXRPL(this.currencyCode),
             issuer: this.issuerAccount.trim(),
-            value: normalizer.iouTokenNormalizer(this.limit.toString())
+            value: normalizer.tokenNormalizer(this.limit.toString())
           }
         },
         custom_meta: {

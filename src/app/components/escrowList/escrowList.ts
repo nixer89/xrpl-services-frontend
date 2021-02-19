@@ -3,6 +3,7 @@ import { Observable, Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { XrplAccountChanged } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
+import * as normalizer from '../../utils/normalizers';
 
 @Component({
     selector: "escrowList",
@@ -70,7 +71,7 @@ export class EscrowList implements OnInit, OnDestroy {
 
     getTimeFromRippleTime(rippleCodedFinishAfter: number): string {
         if(rippleCodedFinishAfter) {
-            let finishAfter:Date = new Date((rippleCodedFinishAfter+946684800)*1000);
+            let finishAfter:Date = new Date(normalizer.rippleEpocheTimeToUTC(rippleCodedFinishAfter));
             return finishAfter.toLocaleString();
         } else
             return "-";
@@ -101,9 +102,9 @@ export class EscrowList implements OnInit, OnDestroy {
             if(message.result && message.result.account_objects) {
                 let unfilteredList:any[] = message.result.account_objects;
                 if(this.isCancel)
-                    this.escrowData = unfilteredList.filter(escrow => escrow.CancelAfter && (new Date((escrow.CancelAfter+946684800)*1000).getTime() < Date.now()));
+                    this.escrowData = unfilteredList.filter(escrow => escrow.CancelAfter && (new Date(normalizer.rippleEpocheTimeToUTC(escrow.CancelAfter)).getTime() < Date.now()));
                 else if(this.isFinish)
-                    this.escrowData = unfilteredList.filter(escrow => ((!escrow.FinishAfter && escrow.Condition) || (escrow.FinishAfter && new Date((escrow.FinishAfter+946684800)*1000).getTime() < Date.now())) && (!escrow.CancelAfter || new Date((escrow.CancelAfter+946684800)*1000).getTime() > Date.now()));
+                    this.escrowData = unfilteredList.filter(escrow => ((!escrow.FinishAfter && escrow.Condition) || (escrow.FinishAfter && new Date(normalizer.rippleEpocheTimeToUTC(escrow.FinishAfter)).getTime() < Date.now())) && (!escrow.CancelAfter || new Date(normalizer.rippleEpocheTimeToUTC(escrow.CancelAfter)).getTime() > Date.now()));
                 else
                     this.escrowData = unfilteredList;
               

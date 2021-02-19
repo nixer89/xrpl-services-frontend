@@ -12,17 +12,18 @@ import { PrivacyComponent } from './routes/specific/privacy'
 import { XrplTransactionsComponent } from './routes/xrpl-transactions';
 import { Tools } from './routes/tools';
 import { GenericBackendDefinition } from './routes/generic-backend';
-import { EasyIOU } from './routes/easyIOU';
+import { EasyToken } from './routes/easyToken';
 import { TopbarComponent } from './components/topbar';
 import { FooterComponent } from './components/footer';
 import { XummSignDialogComponent } from './components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from './components/genericPayloadQRDialog';
 import { EscrowList } from './components/escrowList/escrowList';
-import { IouList } from './components/iouList/iouList';
+import { TokenList } from './components/tokenList/tokenList';
 import { TrustLineList } from './components/trustlineList/trustlineList';
 import { TrustLineListIssuing } from './components/trustlineList/trustlineListIssuing';
-import { CreateIOU } from './components/easyIOU/createIOU';
-import { IssueMoreIOU } from './components/easyIOU/issueMoreIOU';
+import { CreateToken } from './components/easyToken/createToken';
+import { IssueMoreToken } from './components/easyToken/issueMoreToken';
+import { IssuedTokenList } from './components/easyToken/issuedTokenList';
 
 //XRPL transactions
 import { AccountSetComponent } from './components/transactions/accountset';
@@ -60,6 +61,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
 
 //my services
 import { AppService } from './services/app.service';
@@ -83,17 +85,18 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
     XrplTransactionsComponent,
     Tools,
     GenericBackendDefinition,
-    EasyIOU,
+    EasyToken,
     TopbarComponent,
     FooterComponent,
     XummSignDialogComponent,
     GenericPayloadQRDialog,
     EscrowList,
-    IouList,
+    TokenList,
     TrustLineList,
     TrustLineListIssuing,
-    CreateIOU,
-    IssueMoreIOU,
+    CreateToken,
+    IssueMoreToken,
+    IssuedTokenList,
     AccountSetComponent,
     EscrowCreateComponent,
     EscrowFinishComponent,
@@ -133,6 +136,7 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
     MatMenuModule,
     MatStepperModule,
     MatSelectModule,
+    MatSortModule,
     CodemirrorModule,
     //Special
     DeviceDetectorModule.forRoot(),

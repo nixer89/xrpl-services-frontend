@@ -3,7 +3,7 @@ import { Encode } from 'xrpl-tagged-address-codec';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { AccountInfoChanged, XrplAccountChanged, IOU, TrustLine } from 'src/app/utils/types';
+import { AccountInfoChanged, XrplAccountChanged, Token, TrustLine } from 'src/app/utils/types';
 import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
@@ -140,11 +140,11 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
           currencyCode+="0";
       }
       payload.txjson.LimitAmount['currency'] = currencyCode;
-      payload.custom_meta.instruction += "\n- IOU currency code: " + this.currencyCodeAsAscii;
+      payload.custom_meta.instruction += "\n- Token currency code: " + this.currencyCodeAsAscii;
     }
 
     if(this.limitInput && this.validLimit) {
-      payload.txjson.LimitAmount['value'] = normalizer.iouTokenNormalizer(this.limitInput.trim());
+      payload.txjson.LimitAmount['value'] = normalizer.tokenNormalizer(this.limitInput.trim());
       payload.custom_meta.instruction += "\n- Limit: " + this.limitInput.trim();
     }
 
@@ -267,7 +267,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         currencyCode+="0";
     }
     payload.txjson.LimitAmount['currency'] = currencyCode;
-    payload.custom_meta.instruction += "\n- IOU currency code: " + trustline.currency
+    payload.custom_meta.instruction += "\n- Token currency code: " + trustline.currency
 
     payload.txjson.LimitAmount['value'] = trustline.limit
     payload.custom_meta.instruction += "\n- Limit: " + trustline.limit;
@@ -277,11 +277,11 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onPayload.emit(payload);
   }
 
-  onIssuedCurrencyFound(iou:IOU) {
+  onIssuedCurrencyFound(token:Token) {
 
     
 
-    this.issuedCurrencyInput = iou.currency;
+    this.issuedCurrencyInput = token.currency;
 
     this.checkChanges();
 
@@ -315,7 +315,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         currencyCode+="0";
     }
     payload.txjson.LimitAmount['currency'] = currencyCode;
-    payload.custom_meta.instruction += "\n- IOU currency code: " + trustline.currency;
+    payload.custom_meta.instruction += "\n- Token currency code: " + trustline.currency;
 
     payload.txjson.LimitAmount['value'] = "0"
     payload.custom_meta.instruction += "\n- Limit: 0";

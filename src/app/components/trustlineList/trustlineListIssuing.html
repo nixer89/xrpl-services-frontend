@@ -14,10 +14,10 @@
         <mat-table [dataSource]="trustLines" class="mat-elevation-z8">
 
             <ng-container matColumnDef="currency">
-                <mat-header-cell *matHeaderCellDef> IOU Currency Code </mat-header-cell>
+                <mat-header-cell *matHeaderCellDef> Token Currency Code </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
                     <span fxShow fxHide.xs > {{getCurrencyCode(trustline.currency)}}</span>
-                    <span fxShow.xs fxHide ><b>IOU Currency Code:</b>&nbsp;{{getCurrencyCode(trustline.currency)}}</span>
+                    <span fxShow.xs fxHide ><b>Token Currency Code:</b>&nbsp;{{getCurrencyCode(trustline.currency)}}</span>
                 </mat-cell>
             </ng-container>
 

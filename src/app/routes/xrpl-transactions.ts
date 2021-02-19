@@ -141,7 +141,8 @@ export class XrplTransactionsComponent implements OnInit {
       if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
         if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
           this.xrplAccount_Info = message_acc_info.result.account_data;
-          this.xrplAccount_Info.urlgravatar = this.xrplAccount_Info.urlgravatar.replace('http','https');
+          if(this.xrplAccount_Info.urlgravatar)
+            this.xrplAccount_Info.urlgravatar = this.xrplAccount_Info.urlgravatar.replace('http','https');
           //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
           this.emitAccountInfoChanged();
         } else {

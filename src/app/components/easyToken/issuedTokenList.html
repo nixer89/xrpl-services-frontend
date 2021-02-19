@@ -1,0 +1,89 @@
+<mat-expansion-panel #mep>
+  
+  <mat-expansion-panel-header fxShow fxHide.xs>
+    <mat-panel-title>
+      <span> <mat-icon style="transform: scale(0.9);">list</mat-icon> </span>
+      <span class="loading" style="margin-left: 0.5em;"> List of all tokens on the XRP Ledger </span>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <mat-expansion-panel-header fxShow.xs fxHide>
+    <mat-panel-title>
+      <span> <mat-icon style="transform: scale(0.9);">list</mat-icon> </span>
+      <span class="loading" style="margin-left: 0.5em;">List of XRPL Tokens</span>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <mat-card fxLayout="column" fxLayoutGap="1em">
+    <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.5em">
+      <label class="warning">Loading XRP Ledger tokens ...&nbsp;</label>
+      <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+    </div>
+    <div *ngIf="!loading && datasource.data" fxLayout="column" fxLayoutGap="0.5em">
+      <label><b>The below token table is based on XRP Ledger:</b></label>
+      <table style="display: block;">
+        <tr>
+          <td><label>Ledger Index:&nbsp;</label></td>
+          <td><label class="loading">{{ledgerIndex}}</label></td>
+        </tr>
+        <tr>
+          <td><label>Ledger Hash:&nbsp;</label></td>
+          <td><label class="loading">{{ledgerHash}}</label></td>
+        </tr>
+        <tr>
+          <td><label>Ledger Close Time:&nbsp;</label></td>
+          <td><label class="loading">{{humanReadableCloseTime()}}</label></td>
+        </tr>
+      </table>
+      
+    </div>
+    <div *ngIf="!loading && !datasource.data"  fxLayout="column" fxLayoutGap="0.5em">
+      <label class="warning">Could not load XRP Ledger tokens. Please try again later!</label>
+    </div>
+  </mat-card>
+
+  <mat-form-field ngStyle.xs="width: 50%" ngStyle.gt-xs="width: 25%" style="padding-top: 1em;">
+    <mat-label>Table Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="account, currency, number, ...">
+  </mat-form-field>
+
+  <mat-table [dataSource]="datasource" class="mat-elevation-z8" matSort>
+
+    <ng-container matColumnDef="account">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer Account </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+          <span fxShow fxHide.xs > {{row.account}}</span>
+          <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{row.account}}</span>
+      </mat-cell>
+  </ng-container>
+
+    <ng-container matColumnDef="currency">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <span fxShow fxHide.xs > {{getCurrencyCode(row.currency)}}</span>
+            <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{getCurrencyCode(row.currency)}}</span>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="amount">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Total issued value of this token </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <span fxShow fxHide.xs >{{stringToFloat(row.amount)}}</span>
+            <span fxShow.xs fxHide ><b>Total issued value:</b><br>{{stringToFloat(row.amount)}}</span>
+        </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="trustlines">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Number of TrustLines </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+          <span fxShow fxHide.xs >{{row.trustlines}}</span>
+          <span fxShow.xs fxHide ><b>Number of TrustLines:</b><br>{{row.trustlines}}</span>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+  </mat-table>
+  <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500]"></mat-paginator>
+</mat-expansion-panel>

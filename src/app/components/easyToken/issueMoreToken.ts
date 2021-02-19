@@ -22,10 +22,10 @@ interface TrustLine {
 }
 
 @Component({
-  selector: 'issueMoreIOU',
-  templateUrl: './issueMoreIOU.html',
+  selector: 'issueMoreToken',
+  templateUrl: './issueMoreToken.html',
 })
-export class IssueMoreIOU implements OnInit {
+export class IssueMoreToken implements OnInit {
 
   constructor(
     private matDialog: MatDialog,
@@ -68,7 +68,7 @@ export class IssueMoreIOU implements OnInit {
       let payloadId = params.payloadId;
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
-        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'issue_more_iou_component');
+        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'issue_more_token_component');
         this.mep.expanded = true;
         //check if transaction was successfull and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
@@ -191,7 +191,7 @@ export class IssueMoreIOU implements OnInit {
       this.recipientAccountChangedSubject.next({account: null, mode: this.isTestMode});
   }
 
-  issueIOU() {
+  issueToken() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
         issuing: true,
@@ -204,7 +204,7 @@ export class IssueMoreIOU implements OnInit {
           Amount: {
             currency: this.currencyCode,
             issuer: this.issuerAccount.trim(),
-            value: normalizer.iouTokenNormalizer(this.numberOfTokens)
+            value: normalizer.tokenNormalizer(this.numberOfTokens)
           }
         },
         custom_meta: {

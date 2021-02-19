@@ -33,8 +33,8 @@
       <button mat-button [routerLink]="['']" matTooltip="XRPL Transactions">
         <i class="material-icons topbar-menu-icon">mobile_friendly</i> XRPL Transactions
       </button>
-      <button mat-button [routerLink]="['/easy-iou']" matTooltip="Issue your own IOU!">
-        <i class="material-icons topbar-menu-icon">attach_money</i> Easy IOUs!
+      <button mat-button [routerLink]="['/tokens']" matTooltip="Issue your own Token!">
+        <i class="material-icons topbar-menu-icon">attach_money</i> Easy Tokens!
       </button>
       <button mat-button [routerLink]="['/tools']" matTooltip="Tools">
         <i class="material-icons topbar-menu-icon">build</i> Tools
@@ -53,9 +53,9 @@
           <mat-icon class="material-icons">mobile_friendly</mat-icon>
           <span>XRPL Transactions</span>
         </button>
-        <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/easy-iou']" matTooltip="Issue your own IOU!">
+        <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tokens']" matTooltip="Issue your own Token!">
           <mat-icon class="material-icons">attach_money</mat-icon>
-          <span>Easy IOUs!</span>
+          <span>XRPL Tokens</span>
         </button>
         <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tools']" matTooltip="Tools">
           <mat-icon class="material-icons">build</mat-icon>

@@ -1,0 +1,36 @@
+<div *ngIf="loading" fxLayout="row" fxLayoutAlign="start center">
+    <label>Loading Tokens ...&nbsp;</label>
+    <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+</div>
+<label style="color: darkorange" *ngIf="originalIsserAccount && !loading && (!tokenList || (tokenList && tokenList.length == 0))">This account does not issue any currencies (Tokens) on the XRP Ledger {{testMode ? 'TEST' : 'LIVE'}} net.</label>
+<mat-accordion *ngIf="originalIsserAccount && !loading && tokenList && tokenList.length > 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+    <mat-expansion-panel #mep>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Select an Token from the list below
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-table [dataSource]="tokenList" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="currency">
+                <mat-header-cell *matHeaderCellDef> Token Currency Code </mat-header-cell>
+                <mat-cell *matCellDef="let token" (click)="mep.expanded=false">
+                    <span fxShow fxHide.xs > {{getCurrencyCode(token.currency)}}</span>
+                    <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{getCurrencyCode(token.currency)}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="amount">
+                <mat-header-cell *matHeaderCellDef > Total issued value of this currency </mat-header-cell>
+                <mat-cell *matCellDef="let token" (click)="mep.expanded=false">
+                    <span fxShow fxHide.xs >{{stringToFloat(token.amount)}}</span>
+                    <span fxShow.xs fxHide ><b>Total issued value:</b><br>{{stringToFloat(token.amount)}}</span>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" (click)="tokenSelected(row)"></mat-row>
+
+        </mat-table>
+    </mat-expansion-panel>
+</mat-accordion>

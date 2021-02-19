@@ -1,13 +1,20 @@
 <mat-expansion-panel #mep>
-  <mat-expansion-panel-header>
+  <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
-      <span> <mat-icon style="transform: scale(0.9);">send</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> Issue more of your created IOU </span>
+      <span> <mat-icon style="transform: scale(0.85);">send</mat-icon> </span>
+      <span class="loading" style="margin-left: 0.5em;"> Issue more of your created Token </span>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <mat-expansion-panel-header fxShow.xs fxHide>
+    <mat-panel-title>
+      <span> <mat-icon style="transform: scale(0.85);">send</mat-icon> </span>
+      <span class="loading" style="margin-left: 0.5em;">Issue more Token</span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
   <mat-card fxLayout="column" fxLayoutGap="0.5em">
-    <label>After you have initially created your IOU, you can issue more tokens to accounts which have a TrustLine to your issuer account.</label>
+    <label>After you have initially created your Token, you can issue more tokens to accounts which have a TrustLine to your issuer account.</label>
     <div *ngIf="!getIssuer() || !validIssuer">
       <button mat-button matTooltip="Sign In via XUMM." matTooltipPosition="above" (click)="signInWithIssuer()" style="padding:0px;">
         <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
@@ -32,13 +39,13 @@
         </div>
         <form fxLayout="column" fxLayoutGap="0.3em" style="padding-top: 0.8em;">
           <mat-form-field>
-            <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the IOU" [(ngModel)]="issuerAccount" [readonly]="true">
+            <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the Token" [(ngModel)]="issuerAccount" [readonly]="true">
             <mat-hint *ngIf="getIssuer() && !validIssuer">Not a valid XRPL address</mat-hint>
           </mat-form-field>
         
-          <label class="loading">Which address should the IOU be sent to?</label>
+          <label class="loading">Which address should the Token be sent to?</label>
           <mat-form-field>
-            <input #inprecipientAccount matInput name="recipientAccount" placeholder="IOU recipient account" [(ngModel)]="recipientAccountInput" (ngModelChange)="checkChangesRecipientAccount()">
+            <input #inprecipientAccount matInput name="recipientAccount" placeholder="Token recipient account" [(ngModel)]="recipientAccountInput" (ngModelChange)="checkChangesRecipientAccount()">
             <mat-hint *ngIf="recipientAccountInput && !validAddress">Not a valid XRP address</mat-hint>
             <mat-hint *ngIf="recipientAccountInput && validAddress && issuerAccount.trim() === recipientAccountInput.trim()">Issuer and recipient cannot be the same!</mat-hint>
           </mat-form-field>
@@ -71,8 +78,8 @@
           <a href="https://xumm.community?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}" target="_blank">https://xumm.community?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}</a>
         </div>
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
-          <button mat-raised-button color="primary" (click)="issueIOU()" [disabled]="!validAddress || !validIssuer || !validCurrencyCode || !validNumberOfTokens || notEnoughLimit">
-            Send IOU via XUMM
+          <button mat-raised-button color="primary" (click)="issueToken()" [disabled]="!validAddress || !validIssuer || !validCurrencyCode || !validNumberOfTokens || notEnoughLimit">
+            Send Token via XUMM
           </button>
           <button *ngIf="currencyCode" mat-raised-button (click)="clearCurrencyCode()" [disabled]="!currencyCode">
             Clear Currency Code

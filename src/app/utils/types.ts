@@ -44,9 +44,10 @@ export interface XrplAccountChanged {
     mode: boolean
 }
 
-export interface IOU {
+export interface Token {
     currency: string,
-    amount: string
+    amount: string,
+    trustlines?: string
 }
 
 export interface TrustLine {
@@ -65,4 +66,11 @@ export interface TransactionTemplate {
     docLink: string,
     requiresAmendment: boolean,
     codeSamples: any[]
+}
+
+export interface TokenIssuer {
+    account: string,
+    currency: string,
+    amount: string,
+    trustlines: string
 }

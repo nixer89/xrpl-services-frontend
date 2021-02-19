@@ -83,6 +83,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
     if(this.originalAccountInfo && this.originalAccountInfo.Account) {
       this.googleAnalytics.analyticsEventEmitter('check_delete_preconditions', 'account_delete', 'account_delete_component');
       this.loadingPreconditions = true;
+      this.errorMsg = null;
 
       let accountObjects:any[] = [];
 

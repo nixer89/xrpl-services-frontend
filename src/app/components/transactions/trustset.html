@@ -25,15 +25,15 @@
     </div>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
-        <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the IOU" [(ngModel)]="issuerAccountInput" (ngModelChange)="issuerAccountChanged()" [disabled]="isEditMode">
+        <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the Token" [(ngModel)]="issuerAccountInput" (ngModelChange)="issuerAccountChanged()" [disabled]="isEditMode">
         <mat-hint *ngIf="issuerAccountInput && !validAddress">Not a valid XRPL address</mat-hint>
       </mat-form-field>
       <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
-        <iouList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></iouList>
+        <tokenList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></tokenList>
       </div>
       <mat-form-field [ngClass]="{'changed': showIssuedCurrencySelectedStyle}">
-        <input #inpissuedcurrency matInput name="issuedcurrency" matInput placeholder="IOU currency code" [(ngModel)]="currencyCodeAsAscii" (ngModelChange)="currencyChanged()" [disabled]="isEditMode">
-        <mat-hint *ngIf="issuedCurrencyInput && !validCurrency">Not a valid IOU currency</mat-hint>
+        <input #inpissuedcurrency matInput name="issuedcurrency" matInput placeholder="Token currency code" [(ngModel)]="currencyCodeAsAscii" (ngModelChange)="currencyChanged()" [disabled]="isEditMode">
+        <mat-hint *ngIf="issuedCurrencyInput && !validCurrency">Not a valid Token currency</mat-hint>
       </mat-form-field>
       <mat-form-field>
         <input #inplimit matInput type="text" name="limit" placeholder="Limit to set on this TrustLine." [(ngModel)]="limitInput" (ngModelChange)="checkChanges()">
@@ -53,7 +53,7 @@
         Clear Inputs
       </button>
       <label *ngIf="!issuerAccountInput || !validAddress">Please enter a valid XRPL address.</label>
-      <label *ngIf="validAddress && ( !issuedCurrencyInput || !validCurrency )">Please enter a valid IOU currency code.</label>
+      <label *ngIf="validAddress && ( !issuedCurrencyInput || !validCurrency )">Please enter a valid Token currency code.</label>
       <label *ngIf="validAddress && validCurrency && ( !limitInput || !validLimit )">Please enter a valid Limit for this TrustLine.</label>
     </div>
   </div>

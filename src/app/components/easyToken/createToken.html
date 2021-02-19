@@ -1,8 +1,15 @@
 <mat-expansion-panel>
-  <mat-expansion-panel-header>
+  <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
       <span> <mat-icon>add</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> Create a new IOU </span>
+      <span class="loading" style="margin-left: 0.5em;"> Create a new Token on the XRP Ledger </span>
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+
+  <mat-expansion-panel-header fxShow.xs fxHide>
+    <mat-panel-title>
+      <span> <mat-icon>add</mat-icon> </span>
+      <span class="loading" style="margin-left: 0.5em;">Create a new Token</span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
@@ -17,16 +24,16 @@
       <mat-step completed="false" editable="false">
           <mat-card fxLayout="column" fxLayoutGap="0.5em">
               <ng-template matStepLabel>Description</ng-template>
-              <label>Easy-IOU is (probably) the most simpliest way to create your own currency on the XRP Ledger.</label>
+              <label>Easy-Token is (probably) the most simpliest way to create your own currency on the XRP Ledger.</label>
               <label>From 'beer-token' over 'toilet-paper-token' (TPT), everything is possible!</label><br/><br/>
 
-              <label class="warning">We will charge you 5 XRP for creating your IOU and  your initial issuing to one other account.</label>
+              <label class="warning">We will charge you 5 XRP for creating your Token and  your initial issuing to one other account.</label>
               <label>Issuing more tokens to any other account will be free of charge.</label><br/>
-              <label>Also a new TrustLine for your IOU will be created from the recipients account. This adds 5 XRP to the recipients accounts reserve.</label>
+              <label>Also a new TrustLine for your Token will be created from the recipients account. This adds 5 XRP to the recipients accounts reserve.</label>
               <label>So please make sure you have at least 25 XRP (+ some Drops for fees) in the issuer and recipients account!</label><br/>
               
-              <label class="loading">Once 5 XRP was paid, the payment for this account is valid for 24h. So you have 24h to finish creating your IOU. After 24h you would need to pay again.</label>
-              <label>Funds can not be restored if you do not create your IOU within 24h.</label><br/><br/>
+              <label class="loading">Once 5 XRP was paid, the payment for this account is valid for 24h. So you have 24h to finish creating your Token. After 24h you would need to pay again.</label>
+              <label>Funds can not be restored if you do not create your Token within 24h.</label><br/><br/>
 
               <label>Click 'Next' and follow the instructions if you are ready and you know what your are doing!</label>
               <div style="padding-top: 0.5em;">
@@ -38,15 +45,15 @@
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
             <ng-template matStepLabel>Requirements</ng-template>
-            <label class="loading">The following requirements need to be met to create your IOU.</label>
+            <label class="loading">The following requirements need to be met to create your Token.</label>
             <label>Please read and accept every checkbox to make sure you understand what you are doing and you are good to go!</label><br/><br/>
-            <mat-checkbox [(ngModel)]="checkBoxTwoAccounts" [ngClass]="(checkBoxTwoAccounts ? 'success': 'warning')">You have the keys of two accounts. One for issuing and one for receiving your IOU.</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxTwoAccounts" [ngClass]="(checkBoxTwoAccounts ? 'success': 'warning')">You have the keys of two accounts. One for issuing and one for receiving your Token.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxIssuerInfo" [ngClass]="(checkBoxIssuerInfo ? 'success': 'warning')">It is recommended that the issuer account does NOT have outgoing trust lines! Please use an account as issuer account that you don't access/use regulary.</mat-checkbox>
-            <mat-checkbox [(ngModel)]="checkBoxFiveXrp" [ngClass]="(checkBoxFiveXrp ? 'success': 'warning')">You accept paying 5 XRP for this service, helping you issue your own IOU.</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxFiveXrp" [ngClass]="(checkBoxFiveXrp ? 'success': 'warning')">You accept paying 5 XRP for this service, helping you issue your own Token.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxSufficientFunds" [ngClass]="(checkBoxSufficientFunds ? 'success': 'warning')">The issuing and recipient accounts have enough funds. (at least ~6 XRP available, excluding account reserves!)</mat-checkbox>
-            <mat-checkbox [(ngModel)]="checkBoxNetwork" [ngClass]="(checkBoxNetwork ? 'success': 'warning')">Your XUMM app is connected to the LIVE or TEST network, depending on where you want to issue your IOU.</mat-checkbox>
-            <mat-checkbox [(ngModel)]="checkBoxNoLiability" [ngClass]="(checkBoxNoLiability ? 'success': 'warning')">We take no liability if you are not able to issue your own IOU. Only proceed if you know what your are doing!</mat-checkbox>
-            <mat-checkbox [(ngModel)]="checkBoxDisclaimer" [ngClass]="(checkBoxDisclaimer ? 'success': 'warning')">We offer "basic" IOU/TrustLine management. If you are going to issue your IOU for commercial use, we recommend to NOT use this tool. We are not liable for any regulatory implications, depending on the jurisdiction you live in.</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxNetwork" [ngClass]="(checkBoxNetwork ? 'success': 'warning')">Your XUMM app is connected to the LIVE or TEST network, depending on where you want to issue your Token.</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxNoLiability" [ngClass]="(checkBoxNoLiability ? 'success': 'warning')">We take no liability if you are not able to issue your own Token. Only proceed if you know what your are doing!</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxDisclaimer" [ngClass]="(checkBoxDisclaimer ? 'success': 'warning')">We offer "basic" Token/TrustLine management. If you are going to issue your Token for commercial use, we recommend to NOT use this tool. We are not liable for any regulatory implications, depending on the jurisdiction you live in.</mat-checkbox>
 
             <div style="padding-top: 0.5em;" fxLayoutGap="0.5em">
                 <button mat-raised-button color="primary" [disabled]="!checkBoxTwoAccounts || !checkBoxIssuerInfo || !checkBoxFiveXrp || !checkBoxSufficientFunds || !checkBoxNetwork || !checkBoxNoLiability || !checkBoxDisclaimer" (click)="moveNext()">Next</button>
@@ -60,7 +67,7 @@
           <div fxLayout="row" fxLayoutGap="0.5em">
             <div fxLayout="column" fxLayoutGap="0.5em">
               <ng-template matStepLabel>Select the network</ng-template>
-              <label class="loading">Do you want to create an IOU on the live network or test network?</label>
+              <label class="loading">Do you want to create an Token on the live network or test network?</label>
               <div fxLayout="row" fxLayoutGap="0.5em">
                 <mat-card class="theme-background">
                   <div fxLayout="column" fxLayoutAlign="start center">
@@ -90,10 +97,10 @@
 
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
-            <ng-template matStepLabel>Information about your IOU</ng-template>
-            <label>We need to define some details about the IOU you want to create.</label>
+            <ng-template matStepLabel>Information about your Token</ng-template>
+            <label>We need to define some details about the Token you want to create.</label>
             <form fxLayout="column" fxLayoutGap="0.5em">
-              <label class="loading">What is the currency code you want to use for your IOU? As Example: 'ABC' or 'NixerCoin'</label>
+              <label class="loading">What is the currency code you want to use for your Token? As Example: 'ABC' or 'NixerCoin'</label>
               <mat-form-field style="padding-top: 0.5em;">
                 <input matInput name="Currency Code" placeholder="Currency Code" [(ngModel)]="currencyCode" (ngModelChange)="checkChangesCurrencyCode()">
                 <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode != 'XRP' && currencyCode.length < 3">Not a valid Currency Code. Please choose between 3 and 20 characters (like 'USD' or 'SOLO')</mat-hint>
@@ -124,16 +131,16 @@
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
           <ng-template matStepLabel>Issuer account</ng-template>
           <label class="loading">What is the XRP Ledger account which will be issuing your tokens?</label>
-          <label>You need to pay or sign in with the account you want to create your IOU from. (the 'Issuer' account)</label>
+          <label>You need to pay or sign in with the account you want to create your Token from. (the 'Issuer' account)</label>
           <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
             <div  style="padding-top: 0.5em;" *ngIf="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound">
-              <button mat-button matTooltip="Pay for your IOU via XUMM." matTooltipPosition="above" (click)="payForIOU()" style="padding:0px;">
+              <button mat-button matTooltip="Pay for your Token via XUMM." matTooltipPosition="above" (click)="payForToken()" style="padding:0px;">
                 <img src="../../assets/xummPay.svg" style="width: 148px; height: 40px;" alt="Pay via XUMM">
               </button>
               &nbsp;<label class="warning">Make a 5 XRP payment if you haven't paid within the last 24h.</label>
             </div>
             <div *ngIf="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound">
-              <button mat-button matTooltip="SignIn via XUMM." matTooltipPosition="above" (click)="loginForIOU()" style="padding:0px;">
+              <button mat-button matTooltip="SignIn via XUMM." matTooltipPosition="above" (click)="loginForToken()" style="padding:0px;">
                 <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
               </button>
               &nbsp;<label class="loading">Sign in with the account you have paid within the last 24h.</label>
@@ -145,7 +152,7 @@
             <mat-hint *ngIf="paymentNotFound">Please make a 5 XRP payment or login with a different account.</mat-hint>
 
             <div fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !paymentNotSuccessfull && !paymentNotFound && !loadingIssuerAccount">
-              <label>The account you want to issue an IOU with is: </label>
+              <label>The account you want to issue an Token with is: </label>
               <div fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
                 <label class="warning">{{getIssuer()}}</label>
                 <button mat-icon-button (click)="clearIssuerAccount()" aria-label="Clear Issuer Account">
@@ -170,7 +177,7 @@
           <ng-template matStepLabel>Set DefaultRipple</ng-template>
           <div *ngIf="needDefaultRipple" fxLayout="column" fxLayoutGap="0.5em">
             <label>We need to set the DefaultRipple flag to your issuer account.</label>
-            <label>This allows you and others to send your IOU through the XRP Ledger. If we do not set the flag, people won't be able to send your IOU.</label>
+            <label>This allows you and others to send your Token through the XRP Ledger. If we do not set the flag, people won't be able to send your Token.</label>
             <div>
               <button mat-raised-button color="primary" (click)="sendDefaultRipple()">
                 Set DefaultRipple via XUMM
@@ -195,8 +202,8 @@
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
           <ng-template matStepLabel>Set TrustLine from recipient</ng-template>
           <div *ngIf="!recipientTrustlineSet && !recipientAddress" fxLayout="column" fxLayoutGap="0.5em">
-            <label>We have to set a TrustLine from the IOU recipient to the issuing account: {{getIssuer()}}</label>
-            <label class="warning">So please sign the next XUMM request with the account which should receive the IOU!</label>
+            <label>We have to set a TrustLine from the Token recipient to the issuing account: {{getIssuer()}}</label>
+            <label class="warning">So please sign the next XUMM request with the account which should receive the Token!</label>
             <label class="loading">You have to switch the signing account from the <b>issuer</b> to the <b>recipient</b> in the XUMM app!</label>
             <div>
               <button mat-raised-button color="primary" (click)="setTrustline()">
@@ -220,20 +227,20 @@
 
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
-          <ng-template matStepLabel>Issuing your IOU</ng-template>
+          <ng-template matStepLabel>Issuing your Token</ng-template>
           <div *ngIf="!weHaveIssued" fxLayout="column" fxLayoutGap="0.5em">
             <label>Okay, lets issue your token now!</label>
             <label class="warning">We are going to issue: <b>{{this.limit}} {{this.currencyCode}}</b></label>
             <label>to: <b>{{this.recipientAddress}}</b></label>
             <label></label>
             <label class="loading">You have to switch the signing account from the <b>recipient</b> to the <b>issuing</b> in the XUMM app!</label>
-            <label>Please keep in mind this is just an inital issuing. You can issue more of your IOU at any time through this website with "Issue more if your created IOU".</label>
+            <label>Please keep in mind this is just an inital issuing. You can issue more of your Token at any time through this website with "Issue more if your created Token".</label>
             <label> (The recipient needs to have a TrustLine to your issueing account with a proper limit!)</label>
             <label></label>
             <mat-checkbox [(ngModel)]="checkBoxIssuingText" [ngClass]="(checkBoxIssuingText ? 'success': 'warning')">I have read and understand the above text. Let me issue now!</mat-checkbox>
             <div>
-              <button mat-raised-button color="primary" (click)="issueIOU()" [disabled]="!checkBoxIssuingText">
-                Issue your IOU
+              <button mat-raised-button color="primary" (click)="issueToken()" [disabled]="!checkBoxIssuingText">
+                Issue your Token
               </button>
               <span style="flex: 1 1 auto;"></span>
             </div>
@@ -242,7 +249,7 @@
             <i class="material-icons" style="color: green; font-size: 3em;">
                 check_circle_outline
             </i>
-            <label>Congratulations! You have created your own token (IOU) on the XRP Ledger!</label>
+            <label>Congratulations! You have created your own token on the XRP Ledger!</label>
           </div>
           <div fxLayoutGap="0.5em" style="padding-top: 0.5em;">
             <button mat-raised-button color="primary" (click)="moveNext()" [disabled]="!weHaveIssued">Next</button>
@@ -257,7 +264,7 @@
           <label class="loading">This is an optional step. You can "black hole" the issuer account. That means you would not be able to issue more tokens (fixed supply) AND you would loose access to this account!</label>
           <label class="warning">Please skip this step if you don't know what that means!</label>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole1" [ngClass]="(checkBoxBlackhole1 ? 'success': 'warning')">I understand the implications and want to black hole the issuer account.</mat-checkbox>
-          <mat-checkbox [(ngModel)]="checkBoxBlackhole2" [ngClass]="(checkBoxBlackhole2 ? 'success': 'warning')">I understand that I can not create more tokens. The supply of my IOU will be fixed.</mat-checkbox>
+          <mat-checkbox [(ngModel)]="checkBoxBlackhole2" [ngClass]="(checkBoxBlackhole2 ? 'success': 'warning')">I understand that I can not create more tokens. The supply of my Token will be fixed.</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole3" [ngClass]="(checkBoxBlackhole3 ? 'success': 'warning')">I understand that I will loose access to the issuer account: {{getIssuer()}}. I WON'T BE ABLE TO RECOVER THE ACCESS!</mat-checkbox>
           <mat-card *ngIf="checkBoxBlackhole1 && checkBoxBlackhole2 && checkBoxBlackhole3 && (!blackholeRegularKeySet || !blackholeMasterDisabled)" fxLayout="column" fxLayoutGap="0.5em">
             <label>Okay, lets black hole the issuer account!</label>
@@ -294,14 +301,14 @@
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
           <ng-template matStepLabel>Finished!</ng-template>
-          <label>You can now send your IOU through the XRP Ledger to accounts which also have added a TrustLine with your issuer account: <b>{{getIssuer()}}</b></label><br>
+          <label>You can now send your Token through the XRP Ledger to accounts which also have added a TrustLine with your issuer account: <b>{{getIssuer()}}</b></label><br>
           <label>People can setup a TrustLine to your issuer account via the "Trust Set" transaction on the page "XRPL Transactions"!</label>
           <label>You can share the following link with people interested to set a TrustLine to you account:</label>
           <a href="https://xumm.community?issuer={{getIssuer()}}&currency={{currencyCode}}&limit={{limit}}" target="_blank">https://xumm.community?issuer={{getIssuer()}}&currency={{currencyCode}}&limit={{limit}}</a>
-          <label>Then you can send your IOU from your recipient account to other accounts which have setup a TrustLine.</label>
+          <label>Then you can send your Token from your recipient account to other accounts which have setup a TrustLine.</label>
           <label *ngIf="blackholeRegularKeySet && blackholeMasterDisabled">Or your can issue more tokens with your issuer account.</label>
           <div>
-            <button mat-raised-button color="primary" (click)="reset()">Create another IOU</button>
+            <button mat-raised-button color="primary" (click)="reset()">Create another Token</button>
             <button mat-raised-button (click)="moveBack()">Back</button>
           </div>
         </mat-card>

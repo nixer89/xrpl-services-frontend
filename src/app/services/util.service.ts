@@ -6,7 +6,7 @@ export class UtilService {
     constructor(private app: AppService) {}
 
     async getTransactionTypes(): Promise<any> {
-        let dirList:any[] = await this.app.get('https://api.github.com/repos/ripple/xrpl-dev-portal/contents/content/references/rippled-api/transaction-formats/transaction-types');       
+        let dirList:any[] = await this.app.get('https://api.github.com/repos/ripple/xrpl-dev-portal/contents/content/references/rippled-api/transaction-formats/transaction-types');
         let relevantFiles:any[] = dirList.filter(r => r.name.match(/^[a-zA-Z]+\.md$/))
 
         let sources:any[] = [];

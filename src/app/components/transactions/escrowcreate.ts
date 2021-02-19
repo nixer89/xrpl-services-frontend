@@ -5,6 +5,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, XrplAccountChanged } from 'src/app/utils/types';
+import * as normalizer from '../../utils/normalizers'
 
 @Component({
   selector: 'escrowcreate',
@@ -216,12 +217,12 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     }
  
     if(this.validCancelAfter) {
-      xummPayload.txjson.CancelAfter = (this.cancelAfterDateTime.getTime()/1000)-946684800;
+      xummPayload.txjson.CancelAfter = normalizer.utcToRippleEpocheTime(this.cancelAfterDateTime.getTime());
       xummPayload.custom_meta.instruction += "\n- Cancel After (UTC): " + this.cancelAfterDateTime.toUTCString();
     }
 
     if(this.validFinishAfter) {
-      xummPayload.txjson.FinishAfter = (this.finishAfterDateTime.getTime()/1000)-946684800;
+      xummPayload.txjson.FinishAfter = normalizer.utcToRippleEpocheTime(this.finishAfterDateTime.getTime());
       xummPayload.custom_meta.instruction += "\n- Finish After (UTC): " + this.finishAfterDateTime.toUTCString();
     }
 
