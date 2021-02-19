@@ -69,6 +69,9 @@ export class IssuedTokenList implements OnInit {
       tokenIssuers = null
     }
 
+    if(tokenIssuers && tokenIssuers.length == 0)
+      tokenIssuers = null;
+
     return tokenIssuers;
   }
 
