@@ -55,13 +55,21 @@
           <span fxShow fxHide.xs > {{row.account}}</span>
           <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{row.account}}</span>
       </mat-cell>
-  </ng-container>
+    </ng-container>
+
+    <ng-container matColumnDef="username">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Bithomp Username </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+          <span fxShow fxHide.xs > {{row.username}}</span>
+          <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{row.username}}</span>
+      </mat-cell>
+    </ng-container>
 
     <ng-container matColumnDef="currency">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
         <mat-cell *matCellDef="let row">
             <span fxShow fxHide.xs > {{getCurrencyCode(row.currency)}}</span>
-            <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{getCurrencyCode(row.currency)}}</span>
+            <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{row.currency}}</span>
         </mat-cell>
     </ng-container>
 

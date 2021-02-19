@@ -21,7 +21,7 @@ export class IssuedTokenList implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
 
-  displayedColumns: string[] = ['account','currency', 'amount', 'trustlines'];
+  displayedColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines'];
   datasource:MatTableDataSource<TokenIssuer> = null;
 
   loading:boolean = false;
@@ -49,7 +49,7 @@ export class IssuedTokenList implements OnInit {
   async loadLedgerData(): Promise<TokenIssuer[]> {
     let tokenIssuers:TokenIssuer[] = [];
     try {
-      let issuedTokensResponse:any = await this.app.get('https://tokens.xumm.community/tokens');
+      let issuedTokensResponse:any = await this.app.get('http://localhost:4001/tokens');
 
       this.ledgerIndex = issuedTokensResponse.ledger_index;
       this.ledgerHash = issuedTokensResponse.ledger_hash;
@@ -59,9 +59,14 @@ export class IssuedTokenList implements OnInit {
 
       for (var account in issuers) {
         if (issuers.hasOwnProperty(account)) {
-            let issuedCurrencies:Token[] = issuers[account];
+            let issuedCurrencies:Token[] = issuers[account].tokens;
+            let username:string = issuers[account].username;
             issuedCurrencies.forEach(issuedCurrency => {
-              tokenIssuers.push({account: account, currency: issuedCurrency.currency, amount: issuedCurrency.amount, trustlines: issuedCurrency.trustlines});
+
+              if("rMZ7swk2CUfKr5uTnYtNu6Gf2gRiNJBj6n" === account)
+                console.log(issuedCurrency.currency);
+
+              tokenIssuers.push({account: account, currency: this.getCurrencyCode(issuedCurrency.currency), amount: issuedCurrency.amount, trustlines: issuedCurrency.trustlines, username: username});
             })
         }
       }
@@ -72,6 +77,7 @@ export class IssuedTokenList implements OnInit {
     if(tokenIssuers && tokenIssuers.length == 0)
       tokenIssuers = null;
 
+      console.log(tokenIssuers.length);
     return tokenIssuers;
   }
 

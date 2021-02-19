@@ -72,5 +72,6 @@ export interface TokenIssuer {
     account: string,
     currency: string,
     amount: string,
-    trustlines: string
+    trustlines: string,
+    username?: string
 }

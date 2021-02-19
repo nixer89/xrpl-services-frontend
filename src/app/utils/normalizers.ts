@@ -5,7 +5,6 @@ export function tokenNormalizer(numberOfTokens: string): string {
 }
 
 export function currencyCodeHexToAsciiTrimmed(currencyCode:string): string {
-    let readableCurrencyCode = currencyCode;
     if(currencyCode && currencyCode.length == 40) { //remove trailing zeros
         while(currencyCode.endsWith("00")) {
             currencyCode = currencyCode.substring(0, currencyCode.length-2);
@@ -17,7 +16,7 @@ export function currencyCodeHexToAsciiTrimmed(currencyCode:string): string {
             if(currencyCode.startsWith("01"))
                 return convertDemurrageToAscii(currencyCode);
             else
-                return Buffer.from(currencyCode, "hex").toString('utf-8').trim();
+                return Buffer.from(currencyCode, "hex").toString().trim();
         } else {
             return currencyCode;
         }
