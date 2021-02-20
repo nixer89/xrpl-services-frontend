@@ -89,7 +89,7 @@ export class CreateToken implements OnInit {
       payload: {
         txjson: {
           TransactionType: "Payment",
-          Memos : [{Memo: {MemoType: Buffer.from("[https://xumm.community]-Memo:", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for creating Token: '"+this.currencyCode.trim()+"'", 'utf8').toString('hex').toUpperCase()}}]
+          Memos : [{Memo: {MemoType: Buffer.from("[https://xumm.community]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for creating Token: '"+this.currencyCode.trim()+"'", 'utf8').toString('hex').toUpperCase()}}]
         },
         custom_meta: {
           instruction: "Please pay with the account you want to issue your Token from!"

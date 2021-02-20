@@ -31,6 +31,7 @@ export class IssuedTokenList implements OnInit {
   ledgerIndex: string;
   ledgerHash: string;
   ledgerCloseTime: number;
+  issuingAccounts: number = 0;
 
   async ngOnInit() {
     this.pageSize = this.deviceDetector.isMobile() ? 5 : this.pageSize;
@@ -54,6 +55,7 @@ export class IssuedTokenList implements OnInit {
       this.ledgerIndex = issuedTokensResponse.ledger_index;
       this.ledgerHash = issuedTokensResponse.ledger_hash;
       this.ledgerCloseTime = issuedTokensResponse.ledger_close_ms;
+      this.issuingAccounts = 0;
 
       let issuers:any = issuedTokensResponse.tokens;
 
@@ -61,6 +63,7 @@ export class IssuedTokenList implements OnInit {
         if (issuers.hasOwnProperty(account)) {
             let issuedCurrencies:Token[] = issuers[account].tokens;
             let username:string = issuers[account].username;
+            this.issuingAccounts++;
             issuedCurrencies.forEach(issuedCurrency => {
 
               if("rMZ7swk2CUfKr5uTnYtNu6Gf2gRiNJBj6n" === account)
@@ -77,7 +80,7 @@ export class IssuedTokenList implements OnInit {
     if(tokenIssuers && tokenIssuers.length == 0)
       tokenIssuers = null;
 
-      console.log(tokenIssuers.length);
+      console.log(tokenIssuers && tokenIssuers.length);
     return tokenIssuers;
   }
 

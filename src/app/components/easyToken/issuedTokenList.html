@@ -34,6 +34,21 @@
           <td><label>Ledger Close Time:&nbsp;</label></td>
           <td><label class="loading">{{humanReadableCloseTime()}}</label></td>
         </tr>
+        <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td><label>Additional stats:</label></td>
+        </tr>
+        <tr>
+          <td><label>Unique accounts issuing tokens:&nbsp;</label></td>
+          <td><label class="loading">{{issuingAccounts}}</label></td>
+        </tr>
+        <tr>
+          <td><label>Issued tokens:&nbsp;</label></td>
+          <td><label class="loading">{{datasource && datasource.data && datasource.data.length}}</label></td>
+        </tr>
       </table>
       
     </div>
