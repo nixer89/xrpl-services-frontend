@@ -1,0 +1,87 @@
+<mat-expansion-panel [disabled]="originalAccountInfo && originalAccountInfo.error">
+  <mat-expansion-panel-header fxShow fxHide.xs>
+    <mat-panel-title>
+      <span> <mat-icon style="transform: scale(0.9);">add_box</mat-icon> </span>
+      <span class="loading" style="margin-left: 0.5em;"> Escrow Create </span>
+    </mat-panel-title>
+    <mat-panel-description>
+      Create an Escrow on the XRP Ledger.
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <mat-expansion-panel-header fxShow.xs fxHide>
+    <mat-panel-title>
+      <label class="loading">Escrow Create</label>
+    </mat-panel-title>
+    <mat-panel-description>
+      Create an Escrow
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <div fxLayout="column" fxLayoutGap="0.3em">
+    <a href="https://xrpl.org/escrowcreate.html" target="_blank" rel="noreferrer">Escrow Create Documentation</a><br/>
+    <label>Sequester XRP until the escrow process either finishes or is canceled.</label>
+    <div style="margin-bottom: 1em;" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
+      <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()"></escrowList>
+    </div>
+    <label style="color: crimson;padding-top: 1em;"><b>Be careful. You could lock away your funds for years!</b><br/></label>
+    <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
+      <mat-form-field>
+        <input #inpdestination matInput name="destination" placeholder="Escrow Destination XRPL Address (required)" [(ngModel)]="destinationInput" (ngModelChange)="checkChanges()">
+        <mat-hint *ngIf="destinationInput && !validAddress">Not a valid XRP address</mat-hint>
+      </mat-form-field>
+      <mat-form-field>
+        <input #inpamount matInput type="text" name="amount" placeholder="Escrow Amount in XRP (required)" [(ngModel)]="amountInput" (ngModelChange)="checkChanges()">
+        <mat-hint *ngIf="amountInput && !validAmount && maxSixDigits">The XRP amount cannot have more than 6 decimals.</mat-hint>
+        <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && amountInput.toString().includes(',')">Not a valid amount. Please use '.' as decimal operator.</mat-hint>
+        <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && !amountInput.toString().includes(',') && !escrowBiggerThanAvailable()">Not a valid amount</mat-hint>
+        <mat-hint *ngIf="amountInput && !validAmount && escrowBiggerThanAvailable()">Your escrow amount is too big. Max amount is: {{getAvailableBalanceForEscrow()}} XRP. ('Available Balance' minus 5 XRP for account reserve) <a href="https://xrpl.org/reserves.html#owner-reserves" target="_blank"> (Reserve Info)</a></mat-hint>
+      </mat-form-field>
+      <mat-card fxLayout="column">
+        <label>Finish After (optional)</label>
+        <mat-card-content style="padding-top:1em;">
+          <mat-form-field>
+            <input matInput name="finishafterdate" [type]="dateTimePickerSupported ? 'date' : 'text'" [placeholder]="dateTimePickerSupported ? 'Choose a Date' : 'yyyy-mm-dd'" [(ngModel)]="finishafterDateInput" (ngModelChange)="checkChanges()">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput name="finishaftertime" [type]="dateTimePickerSupported ? 'time' : 'text'" step="2" [placeholder]="dateTimePickerSupported ? 'Choose a Time' : 'HH:mm:ss (24h format)'" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
+          </mat-form-field>
+        </mat-card-content>
+        <mat-hint *ngIf="(finishafterTimeInput || finishafterDateInput) && !validFinishAfter && !finishDateInFuture">Invalid date/time.</mat-hint>
+        <mat-hint *ngIf="finishDateInFuture">Finish After needs to be in the future.</mat-hint>
+        <mat-hint *ngIf="validFinishAfter && escrowYears > 10">ATTENTION! You will make your XRP inaccessible for {{escrowYears}} Years!!!</mat-hint>
+        <mat-hint *ngIf="validFinishAfter && !finishDateInFuture" style="color: grey !important">UTC time: <b>{{finishAfterDateTime.toUTCString()}}</b></mat-hint>
+      </mat-card>
+      <mat-card>
+        <label>Cancel After (optional)</label>
+        <mat-card-content style="padding-top:1em;">
+          <mat-form-field>
+            <input matInput name="cancelafterdate" [type]="dateTimePickerSupported ? 'date' : 'text'" [placeholder]="dateTimePickerSupported ? 'Choose a Date' : 'yyyy-mm-dd'" [(ngModel)]="cancelafterDateInput" (ngModelChange)="checkChanges()">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput name="cancelaftertime" [type]="dateTimePickerSupported ? 'time' : 'text'" step="2" [placeholder]="dateTimePickerSupported ? 'Choose a Time' : 'HH:mm:ss (24h format)'" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
+          </mat-form-field>
+        </mat-card-content>
+        <mat-hint *ngIf="(cancelafterTimeInput || cancelafterDateInput) && !validCancelAfter">Invalid date/time.</mat-hint>
+        <mat-hint *ngIf="validCancelAfter && cancelDateInFuture">Cancel After needs to be in the future.</mat-hint>
+        <mat-hint *ngIf="validCancelAfter && !cancelDateInFuture && cancelDateBeforeFinishDate">Cancel After needs to be after Finish After.</mat-hint>
+        <mat-hint *ngIf="validCancelAfter && !cancelDateInFuture && !cancelDateBeforeFinishDate" style="color: grey !important">UTC time: <b>{{cancelAfterDateTime.toUTCString()}}</b></mat-hint>
+      </mat-card>
+      <mat-form-field>
+        <input #inppassword matInput name="password" [type]="hidePw ? 'password' : 'text'" matInput placeholder="Password to secure your escrow (optional)" [(ngModel)]="passwordInput" (ngModelChange)="checkChanges()">
+        <mat-hint style="color: orangered;">Optional, but if set, you need this password to execute the Escrow Finish transaction!</mat-hint>
+        <button mat-icon-button matSuffix (click)="hidePw = !hidePw" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePw">
+          <mat-icon>{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+    </form>
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
+      <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrow">
+        Send Escrow Create to XUMM
+      </button>
+      <label *ngIf="!destinationInput || !validAddress">Please enter a valid XRPL address as destination.</label>
+      <label *ngIf="validAddress && ( !amountInput || !validAmount )">Please enter a valid amount.</label>
+      <label *ngIf="validAddress && validAmount && (!validFinishAfter && !validCondition)">Please provide a Finish After or Condition (password).</label>
+      <label *ngIf="validAddress &&validAmount &&  validCondition && (!validFinishAfter && !validCancelAfter)">Please provide a Finish After or Cancel After time.</label>
+    </div>
+  </div>
+</mat-expansion-panel>
