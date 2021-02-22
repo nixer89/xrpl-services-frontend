@@ -21,7 +21,7 @@ export class IssuedTokenList implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
 
-  displayedColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines'];
+  displayedColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines', "link"];
   datasource:MatTableDataSource<TokenIssuer> = null;
 
   loading:boolean = false;
@@ -102,5 +102,13 @@ export class IssuedTokenList implements OnInit {
       return new Date(normalizer.rippleEpocheTimeToUTC(this.ledgerCloseTime)).toLocaleString();
     else
       return "";
+  }
+
+  getBithompLink(account:string): string {
+    return "https://bithomp.com/explorer/"+account;
+  }
+
+  getXRPScanLink(account:string): string {
+    return "https://xrpscan.com/account/"+account;
   }
 }

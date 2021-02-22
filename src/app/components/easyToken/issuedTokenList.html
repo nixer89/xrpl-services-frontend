@@ -73,7 +73,7 @@
     </ng-container>
 
     <ng-container matColumnDef="username">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Bithomp Username </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Accountname </mat-header-cell>
       <mat-cell *matCellDef="let row">
           <span fxShow fxHide.xs > {{row.username}}</span>
           <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{row.username}}</span>
@@ -101,6 +101,22 @@
       <mat-cell *matCellDef="let row">
           <span fxShow fxHide.xs >{{row.trustlines}}</span>
           <span fxShow.xs fxHide ><b>Number of TrustLines:</b><br>{{row.trustlines}}</span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="link">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Link </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+          <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
+            <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
+            <label fxHide fxShow.gt-md>&nbsp;|&nbsp;</label>
+            <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
+          </span>
+          <span fxShow.xs fxHide fxLayout="column">
+            <b>Link:</b>
+            <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
+            <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
+          </span>
       </mat-cell>
     </ng-container>
 
