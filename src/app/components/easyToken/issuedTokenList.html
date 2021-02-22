@@ -75,7 +75,10 @@
     <ng-container matColumnDef="username">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Accountname </mat-header-cell>
       <mat-cell *matCellDef="let row">
-          <span fxShow fxHide.xs > {{row.username}}</span>
+          <span fxShow fxHide.xs fxLayout="row">
+            <label>{{row.username}}&nbsp;</label>
+            <mat-chip-list *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
+          </span>
           <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{row.username}}</span>
       </mat-cell>
     </ng-container>

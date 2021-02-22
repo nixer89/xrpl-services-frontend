@@ -63,13 +63,23 @@ export class IssuedTokenList implements OnInit {
         if (issuers.hasOwnProperty(account)) {
             let issuedCurrencies:Token[] = issuers[account].tokens;
             let username:string = issuers[account].username;
+            let resolvedBy:string = null;
+            if(username && username.trim().length > 0) {
+              if(username.endsWith("_[Bithomp]")) {
+                username = username.replace("_[Bithomp]", "");
+                resolvedBy = "Bithomp";
+              } else if(username.endsWith("_[XRPScan]")) {
+                username = username.replace("_[XRPScan]", "");
+                resolvedBy = "XRPScan";
+              }
+            }
             this.issuingAccounts++;
             issuedCurrencies.forEach(issuedCurrency => {
 
               if("rMZ7swk2CUfKr5uTnYtNu6Gf2gRiNJBj6n" === account)
                 console.log(issuedCurrency.currency);
 
-              tokenIssuers.push({account: account, currency: this.getCurrencyCode(issuedCurrency.currency), amount: issuedCurrency.amount, trustlines: issuedCurrency.trustlines, username: username});
+              tokenIssuers.push({account: account, currency: this.getCurrencyCode(issuedCurrency.currency), amount: issuedCurrency.amount, trustlines: issuedCurrency.trustlines, username: username, resolvedBy: resolvedBy});
             })
         }
       }

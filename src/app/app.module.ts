@@ -62,6 +62,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
+import { MatChipsModule } from '@angular/material/chips'; 
 
 //my services
 import { AppService } from './services/app.service';
@@ -137,6 +138,7 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
     MatStepperModule,
     MatSelectModule,
     MatSortModule,
+    MatChipsModule,
     CodemirrorModule,
     //Special
     DeviceDetectorModule.forRoot(),

@@ -16,6 +16,21 @@ td {
     justify-content: center;
 }
 
+.mat-chip-bithomp {
+    font-size: 10px !important;
+    min-height: 14px;
+    padding: 7px 5px;
+    border-radius: 7px;
+    background-color: #22A9BC !important;
+} 
+
+.mat-chip-xrpscan {
+    font-size: 10px !important;
+    min-height: 14px;
+    padding: 7px 5px;
+    border-radius: 7px;
+    background-color: #3279B6 !important;
+} 
 @media (min-width:600px) {
 
     .mat-column-account {
