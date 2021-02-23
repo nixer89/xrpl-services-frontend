@@ -116,10 +116,12 @@ export class AccountSetComponent implements OnInit, OnDestroy {
       this.requireDestTagInput = flagsutil.isRequireDestinationTagEnabled(this.originalAccountInfo.Flags);
       this.disableMasterKeyInput = flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags);
       this.defaultRippleInput = flagsutil.isDefaultRippleEnabled(this.originalAccountInfo.Flags);
+      this.disallowXrpInput = flagsutil.isDisallowXRPEnabled(this.originalAccountInfo.Flags);
     } else {
       this.requireDestTagInput = false;
       this.disableMasterKeyInput = false;
       this.defaultRippleInput = false;
+      this.disallowXrpInput = false;
     }
 
     this.requireDestTagChangeDetected = this.disableMasterKeyChangeDetected = this.domainChangeDetected = this.emailChangeDetected = false;

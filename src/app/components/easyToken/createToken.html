@@ -270,22 +270,22 @@
             <label>Okay, lets black hole the issuer account!</label>
             <label class="warning">We are going to set the RegularKey of the issuer account to the black hole address: <b>rrrrrrrrrrrrrrrrrrrrBZbvji</b> (Called 'ADDRESS_ONE'. <a href="https://xrpl.org/accounts.html#special-addresses" target="_blank">more info...</a> )</label>
             <label>No one has the secret keys to this account because the address is not derived from a known secret key.</label>
-            <label class="loading">Additionally we will disallow XRP being sent to you issuer account and disable all other signing methods. This removes all access to this account.</label>
+            <label class="loading">Additionally we will disallow XRP being sent to your issuer account and disable all other signing methods. This removes all access to this account.</label>
             <mat-checkbox [(ngModel)]="checkBoxBlackhole4" [ngClass]="(checkBoxBlackhole4 ? 'success': 'warning')">I have read and understand the above text. Let me remove all access to the account: {{getIssuer()}}!</mat-checkbox>
             <div>
-              <button mat-raised-button color="primary" (click)="disallowIncomingXrp()" [disabled]="!checkBoxBlackhole4 || blackholeRegularKeySet">
+              <button mat-raised-button color="primary" (click)="disallowIncomingXrp()" [disabled]="!checkBoxBlackhole4 || blackholeDisallowXrp">
                 Disallow incoming XRP
               </button>
               <span style="flex: 1 1 auto;"></span>
             </div>
             <div>
-              <button mat-raised-button color="primary" (click)="setBlackholeAddress()" [disabled]="!checkBoxBlackhole4 || blackholeRegularKeySet">
+              <button mat-raised-button color="primary" (click)="setBlackholeAddress()" [disabled]="!checkBoxBlackhole4 || !blackholeDisallowXrp || blackholeRegularKeySet">
                 Set black hole address as RegularKey
               </button>
               <span style="flex: 1 1 auto;"></span>
             </div>
             <div>
-              <button mat-raised-button color="primary" (click)="disableMasterKeyForIssuer()" [disabled]="!checkBoxBlackhole4 || !blackholeRegularKeySet || blackholeMasterDisabled">
+              <button mat-raised-button color="primary" (click)="disableMasterKeyForIssuer()" [disabled]="!checkBoxBlackhole4 || !blackholeDisallowXrp || !blackholeRegularKeySet || blackholeMasterDisabled">
                 Disable MaterKey of Issuer account
               </button>
               <span style="flex: 1 1 auto;"></span>
