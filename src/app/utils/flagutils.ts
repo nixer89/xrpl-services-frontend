@@ -19,3 +19,7 @@ export function isMasterKeyDisabled(flags:number) {
 export function isDefaultRippleEnabled(flags:number) {
     return flags && (flags & ROOT_FLAG_DEFAULT_RIPPLE) == ROOT_FLAG_DEFAULT_RIPPLE;
 }
+
+export function isDisallowXRPEnabled(flags:number) {
+    return flags && (flags & ROOT_FLAG_DISALLOW_XRP) == ROOT_FLAG_DISALLOW_XRP;
+}

@@ -16,6 +16,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   private ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG:number = 1;
   private ACCOUNT_FLAG_DISABLE_MASTER_KEY:number = 4;
   private ACCOUNT_FLAG_DEFAULT_RIPPLE:number = 8;
+  private ACCOUNT_FLAG_DISALLOW_XRP:number = 3;
 
   constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
@@ -43,6 +44,9 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   @ViewChild('inpdefaultripple') inpdefaultripple;
   defaultRippleInput: boolean = false;
 
+  @ViewChild('inpdisallowxrp') inpdisallowxrp;
+  disallowXrpInput: boolean = false;
+
   private accountInfoChangedSubscription: Subscription;
   private accountObjectsChangedSubscription: Subscription;
   originalAccountInfo:any;
@@ -53,6 +57,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   requireDestTagChangeDetected:boolean = false;
   disableMasterKeyChangeDetected:boolean = false;
   defaultRippleChangeDetected:boolean = false;
+  disallowXrpChangeDetected: boolean = false;
 
   isValidAccountSet:boolean = false;
 
@@ -190,6 +195,17 @@ export class AccountSetComponent implements OnInit, OnDestroy {
       }
     }  
 
+    if(this.disallowXrpChangeDetected) {
+      if(this.disallowXrpInput) {
+        this.payload.txjson.SetFlag = this.ACCOUNT_FLAG_DISALLOW_XRP;
+        this.payload.custom_meta.instruction += "- Disallow incoming XRP\n"
+      }
+      else {
+        this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_DISALLOW_XRP;
+        this.payload.custom_meta.instruction += "- Allow incoming XRP\n"
+      }
+    }  
+
     this.onPayload.emit(this.payload);
     this.initializePayload();
   }
@@ -250,7 +266,14 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     else
       this.defaultRippleChangeDetected = false;
 
-    this.isValidAccountSet = this.validDomain && this.validEmail && (this.domainChangeDetected || this.emailChangeDetected || this.requireDestTagChangeDetected || this.disableMasterKeyChangeDetected || this.defaultRippleChangeDetected) && !(this.requireDestTagChangeDetected && this.disableMasterKeyChangeDetected) && !(this.requireDestTagChangeDetected && this.defaultRippleChangeDetected) && !(this.disableMasterKeyChangeDetected && this.defaultRippleChangeDetected);
+    if((!this.originalAccountInfo || !this.originalAccountInfo.Flags || this.originalAccountInfo.Flags == 0) && this.disallowXrpInput)
+      this.disallowXrpChangeDetected = true;
+    else if(this.originalAccountInfo && this.originalAccountInfo.Flags && (flagsutil.isDisallowXRPEnabled(this.originalAccountInfo.Flags) != this.disallowXrpInput))
+      this.disallowXrpChangeDetected = true;
+    else
+      this.disallowXrpChangeDetected = false;
+
+    this.isValidAccountSet = this.validDomain && this.validEmail && (this.domainChangeDetected || this.emailChangeDetected || this.requireDestTagChangeDetected || this.disableMasterKeyChangeDetected || this.defaultRippleChangeDetected || this.disallowXrpChangeDetected) && !(this.requireDestTagChangeDetected && this.disableMasterKeyChangeDetected) && !(this.requireDestTagChangeDetected && this.defaultRippleChangeDetected && this.disallowXrpChangeDetected) && !(this.disableMasterKeyChangeDetected && this.defaultRippleChangeDetected && this.disallowXrpChangeDetected);
 
     //console.log("domainChangeDetected: " + this.domainChangeDetected);
     //console.log("validDomain: " + this.validDomain);

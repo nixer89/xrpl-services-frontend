@@ -67,7 +67,9 @@
     <ng-container matColumnDef="account">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer Account </mat-header-cell>
       <mat-cell *matCellDef="let row">
-          <span fxShow fxHide.xs > {{row.account}}</span>
+          <span fxShow fxHide.xs >
+            <label [innerHTML]="row.account | highlightSearch: filterText"></label>
+          </span>
           <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{row.account}}</span>
       </mat-cell>
     </ng-container>
@@ -76,8 +78,8 @@
       <mat-header-cell *matHeaderCellDef mat-sort-header> Accountname </mat-header-cell>
       <mat-cell *matCellDef="let row">
           <span fxShow fxHide.xs fxLayout="row">
-            <label>{{row.username}}&nbsp;</label>
-            <mat-chip-list *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
+            <label [innerHTML]="row.username | highlightSearch: filterText"></label>
+            <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
           </span>
           <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{row.username}}</span>
       </mat-cell>
@@ -86,7 +88,9 @@
     <ng-container matColumnDef="currency">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
         <mat-cell *matCellDef="let row">
-            <span fxShow fxHide.xs > {{getCurrencyCode(row.currency)}}</span>
+            <span fxShow fxHide.xs >
+              <label [innerHTML]="getCurrencyCode(row.currency) | highlightSearch: filterText"></label>
+            </span>
             <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{row.currency}}</span>
         </mat-cell>
     </ng-container>
@@ -94,7 +98,9 @@
     <ng-container matColumnDef="amount">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Total issued value of this token </mat-header-cell>
         <mat-cell *matCellDef="let row">
-            <span fxShow fxHide.xs >{{stringToFloat(row.amount)}}</span>
+            <span fxShow fxHide.xs >
+              <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
+            </span>
             <span fxShow.xs fxHide ><b>Total issued value:</b><br>{{stringToFloat(row.amount)}}</span>
         </mat-cell>
     </ng-container>
@@ -102,7 +108,9 @@
     <ng-container matColumnDef="trustlines">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Number of TrustLines </mat-header-cell>
       <mat-cell *matCellDef="let row">
-          <span fxShow fxHide.xs >{{row.trustlines}}</span>
+          <span fxShow fxHide.xs >
+            <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
+          </span>
           <span fxShow.xs fxHide ><b>Number of TrustLines:</b><br>{{row.trustlines}}</span>
       </mat-cell>
     </ng-container>

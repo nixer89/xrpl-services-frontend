@@ -15,7 +15,10 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 })
 export class IssuedTokenList implements OnInit {
 
-  constructor(private app: AppService, private deviceDetector: DeviceDetectorService, private googleAnalytics: GoogleAnalyticsService) {}
+  constructor(
+    private app: AppService,
+    private deviceDetector: DeviceDetectorService,
+    private googleAnalytics: GoogleAnalyticsService) {}
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -27,6 +30,7 @@ export class IssuedTokenList implements OnInit {
   loading:boolean = false;
 
   pageSize:number = 25;
+  filterText:string = "";
   
   ledgerIndex: string;
   ledgerHash: string;
@@ -44,13 +48,39 @@ export class IssuedTokenList implements OnInit {
     if(issuers != null) {
       this.datasource.paginator = this.paginator;
       this.datasource.sort = this.sort;
+
+      this.datasource.sortingDataAccessor = (data: any, sortHeaderId: string): string => {
+        if (typeof data[sortHeaderId] === 'string') {
+          if(!data[sortHeaderId] || data[sortHeaderId].trim().length == 0) {
+            if(this.sort.direction === 'asc')
+              return "zzzzzzzzzzzzzzzzzzzzzzzzz"
+            else
+              return "0000000000000000000000000"
+          }
+          else
+            return data[sortHeaderId].toLocaleLowerCase();
+        }
+      
+        return data[sortHeaderId];
+      };
+
+      this.datasource.filterPredicate = (data: TokenIssuer, filter: string) => {
+        if(filter)
+          filter = filter.trim().toLowerCase()
+
+        return data.account && data.account.toLowerCase().includes(filter)
+                || data.amount && data.amount.toString().toLowerCase().includes(filter)
+                  || data.currency && data.currency.toLowerCase().includes(filter)
+                    || data.trustlines && data.trustlines.toString().toLowerCase().includes(filter)
+                      || (data.username && data.username.toLowerCase().includes(filter));
+      };
     }
   }
 
   async loadLedgerData(): Promise<TokenIssuer[]> {
     let tokenIssuers:TokenIssuer[] = [];
     try {
-      let issuedTokensResponse:any = await this.app.get('http://localhost:4001/tokens');
+      let issuedTokensResponse:any = await this.app.get('https://tokens.xumm.community/tokens');
 
       this.ledgerIndex = issuedTokensResponse.ledger_index;
       this.ledgerHash = issuedTokensResponse.ledger_hash;
@@ -72,13 +102,11 @@ export class IssuedTokenList implements OnInit {
                 username = username.replace("_[XRPScan]", "");
                 resolvedBy = "XRPScan";
               }
+            } else {
+              username = "";
             }
             this.issuingAccounts++;
             issuedCurrencies.forEach(issuedCurrency => {
-
-              if("rMZ7swk2CUfKr5uTnYtNu6Gf2gRiNJBj6n" === account)
-                console.log(issuedCurrency.currency);
-
               tokenIssuers.push({account: account, currency: this.getCurrencyCode(issuedCurrency.currency), amount: issuedCurrency.amount, trustlines: issuedCurrency.trustlines, username: username, resolvedBy: resolvedBy});
             })
         }
@@ -99,12 +127,20 @@ export class IssuedTokenList implements OnInit {
   }
 
   getCurrencyCode(currency: string): string {
-      return normalizer.currencyCodeHexToAsciiTrimmed(currency);
+    let normalizedCode = normalizer.currencyCodeHexToAsciiTrimmed(currency);
+    if(!normalizedCode || normalizedCode.trim().length == 0)
+      return currency
+    else
+      return normalizedCode
   }
 
   applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.datasource.filter = filterValue.trim().toLowerCase();
+    this.filterText = (event.target as HTMLInputElement).value;
+    this.datasource.filter = this.filterText.toLowerCase().trim();
+
+    if (this.datasource.paginator) {
+      this.datasource.paginator.firstPage();
+    }
   }
 
   humanReadableCloseTime(): string {

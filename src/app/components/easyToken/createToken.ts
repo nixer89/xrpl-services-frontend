@@ -21,6 +21,7 @@ export class CreateToken implements OnInit {
 
   private ACCOUNT_FLAG_DEFAULT_RIPPLE:number = 8;
   private ACCOUNT_FLAG_DISABLE_MASTER_KEY:number = 4;
+  private ACCOUNT_FLAG_DISABLE_INCOMING_XRP:number = 3;
 
   constructor(
     private matDialog: MatDialog,
@@ -44,6 +45,7 @@ export class CreateToken implements OnInit {
 
   checkBoxIssuingText:boolean = false;
 
+  blackholeDisallowXrp:boolean = false;
   blackholeRegularKeySet:boolean = false;
   blackholeMasterDisabled:boolean = false;
 
@@ -350,6 +352,41 @@ export class CreateToken implements OnInit {
         this.weHaveIssued = false;
       }
     });
+  }
+
+  disallowIncomingXrp() {
+    let genericBackendRequest:GenericBackendPostRequest = {
+      options: {
+        issuing: true,
+        xrplAccount: this.getIssuer()
+      },
+      payload: {
+        txjson: {
+          TransactionType: "AccountSet",
+          SetFlag: this.ACCOUNT_FLAG_DISABLE_INCOMING_XRP
+        },
+        custom_meta: {
+          instruction: "- Disallow incoming XRP\n\n- Please sign with the ISSUER account!"
+        }
+      }
+    }
+
+    const dialogRef = this.matDialog.open(GenericPayloadQRDialog, {
+      width: 'auto',
+      height: 'auto;',
+      data: genericBackendRequest
+    });
+
+    dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
+      //console.log('The generic dialog was closed: ' + JSON.stringify(info));
+
+      if(info && info.success && info.account && info.testnet == this.isTestMode) {
+        this.blackholeDisallowXrp = true;
+      } else {
+        this.blackholeDisallowXrp = false;
+      }
+    });
+
   }
 
   setBlackholeAddress() {

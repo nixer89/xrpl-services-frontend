@@ -77,6 +77,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
+import { HighlightSearchPipe } from './utils/searchHighlight';
 
 @NgModule({
   declarations: [
@@ -109,7 +110,8 @@ import { CodemirrorModule } from '@ctrl/ngx-codemirror';
     TransactionSchedulerComponent,
     AccountDeleteComponent,
     RawTransactionsComponent,
-    MultiSignFlowComponent
+    MultiSignFlowComponent,
+    HighlightSearchPipe
   ],
   imports: [
     BrowserModule,

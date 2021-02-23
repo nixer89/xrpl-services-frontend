@@ -5,7 +5,7 @@ export function tokenNormalizer(numberOfTokens: string): string {
 }
 
 export function currencyCodeHexToAsciiTrimmed(currencyCode:string): string {
-    if(currencyCode && currencyCode.length == 40) { //remove trailing zeros
+        if(currencyCode && currencyCode.length == 40) { //remove trailing zeros
         while(currencyCode.endsWith("00")) {
             currencyCode = currencyCode.substring(0, currencyCode.length-2);
         }
@@ -16,7 +16,7 @@ export function currencyCodeHexToAsciiTrimmed(currencyCode:string): string {
             if(currencyCode.startsWith("01"))
                 return convertDemurrageToAscii(currencyCode);
             else
-                return Buffer.from(currencyCode, "hex").toString().trim();
+                return Buffer.from(currencyCode, "hex").toString('utf-8').trim();
         } else {
             return currencyCode;
         }
@@ -51,7 +51,7 @@ export function currencyCodeAsciiToHex(currencyCode: string): string {
   
       //console.log("currency to change: " + currency);
       if(currencyCode.length > 3)
-        return Buffer.from(currencyCode.trim(), "ascii").toString("hex").toUpperCase(); 
+        return Buffer.from(currencyCode.trim(), "utf-8").toString("hex").toUpperCase(); 
       else
         return currencyCode;
 }
@@ -61,7 +61,7 @@ export function getCurrencyCodeForXRPL(currencyCode: string): string {
         let currency = currencyCode.trim();
 
         if(currency && currency.length > 3) {
-        currency = Buffer.from(currency, 'ascii').toString('hex').toUpperCase();
+        currency = Buffer.from(currency, 'utf-8').toString('hex').toUpperCase();
 
         while(currency.length < 40)
             currency+="0";

@@ -17,16 +17,16 @@ td {
 }
 
 .mat-chip-bithomp {
-    font-size: 10px !important;
-    min-height: 14px;
+    font-size: 9px !important;
+    min-height: 12px;
     padding: 7px 5px;
     border-radius: 7px;
     background-color: #22A9BC !important;
 } 
 
 .mat-chip-xrpscan {
-    font-size: 10px !important;
-    min-height: 14px;
+    font-size: 9px !important;
+    min-height: 12px;
     padding: 7px 5px;
     border-radius: 7px;
     background-color: #3279B6 !important;
