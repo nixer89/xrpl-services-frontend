@@ -113,9 +113,11 @@ export class TrustLineList implements OnInit, OnDestroy {
     }
 
     setNoRippleFlag(trustLine: TrustLine) {
-        this.googleAnalytics.analyticsEventEmitter('setNoRippleFlag', 'trustline_list', 'trustline_list_component');
-        //console.log("trustline selected: " + JSON.stringify(trustline));
-        this.disableRippling.emit(trustLine);
+        if(!trustLine.no_ripple) {
+            this.googleAnalytics.analyticsEventEmitter('setNoRippleFlag', 'trustline_list', 'trustline_list_component');
+            //console.log("trustline selected: " + JSON.stringify(trustline));
+            this.disableRippling.emit(trustLine);
+        }
     }
 
     stringToFloat(number: string): number {

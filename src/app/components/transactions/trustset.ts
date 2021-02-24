@@ -7,6 +7,7 @@ import { AccountInfoChanged, XrplAccountChanged, Token, TrustLine } from 'src/ap
 import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
+import { normalizePassiveListenerOptions } from '@angular/cdk/platform';
 
 @Component({
   selector: 'trustset',
@@ -262,12 +263,13 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
 
     let currencyCode = trustline.currency;
+    let humenReadableCode = normalizer.currencyCodeHexToAsciiTrimmed(trustline.currency);
     if(currencyCode.length > 3) {
       while(currencyCode.length < 40)
         currencyCode+="0";
     }
     payload.txjson.LimitAmount['currency'] = currencyCode;
-    payload.custom_meta.instruction += "\n- Token currency code: " + trustline.currency
+    payload.custom_meta.instruction += "\n- Token currency code: " + humenReadableCode;
 
     payload.txjson.LimitAmount['value'] = trustline.limit
     payload.custom_meta.instruction += "\n- Limit: " + trustline.limit;
@@ -310,12 +312,13 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
 
     let currencyCode = trustline.currency;
+    let humenReadableCode = normalizer.currencyCodeHexToAsciiTrimmed(trustline.currency);
     if(currencyCode.length > 3) {
       while(currencyCode.length < 40)
         currencyCode+="0";
     }
     payload.txjson.LimitAmount['currency'] = currencyCode;
-    payload.custom_meta.instruction += "\n- Token currency code: " + trustline.currency;
+    payload.custom_meta.instruction += "\n- Token currency code: " + humenReadableCode;
 
     payload.txjson.LimitAmount['value'] = "0"
     payload.custom_meta.instruction += "\n- Limit: 0";

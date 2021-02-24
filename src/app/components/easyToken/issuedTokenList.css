@@ -30,7 +30,8 @@ td {
     padding: 7px 5px;
     border-radius: 7px;
     background-color: #3279B6 !important;
-} 
+}
+
 @media (min-width:600px) {
 
     .mat-column-account {
@@ -144,15 +145,36 @@ td {
 
 @media (max-width:599px) {
 
+    .mat-chip-bithomp {
+        font-size: 8px !important;
+        min-height: 10px;
+        padding: 5px 5px;
+        border-radius: 5px;
+        background-color: #22A9BC !important;
+    } 
+    
+    .mat-chip-xrpscan {
+        font-size: 8px !important;
+        min-height: 10px;
+        padding: 5px 5px;
+        border-radius: 5px;
+        background-color: #3279B6 !important;
+    } 
+
+    .mat-card {
+        font-size: 12px;
+    }
+
     .mat-footer-row , .mat-row {
         padding-top: 0.5em;
         align-items: start;
-        min-height: 24px;
+        min-height: 14px;
         cursor: pointer;
     }
 
     .mat-cell {
         padding-left: 1em;
+        font-size: 12px;
     }
 
     .mat-column-account {

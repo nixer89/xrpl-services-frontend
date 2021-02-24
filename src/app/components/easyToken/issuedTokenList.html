@@ -14,7 +14,7 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <mat-card fxLayout="column" fxLayoutGap="1em">
+  <mat-card fxLayout="column" fxLayoutGap="0.5em">
     <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.5em">
       <label class="warning">Loading XRP Ledger tokens ...&nbsp;</label>
       <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
@@ -57,7 +57,7 @@
     </div>
   </mat-card>
 
-  <mat-form-field ngStyle.xs="width: 50%" ngStyle.gt-xs="width: 25%" style="padding-top: 1em;">
+  <mat-form-field ngStyle.xs="width: 100%" ngStyle.gt-xs="width: 50%" style="padding-top: 1em;">
     <mat-label>Table Filter</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="account, currency, number, ...">
   </mat-form-field>
@@ -70,7 +70,10 @@
           <span fxShow fxHide.xs >
             <label [innerHTML]="row.account | highlightSearch: filterText"></label>
           </span>
-          <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{row.account}}</span>
+          <span fxShow.xs fxHide >
+            <b>Issuer Account:</b><br>
+            <label [innerHTML]="row.account | highlightSearch: filterText"></label>
+          </span>
       </mat-cell>
     </ng-container>
 
@@ -81,7 +84,13 @@
             <label [innerHTML]="row.username | highlightSearch: filterText"></label>
             <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
           </span>
-          <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{row.username}}</span>
+          <span fxShow.xs fxHide>
+            <b>Accountname:</b><br>
+            <div fxLayout="row">
+              <label [innerHTML]="row.username | highlightSearch: filterText"></label>
+              <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
+            </div>
+          </span>
       </mat-cell>
     </ng-container>
 
@@ -91,7 +100,10 @@
             <span fxShow fxHide.xs >
               <label [innerHTML]="getCurrencyCode(row.currency) | highlightSearch: filterText"></label>
             </span>
-            <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{row.currency}}</span>
+            <span fxShow.xs fxHide >
+              <b>Token Currency Code:</b><br>
+              <label [innerHTML]="getCurrencyCode(row.currency) | highlightSearch: filterText"></label>
+            </span>
         </mat-cell>
     </ng-container>
 
@@ -101,7 +113,10 @@
             <span fxShow fxHide.xs >
               <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
             </span>
-            <span fxShow.xs fxHide ><b>Total issued value:</b><br>{{stringToFloat(row.amount)}}</span>
+            <span fxShow.xs fxHide >
+              <b>Total issued value:</b><br>
+              <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
+            </span>
         </mat-cell>
     </ng-container>
 
@@ -111,7 +126,10 @@
           <span fxShow fxHide.xs >
             <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
           </span>
-          <span fxShow.xs fxHide ><b>Number of TrustLines:</b><br>{{row.trustlines}}</span>
+          <span fxShow.xs fxHide >
+            <b>Number of TrustLines:</b><br>
+            <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
+          </span>
       </mat-cell>
     </ng-container>
 
