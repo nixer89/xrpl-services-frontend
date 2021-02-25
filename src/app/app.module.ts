@@ -38,6 +38,7 @@ import { AccountDeleteComponent } from './components/transactions/accountdelete'
 //Tools
 import { NoRippleCheckComponent } from './components/tools/norippleCheck';
 import { RawTransactionsComponent } from './components/tools/rawTransactions';
+import { TestNetCredentialsComponent } from './components/tools/testNetCredentials';
 import { TransactionSchedulerComponent } from './components/tools/transactionScheduler';
 import { MultiSignFlowComponent } from './components/tools/multiSignFlow';
 
@@ -110,6 +111,7 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     TransactionSchedulerComponent,
     AccountDeleteComponent,
     RawTransactionsComponent,
+    TestNetCredentialsComponent,
     MultiSignFlowComponent,
     HighlightSearchPipe
   ],

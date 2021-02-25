@@ -66,6 +66,7 @@
         <span *ngIf="lastTrxLinkXrplorer"><a  [href]="lastTrxLinkXrplorer" target="_blank;" rel="noreferrer">xrplorer</a></span>
     </div>
     <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+        <testNetCredentials></testNetCredentials>
         <norippleCheck [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></norippleCheck>
         <rawTransactions [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></rawTransactions>
         <multiSignFlow></multiSignFlow>
