@@ -62,7 +62,7 @@
     <input matInput (keyup)="applyFilter($event)" placeholder="account, currency, number, ...">
   </mat-form-field>
 
-  <mat-table [dataSource]="datasource" class="mat-elevation-z8" matSort>
+  <mat-table [dataSource]="datasource" class="mat-elevation-z8" matSort multiTemplateDataRows>
 
     <ng-container matColumnDef="account">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer Account </mat-header-cell>
@@ -98,11 +98,11 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
         <mat-cell *matCellDef="let row">
             <span fxShow fxHide.xs >
-              <label [innerHTML]="getCurrencyCode(row.currency) | highlightSearch: filterText"></label>
+              <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
             </span>
             <span fxShow.xs fxHide >
               <b>Token Currency Code:</b><br>
-              <label [innerHTML]="getCurrencyCode(row.currency) | highlightSearch: filterText"></label>
+              <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
             </span>
         </mat-cell>
     </ng-container>
@@ -149,8 +149,23 @@
       </mat-cell>
     </ng-container>
 
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let detail" [attr.colspan]="displayedColumns.length">
+        <div class="example-element-detail" [@detailExpand]="detail == expandedElement ? 'expanded' : 'collapsed'">
+          <div fxLayout="example-element-description">
+            <div> {{detail.resolvedBy}} </div>
+            <div> {{detail.domain}} </div>
+            <div> {{detail.twitter}} </div>
+            <div> {{detail.verified}} </div>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
     <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" class="example-element-row" [class.example-expanded-row]="expandedElement === row" (click)="expandedElement = expandedElement === row ? null : row"></mat-row>
+    <mat-row *matRowDef="let detail; columns: ['expandedDetail']" class="example-detail-row"></mat-row>
 
   </mat-table>
   <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500]"></mat-paginator>

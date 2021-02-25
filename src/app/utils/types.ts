@@ -73,6 +73,18 @@ export interface TokenIssuer {
     currency: string,
     amount: string,
     trustlines: string,
+    verified: boolean,
     username?: string,
     resolvedBy?: string
+    twitter?: string,
+    domain?: string
+}
+
+export interface IssuerVerification {
+    resolvedBy: string,
+    account: string,
+    verified: boolean
+    domain?: string,
+    username?: string,
+    twitter?: string
 }

@@ -32,6 +32,31 @@ td {
     background-color: #3279B6 !important;
 }
 
+.example-element-row:not(.example-expanded-row):hover {
+    background: whitesmoke;
+  }
+  
+.example-element-row:not(.example-expanded-row):active {
+    background: #efefef;
+  }
+  
+.example-element-row td {
+    border-bottom-width: 0;
+  }
+
+.example-detail-row {
+    height: 0;
+    min-height: 0;
+    width: 100%;
+  }
+    
+  
+.example-element-detail {
+    overflow: hidden;
+    display:flex;
+}
+
+
 @media (min-width:600px) {
 
     .mat-column-account {

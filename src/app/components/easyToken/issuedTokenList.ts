@@ -1,17 +1,25 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AppService } from '../../services/app.service';
-import { Token, TokenIssuer } from '../../utils/types'
+import { IssuerVerification, Token, TokenIssuer } from '../../utils/types'
 import * as normalizer from 'src/app/utils/normalizers';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'issuedTokenList',
   templateUrl: './issuedTokenList.html',
-  styleUrls: ['./issuedTokenList.css']
+  styleUrls: ['./issuedTokenList.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ]
 })
 export class IssuedTokenList implements OnInit {
 
@@ -26,6 +34,7 @@ export class IssuedTokenList implements OnInit {
 
   displayedColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines', "link"];
   datasource:MatTableDataSource<TokenIssuer> = null;
+  expandedElement: TokenIssuer | null;
 
   loading:boolean = false;
 
@@ -80,7 +89,7 @@ export class IssuedTokenList implements OnInit {
   async loadLedgerData(): Promise<TokenIssuer[]> {
     let tokenIssuers:TokenIssuer[] = [];
     try {
-      let issuedTokensResponse:any = await this.app.get('https://tokens.xumm.community/tokens');
+      let issuedTokensResponse:any = await this.app.get('http://localhost:4001/tokens');
 
       this.ledgerIndex = issuedTokensResponse.ledger_index;
       this.ledgerHash = issuedTokensResponse.ledger_hash;
@@ -92,23 +101,33 @@ export class IssuedTokenList implements OnInit {
       for (var account in issuers) {
         if (issuers.hasOwnProperty(account)) {
             let issuedCurrencies:Token[] = issuers[account].tokens;
-            let username:string = issuers[account].username;
-            let resolvedBy:string = null;
-            if(username && username.trim().length > 0) {
-              if(username.endsWith("_[Bithomp]")) {
-                username = username.replace("_[Bithomp]", "");
-                resolvedBy = "Bithomp";
-              } else if(username.endsWith("_[XRPScan]")) {
-                username = username.replace("_[XRPScan]", "");
-                resolvedBy = "XRPScan";
-              }
-            } else {
-              username = "";
+            let data:IssuerVerification = issuers[account].data;
+            let resolvedBy,username,domain,twitter:string = "";
+            let verified:boolean = false;
+
+            if(data && account == data.account) {
+              resolvedBy = data.resolvedBy;
+              verified = data.verified;
+              username = data.username ? data.username : "";
+              domain = data.domain;
+              twitter = data.twitter
             }
+            
             this.issuingAccounts++;
+
             issuedCurrencies.forEach(issuedCurrency => {
-              tokenIssuers.push({account: account, currency: this.getCurrencyCode(issuedCurrency.currency), amount: issuedCurrency.amount, trustlines: issuedCurrency.trustlines, username: username, resolvedBy: resolvedBy});
-            })
+              tokenIssuers.push({
+                  account: account,
+                  currency: this.getCurrencyCode(issuedCurrency.currency),
+                  amount: issuedCurrency.amount,
+                  trustlines: issuedCurrency.trustlines,
+                  username: username,
+                  resolvedBy: resolvedBy,
+                  verified: verified,
+                  domain: domain,
+                  twitter: twitter
+                });
+            });
         }
       }
     } catch(err) {
