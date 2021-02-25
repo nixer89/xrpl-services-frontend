@@ -115,6 +115,7 @@ export class CreateToken implements OnInit {
           this.paymentNotSuccessfull = false;
           this.paymentNotFound = false;
           await this.loadAccountData();
+          this.googleAnalytics.analyticsEventEmitter('paid_for_token', 'easy_token', 'easy_token_component');
       } else {
         this.paymentNotSuccessfull = true;
         this.paymentNotFound = false;
@@ -348,6 +349,7 @@ export class CreateToken implements OnInit {
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.weHaveIssued = true;
+        this.googleAnalytics.analyticsEventEmitter('token_created', 'easy_token', 'easy_token_component');
       } else {
         this.weHaveIssued = false;
       }
@@ -452,6 +454,7 @@ export class CreateToken implements OnInit {
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.blackholeMasterDisabled = true;
+        this.googleAnalytics.analyticsEventEmitter('account_black_holed', 'easy_token', 'easy_token_component');
       } else {
         this.blackholeMasterDisabled = false;
       }

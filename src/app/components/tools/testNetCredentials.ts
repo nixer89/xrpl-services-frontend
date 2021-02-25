@@ -49,6 +49,8 @@ export class TestNetCredentialsComponent {
     }
 
     this.loading = false;
+
+    this.googleAnalytics.analyticsEventEmitter('create_test_net_account', 'test_net', 'test_net_component');
   }
 
   copyFamilySeed() {
