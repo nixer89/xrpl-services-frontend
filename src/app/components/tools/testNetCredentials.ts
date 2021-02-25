@@ -27,18 +27,25 @@ export class TestNetCredentialsComponent {
 
   async createTestNetCredentials(): Promise<void> {
     this.loading = true;
+    this.newAccount = null;
+    this.qrCode = null;
+    this.error = null;
+
     try {
       //call ripple servers to get testnet credentials with a balance
       this.newAccount = await this.app.post("https://faucet.altnet.rippletest.net/accounts", {});
       //this.newAccount = {"account":{"xAddress":"TVrRjmCE1twUKGbFBhdyR12pXqitZtAv6PjXB3E33Nm8hTQ","secret":"snEtbXeqo7f7Bg2oc552CV6yct4QW","classicAddress":"rUwnrWz9PnV7oFcFcpdkEjCbVUAEaZCgso","address":"rUwnrWz9PnV7oFcFcpdkEjCbVUAEaZCgso"},"amount":1000,"balance":1000};
-      console.log("credentials: " + JSON.stringify(this.newAccount));
+      //console.log("credentials: " + JSON.stringify(this.newAccount));
 
       this.qrCode = await qrcode.toDataURL(this.newAccount.account.secret);
       //console.log(this.qrCode);
+
+      if(!this.newAccount || !this.qrCode)
+        this.error = "Something went wrong. Please try again later! If the error persists, please report via twitter @XummCommunity!"
       
     } catch(err) {
       console.log(err);
-      this.error = "Could not load test net credentials. Please try again later";
+      this.error = "Could not load test net credentials. Please try again later! If the error persists, please report via twitter @XummCommunity!";
     }
 
     this.loading = false;
@@ -72,7 +79,7 @@ export class TestNetCredentialsComponent {
         item.editable = true;
         item.completed = false;
       }
-    })
+    });
 
     switch(this.stepper.selectedIndex) {
       case 0: break;
@@ -103,5 +110,4 @@ export class TestNetCredentialsComponent {
 
     this.stepper.previous();
   }
-
 }
