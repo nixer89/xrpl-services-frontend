@@ -27,7 +27,7 @@
         <mat-hint *ngIf="xrplAccountInput && !validAddress">Not a valid XRPL address</mat-hint>
       </mat-form-field>
     </form>
-    <label class="warning" *ngIf="validAddress && !loadingProblems && accountNotFound">This account does not exist on the XRP Ledger {{isTestMode ? 'TEST' : 'LIVE'}} network.</label>
+    <label class="warning" *ngIf="validAddress && !loadingProblems && accountNotFound">This account does not exist on the XRP Ledger {{isTestMode ? 'TEST' : 'MAIN'}} network.</label>
     <label class="warning" *ngIf="validAddress && !loadingProblems && !accountNotFound && isGateway">We have detected that your account does issue some Token. If this is NOT correct, please DO NOT PROCEED!</label>
     <label class="warning" *ngIf="validAddress && !loadingProblems && !accountNotFound && !isGateway">We have detected that your account does NOT issue any Token. If this is NOT correct, please DO NOT PROCEED!</label>
   </div>

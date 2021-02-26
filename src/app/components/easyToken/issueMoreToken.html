@@ -23,13 +23,13 @@
     </div>
     <div [ngStyle]="{'display': !validIssuer ? 'none':'block' }">
       <div fxLayout="column" fxLayoutGap="0.3em">
-        <label class="loading">Do you want to send your tokens on the live network or test network?</label>
+        <label class="loading">Do you want to send your tokens on the main network or test network?</label>
         <div fxLayout="row" fxLayoutGap="0.5em">
           <mat-card class="theme-background">
             <div fxLayout="column" fxLayoutAlign="start center">
-                <label>Network</label>
+                <label>XRPL Network</label>
                 <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
-                  <label>Live</label>&nbsp;
+                  <label>Main</label>&nbsp;
                   <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkSwitched()" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                   <label>Test</label>
                 </div>

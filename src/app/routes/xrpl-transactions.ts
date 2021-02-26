@@ -88,7 +88,7 @@ export class XrplTransactionsComponent implements OnInit {
 
           this.snackBar.dismiss();
           if(transactionResult && transactionResult.success) {
-            this.snackBar.open("Your transaction was successfull on " + (transactionResult.testnet ? 'test net.' : 'live net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+            this.snackBar.open("Your transaction was successfull on " + (transactionResult.testnet ? 'test net.' : 'main net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
           } else {
             this.snackBar.open("Your transaction was not successfull. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
           }
