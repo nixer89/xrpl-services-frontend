@@ -3,14 +3,14 @@
   <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">list</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> List of all tokens on the XRP Ledger </span>
+      <span class="loading" style="margin-left: 0.5em;"> List of all tokens on the XRP Ledger Mainnet </span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
   <mat-expansion-panel-header fxShow.xs fxHide>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">list</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;">List of XRPL Tokens</span>
+      <span class="loading" style="margin-left: 0.5em;">List of XRPL Mainnet tokens</span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
@@ -98,11 +98,11 @@
         <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
         <mat-cell *matCellDef="let row">
             <span fxShow fxHide.xs >
-              <label [innerHTML]="getCurrencyCode(row.currency) | highlightSearch: filterText"></label>
+              <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
             </span>
             <span fxShow.xs fxHide >
               <b>Token Currency Code:</b><br>
-              <label [innerHTML]="getCurrencyCode(row.currency) | highlightSearch: filterText"></label>
+              <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
             </span>
         </mat-cell>
     </ng-container>

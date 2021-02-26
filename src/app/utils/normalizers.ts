@@ -5,14 +5,14 @@ export function tokenNormalizer(numberOfTokens: string): string {
 }
 
 export function currencyCodeHexToAsciiTrimmed(currencyCode:string): string {
-        if(currencyCode && currencyCode.length == 40) { //remove trailing zeros
+        if(currencyCode && currencyCode.length == 40 && isHex(currencyCode)) { //remove trailing zeros
         while(currencyCode.endsWith("00")) {
             currencyCode = currencyCode.substring(0, currencyCode.length-2);
         }
     }
 
     if(currencyCode) {
-        if(currencyCode.length > 3) {
+        if(currencyCode.length > 3 && isHex(currencyCode)) {
             if(currencyCode.startsWith("01"))
                 return convertDemurrageToAscii(currencyCode);
             else
@@ -61,7 +61,7 @@ export function getCurrencyCodeForXRPL(currencyCode: string): string {
         let currency = currencyCode.trim();
 
         if(currency && currency.length > 3) {
-        currency = Buffer.from(currency, 'utf-8').toString('hex').toUpperCase();
+            currency = Buffer.from(currency, 'utf-8').toString('hex').toUpperCase();
 
         while(currency.length < 40)
             currency+="0";
@@ -69,7 +69,7 @@ export function getCurrencyCodeForXRPL(currencyCode: string): string {
         return currency
 
         } else {
-        return currency;
+            return currency;
         }
     } else {
         return "";
@@ -82,4 +82,8 @@ export function rippleEpocheTimeToUTC(rippleEpocheTime: number): number {
 
 export function utcToRippleEpocheTime(utcTime: number): number {
     return (utcTime/1000)-946684800
+}
+
+export function isHex(string: string): boolean {
+    return /^[0-9A-Fa-f]*$/.test(string);
 }
