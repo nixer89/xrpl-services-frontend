@@ -83,6 +83,8 @@ export class IssuedTokenList implements OnInit {
                     || data.trustlines && data.trustlines.toString().toLowerCase().includes(filter)
                       || (data.username && data.username.toLowerCase().includes(filter));
       };
+
+      this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
     }
   }
 

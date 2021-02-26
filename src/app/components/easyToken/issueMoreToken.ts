@@ -68,7 +68,7 @@ export class IssueMoreToken implements OnInit {
       let payloadId = params.payloadId;
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
-        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'issue_more_token_component');
+        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'issue_more_token', 'issue_more_token_component');
         this.mep.expanded = true;
         //check if transaction was successfull and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
@@ -134,6 +134,7 @@ export class IssueMoreToken implements OnInit {
     if(info && info.success) {
       this.snackBar.open("Your transaction was successfull on " + (info.testnet ? 'test net.' : 'live net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
       this.reset();
+      this.googleAnalytics.analyticsEventEmitter('issued_more_token', 'issue_more_token', 'issue_more_token_component');
     } else {
       this.snackBar.open("Your transaction was not successfull. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
     }

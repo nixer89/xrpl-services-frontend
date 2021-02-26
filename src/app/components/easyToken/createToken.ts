@@ -115,6 +115,7 @@ export class CreateToken implements OnInit {
           this.paymentNotSuccessfull = false;
           this.paymentNotFound = false;
           await this.loadAccountData();
+          this.googleAnalytics.analyticsEventEmitter('pay_for_token', 'easy_token', 'easy_token_component');
       } else {
         this.paymentNotSuccessfull = true;
         this.paymentNotFound = false;
@@ -148,6 +149,7 @@ export class CreateToken implements OnInit {
           this.paymentNotSuccessfull = false;
           this.paymentNotFound = false;
           await this.loadAccountData();
+          this.googleAnalytics.analyticsEventEmitter('login_for_token', 'easy_token', 'easy_token_component');
         } else {
           this.issuerAccount = info.account;
           this.validIssuer = true;
@@ -348,6 +350,7 @@ export class CreateToken implements OnInit {
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.weHaveIssued = true;
+        this.googleAnalytics.analyticsEventEmitter('token_created', 'easy_token', 'easy_token_component');
       } else {
         this.weHaveIssued = false;
       }
@@ -452,6 +455,7 @@ export class CreateToken implements OnInit {
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.blackholeMasterDisabled = true;
+        this.googleAnalytics.analyticsEventEmitter('account_black_hole_succeed', 'easy_token', 'easy_token_component');
       } else {
         this.blackholeMasterDisabled = false;
       }
@@ -496,6 +500,7 @@ export class CreateToken implements OnInit {
         this.limit = null;
         this.validCurrencyCode = false;
         this.validLimit = false;
+        break;
       }
       case 4: {
         this.issuerAccount = this.issuer_account_info = null;
@@ -514,6 +519,7 @@ export class CreateToken implements OnInit {
       }
       case 7: {
         this.weHaveIssued = false;
+        break;
       }
       case 8: {
         this.checkBoxBlackhole1 = this.checkBoxBlackhole2 = this.checkBoxBlackhole3 = this.checkBoxBlackhole4 = false;
