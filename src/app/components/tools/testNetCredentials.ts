@@ -22,6 +22,7 @@ export class TestNetCredentialsComponent {
   checkBoxConsent:boolean = false;
   checkBoxXummConnected:boolean = false;
   checkBoxQrScannerOpened:boolean = false;
+  checkBoxAccountAdded:boolean = false;
 
   @ViewChild('stepper') stepper: MatStepper;
 
@@ -37,20 +38,22 @@ export class TestNetCredentialsComponent {
       //this.newAccount = {"account":{"xAddress":"TVrRjmCE1twUKGbFBhdyR12pXqitZtAv6PjXB3E33Nm8hTQ","secret":"snEtbXeqo7f7Bg2oc552CV6yct4QW","classicAddress":"rUwnrWz9PnV7oFcFcpdkEjCbVUAEaZCgso","address":"rUwnrWz9PnV7oFcFcpdkEjCbVUAEaZCgso"},"amount":1000,"balance":1000};
       //console.log("credentials: " + JSON.stringify(this.newAccount));
 
-      this.qrCode = await qrcode.toDataURL(this.newAccount.account.secret);
-      //console.log(this.qrCode);
+      if(this.newAccount)
+        this.qrCode = await qrcode.toDataURL(this.newAccount.account.secret);
 
       if(!this.newAccount || !this.qrCode)
         this.error = "Something went wrong. Please try again later! If the error persists, please report via twitter @XummCommunity!"
       
     } catch(err) {
       console.log(err);
+      this.newAccount = null;
+      this.qrCode = null;
       this.error = "Could not load test net credentials. Please try again later! If the error persists, please report via twitter @XummCommunity!";
     }
 
     this.loading = false;
 
-    this.googleAnalytics.analyticsEventEmitter('create_test_net_account', 'test_net', 'test_net_component');
+    this.googleAnalytics.analyticsEventEmitter('test_net_account_created', 'test_net', 'test_net_component');
   }
 
   copyFamilySeed() {
@@ -97,16 +100,16 @@ export class TestNetCredentialsComponent {
       }
       case 3: {
         this.checkBoxQrScannerOpened = false;
+        this.checkBoxAccountAdded = false;
         this.newAccount = null;
         this.qrCode = null;
         this.error = null;
         this.loading = false;
+        break;
       }
       case 4: {
-        this.newAccount = null;
-        this.qrCode = null;
-        this.error = null;
-        this.loading = false;
+        this.checkBoxAccountAdded = false;
+        break;
       }
     }
 

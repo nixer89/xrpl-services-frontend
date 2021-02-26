@@ -52,7 +52,6 @@ export class TokenList implements OnInit, OnDestroy {
 
     async loadTokenList(xrplAccount: string) {
         //console.log("loading Token list for: " + xrplAccount);
-        this.googleAnalytics.analyticsEventEmitter('load_token_list', 'token_list', 'token_list_component');
 
         if(xrplAccount) {
             this.loading = true;
@@ -85,6 +84,7 @@ export class TokenList implements OnInit, OnDestroy {
                     
                 //console.log(JSON.stringify(this.tokenList));
                 this.loading = false;
+                this.googleAnalytics.analyticsEventEmitter('load_token_list', 'token_list', 'token_list_component');
             } else {                
               this.tokenList = null;
               this.loading = false;

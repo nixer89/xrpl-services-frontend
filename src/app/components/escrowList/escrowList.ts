@@ -54,7 +54,6 @@ export class EscrowList implements OnInit, OnDestroy {
 
     async loadEscrowList(xrplAccount: string) {
         if(xrplAccount) {
-            this.googleAnalytics.analyticsEventEmitter('load_escrow_list', 'escrow_list', 'escrow_list_component');
             this.loading = true;
 
             let account_objects_request:any = {
@@ -66,6 +65,7 @@ export class EscrowList implements OnInit, OnDestroy {
       
             let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowList", account_objects_request, this.testMode);
             this.handleWebsocketMessage(message);
+            this.googleAnalytics.analyticsEventEmitter('load_escrow_list', 'escrow_list', 'escrow_list_component');
         }
     }
 
@@ -83,7 +83,6 @@ export class EscrowList implements OnInit, OnDestroy {
 
     async escrowSelected(escrow: any) {
         if(this.isCancel || this.isFinish) {
-            this.googleAnalytics.analyticsEventEmitter('escrow_list_selected', 'escrow_list', 'escrow_list_component');
             //console.log("escrow selected: " + JSON.stringify(escrow));
 
             let txInfo:any = {
@@ -94,6 +93,7 @@ export class EscrowList implements OnInit, OnDestroy {
             let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowList", txInfo, this.testMode);
 
             this.handleWebsocketMessage(message);
+            this.googleAnalytics.analyticsEventEmitter('escrow_list_selected', 'escrow_list', 'escrow_list_component');
         }
     }
 

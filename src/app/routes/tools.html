@@ -22,7 +22,7 @@
                 <div *ngIf="xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
                     <label fxHide.xs>Logged in with:</label>
                     <label class="loading" ngStyle.xs="font-size: 0.8em;"> {{xrplAccount}}</label>
-                    <label fxHide.xs>and balance:</label>
+                    <label fxHide.xs>Balance:</label>
                     <label class="loading" ngStyle.xs="font-size: 0.8em;">{{getAccountBalance()}} XRP.</label>
                     <label class="warning" ngStyle.xs="font-size: 0.8em;">(Available: {{getAvailableBalance()}} XRP.)</label>
                 </div>

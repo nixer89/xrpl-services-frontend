@@ -75,7 +75,7 @@ export class IssuedTokenList implements OnInit {
                       || (data.username && data.username.toLowerCase().includes(filter));
       };
 
-      this.googleAnalytics.analyticsEventEmitter('token_list_loaded', 'token_list_token', 'token_list_component');
+      this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
     }
   }
 
