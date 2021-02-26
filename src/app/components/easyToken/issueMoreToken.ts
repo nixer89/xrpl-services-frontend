@@ -132,7 +132,7 @@ export class IssueMoreToken implements OnInit {
   handleTransactionInfo(info: TransactionValidation) {
     this.snackBar.dismiss();
     if(info && info.success) {
-      this.snackBar.open("Your transaction was successfull on " + (info.testnet ? 'test net.' : 'live net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+      this.snackBar.open("Your transaction was successfull on " + (info.testnet ? 'test net.' : 'main net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
       this.reset();
       this.googleAnalytics.analyticsEventEmitter('issued_more_token', 'issue_more_token', 'issue_more_token_component');
     } else {

@@ -51,7 +51,7 @@
             <mat-checkbox [(ngModel)]="checkBoxIssuerInfo" [ngClass]="(checkBoxIssuerInfo ? 'success': 'warning')">It is recommended that the issuer account does NOT have outgoing trust lines! Please use an account as issuer account that you don't access/use regulary.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxFiveXrp" [ngClass]="(checkBoxFiveXrp ? 'success': 'warning')">You accept paying 5 XRP for this service, helping you issue your own Token.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxSufficientFunds" [ngClass]="(checkBoxSufficientFunds ? 'success': 'warning')">The issuing and recipient accounts have enough funds. (at least ~6 XRP available, excluding account reserves!)</mat-checkbox>
-            <mat-checkbox [(ngModel)]="checkBoxNetwork" [ngClass]="(checkBoxNetwork ? 'success': 'warning')">Your XUMM app is connected to the LIVE or TEST network, depending on where you want to issue your Token.</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxNetwork" [ngClass]="(checkBoxNetwork ? 'success': 'warning')">Your XUMM app is connected to the MAIN or TEST network, depending on where you want to issue your Token.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxNoLiability" [ngClass]="(checkBoxNoLiability ? 'success': 'warning')">We take no liability if you are not able to issue your own Token. Only proceed if you know what your are doing!</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxDisclaimer" [ngClass]="(checkBoxDisclaimer ? 'success': 'warning')">We offer "basic" Token/TrustLine management. If you are going to issue your Token for commercial use, we recommend to NOT use this tool. We are not liable for any regulatory implications, depending on the jurisdiction you live in.</mat-checkbox>
 
@@ -67,13 +67,13 @@
           <div fxLayout="row" fxLayoutGap="0.5em">
             <div fxLayout="column" fxLayoutGap="0.5em">
               <ng-template matStepLabel>Select the network</ng-template>
-              <label class="loading">Do you want to create an Token on the live network or test network?</label>
+              <label class="loading">Do you want to create an Token on the main network or test network?</label>
               <div fxLayout="row" fxLayoutGap="0.5em">
                 <mat-card class="theme-background">
                   <div fxLayout="column" fxLayoutAlign="start center">
-                      <label>Network</label>
+                      <label>XRPL Network</label>
                       <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
-                        <label>Live</label>&nbsp;
+                        <label>Main</label>&nbsp;
                         <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                         <label>Test</label>
                       </div>
@@ -83,7 +83,7 @@
               </div>
               <label class="warning" *ngIf="isTestMode">If you want to create on the test net, the 5 XRP payment can be done on the test net as well!</label>
               <label class="success" *ngIf="isTestMode">Make sure your XUMM app is connected to the TEST network!</label>
-              <label class="success" *ngIf="!isTestMode">Make sure your XUMM app is connected to the LIVE network!</label>
+              <label class="success" *ngIf="!isTestMode">Make sure your XUMM app is connected to the MAIN network!</label>
             </div>
             <span style="flex: 1 1 auto;"></span>
           </div>
@@ -146,7 +146,7 @@
               &nbsp;<label class="loading">Sign in with the account you have paid within the last 24h.</label>
             </div>
             
-            <mat-hint *ngIf="paymentNotSuccessfull" style="padding-top: 0.5em;">You payment was not successfull on the XRP Ledger {{isTestMode ? 'TEST' : 'LIVE'}} net.</mat-hint>
+            <mat-hint *ngIf="paymentNotSuccessfull" style="padding-top: 0.5em;">You payment was not successfull on the XRP Ledger {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
             <mat-hint *ngIf="paymentNotSuccessfull">Please try again or use "Sign In with XUMM" if you think the payment was successfull.</mat-hint>
             <mat-hint *ngIf="paymentNotFound" style="padding-top: 0.5em;">No valid payment found for account {{getIssuer()}} withing the last 24h.</mat-hint>
             <mat-hint *ngIf="paymentNotFound">Please make a 5 XRP payment or login with a different account.</mat-hint>

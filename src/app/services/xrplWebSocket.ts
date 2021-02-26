@@ -5,9 +5,9 @@ import { Injectable, Optional, SkipSelf } from '@angular/core';
 export class XRPLWebsocket {
     
     originalTestModeValue:boolean = false;
-    liveNodes:string[] = ['wss://xrpl.ws', 'wss://s2.ripple.com'];
+    mainNodes:string[] = ['wss://xrpl.ws', 'wss://s2.ripple.com'];
     testNodes:string[] = ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net'];
-    liveFirst:boolean = true;
+    mainFirst:boolean = true;
     testFirst:boolean = true;
 
     websocketMap:Map<string, any> = new Map();
@@ -34,7 +34,7 @@ export class XRPLWebsocket {
 
             this.originalTestModeValue = newTestMode;
             console.log("connecting websocket with testmode: " + this.originalTestModeValue);
-            let newWebsocket = webSocket(this.originalTestModeValue ? (this.testFirst ? this.testNodes[0] : this.testNodes[1]) : (this.liveFirst ? this.liveNodes[0] : this.liveNodes[1]));
+            let newWebsocket = webSocket(this.originalTestModeValue ? (this.testFirst ? this.testNodes[0] : this.testNodes[1]) : (this.mainFirst ? this.mainNodes[0] : this.mainNodes[1]));
 
             this.websocketMap.set(componentname, {socket: newWebsocket, mode: newTestMode, isBusy: false});
 
@@ -66,7 +66,7 @@ export class XRPLWebsocket {
         if(this.originalTestModeValue)
             this.testFirst = !this.testFirst;
         else
-            this.liveFirst = !this.liveFirst;
+            this.mainFirst = !this.mainFirst;
 
         return this.getWebsocketMessage(command, this.originalTestModeValue, true);
     }
