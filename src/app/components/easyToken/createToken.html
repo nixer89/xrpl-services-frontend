@@ -67,7 +67,7 @@
           <div fxLayout="row" fxLayoutGap="0.5em">
             <div fxLayout="column" fxLayoutGap="0.5em">
               <ng-template matStepLabel>Select the network</ng-template>
-              <label class="loading">Do you want to create an Token on the main network or test network?</label>
+              <label class="loading">Do you want to create a Token on the main network or test network?</label>
               <div fxLayout="row" fxLayoutGap="0.5em">
                 <mat-card class="theme-background">
                   <div fxLayout="column" fxLayoutAlign="start center">
@@ -152,7 +152,7 @@
             <mat-hint *ngIf="paymentNotFound">Please make a 5 XRP payment or login with a different account.</mat-hint>
 
             <div fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !paymentNotSuccessfull && !paymentNotFound && !loadingIssuerAccount">
-              <label>The account you want to issue an Token with is: </label>
+              <label>The account you want to issue a Token with is: </label>
               <div fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
                 <label class="warning">{{getIssuer()}}</label>
                 <button mat-icon-button (click)="clearIssuerAccount()" aria-label="Clear Issuer Account">

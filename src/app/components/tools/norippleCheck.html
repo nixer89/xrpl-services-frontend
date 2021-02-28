@@ -20,7 +20,7 @@
   <div fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.xs="0.3em">
     <a href="https://xrpl.org/noripple_check.html" target="_blank" rel="noreferrer">no-ripple check Documentation</a><br/>
     <label>It is very important that you know if you issued some Token with your account or not. Depending on that, different checks are made.</label>
-    <label>We are trying to detect if you have issued an Token or not. If the detection does not reflect your account status, please do not proceed with fixing the problems!</label>
+    <label>We are trying to detect if you have issued a Token or not. If the detection does not reflect your account status, please do not proceed with fixing the problems!</label>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
         <input #inpxrplaccount matInput name="xrplaccount" matInput placeholder="XRPL address you want to run the check for" [(ngModel)]="xrplAccountInput" (ngModelChange)="checkChanges()">
