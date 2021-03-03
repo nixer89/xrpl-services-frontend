@@ -1,10 +1,10 @@
 import { Component, ViewChild, Output, EventEmitter, OnInit, OnDestroy, Input } from '@angular/core';
-import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { XummPostPayloadBodyJson } from 'xumm-sdk';
+import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, XrplAccountChanged } from 'src/app/utils/types';
+import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
   selector: 'checkcreate',
@@ -21,7 +21,7 @@ export class CheckCreateComponent implements OnInit, OnDestroy{
   transactionSuccessfull: Observable<any>;
 
   @Output()
-  onPayload: EventEmitter<XummPostPayloadBodyJson> = new EventEmitter();
+  onPayload: EventEmitter<XummTypes.XummPostPayloadBodyJson> = new EventEmitter();
 
   @ViewChild('inpamount') inpamount;
   amountInput: string;
@@ -74,7 +74,7 @@ export class CheckCreateComponent implements OnInit, OnDestroy{
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
       this.originalAccountInfo = accountData.info;
-      if(this.originalAccountInfo && this.originalAccountInfo.Account && this.isValidXRPAddress(this.originalAccountInfo.Account)) {
+      if(this.originalAccountInfo && this.originalAccountInfo.Account && isValidXRPAddress(this.originalAccountInfo.Account)) {
         this.escrowAccountChanged.next({account: this.originalAccountInfo.Account, mode: accountData.mode});
       }
 
@@ -145,7 +145,7 @@ export class CheckCreateComponent implements OnInit, OnDestroy{
     if(this.validAmount)
       this.validAmount = this.amountInput && parseFloat(this.amountInput) >= 0.000001 && !this.escrowBiggerThanAvailable();
 
-    this.validAddress = this.destinationInput && this.destinationInput.trim().length > 0 && this.isValidXRPAddress(this.destinationInput.trim());
+    this.validAddress = this.destinationInput && this.destinationInput.trim().length > 0 && isValidXRPAddress(this.destinationInput.trim());
 
     this.validCondition = this.passwordInput && this.passwordInput.trim().length > 0;
 
@@ -193,7 +193,7 @@ export class CheckCreateComponent implements OnInit, OnDestroy{
   sendPayloadToXumm() {
 
     this.googleAnalytics.analyticsEventEmitter('escrow_create', 'sendToXumm', 'escrow_create_component');
-    let xummPayload:XummPostPayloadBodyJson = {
+    let xummPayload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
         TransactionType: "EscrowCreate"
       }, custom_meta: {
@@ -205,7 +205,7 @@ export class CheckCreateComponent implements OnInit, OnDestroy{
       xummPayload.custom_meta.instruction += "ATTENTION: Your XRP will be inaccessible for " + this.escrowYears + "years!\n\n";
     }
 
-    if(this.destinationInput && this.destinationInput.trim().length>0 && this.isValidXRPAddress(this.destinationInput)) {
+    if(this.destinationInput && this.destinationInput.trim().length>0 && isValidXRPAddress(this.destinationInput)) {
       xummPayload.txjson.Destination = this.destinationInput.trim();
       xummPayload.custom_meta.instruction += "- Escrow Destination: " + this.destinationInput.trim();
     }
@@ -260,19 +260,6 @@ export class CheckCreateComponent implements OnInit, OnDestroy{
       });      
     } else {
       this.onPayload.emit(xummPayload);
-    }
-  }
-
-  isValidXRPAddress(address: string): boolean {
-    try {
-      //console.log("encoding address: " + address);
-      let xAddress = Encode({account: address});
-      //console.log("xAddress: " + xAddress);
-      return xAddress && xAddress.length > 0;
-    } catch(err) {
-      //no valid address
-      //console.log("err encoding " + err);
-      return false;
     }
   }
 

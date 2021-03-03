@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Encode } from 'xrpl-tagged-address-codec';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
@@ -11,6 +10,7 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { isValidXRPAddress } from 'src/app/utils/utils';
 
 interface TrustLine {
   account:string,
@@ -112,7 +112,7 @@ export class IssueMoreToken implements OnInit {
   }
 
   handleSignInInfo(info: TransactionValidation) {
-    if(info && info.success && info.account && this.isValidXRPAddress(info.account)) {
+    if(info && info.success && info.account && isValidXRPAddress(info.account)) {
       //("valid issuer");
       this.snackBar.dismiss();
       this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 3000, horizontalPosition: 'center', verticalPosition: 'top'});
@@ -142,19 +142,6 @@ export class IssueMoreToken implements OnInit {
     this.reset();
   }
   
-  isValidXRPAddress(address: string): boolean {
-    try {
-      //console.log("encoding address: " + address);
-      let xAddress = Encode({account: address});
-      //console.log("xAddress: " + xAddress);
-      return xAddress && xAddress.length > 0;
-    } catch(err) {
-      //no valid address
-      //console.log("err encoding " + err);
-      return false;
-    }
-  }
-
   networkSwitched() {
     this.issuerAccountChangedSubject.next({account: this.issuerAccount, mode: this.isTestMode});
   }
@@ -183,7 +170,7 @@ export class IssueMoreToken implements OnInit {
   }
 
   checkChangesRecipientAccount() {
-    this.validAddress = this.recipientAccountInput && this.recipientAccountInput.trim().length > 0 && this.isValidXRPAddress(this.recipientAccountInput.trim());
+    this.validAddress = this.recipientAccountInput && this.recipientAccountInput.trim().length > 0 && isValidXRPAddress(this.recipientAccountInput.trim());
     this.recipientSameAsIssuer = this.issuerAccount && this.recipientAccountInput &&  this.issuerAccount.trim() === this.recipientAccountInput.trim();
 
     if(this.validAddress && !this.recipientSameAsIssuer)

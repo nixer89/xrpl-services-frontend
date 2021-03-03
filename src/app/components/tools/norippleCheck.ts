@@ -1,10 +1,10 @@
 import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
-import { Encode } from 'xrpl-tagged-address-codec';
 import { Observable, Subscription} from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, GenericBackendPostRequest } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
+import { isValidXRPAddress } from 'src/app/utils/utils';
 
 interface NoRippleCheck {
   problem: string,
@@ -184,23 +184,10 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
   checkChanges() {
     this.problemsAndTransactions = [];
     this.obligations = {};
-    this.validAddress = this.xrplAccountInput && this.xrplAccountInput.trim().length > 0 && this.isValidXRPAddress(this.xrplAccountInput.trim());
+    this.validAddress = this.xrplAccountInput && this.xrplAccountInput.trim().length > 0 && isValidXRPAddress(this.xrplAccountInput.trim());
 
     if(this.validAddress)
       this.loadProblems();
-  }
-
-  isValidXRPAddress(address: string): boolean {
-    try {
-      //console.log("encoding address: " + address);
-      let xAddress = Encode({account: address});
-      //console.log("xAddress: " + xAddress);
-      return xAddress && xAddress.length > 0;
-    } catch(err) {
-      //no valid address
-      //console.log("err encoding " + err);
-      return false;
-    }
   }
 
   clearInputs() {

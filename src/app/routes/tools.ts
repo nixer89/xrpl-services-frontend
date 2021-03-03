@@ -11,6 +11,7 @@ import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
+import { XummTypes } from 'xumm-sdk';
 
 @Component({
   selector: 'tools',
@@ -68,29 +69,8 @@ export class Tools implements OnInit {
         //check if transaction was successfull and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
         //console.log(JSON.stringify(payloadInfo));
-        if(signinToValidate) {
-            let signInCheck:TransactionValidation = await this.xummApi.checkSignIn(payloadId);
 
-            if(signInCheck.success) {
-              this.snackBar.dismiss();
-              this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
-              await this.handleTransactionInfo(signInCheck);
-            } else {
-              this.snackBar.dismiss();
-              this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
-            }    
-        } else {
-          let transactionResult:TransactionValidation = await this.xummApi.validateTransaction(payloadId);
-
-          await this.handleTransactionInfo(transactionResult);
-
-          this.snackBar.dismiss();
-          if(transactionResult && transactionResult.success) {
-            this.snackBar.open("Your transaction was successfull on " + (transactionResult.testnet ? 'test net.' : 'main net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
-          } else {
-            this.snackBar.open("Your transaction was not successfull. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
-          }
-        }
+        await this.handlePayloadInfo(payloadId, signinToValidate);
       }
 
       //console.log("check logged in account tools");
@@ -109,6 +89,43 @@ export class Tools implements OnInit {
     //this.xrplAccount="rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL";
     //this.xrplAccount="rU2mEJSLqBRkYLVTv55rFTgQajkLTnT6mA";
     //await this.loadAccountData(false);
+  }
+
+  async handlePayloadInfo(payloadId:string, signinToValidate:any) {
+    let payloadInfo:XummTypes.XummGetPayloadResponse = await this.xummApi.getPayloadInfo(payloadId);
+
+    if(payloadInfo && payloadInfo.custom_meta && payloadInfo.custom_meta.blob) {
+      let escrow:any = payloadInfo.custom_meta.blob;
+      if(signinToValidate) {
+        //handle disable auto release escrow
+        let signInCheck:TransactionValidation = await this.xummApi.checkSignIn(payloadId);
+      } else {
+        //handle enable auto release escrow
+        let addEscrow = await this.xummApi.validateEscrowPayment(payloadId);
+      }
+    } else if(signinToValidate) {
+      let signInCheck:TransactionValidation = await this.xummApi.checkSignIn(payloadId);
+
+      if(signInCheck.success) {
+        this.snackBar.dismiss();
+        this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+        await this.handleTransactionInfo(signInCheck);
+      } else {
+        this.snackBar.dismiss();
+        this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+      }    
+    } else {
+      let transactionResult:TransactionValidation = await this.xummApi.validateTransaction(payloadId);
+
+      await this.handleTransactionInfo(transactionResult);
+
+      this.snackBar.dismiss();
+      if(transactionResult && transactionResult.success) {
+        this.snackBar.open("Your transaction was successfull on " + (transactionResult.testnet ? 'testnet.' : 'mainnet.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+      } else {
+        this.snackBar.open("Your transaction was not successfull. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
+      }
+    }
   }
 
   changeNetwork() {
