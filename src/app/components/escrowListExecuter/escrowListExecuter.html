@@ -1,0 +1,90 @@
+<div *ngIf="loading" fxLayout="row" fxLayoutAlign="start center">
+    <label>Loading Escrows...&nbsp;</label>
+    <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+</div>
+<label style="color: darkorange" *ngIf="!loading && !escrowData">The logged in account does not have any Escrows on the {{isTestMode ? 'Testnet' : 'Mainnet'}}.</label>
+<mat-accordion *ngIf="!loading && escrowData && escrowData.length > 0" fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+    <label class="loading">Welcome to the automatic Escrow release service ("Escrow Releaser") of the XummCommunity!</label>
+    <label>After creating an Escrow, the funds you locked away are still in your account. If you set a "FinishAfter" time for your Escrow, the funds can NOT be released before that time.</label>
+    <label>But releasing the Escrow (sending the funds to the destination account) does NOT happen automatically. Not even if you choose the escrow account itself as destination!</label>
+    <label class="warning">You need to manually release the escrowed funds when the FinishAfter time has passed!</label>
+    <br><br>
+    <label class="loading">But that's when we come into play! We offer you a service to release your escrowed funds for you!</label>
+    <label>We will charge you a fee of 2 XRP per escrow to enable the auto release feature from XummCommunity for your Escrow</label>
+    <label>The "Escrow Releaser" will then release your Escrow within 1 hour after the "FinishAfter" time set in your Escrow.</label>
+    <mat-checkbox [(ngModel)]="checkBoxAcceptPayment" [ngClass]="(checkBoxAcceptPayment ? 'success': 'warning')">I understand the above text and I know I have to pay 2 XRP for each Escrow if I decide to enable that feature for one of my Escrows.</mat-checkbox>
+    <div *ngIf="checkBoxAcceptPayment">
+        <br>
+        <label>Below you will find a list of all Escrows which are eligable for auto release. (FinishAfter time has to be set and no Condition/Password).</label>
+        <br>
+        <mat-expansion-panel #mep2 [expanded]="true">
+            <mat-expansion-panel-header>
+            <mat-panel-title>
+                <span>All escrows of the logged in account with a 'FinishAfter' time set.</span>
+            </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-table [dataSource]="escrowData" class="mat-elevation-z8">
+
+                <ng-container matColumnDef="destination">
+                    <mat-header-cell *matHeaderCellDef> Destination </mat-header-cell>
+                    <mat-cell *matCellDef="let escrow">
+                        <span fxShow fxHide.xs > {{escrow.Destination}}</span>
+                        <span fxShow.xs fxHide ><b>Destination:</b>&nbsp;{{escrow.Destination}}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="amount">
+                    <mat-header-cell *matHeaderCellDef > Amount in XRP </mat-header-cell>
+                    <mat-cell *matCellDef="let escrow">
+                        <span fxShow fxHide.xs >{{getAmountInXRP(escrow.Amount)}}</span>
+                        <span fxShow.xs fxHide ><b>Escrow Amount in XRP:</b>&nbsp;{{getAmountInXRP(escrow.Amount)}}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="finishafter">
+                    <mat-header-cell *matHeaderCellDef > Finish After </mat-header-cell>
+                    <mat-cell *matCellDef="let escrow">
+                        <span fxShow fxHide.xs >{{getTimeFromRippleTime(escrow.FinishAfter)}}</span>
+                        <span fxShow.xs fxHide ><b>Finish:</b>&nbsp;{{getTimeFromRippleTime(escrow.FinishAfter)}}</span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="autorelease">
+                    <mat-header-cell *matHeaderCellDef > Auto Release </mat-header-cell>
+                    <mat-cell *matCellDef="let escrow">
+                        <span><label fxShow.xs fxHide><b>Auto Release:</b>&nbsp;</label>
+                            <div *ngIf="escrow.autorelease">
+                                <i class="material-icons" style="color: green; font-size: 2em;">
+                                    check_circle_outline
+                                </i>
+                            </div>
+                            <div *ngIf="!escrow.autorelease">
+                                <i class="material-icons" style="color: red; font-size: 2em;">
+                                    highlight_off
+                                </i>
+                            </div>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="action">
+                    <mat-header-cell *matHeaderCellDef > Action </mat-header-cell>
+                    <mat-cell *matCellDef="let escrow">
+                        <span><label fxShow.xs fxHide><b>Action:</b>&nbsp;</label>
+                            <button *ngIf="!escrow.autorelease" mat-raised-button color="primary" matTooltip="Enable automatic release for this Escrow." matTooltipPosition="above" (click)="enableAutoFinish(escrow)" style="padding:0px;">
+                                Enable
+                            </button>
+                            <button *ngIf="escrow.autorelease" mat-raised-button color="warn" matTooltip="Disable automatic release for this Escrow." matTooltipPosition="above" (click)="disableAutoFinish(escrow)" style="padding:0px;">
+                                Disable
+                            </button>
+                        </span>
+                    </mat-cell>
+                </ng-container>
+
+                <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+            </mat-table>
+        </mat-expansion-panel>
+    </div>
+</mat-accordion>
