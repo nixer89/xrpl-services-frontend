@@ -23,7 +23,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
     escrowAccountChanged: Observable<XrplAccountChanged>;
     
     escrowData:any[] = [];
-    displayedColumns: string[] = ['destination', 'amount', 'finishafter', 'autorelease', 'action'];
+    displayedColumns: string[] = ['destination', 'amount', 'finishafter', 'autorelease', 'expectedautorelease', 'action'];
     loading:boolean = false;
     isTestMode:boolean = false;
 
@@ -71,7 +71,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             
             if(message && message.status && message.status === 'success' && message.type && message.type === 'response') {
                 if(message.result && message.result.account_objects) {
-                   this.escrowData = message.result.account_objects.filter(escrow => escrow.FinishAfter && !escrow.Condition && escrow.Account == xrplAccount);
+                   this.escrowData = message.result.account_objects.filter(escrow => escrow.FinishAfter && !escrow.Condition);
 
                     for(let i = 0; i < this.escrowData.length; i++) {
                         let sequence:number = await this.getEscrowSequence(this.escrowData[i]);
@@ -136,6 +136,16 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
         if(rippleCodedFinishAfter) {
             let finishAfter:Date = new Date(normalizer.rippleEpocheTimeToUTC(rippleCodedFinishAfter));
             return finishAfter.toLocaleString();
+        } else
+            return "-";
+    }
+
+    getExpectedAutoReleaseTime(rippleCodedFinishAfter: number): string {
+        if(rippleCodedFinishAfter) {
+            let expectedRelease:Date = new Date(normalizer.rippleEpocheTimeToUTC(rippleCodedFinishAfter));
+            expectedRelease.setHours(expectedRelease.getHours()+1);
+            expectedRelease.setMinutes(5,0,0);
+            return expectedRelease.toLocaleString();
         } else
             return "-";
     }

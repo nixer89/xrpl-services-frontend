@@ -30,8 +30,8 @@ table{
     .mat-column-amount {
         word-wrap: break-word !important;
         white-space: unset !important;
-        flex: 0 0 20% !important;
-        width: 20% !important;
+        flex: 0 0 10% !important;
+        width: 10% !important;
         overflow-wrap: break-word;
         word-wrap: break-word;
     
@@ -81,11 +81,29 @@ table{
         text-align: center;
     }
 
+    .mat-column-expectedautorelease {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        flex: 0 0 15% !important;
+        width: 15% !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    
+        word-break: break-word;
+    
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        justify-content: center;
+        text-align: center;
+    }
+
     .mat-column-action {
         word-wrap: break-word !important;
         white-space: unset !important;
         flex: 0 0 15% !important;
-        width: 20% !important;
+        width: 15% !important;
         overflow-wrap: break-word;
         word-wrap: break-word;
     
@@ -156,6 +174,20 @@ table{
     }
 
     .mat-column-autorelease {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    
+        word-break: break-word;
+    
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+    }
+
+    .mat-column-expectedautorelease {
         word-wrap: break-word !important;
         white-space: unset !important;
         overflow-wrap: break-word;
