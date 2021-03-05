@@ -104,6 +104,8 @@ export class Tools implements OnInit {
         if(signInCheck && signInCheck.success && signInCheck.account && isValidXRPAddress(signInCheck.account) && signInCheck.account == escrow.Account) {
           //console.log(JSON.stringify(disableResponse));
 
+          await this.handleTransactionInfo(signInCheck);
+
           this.snackBar.dismiss();
           if(signInCheck.success) {
               this.snackBar.open("Ownership verified and auto release disabled!", null, {panelClass: 'snackbar-success', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
@@ -118,6 +120,11 @@ export class Tools implements OnInit {
       } else {
         //handle enable auto release escrow
         let trxInfo = await this.xummApi.validateEscrowPayment(payloadId);
+
+        await this.handleTransactionInfo(trxInfo);
+
+        this.snackBar.dismiss();
+
         if(trxInfo && trxInfo.success && trxInfo.account && trxInfo.account == escrow.Account && trxInfo.testnet == escrow.testnet) {
           //handle success
           this.snackBar.open("Transaction successfull! You have enabled the auto release feature for your escrow!", null, {panelClass: 'snackbar-success', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
@@ -138,12 +145,11 @@ export class Tools implements OnInit {
     } else if(signinToValidate) {
       let signInCheck:TransactionValidation = await this.xummApi.checkSignIn(payloadId);
 
+      this.snackBar.dismiss();
       if(signInCheck.success) {
-        this.snackBar.dismiss();
         this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
         await this.handleTransactionInfo(signInCheck);
       } else {
-        this.snackBar.dismiss();
         this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
       }    
     } else {
@@ -158,10 +164,6 @@ export class Tools implements OnInit {
         this.snackBar.open("Your transaction was not successfull. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
       }
     }
-
-    this.xrplAccount = payloadInfo.response.account;
-    this.isTestMode = payloadInfo.response.dispatched_nodetype == 'TESTNET';
-
   }
 
   changeNetwork() {

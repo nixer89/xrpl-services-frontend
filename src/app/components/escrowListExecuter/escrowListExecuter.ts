@@ -71,7 +71,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             
             if(message && message.status && message.status === 'success' && message.type && message.type === 'response') {
                 if(message.result && message.result.account_objects) {
-                   this.escrowData = message.result.account_objects.filter(escrow => escrow.FinishAfter && !escrow.Condition);
+                   this.escrowData = message.result.account_objects.filter(escrow => escrow.FinishAfter && !escrow.Condition && escrow.Account == xrplAccount);
 
                     for(let i = 0; i < this.escrowData.length; i++) {
                         let sequence:number = await this.getEscrowSequence(this.escrowData[i]);
@@ -236,6 +236,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             this.snackBar.dismiss();
             if(info.success) {
                 this.snackBar.open("Ownership verified and auto release disabled!", null, {panelClass: 'snackbar-success', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
+                await this.loadEscrowList(escrow.Account);
                 this.googleAnalytics.analyticsEventEmitter('escrow_auto_release_disabled', 'escrow_executer', 'escrow_executer_component');
             } else {
                 this.snackBar.open("Ownership verified but error disabling auto release!", null, {panelClass: 'snackbar-success', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
@@ -248,7 +249,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             }
           }
 
-          await this.loadEscrowList(escrow.Account);
+          
         });
     }
 }

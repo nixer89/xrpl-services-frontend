@@ -2,7 +2,7 @@
     <label>Loading Escrows...&nbsp;</label>
     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
 </div>
-<label style="color: darkorange" *ngIf="!loading && !escrowData">The logged in account does not have any Escrows created on the {{isTestMode ? 'Testnet' : 'Mainnet'}}.</label>
+<label style="color: darkorange" *ngIf="!loading && !escrowData">The logged in account does not have any Escrows on the {{isTestMode ? 'Testnet' : 'Mainnet'}} which meet the auto release criterias. (FinishAfter time has to be set and no Condition/Password)</label>
 <mat-accordion *ngIf="!loading && escrowData && escrowData.length > 0" fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
     <label class="loading">Welcome to the automatic Escrow release service ("Escrow Releaser") of the XummCommunity!</label>
     <label>After creating an Escrow, the funds you locked away are still in your account. If you set a "FinishAfter" time for your Escrow, the funds can NOT be released before that time.</label>

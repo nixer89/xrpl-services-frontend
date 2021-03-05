@@ -16,9 +16,11 @@ td {
     justify-content: center;
 }
 
+/*
 .mat-cell:hover{
     cursor: pointer;
 }
+*/
 
 .mat-chip-bithomp {
     font-size: 9px !important;

@@ -71,7 +71,7 @@
             <label [innerHTML]="row.account | highlightSearch: filterText"></label>
           </span>
           <span fxShow.xs fxHide >
-            <b>Issuer Account:</b><br>
+            <b>Issuer Account:</b>&nbsp;
             <label [innerHTML]="row.account | highlightSearch: filterText"></label>
           </span>
       </mat-cell>
@@ -84,8 +84,8 @@
             <label [innerHTML]="row.username | highlightSearch: filterText"></label>
             <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
           </span>
-          <span fxShow.xs fxHide>
-            <b>Accountname:</b><br>
+          <span fxShow.xs fxHide fxLayout="row">
+            <b>Accountname:</b>&nbsp;
             <div fxLayout="row">
               <label [innerHTML]="row.username | highlightSearch: filterText"></label>
               <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
@@ -101,7 +101,7 @@
               <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
             </span>
             <span fxShow.xs fxHide >
-              <b>Token Currency Code:</b><br>
+              <b>Token Currency Code:</b>&nbsp;
               <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
             </span>
         </mat-cell>
@@ -114,7 +114,7 @@
               <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
             </span>
             <span fxShow.xs fxHide >
-              <b>Total issued value:</b><br>
+              <b>Total issued value:</b>&nbsp;
               <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
             </span>
         </mat-cell>
@@ -127,30 +127,31 @@
             <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
           </span>
           <span fxShow.xs fxHide >
-            <b>Number of TrustLines:</b><br>
+            <b>Number of TrustLines:</b>&nbsp;
             <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
           </span>
       </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="link">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Link </mat-header-cell>
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Links </mat-header-cell>
       <mat-cell *matCellDef="let row">
           <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
             <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
             <label fxHide fxShow.gt-md>&nbsp;|&nbsp;</label>
             <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
           </span>
-          <span fxShow.xs fxHide fxLayout="column">
-            <b>Link:</b>
+          <span fxShow.xs fxHide fxLayout="row">
+            <b>Links:</b>&nbsp;
             <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
+            <label>&nbsp;|&nbsp;</label>
             <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
           </span>
       </mat-cell>
     </ng-container>
 
     <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-    <ng-container matColumnDef="expandedDetail">
+    <!--ng-container matColumnDef="expandedDetail">
       <td mat-cell *matCellDef="let detail" [attr.colspan]="displayedColumns.length">
         <div class="example-element-detail" [@detailExpand]="detail == expandedElement ? 'expanded' : 'collapsed'">
           <div fxLayout="example-element-description">
@@ -161,12 +162,13 @@
           </div>
         </div>
       </td>
-    </ng-container>
+    </ng-container-->
 
     <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" class="example-element-row" [class.example-expanded-row]="expandedElement === row" (click)="expandedElement = expandedElement === row ? null : row"></mat-row>
-    <mat-row *matRowDef="let detail; columns: ['expandedDetail']" class="example-detail-row"></mat-row>
+    <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    <!--mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" class="example-element-row" [class.example-expanded-row]="expandedElement === row" (click)="expandedElement = expandedElement === row ? null : row"></mat-row-->
+    <!--mat-row *matRowDef="let detail; columns: ['expandedDetail']" class="example-detail-row"></mat-row-->
 
   </mat-table>
-  <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50, 100, 200, 500]"></mat-paginator>
+  <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50, 100]"></mat-paginator>
 </mat-expansion-panel>
