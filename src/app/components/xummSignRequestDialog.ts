@@ -101,14 +101,14 @@ export class XummSignDialogComponent implements OnInit{
             if(!xummResponse || !xummResponse.uuid) {
                 this.loading = false;
                 this.showError = true;
-                setTimeout(() => this.handleFailedSignIn(), 3000);
+                setTimeout(() => this.handleFailedSignIn(null), 3000);
             }
         } catch (err) {
             //console.log(JSON.stringify(err));
             this.loading = false;
             this.backendNotAvailable = true;
             this.showError = true;
-            setTimeout(() => this.handleFailedSignIn(), 3000);
+            setTimeout(() => this.handleFailedSignIn(null), 3000);
         }
 
         this.payloadUUID = xummResponse.uuid;
@@ -157,12 +157,12 @@ export class XummSignDialogComponent implements OnInit{
                         setTimeout(() => this.handleSuccessfullSignIn(transactionResult.account, message.payload_uuidv4), 3000);
                     } else {
                         this.showError = true;
-                        setTimeout(() => this.handleFailedSignIn(), 3000);
+                        setTimeout(() => this.handleFailedSignIn(transactionResult), 3000);
                     }
                 } else {
                     this.waitingForPayment = false;
                     this.showError = true;
-                    setTimeout(() => this.handleFailedSignIn(), 3000);
+                    setTimeout(() => this.handleFailedSignIn(null), 3000);
                 }
 
             } else if(message.expired || message.expires_in_seconds <= 0) {
@@ -182,9 +182,9 @@ export class XummSignDialogComponent implements OnInit{
         this.dialogRef.close({ success: true, testnet: false, account: xrplAccount, payloadId: payloadId});
     }
 
-    handleFailedSignIn() {
+    handleFailedSignIn(result: TransactionValidation) {
         this.websocket = null;
-        this.dialogRef.close(null);
+        this.dialogRef.close(result);
     }
 
     QRLoaded() {

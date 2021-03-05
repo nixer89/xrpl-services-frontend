@@ -58,57 +58,63 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
 
     async loadEscrowList(xrplAccount: string) {
         if(xrplAccount) {
-            this.loading = true;
+            try {
+                this.loading = true;
 
-            let account_objects_request:any = {
-              command: "account_objects",
-              account: xrplAccount,
-              type: "escrow",
-              ledger_index: "validated",
-            }
-      
-            let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowListExecuter", account_objects_request, this.isTestMode);
-            
-            if(message && message.status && message.status === 'success' && message.type && message.type === 'response') {
-                if(message.result && message.result.account_objects) {
-                   this.escrowData = message.result.account_objects.filter(escrow => escrow.FinishAfter && !escrow.Condition && escrow.Account == xrplAccount);
+                let account_objects_request:any = {
+                command: "account_objects",
+                account: xrplAccount,
+                type: "escrow",
+                ledger_index: "validated",
+                }
+        
+                let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowListExecuter", account_objects_request, this.isTestMode);
+                
+                if(message && message.status && message.status === 'success' && message.type && message.type === 'response') {
+                    if(message.result && message.result.account_objects) {
+                    this.escrowData = message.result.account_objects.filter(escrow => escrow.FinishAfter && !escrow.Condition && escrow.Account == xrplAccount);
+
+                        for(let i = 0; i < this.escrowData.length; i++) {
+                            let sequence:number = await this.getEscrowSequence(this.escrowData[i]);
+                            this.escrowData[i].sequence = sequence;    
+                            this.escrowData[i].testnet = this.isTestMode;                   
+                        }
+
+                        //if data 0 (no available escrows) -> show message "no escrows available"
+                        if(this.escrowData.length == 0)
+                            this.escrowData = null;
+                    }
+                } else {                
+                    this.escrowData = null;
+                }
+
+                console.log("escrowData: " + JSON.stringify(this.escrowData));
+
+                let storedEscrowListResponse:any = await this.xumm.getStoredEscrowList(xrplAccount, this.isTestMode);
+                console.log("storedEscrows: " + JSON.stringify(storedEscrowListResponse));
+                
+
+                if(this.escrowData && storedEscrowListResponse && storedEscrowListResponse.success && storedEscrowListResponse.escrows) {
+                    let storedEscrows:any[] = storedEscrowListResponse.escrows;
 
                     for(let i = 0; i < this.escrowData.length; i++) {
-                        let sequence:number = await this.getEscrowSequence(this.escrowData[i]);
-                        this.escrowData[i].sequence = sequence;    
-                        this.escrowData[i].testnet = this.isTestMode;                   
-                    }
+                        for(let j = 0; j < storedEscrows.length; j++) {
+                            if(this.escrowData[i].account = storedEscrows[j].account && this.escrowData[i].sequence == storedEscrows[j].sequence && this.escrowData[i].testnet == storedEscrows[j].testnet)
+                                this.escrowData[i].autorelease = true;
+                        }
 
-                    //if data 0 (no available escrows) -> show message "no escrows available"
-                    if(this.escrowData.length == 0)
-                        this.escrowData = null;
+                        if(!this.escrowData[i].autorelease)
+                            this.escrowData[i].autorelease = false;
+                    }
                 }
-            } else {                
+                this.googleAnalytics.analyticsEventEmitter('load_escrow_list_executer', 'escrow_list_executer', 'escrow_list_executer_component');
+
+                this.loading = false;
+
+            } catch(err) {
+                console.log("Error loading escrows");
                 this.escrowData = null;
             }
-
-            console.log("escrowData: " + JSON.stringify(this.escrowData));
-
-            let storedEscrowListResponse:any = await this.xumm.getStoredEscrowList(xrplAccount, this.isTestMode);
-            console.log("storedEscrows: " + JSON.stringify(storedEscrowListResponse));
-            
-
-            if(this.escrowData && storedEscrowListResponse && storedEscrowListResponse.success && storedEscrowListResponse.escrows) {
-                let storedEscrows:any[] = storedEscrowListResponse.escrows;
-
-                for(let i = 0; i < this.escrowData.length; i++) {
-                    for(let j = 0; j < storedEscrows.length; j++) {
-                        if(this.escrowData[i].account = storedEscrows[j].account && this.escrowData[i].sequence == storedEscrows[j].sequence && this.escrowData[i].testnet == storedEscrows[j].testnet)
-                            this.escrowData[i].autorelease = true;
-                    }
-
-                    if(!this.escrowData[i].autorelease)
-                        this.escrowData[i].autorelease = false;
-                }
-            }
-            this.googleAnalytics.analyticsEventEmitter('load_escrow_list_executer', 'escrow_list_executer', 'escrow_list_executer_component');
-
-            this.loading = false;
         }
     }
 
