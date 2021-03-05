@@ -31,7 +31,7 @@ export class Tools implements OnInit {
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
   transactionSuccessfull: Subject<any> = new Subject<any>();
 
-  isTestMode:boolean = false;
+  isTestMode:boolean = true;
 
   loadingData:boolean = false;
   cannotConnectToNode:boolean = false;
@@ -79,7 +79,7 @@ export class Tools implements OnInit {
 
       if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
         this.xrplAccount = this.localStorage.get("xrplAccount");
-        this.isTestMode = this.localStorage.get("testMode");
+        this.isTestMode = true;//this.localStorage.get("testMode");
         this.loadAccountData(true);
       }
     });

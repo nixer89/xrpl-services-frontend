@@ -26,6 +26,7 @@ export class GenericPayloadQRDialog implements OnInit {
     websocket: WebSocketSubject<any>;
     payloadUUID: string;
     showError: boolean = false;
+    backendErrorMessage:string = null;
     waitingForPayment:boolean = false;
     showQR:boolean = false;
     requestExpired:boolean = false;
@@ -104,15 +105,24 @@ export class GenericPayloadQRDialog implements OnInit {
             if(!xummResponse || !xummResponse.uuid) {
                 this.loading = false;
                 this.backendNotAvailable = true;
+
+                let anyresponse:any = xummResponse;
+                if(anyresponse && anyresponse.error && anyresponse.message)
+                    this.backendErrorMessage = anyresponse.message;
+                else
+                    this.backendErrorMessage = "Sorry, there was an error contacting the backend. Please try again later.";
+
                 this.showError = true;
-                setTimeout(() => this.handleFailedTransaction(), 3000);
+                setTimeout(() => this.handleFailedTransaction(), 5000);
+                return;
             }
         } catch (err) {
             //console.log(JSON.stringify(err));
             this.loading = false;
             this.backendNotAvailable = true;
             this.showError = true;
-            setTimeout(() => this.handleFailedTransaction(), 3000);
+            setTimeout(() => this.handleFailedTransaction(), 5000);
+            return;
         }
 
         this.payloadUUID = xummResponse.uuid;

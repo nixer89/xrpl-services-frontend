@@ -91,7 +91,7 @@ export class IssuedTokenList implements OnInit {
   async loadLedgerData(): Promise<TokenIssuer[]> {
     let tokenIssuers:TokenIssuer[] = [];
     try {
-      let issuedTokensResponse:any = await this.app.get('http://localhost:4001/tokens');
+      let issuedTokensResponse:any = await this.app.get('https://tokens.xumm.community/api/v1/tokens');
 
       this.ledgerIndex = issuedTokensResponse.ledger_index;
       this.ledgerHash = issuedTokensResponse.ledger_hash;
@@ -101,6 +101,7 @@ export class IssuedTokenList implements OnInit {
       let issuers:any = issuedTokensResponse.tokens;
 
       for (var account in issuers) {
+
         if (issuers.hasOwnProperty(account)) {
             let issuedCurrencies:Token[] = issuers[account].tokens;
             let data:IssuerVerification = issuers[account].data;
@@ -113,6 +114,8 @@ export class IssuedTokenList implements OnInit {
               username = data.username ? data.username : "";
               domain = data.domain;
               twitter = data.twitter
+            } else {
+              username = "";
             }
             
             this.issuingAccounts++;

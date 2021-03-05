@@ -16,6 +16,10 @@ td {
     justify-content: center;
 }
 
+.mat-cell:hover{
+    cursor: pointer;
+}
+
 .mat-chip-bithomp {
     font-size: 9px !important;
     min-height: 12px;
@@ -32,14 +36,6 @@ td {
     background-color: #3279B6 !important;
 }
 
-.example-element-row:not(.example-expanded-row):hover {
-    background: whitesmoke;
-  }
-  
-.example-element-row:not(.example-expanded-row):active {
-    background: #efefef;
-  }
-  
 .example-element-row td {
     border-bottom-width: 0;
   }

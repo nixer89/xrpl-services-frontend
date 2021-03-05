@@ -71,7 +71,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             
             if(message && message.status && message.status === 'success' && message.type && message.type === 'response') {
                 if(message.result && message.result.account_objects) {
-                   this.escrowData = message.result.account_objects.filter(escrow => escrow.FinishAfter && !escrow.Condition);
+                   this.escrowData = message.result.account_objects.filter(escrow => escrow.FinishAfter && !escrow.Condition && escrow.Account == xrplAccount);
 
                     for(let i = 0; i < this.escrowData.length; i++) {
                         let sequence:number = await this.getEscrowSequence(this.escrowData[i]);
