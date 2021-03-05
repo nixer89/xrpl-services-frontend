@@ -253,7 +253,7 @@ export class CreateToken implements OnInit {
   }
 
   checkChangesCurrencyCode() {
-    this.validCurrencyCode = this.currencyCode && /^[a-zA-Z\d?!@#$%^&*<>(){}[\]|]{3,20}$/.test(this.currencyCode) && this.currencyCode != "XRP";
+    this.validCurrencyCode = this.currencyCode && /^[a-zA-Z\d?!@#$%^&*<>(){}[\]|]{3,20}$/.test(this.currencyCode) && this.currencyCode.toUpperCase() != "XRP";
   }
 
   getCurrencyCodeForXRPL(): string {

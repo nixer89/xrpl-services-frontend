@@ -143,6 +143,11 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
     getExpectedAutoReleaseTime(rippleCodedFinishAfter: number): string {
         if(rippleCodedFinishAfter) {
             let expectedRelease:Date = new Date(normalizer.rippleEpocheTimeToUTC(rippleCodedFinishAfter));
+
+            //set execution time to now + next hour + 5 min in case to enable auto release for already finishable escrows
+            if(expectedRelease.getTime() < Date.now())
+                expectedRelease.setTime(Date.now());
+
             expectedRelease.setHours(expectedRelease.getHours()+1);
             expectedRelease.setMinutes(5,0,0);
             return expectedRelease.toLocaleString();
@@ -190,13 +195,13 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
         dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
           //console.log('The generic dialog was closed: ' + JSON.stringify(info));
     
-          if(info && info.success && info.account && info.account == escrow.Account && (info.testnet == this.isTestMode || (!info.testnet && this.isTestMode))) {
+          if(info && info.success && info.account && info.account == escrow.Account && (info.testnet == escrow.testnet || (!info.testnet && escrow.testnet))) {
             //handle success
             this.snackBar.open("Transaction successfull! You have enabled the auto release feature for your escrow!", null, {panelClass: 'snackbar-success', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
              
             this.googleAnalytics.analyticsEventEmitter('pay_for_escrow_release', 'escrow_executer', 'escrow_executer_component');
-          } else if( info && info.testnet && info.testnet != this.isTestMode) {
-            this.snackBar.open("You have submitted a transaction on the " + (info.testnet ? "Testnet" : "Mainnet") + " for an escrow on the " + (this.isTestMode ? "Testnet": "Mainnet") + "! Can not activate Auto Release!", null, {panelClass: 'snackbar-failed', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
+          } else if( info && info.testnet && info.testnet != escrow.testnet) {
+            this.snackBar.open("You have submitted a transaction on the " + (info.testnet ? "Testnet" : "Mainnet") + " for an escrow on the " + (escrow.testnet ? "Testnet": "Mainnet") + "! Can not activate Auto Release!", null, {panelClass: 'snackbar-failed', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
           } else if(info && info.account && info.account != escrow.Account) {
                 this.snackBar.open("Your account from the payment does not match the Escrow owner account. Can not enable Auto Releasing!", null, {panelClass: 'snackbar-failed', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
           } else {
@@ -231,11 +236,16 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             this.snackBar.dismiss();
             if(info.success) {
                 this.snackBar.open("Ownership verified and auto release disabled!", null, {panelClass: 'snackbar-success', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
+                this.googleAnalytics.analyticsEventEmitter('escrow_auto_release_disabled', 'escrow_executer', 'escrow_executer_component');
             } else {
                 this.snackBar.open("Ownership verified but error disabling auto release!", null, {panelClass: 'snackbar-success', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
             }
           } else {
-            this.snackBar.open("Could not verify ownership. You are not allowed to disable the auto release for this escrow!", null, {panelClass: 'snackbar-failed', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
+            if(info) {
+                this.snackBar.open("Could not verify ownership. You are not allowed to disable the auto release for this escrow!", null, {panelClass: 'snackbar-failed', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
+            } else {
+                //user closed, nothing to do
+            }
           }
 
           await this.loadEscrowList(escrow.Account);
