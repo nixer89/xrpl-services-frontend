@@ -5,7 +5,7 @@ import { Injectable, Optional, SkipSelf } from '@angular/core';
 export class XRPLWebsocket {
     
     originalTestModeValue:boolean = false;
-    mainNodes:string[] = ['wss://xrpl.ws', 'wss://s2.ripple.com'];
+    mainNodes:string[] = ['wss://xrplcluster.com', 'wss://s2.ripple.com'];
     testNodes:string[] = ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net'];
     mainFirst:boolean = true;
     testFirst:boolean = true;
