@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
-import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
 import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, AccountObjectsChanged } from 'src/app/utils/types';
+import * as utils from 'src/app/utils/utils';
 
 interface SignerListQuorumValidation {
   valid: boolean,
@@ -177,21 +177,6 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
     return signer && signer.SignerEntry && this.isValidXRPAddress(signer.SignerEntry.Account) && !this.isDuplicateAccount(signer.SignerEntry.Account) && !this.isSameAsLoggedIn(signer.SignerEntry.Account) && this.isValidWeight(signer.SignerEntry.SignerWeight) ;
   }
 
-  isValidXRPAddress(address: string): boolean {
-    if(!address || address.trim().length <= 0)
-      return false;
-    try {
-      //console.log("encoding address: " + address);
-      let xAddress = Encode({account: address});
-      //console.log("xAddress: " + xAddress);
-      return xAddress && xAddress.length > 0;
-    } catch(err) {
-      //no valid address
-      //console.log("err encoding " + err);
-      return false;
-    }
-  }
-
   isValidWeight(weight: string) {
     if(this.isValidInteger(weight))
       return Number.parseInt(weight) >= 1 && Number.parseInt(weight) <= 65535;
@@ -209,6 +194,10 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
 
   isValidInteger(weight: string): boolean {
     return weight && weight.trim().length > 0 && !weight.includes(',') && !weight.includes('.') && weight.split('')[0] != "0" && Number.isInteger(Number.parseInt(weight));
+  }
+
+  isValidXRPAddress(account: string) {
+    return utils.isValidXRPAddress(account);
   }
 
   addSigner() {

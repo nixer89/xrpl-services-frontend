@@ -1,8 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit } from "@angular/core";
 import { XummService } from '../services/xumm.service';
 import { webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { XummTypes } from 'xumm-sdk';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
@@ -27,10 +27,12 @@ export class XummSignDialogComponent implements OnInit{
     backendNotAvailable:boolean = false;
     loading:boolean = false;
     transactionSigned:boolean = false;
+    hasBlob:boolean = false;
 
     constructor(
         private xummApi: XummService,
         private deviceDetector: DeviceDetectorService,
+        @Inject(MAT_DIALOG_DATA) public data: any,
         public dialogRef: MatDialogRef<XummSignDialogComponent>,
         private googleAnalytics: GoogleAnalyticsService,
         private localStorage: LocalStorageService,
@@ -67,13 +69,26 @@ export class XummSignDialogComponent implements OnInit{
                 },
                 txjson: {
                     TransactionType: "SignIn"
+                },
+                custom_meta: {
                 }
             }
         }
 
         //set account and force it
-        if(backendPayload.options.xrplAccount) {
-            backendPayload.payload.txjson.Account = backendPayload.options.xrplAccount;
+        if(this.data.xrplAccount) {
+            backendPayload.options.xrplAccount = this.data.xrplAccount;
+            backendPayload.payload.txjson.Account = this.data.xrplAccount;
+            backendPayload.payload.options.forceAccount = true;
+        }
+
+        if(this.data.instruction) {
+            backendPayload.payload.custom_meta.instruction = this.data.instruction;
+        }
+
+        if(this.data.blob) {
+            this.hasBlob = true;
+            backendPayload.payload.custom_meta.blob = this.data.blob;
         }
 
         this.googleAnalytics.analyticsEventEmitter(backendPayload.payload.txjson.TransactionType.toLowerCase(), 'sendToXummSignIn', 'signin_dialog_component');
@@ -121,8 +136,13 @@ export class XummSignDialogComponent implements OnInit{
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
                 if(message.signed) {
-                    let transactionResult:TransactionValidation = await this.xummApi.checkSignIn(message.payload_uuidv4);
-                    //console.log(transactionResult);
+                    let transactionResult:TransactionValidation;
+                    if(!this.hasBlob)
+                        transactionResult = await this.xummApi.checkSignIn(message.payload_uuidv4);
+                    else
+                        transactionResult = await this.xummApi.validateEscrowSignInToDelete(message.payload_uuidv4);
+
+                    console.log("sign result: " + JSON.stringify(transactionResult));
                     
                     this.waitingForPayment = false;
 

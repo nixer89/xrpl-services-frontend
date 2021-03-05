@@ -1,5 +1,4 @@
 import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
-import { Encode } from 'xrpl-tagged-address-codec';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
@@ -7,7 +6,7 @@ import { AccountInfoChanged, XrplAccountChanged, Token, TrustLine } from 'src/ap
 import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
-import { normalizePassiveListenerOptions } from '@angular/cdk/platform';
+import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
   selector: 'trustset',
@@ -182,7 +181,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     //console.log(this.issuerAccountInput);
 
     this.validCurrency = this.issuedCurrencyInput && this.issuedCurrencyInput.trim().length >= 3 && this.issuedCurrencyInput.length <= 40;
-    this.validAddress = this.issuerAccountInput && this.issuerAccountInput.trim().length > 0 && this.isValidXRPAddress(this.issuerAccountInput.trim());
+    this.validAddress = this.issuerAccountInput && this.issuerAccountInput.trim().length > 0 && isValidXRPAddress(this.issuerAccountInput.trim());
 
     if(this.validCurrency) {
       if((!this.lastKnownCurrency || this.lastKnownCurrency.trim().length == 0 ) && (!this.limitInput || this.limitInput.trim().length == 0))
@@ -211,19 +210,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     //console.log("isValidTrustSet: " + this.isValidTrustSet);
-  }
-
-  isValidXRPAddress(address: string): boolean {
-    try {
-      //console.log("encoding address: " + address);
-      let xAddress = Encode({account: address});
-      //console.log("xAddress: " + xAddress);
-      return xAddress && xAddress.length > 0;
-    } catch(err) {
-      //no valid address
-      //console.log("err encoding " + err);
-      return false;
-    }
   }
 
   clearInputs() {

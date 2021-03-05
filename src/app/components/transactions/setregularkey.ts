@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
-import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
 import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, AccountObjectsChanged } from 'src/app/utils/types';
+import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
   selector: 'setregularkey',
@@ -92,22 +92,9 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   }
 
   checkChanges() {   
-    this.validAddress = this.regularKeyInput && this.regularKeyInput.trim().length > 0 && this.isValidXRPAddress(this.regularKeyInput.trim());
+    this.validAddress = this.regularKeyInput && this.regularKeyInput.trim().length > 0 && isValidXRPAddress(this.regularKeyInput.trim());
 
     //console.log("validAddress: " + this.validAddress);
-  }
-
-  isValidXRPAddress(address: string): boolean {
-    try {
-      //console.log("encoding address: " + address);
-      let xAddress = Encode({account: address});
-      //console.log("xAddress: " + xAddress);
-      return xAddress && xAddress.length > 0;
-    } catch(err) {
-      //no valid address
-      //console.log("err encoding " + err);
-      return false;
-    }
   }
 
   hasAlternativeSigningMethod() {

@@ -1,20 +1,29 @@
-<mat-expansion-panel [disabled]="true">
+<mat-expansion-panel #mep>
   <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">alarm</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> Transaction Scheduler </span>
+      <span class="loading" style="margin-left: 0.5em;"> Escrow Releaser </span>
     </mat-panel-title>
     <mat-panel-description>
-      In Planning ...
+      Set your Escrows to be auto released!
     </mat-panel-description>
   </mat-expansion-panel-header>
   <mat-expansion-panel-header fxShow.xs fxHide>
     <mat-panel-title>
-      <label class="loading">Transaction Scheduler</label>
+      <label class="loading">Escrow Releaser</label>
     </mat-panel-title>
     <mat-panel-description>
-      In Planning ...
+      Auto release your Escrows!
     </mat-panel-description>
   </mat-expansion-panel-header>
+
+  <div fxLayout="column">
+    <label class="warning" *ngIf="!originalAccountInfo || !originalAccountInfo.Account && !originalAccountInfo.account">Please use the above "Sign in with XUMM" button to load your escrows!</label>
+    <label class="warning" *ngIf="originalAccountInfo && originalAccountInfo.account">Account does not exist on the XRP Ledger {{isTestMode ? 'Testnet' : 'Mainnet'}}</label>
+  </div>
   
+  <div style="margin-bottom: 1em;" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
+    <escrowListExecuter [escrowAccountChanged]="escrowAccountChanged.asObservable()"></escrowListExecuter>
+  </div>
+
 </mat-expansion-panel>

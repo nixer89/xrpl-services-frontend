@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Encode } from 'xrpl-tagged-address-codec';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
@@ -12,6 +11,7 @@ import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
 import * as normalizer from '../../utils/normalizers';
+import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
   selector: 'createToken',
@@ -42,6 +42,7 @@ export class CreateToken implements OnInit {
   checkBoxBlackhole2:boolean = false;
   checkBoxBlackhole3:boolean = false;
   checkBoxBlackhole4:boolean = false;
+  checkBoxBlackhole5:boolean = false;
 
   checkBoxIssuingText:boolean = false;
 
@@ -109,7 +110,7 @@ export class CreateToken implements OnInit {
       //console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
       if(info && info.success && info.account && (!info.testnet || this.isTestMode)) {
-        if(this.isValidXRPAddress(info.account))
+        if(isValidXRPAddress(info.account))
           this.issuerAccount = info.account;
           this.validIssuer = true;
           this.paymentNotSuccessfull = false;
@@ -134,7 +135,7 @@ export class CreateToken implements OnInit {
       //console.log('The signin dialog was closed: ' + JSON.stringify(info));
       this.loadingIssuerAccount = true;
 
-      if(info && info.success && info.account && this.isValidXRPAddress(info.account)) {
+      if(info && info.success && info.account && isValidXRPAddress(info.account)) {
         let refererURL:string;
         if(document.URL.includes('?')) {
             refererURL = document.URL.substring(0, document.URL.indexOf('?'));
@@ -170,19 +171,6 @@ export class CreateToken implements OnInit {
       }
     });
   }
-  
-  isValidXRPAddress(address: string): boolean {
-    try {
-      //console.log("encoding address: " + address);
-      let xAddress = Encode({account: address});
-      //console.log("xAddress: " + xAddress);
-      return xAddress && xAddress.length > 0;
-    } catch(err) {
-      //no valid address
-      //console.log("err encoding " + err);
-      return false;
-    }
-  }
 
   async loadAccountData() {
     if(this.issuerAccount) {
@@ -203,6 +191,7 @@ export class CreateToken implements OnInit {
             this.issuer_account_info = message.result.account_data;
             //console.log("isser_account_info: " + JSON.stringify(this.issuer_account_info));
             this.needDefaultRipple = !flagUtil.isDefaultRippleEnabled(this.issuer_account_info.Flags)
+            this.blackholeDisallowXrp = flagUtil.isDisallowXRPEnabled(this.issuer_account_info);
             this.blackholeMasterDisabled = flagUtil.isMasterKeyDisabled(this.issuer_account_info.Flags)
 
           } else {
@@ -264,7 +253,7 @@ export class CreateToken implements OnInit {
   }
 
   checkChangesCurrencyCode() {
-    this.validCurrencyCode = this.currencyCode && /^[a-zA-Z\d?!@#$%^&*<>(){}[\]|]{3,20}$/.test(this.currencyCode) && this.currencyCode != "XRP";
+    this.validCurrencyCode = this.currencyCode && /^[a-zA-Z\d?!@#$%^&*<>(){}[\]|]{3,20}$/.test(this.currencyCode) && this.currencyCode.toUpperCase() != "XRP";
   }
 
   getCurrencyCodeForXRPL(): string {
@@ -522,8 +511,8 @@ export class CreateToken implements OnInit {
         break;
       }
       case 8: {
-        this.checkBoxBlackhole1 = this.checkBoxBlackhole2 = this.checkBoxBlackhole3 = this.checkBoxBlackhole4 = false;
-        this.blackholeRegularKeySet = this.blackholeMasterDisabled = false;
+        this.checkBoxBlackhole1 = this.checkBoxBlackhole2 = this.checkBoxBlackhole3 = this.checkBoxBlackhole4 = this.checkBoxBlackhole5 = false;
+        this.blackholeRegularKeySet = this.blackholeMasterDisabled = this.blackholeDisallowXrp = false;
         break;
       }
       case 9: break;
@@ -553,8 +542,8 @@ export class CreateToken implements OnInit {
     this.recipientTrustlineSet = false;
     this.recipientAddress = null;
     this.weHaveIssued = false;
-    this.checkBoxBlackhole1 = this.checkBoxBlackhole2 = this.checkBoxBlackhole3 = this.checkBoxBlackhole4 = false;
-    this.blackholeMasterDisabled = this.blackholeRegularKeySet = false;
+    this.checkBoxBlackhole1 = this.checkBoxBlackhole2 = this.checkBoxBlackhole3 = this.checkBoxBlackhole4 =this.checkBoxBlackhole5 = false;
+    this.blackholeMasterDisabled = this.blackholeRegularKeySet = this.blackholeDisallowXrp =  false;
     this.stepper.reset();
   }
 }

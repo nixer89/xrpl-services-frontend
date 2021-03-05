@@ -26,6 +26,7 @@ export class GenericPayloadQRDialog implements OnInit {
     websocket: WebSocketSubject<any>;
     payloadUUID: string;
     showError: boolean = false;
+    backendErrorMessage:string = null;
     waitingForPayment:boolean = false;
     showQR:boolean = false;
     requestExpired:boolean = false;
@@ -104,15 +105,24 @@ export class GenericPayloadQRDialog implements OnInit {
             if(!xummResponse || !xummResponse.uuid) {
                 this.loading = false;
                 this.backendNotAvailable = true;
+
+                let anyresponse:any = xummResponse;
+                if(anyresponse && anyresponse.error && anyresponse.message)
+                    this.backendErrorMessage = anyresponse.message;
+                else
+                    this.backendErrorMessage = "Sorry, there was an error contacting the backend. Please try again later.";
+
                 this.showError = true;
-                setTimeout(() => this.handleFailedTransaction(), 3000);
+                setTimeout(() => this.handleFailedTransaction(), 5000);
+                return;
             }
         } catch (err) {
             //console.log(JSON.stringify(err));
             this.loading = false;
             this.backendNotAvailable = true;
             this.showError = true;
-            setTimeout(() => this.handleFailedTransaction(), 3000);
+            setTimeout(() => this.handleFailedTransaction(), 5000);
+            return;
         }
 
         this.payloadUUID = xummResponse.uuid;
@@ -142,18 +152,21 @@ export class GenericPayloadQRDialog implements OnInit {
                 if(message.signed) {
                     //get xrpl account
                     let txInfo:TransactionValidation;
-                    if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment' && !this.genericPayload.options.issuing) {
+                    if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment' && this.genericPayload.payload.custom_meta && this.genericPayload.payload.custom_meta.blob) {
+                        txInfo = await this.xummApi.validateEscrowPayment(message.payload_uuidv4);
+                    } else if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment' && !this.genericPayload.options.issuing) {
                         txInfo = await this.xummApi.checkTimedPaymentReferer(message.payload_uuidv4, this.genericPayload.options.referer);
                     } else {
                         txInfo = await this.xummApi.validateTransaction(message.payload_uuidv4);
                     }
                     
-                    //console.log("txInfo: " + JSON.stringify(txInfo));
+                    console.log("txInfo: " + JSON.stringify(txInfo));
                     this.waitingForPayment = false;
+
+                    this.transactionInfo = txInfo;
 
                     if(txInfo && txInfo.success) {
                         this.transactionSigned = true;
-                        this.transactionInfo = txInfo;
 
                         setTimeout(() => this.handleSuccessfullTransaction(), 3000);
                     } else {
@@ -198,7 +211,7 @@ export class GenericPayloadQRDialog implements OnInit {
         }
 
         this.websocket = null;
-        this.dialogRef.close(null);
+        this.dialogRef.close(this.transactionInfo);
     }
 
     QRLoaded() {

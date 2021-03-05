@@ -2,7 +2,7 @@
     <label>Loading TrustLines ...&nbsp;</label>
     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
 </div>
-<label style="color: darkorange" *ngIf="!loading && account_Info && account_Info.Account && (!trustLines || trustLines.length < 1)">This account does not have any TrustLines.</label>
+<label style="color: darkorange" *ngIf="!loading && account_Info && account_Info.Account && (!trustLines || trustLines.length < 1)">This account does not have any TrustLines yet.</label>
 <mat-accordion *ngIf="!loading && trustLines && trustLines.length > 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
     <mat-expansion-panel #mep>
         <mat-expansion-panel-header>

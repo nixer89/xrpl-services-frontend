@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
-import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
+import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
   selector: 'escrowcancel',
@@ -130,7 +130,7 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
     //console.log(this.escrowSequenceInput);
 
     this.validSequence = Number.isInteger(Number(this.escrowSequenceInput)) && parseInt(this.escrowSequenceInput) > 0;
-    this.validAddress = this.escrowOwnerInput && this.escrowOwnerInput.trim().length > 0 && this.isValidXRPAddress(this.escrowOwnerInput.trim());
+    this.validAddress = this.escrowOwnerInput && this.escrowOwnerInput.trim().length > 0 && isValidXRPAddress(this.escrowOwnerInput.trim());
 
     if(this.validSequence)
       this.lastKnownSequence = this.escrowSequenceInput;
@@ -140,19 +140,6 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
     this.escrowSequenceSelected = false;
 
     //console.log("isValidEscrowCancel: " + this.isValidEscrowCancel);
-  }
-
-  isValidXRPAddress(address: string): boolean {
-    try {
-      //console.log("encoding address: " + address);
-      let xAddress = Encode({account: address});
-      //console.log("xAddress: " + xAddress);
-      return xAddress && xAddress.length > 0;
-    } catch(err) {
-      //no valid address
-      //console.log("err encoding " + err);
-      return false;
-    }
   }
 
   clearInputs() {

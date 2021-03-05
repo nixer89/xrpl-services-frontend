@@ -1,117 +1,15 @@
-td {
-    word-wrap: break-word !important;
-    white-space: unset !important;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
 
-    word-break: break-word;
-
-    -ms-hyphens: auto;
-    -moz-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
+table{
+    width: 100%;
 }
 
 .mat-cell {
     justify-content: center;
 }
 
-/*
-.mat-cell:hover{
-    cursor: pointer;
-}
-*/
-
-.mat-chip-bithomp {
-    font-size: 9px !important;
-    min-height: 12px;
-    padding: 7px 5px;
-    border-radius: 7px;
-    background-color: #22A9BC !important;
-} 
-
-.mat-chip-xrpscan {
-    font-size: 9px !important;
-    min-height: 12px;
-    padding: 7px 5px;
-    border-radius: 7px;
-    background-color: #3279B6 !important;
-}
-
-.example-element-row td {
-    border-bottom-width: 0;
-  }
-
-.example-detail-row {
-    height: 0;
-    min-height: 0;
-    width: 100%;
-  }
-    
-  
-.example-element-detail {
-    overflow: hidden;
-    display:flex;
-}
-
-
 @media (min-width:600px) {
 
-    .mat-column-account {
-        word-wrap: break-word !important;
-        white-space: unset !important;
-        flex: 0 0 20% !important;
-        width: 20% !important;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-    
-        word-break: break-word;
-    
-        -ms-hyphens: auto;
-        -moz-hyphens: auto;
-        -webkit-hyphens: auto;
-        hyphens: auto;
-        justify-content: center;
-        text-align: center;
-    }
-
-    .mat-column-username {
-        word-wrap: break-word !important;
-        white-space: unset !important;
-        flex: 0 0 15% !important;
-        width: 15% !important;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-    
-        word-break: break-word;
-    
-        -ms-hyphens: auto;
-        -moz-hyphens: auto;
-        -webkit-hyphens: auto;
-        hyphens: auto;
-        justify-content: center;
-        text-align: center;
-    }
-
-    .mat-column-currency {
-        word-wrap: break-word !important;
-        white-space: unset !important;
-        flex: 0 0 10% !important;
-        width: 10% !important;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-    
-        word-break: break-word;
-    
-        -ms-hyphens: auto;
-        -moz-hyphens: auto;
-        -webkit-hyphens: auto;
-        hyphens: auto;
-        justify-content: center;
-        text-align: center;
-    }
-
-    .mat-column-amount {
+    .mat-column-destination {
         word-wrap: break-word !important;
         white-space: unset !important;
         flex: 0 0 30% !important;
@@ -129,7 +27,7 @@ td {
         text-align: center;
     }
 
-    .mat-column-trustlines {
+    .mat-column-amount {
         word-wrap: break-word !important;
         white-space: unset !important;
         flex: 0 0 10% !important;
@@ -147,11 +45,65 @@ td {
         text-align: center;
     }
 
-    .mat-column-link {
+    .mat-column-finishafter {
         word-wrap: break-word !important;
         white-space: unset !important;
-        flex: 0 0 10% !important;
-        width: 10% !important;
+        flex: 0 0 15% !important;
+        width: 15% !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    
+        word-break: break-word;
+    
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .mat-column-autorelease {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        flex: 0 0 15% !important;
+        width: 15% !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    
+        word-break: break-word;
+    
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .mat-column-expectedautorelease {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        flex: 0 0 15% !important;
+        width: 15% !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    
+        word-break: break-word;
+    
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .mat-column-action {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        flex: 0 0 15% !important;
+        width: 15% !important;
         overflow-wrap: break-word;
         word-wrap: break-word;
     
@@ -168,67 +120,18 @@ td {
 
 @media (max-width:599px) {
 
-    .mat-chip-bithomp {
-        font-size: 8px !important;
-        min-height: 10px;
-        padding: 5px 5px;
-        border-radius: 5px;
-        background-color: #22A9BC !important;
-    } 
-    
-    .mat-chip-xrpscan {
-        font-size: 8px !important;
-        min-height: 10px;
-        padding: 5px 5px;
-        border-radius: 5px;
-        background-color: #3279B6 !important;
-    } 
-
-    .mat-card {
-        font-size: 12px;
-    }
-
     .mat-footer-row , .mat-row {
         padding-top: 0.5em;
         align-items: start;
-        min-height: 14px;
+        min-height: 24px;
         cursor: pointer;
     }
 
     .mat-cell {
         padding-left: 1em;
-        font-size: 12px;
     }
 
-    .mat-column-account {
-        word-wrap: break-word !important;
-        white-space: unset !important;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-    
-        word-break: break-word;
-    
-        -ms-hyphens: auto;
-        -moz-hyphens: auto;
-        -webkit-hyphens: auto;
-        hyphens: auto;
-    }
-
-    .mat-column-username {
-        word-wrap: break-word !important;
-        white-space: unset !important;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-    
-        word-break: break-word;
-    
-        -ms-hyphens: auto;
-        -moz-hyphens: auto;
-        -webkit-hyphens: auto;
-        hyphens: auto;
-    }
-
-    .mat-column-currency {
+    .mat-column-destination {
         word-wrap: break-word !important;
         white-space: unset !important;
         overflow-wrap: break-word;
@@ -256,7 +159,49 @@ td {
         hyphens: auto;
     }
 
-    .mat-column-trustlines {
+    .mat-column-finishafter {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    
+        word-break: break-word;
+    
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+    }
+
+    .mat-column-autorelease {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    
+        word-break: break-word;
+    
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+    }
+
+    .mat-column-expectedautorelease {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    
+        word-break: break-word;
+    
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+    }
+
+    .mat-column-action {
         word-wrap: break-word !important;
         white-space: unset !important;
         overflow-wrap: break-word;

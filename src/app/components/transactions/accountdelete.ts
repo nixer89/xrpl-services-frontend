@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
-import { Encode } from 'xrpl-tagged-address-codec';
 import { Subscription, Observable } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
+import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
   selector: 'accountdelete',
@@ -236,7 +236,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   }
 
   async checkChanges() {   
-    this.validDestinationAddress = this.destinationAccountInput && this.destinationAccountInput.trim().length > 0 && this.isValidXRPAddress(this.destinationAccountInput.trim());
+    this.validDestinationAddress = this.destinationAccountInput && this.destinationAccountInput.trim().length > 0 && isValidXRPAddress(this.destinationAccountInput.trim());
 
     if(this.lastKnownDestinationAccount != this.destinationAccountInput.trim()) {
       this.lastKnownDestinationAccount = this.destinationAccountInput.trim()
@@ -251,19 +251,6 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
     }
 
     //console.log("validAddress: " + this.validAddress);
-  }
-
-  isValidXRPAddress(address: string): boolean {
-    try {
-      //console.log("encoding address: " + address);
-      let xAddress = Encode({account: address});
-      //console.log("xAddress: " + xAddress);
-      return xAddress && xAddress.length > 0;
-    } catch(err) {
-      //no valid address
-      //console.log("err encoding " + err);
-      return false;
-    }
   }
 
   clearInputs() {
