@@ -205,10 +205,10 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
           } else if(info && info.account && info.account != escrow.Account) {
                 this.snackBar.open("Your account from the payment does not match the Escrow owner account. Can not enable Auto Releasing!", null, {panelClass: 'snackbar-failed', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
           } else {
-              if(info) {
+              if(info && !info.redirect) {
                 this.snackBar.open(info && info.message ? info.message : "An error occured handling your payment", null, {panelClass: 'snackbar-failed', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
               } else {
-                  //user closed, nothing to do
+                  //user closed or redirect
               }
           }
 
@@ -242,10 +242,10 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
                 this.snackBar.open("Ownership verified but error disabling auto release!", null, {panelClass: 'snackbar-success', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
             }
           } else {
-            if(info) {
+            if(info && !info.redirect) {
                 this.snackBar.open("Could not verify ownership. You are not allowed to disable the auto release for this escrow!", null, {panelClass: 'snackbar-failed', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
             } else {
-                //user closed, nothing to do
+                //user closed or redirect
             }
           }
 
