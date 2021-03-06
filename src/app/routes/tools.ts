@@ -73,20 +73,20 @@ export class Tools implements OnInit {
 
         await this.handlePayloadInfo(payloadId, signinToValidate);
       }
-
-      //console.log("check logged in account tools");
-      //console.log(this.localStorage.get("xrplAccount"));
-      //console.log(this.localStorage.get("testMode"));
-
-      if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
-        this.xrplAccount = this.localStorage.get("xrplAccount");
-
-        if(this.localStorage.keys().includes("testMode"))
-          this.isTestMode = this.localStorage.get("testMode");
-
-        this.loadAccountData(true);
-      }
     });
+
+    //console.log("check logged in account tools");
+    //console.log(this.localStorage.get("xrplAccount"));
+    //console.log(this.localStorage.get("testMode"));
+
+    if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
+      this.xrplAccount = this.localStorage.get("xrplAccount");
+
+      if(this.localStorage.keys().includes("testMode") && this.localStorage.get("testMode") != null)
+        this.isTestMode = this.localStorage.get("testMode");
+
+      this.loadAccountData(true);
+    }
 
     //this.xrplAccount="r3K1TgPvTPkWZR2Lhawpvv9YR7yYuqSXBp";
     //this.isTestMode = true;
@@ -278,7 +278,9 @@ export class Tools implements OnInit {
 
     if(trxInfo) {
       this.googleAnalytics.analyticsEventEmitter('handle_transaction_success', 'handle_transaction', 'tools_component');
-      this.isTestMode = trxInfo.testnet;
+
+      if(trxInfo.testnet != null)
+        this.isTestMode = trxInfo.testnet;
 
       if(trxInfo.txid) {
         if(trxInfo.testnet) {
