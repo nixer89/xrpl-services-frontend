@@ -80,7 +80,10 @@ export class Tools implements OnInit {
 
       if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
         this.xrplAccount = this.localStorage.get("xrplAccount");
-        this.isTestMode = this.localStorage.get("testMode");
+
+        if(this.localStorage.keys().includes("testMode"))
+          this.isTestMode = this.localStorage.get("testMode");
+
         this.loadAccountData(true);
       }
     });
@@ -97,10 +100,13 @@ export class Tools implements OnInit {
 
     if(payloadInfo && payloadInfo.custom_meta && payloadInfo.custom_meta.blob) {
       let escrow:any = payloadInfo.custom_meta.blob;
+      console.log("Escrow :" + JSON.stringify(escrow));
+      console.log("Payload: " + JSON.stringify(payloadInfo));
       if(signinToValidate) {
         //handle disable auto release escrow
         let signInCheck = await this.xummApi.validateEscrowSignInToDelete(payloadId);
 
+        console.log("SignInCheck: " + JSON.stringify(signInCheck));
         if(signInCheck && signInCheck.success && signInCheck.account && isValidXRPAddress(signInCheck.account) && signInCheck.account == escrow.account) {
           //console.log(JSON.stringify(disableResponse));
 
@@ -121,6 +127,7 @@ export class Tools implements OnInit {
         //handle enable auto release escrow
         let trxInfo = await this.xummApi.validateEscrowPayment(payloadId);
 
+        console.log("txInfo: " + JSON.stringify(trxInfo));
         this.snackBar.dismiss();
 
         if(trxInfo && trxInfo.success && trxInfo.account && trxInfo.account == escrow.account && trxInfo.testnet == escrow.testnet) {
@@ -174,6 +181,9 @@ export class Tools implements OnInit {
   async loadAccountData(isInit?: boolean) {
     if(this.xrplAccount) {
       this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'tools_component');
+
+      this.localStorage.set("xrplAccount", this.xrplAccount);
+      this.localStorage.set("testMode", this.isTestMode);
 
       this.cannotConnectToNode = false;
       this.loadingData = true;

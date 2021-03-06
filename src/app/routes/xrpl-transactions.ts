@@ -101,7 +101,10 @@ export class XrplTransactionsComponent implements OnInit {
 
       if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
         this.xrplAccount = this.localStorage.get("xrplAccount");
-        this.isTestMode = this.localStorage.get("testMode");
+        
+        if(this.localStorage.keys().includes("testMode"))
+          this.isTestMode = this.localStorage.get("testMode");
+          
         this.loadAccountData(true);
       }
     });

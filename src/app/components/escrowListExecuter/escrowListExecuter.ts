@@ -40,7 +40,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.escrowAccountChangedSubscription = this.escrowAccountChanged.subscribe(accountData => {
-            //console.log("escrow account changed received: " + xrplAccount);
+            console.log("escrow account changed received: " + accountData);
             //console.log("test mode: " + this.testMode);
             if(accountData) {
                 this.isTestMode = accountData.mode;
@@ -62,10 +62,10 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
                 this.loading = true;
 
                 let account_objects_request:any = {
-                command: "account_objects",
-                account: xrplAccount,
-                type: "escrow",
-                ledger_index: "validated",
+                    command: "account_objects",
+                    account: xrplAccount,
+                    type: "escrow",
+                    ledger_index: "validated",
                 }
         
                 let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowListExecuter", account_objects_request, this.isTestMode);
