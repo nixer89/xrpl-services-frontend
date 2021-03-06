@@ -101,10 +101,8 @@ export class Tools implements OnInit {
         //handle disable auto release escrow
         let signInCheck = await this.xummApi.validateEscrowSignInToDelete(payloadId);
 
-        if(signInCheck && signInCheck.success && signInCheck.account && isValidXRPAddress(signInCheck.account) && signInCheck.account == escrow.Account) {
+        if(signInCheck && signInCheck.success && signInCheck.account && isValidXRPAddress(signInCheck.account) && signInCheck.account == escrow.account) {
           //console.log(JSON.stringify(disableResponse));
-
-          await this.handleTransactionInfo(signInCheck);
 
           this.snackBar.dismiss();
           if(signInCheck.success) {
@@ -116,23 +114,23 @@ export class Tools implements OnInit {
         } else {
           this.snackBar.open("Could not verify ownership. You are not allowed to disable the auto release for this escrow!", null, {panelClass: 'snackbar-failed', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
         }
+
+        await this.handleTransactionInfo(signInCheck);
       
       } else {
         //handle enable auto release escrow
         let trxInfo = await this.xummApi.validateEscrowPayment(payloadId);
 
-        await this.handleTransactionInfo(trxInfo);
-
         this.snackBar.dismiss();
 
-        if(trxInfo && trxInfo.success && trxInfo.account && trxInfo.account == escrow.Account && trxInfo.testnet == escrow.testnet) {
+        if(trxInfo && trxInfo.success && trxInfo.account && trxInfo.account == escrow.account && trxInfo.testnet == escrow.testnet) {
           //handle success
           this.snackBar.open("Transaction successfull! You have enabled the auto release feature for your escrow!", null, {panelClass: 'snackbar-success', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
            
           this.googleAnalytics.analyticsEventEmitter('pay_for_escrow_release', 'escrow_executer', 'escrow_executer_component');
         } else if( trxInfo && trxInfo.testnet && trxInfo.testnet != escrow.testnet) {
           this.snackBar.open("You have submitted a transaction on the " + (trxInfo.testnet ? "Testnet" : "Mainnet") + " for an escrow on the " + (escrow.testnet ? "Testnet": "Mainnet") + "! Can not activate Auto Release!", null, {panelClass: 'snackbar-failed', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
-        } else if(trxInfo && trxInfo.account && trxInfo.account != escrow.Account) {
+        } else if(trxInfo && trxInfo.account && trxInfo.account != escrow.account) {
               this.snackBar.open("Your account from the payment does not match the Escrow owner account. Can not enable Auto Releasing!", null, {panelClass: 'snackbar-failed', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
         } else {
             if(trxInfo) {
@@ -141,6 +139,8 @@ export class Tools implements OnInit {
                 //user closed, nothing to do
             }
         }
+
+        await this.handleTransactionInfo(trxInfo);
       }
     } else if(signinToValidate) {
       let signInCheck:TransactionValidation = await this.xummApi.checkSignIn(payloadId);
@@ -155,14 +155,15 @@ export class Tools implements OnInit {
     } else {
       let transactionResult:TransactionValidation = await this.xummApi.validateTransaction(payloadId);
 
-      await this.handleTransactionInfo(transactionResult);
-
       this.snackBar.dismiss();
       if(transactionResult && transactionResult.success) {
         this.snackBar.open("Your transaction was successfull on " + (transactionResult.testnet ? 'testnet.' : 'mainnet.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
       } else {
         this.snackBar.open("Your transaction was not successfull. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
       }
+
+      await this.handleTransactionInfo(transactionResult);
+      
     }
   }
 
