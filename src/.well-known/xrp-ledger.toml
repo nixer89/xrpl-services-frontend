@@ -9,6 +9,10 @@ desc = "XummCommunity Main"
 address = "rELeasERs3m4inA1UinRLTpXemqyStqzwh"
 desc = "XummCommunity Auto Escrow Releaser"
 
+[[ACCOUNTS]]
+address = "r9N4v3cWxfh4x6yUNjxNy3DbWUgbzMBLdk"
+desc = "XummCommunity Auto Escrow Releaser"
+
 [[PRINCIPALS]]
 name = "XummCommunity"
 email = "XummCommunity@gmail.com"
