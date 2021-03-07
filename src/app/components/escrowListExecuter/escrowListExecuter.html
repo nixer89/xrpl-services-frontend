@@ -28,31 +28,38 @@
                 <ng-container matColumnDef="destination">
                     <mat-header-cell *matHeaderCellDef> Destination </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
-                        <span fxShow fxHide.xs > {{escrow.Destination}}</span>
-                        <span fxShow.xs fxHide ><b>Destination:</b><br>{{escrow.Destination}}</span>
+                        <span fxLayout="row">
+                            <label fxShow.xs fxHide><b>Destination:</b>&nbsp;</label>
+                            <label>{{escrow.Destination}}</label>
+                        </span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="amount">
                     <mat-header-cell *matHeaderCellDef > Amount in XRP </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
-                        <span fxShow fxHide.xs >{{getAmountInXRP(escrow.Amount)}}</span>
-                        <span fxShow.xs fxHide ><b>Escrow Amount in XRP:</b>&nbsp;{{getAmountInXRP(escrow.Amount)}}</span>
+                        <span fxLayout="row">
+                            <label fxShow.xs fxHide><b>Amount in XRP:</b>&nbsp;</label>
+                            <label>{{getAmountInXRP(escrow.Amount)}}</label>
+                        </span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="finishafter">
                     <mat-header-cell *matHeaderCellDef > Finish After </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
-                        <span fxShow fxHide.xs >{{getTimeFromRippleTime(escrow.FinishAfter)}}</span>
-                        <span fxShow.xs fxHide ><b>Finish:</b>&nbsp;{{getTimeFromRippleTime(escrow.FinishAfter)}}</span>
+                        <span fxLayout="row">
+                            <label fxShow.xs fxHide><b>Finish:</b>&nbsp;</label>
+                            <label>{{getTimeFromRippleTime(escrow.FinishAfter)}}</label>
+                        </span>
                     </mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="autorelease">
                     <mat-header-cell *matHeaderCellDef > Auto Release </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
-                        <span fxLayout="row"><label fxShow.xs fxHide><b>Auto Release:</b>&nbsp;</label>
+                        <span fxLayout="row">
+                            <label fxShow.xs fxHide><b>Auto Release:</b>&nbsp;</label>
                             <div *ngIf="escrow.autorelease">
                                 <i class="material-icons" style="color: green; font-size: 2em;">
                                     check_circle_outline
@@ -70,9 +77,10 @@
                 <ng-container matColumnDef="expectedautorelease">
                     <mat-header-cell *matHeaderCellDef > Expected Auto Release </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
-                        <span fxLayout="row"><label fxShow.xs fxHide><b><b>Expected Auto Release:</b></b>&nbsp;</label>
+                        <span fxLayout="row">
+                            <label fxShow.xs fxHide><b>Expected Auto Release:</b>&nbsp;</label>
                             <div *ngIf="escrow.autorelease">
-                                <span fxShow fxHide.xs >{{getExpectedAutoReleaseTime(escrow.FinishAfter)}}</span>
+                                <label>{{getExpectedAutoReleaseTime(escrow.FinishAfter)}}</label>
                             </div>
                             <div *ngIf="!escrow.autorelease">
                                 <label>-</label>
@@ -84,7 +92,8 @@
                 <ng-container matColumnDef="action">
                     <mat-header-cell *matHeaderCellDef > Action </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
-                        <span><label fxShow.xs fxHide><b>Action:</b>&nbsp;</label>
+                        <span  fxLayout="row">
+                            <label fxShow.xs fxHide><b>Action:</b>&nbsp;</label>
                             <button *ngIf="!escrow.autorelease" mat-raised-button color="primary" matTooltip="Enable automatic release for this Escrow." matTooltipPosition="above" (click)="enableAutoFinish(escrow)" style="padding:0px;">
                                 Enable
                             </button>
