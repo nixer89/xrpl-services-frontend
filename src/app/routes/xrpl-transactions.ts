@@ -248,7 +248,7 @@ export class XrplTransactionsComponent implements OnInit {
 
     if(trxInfo) {
       this.googleAnalytics.analyticsEventEmitter('handle_transaction_success', 'handle_transaction', 'xrpl_transactions_component');
-      if(trxInfo.testnet != null)
+      if(trxInfo.success && trxInfo.testnet != null)
         this.isTestMode = trxInfo.testnet;
 
       if(trxInfo.txid) {

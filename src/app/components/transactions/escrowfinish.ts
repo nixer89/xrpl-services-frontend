@@ -65,7 +65,9 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
       this.originalAccountInfo = accountData.info;
-      this.isTestMode = accountData.mode
+      this.isTestMode = accountData.mode;
+
+      this.clearInputs();
       
       if(this.originalAccountInfo && this.originalAccountInfo.Account) {
         this.escrowOwnerInput = this.originalAccountInfo.Account;
@@ -158,6 +160,8 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     } else if(!this.validAddress) {
       this.lastKnownAddress = null;
       this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.isTestMode});
+    } else {
+      this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.isTestMode});
     }
   }
 
@@ -185,10 +189,9 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
 
     this.validCondition = this.passwordInput && this.passwordInput.trim().length > 0;
 
-    this.isValidEscrowFinish = this.validAddress && this.validSequence && (!this.passwordInput || this.validCondition);
+    this.isValidEscrowFinish = this.validAddress && this.validSequence && (!this.showPassword || this.validCondition);
 
     this.escrowSequenceSelected = false;
-    this.showPassword = true;
 
     //console.log("isValidEscrowFinish: " + this.isValidEscrowFinish);
   }
@@ -208,10 +211,11 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
       setTimeout(() => this.escrowOwnerChangedAutomatically = false, 5000);
     }
     this.escrowSequenceInput = escrowInfo.sequence;
-    this.checkChanges();
-
+    
     this.escrowSequenceSelected = true;
     this.showPassword = escrowInfo.condition;
+    
+    this.checkChanges();
 
     this.showEscrowSequenceSelectedStyle = true;
     setTimeout(() => this.showEscrowSequenceSelectedStyle = false, 1000);

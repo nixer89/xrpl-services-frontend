@@ -57,7 +57,9 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
       this.originalAccountInfo = accountData.info;
-      this.testMode = accountData.mode
+      this.testMode = accountData.mode;
+
+      this.clearInputs();
 
       if(this.originalAccountInfo && this.originalAccountInfo.Account) {
         this.escrowOwnerInput = this.originalAccountInfo.Account;
@@ -110,6 +112,8 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
     } else if(!this.validAddress) {
       this.lastKnownAddress = null;
       this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.testMode});
+    } else {
+      this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.testMode});
     }
   }
 
@@ -157,9 +161,9 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
       setTimeout(() => this.escrowOwnerChangedAutomatically = false, 5000);
     }
     this.escrowSequenceInput = escrowInfo.sequence;
-    this.checkChanges();
-
     this.escrowSequenceSelected = true;
+
+    this.checkChanges();
 
     this.showEscrowSequenceSelectedStyle = true;
     setTimeout(() => this.showEscrowSequenceSelectedStyle = false, 1000);

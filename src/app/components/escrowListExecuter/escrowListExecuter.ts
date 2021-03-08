@@ -83,6 +83,8 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
                         //if data 0 (no available escrows) -> show message "no escrows available"
                         if(this.escrowData.length == 0)
                             this.escrowData = null;
+                        else
+                            this.escrowData = this.escrowData.sort((escrow1, escrow2) => escrow1.FinishAfter - escrow2.FinishAfter);
                     }
                 } else {                
                     this.escrowData = null;

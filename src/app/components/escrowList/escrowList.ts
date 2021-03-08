@@ -66,6 +66,8 @@ export class EscrowList implements OnInit, OnDestroy {
             let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowList", account_objects_request, this.testMode);
             this.handleWebsocketMessage(message);
             this.googleAnalytics.analyticsEventEmitter('load_escrow_list', 'escrow_list', 'escrow_list_component');
+        } else {
+            this.escrowData = [];
         }
     }
 
@@ -107,10 +109,21 @@ export class EscrowList implements OnInit, OnDestroy {
                     this.escrowData = unfilteredList.filter(escrow => ((!escrow.FinishAfter && escrow.Condition) || (escrow.FinishAfter && new Date(normalizer.rippleEpocheTimeToUTC(escrow.FinishAfter)).getTime() < Date.now())) && (!escrow.CancelAfter || new Date(normalizer.rippleEpocheTimeToUTC(escrow.CancelAfter)).getTime() > Date.now()));
                 else
                     this.escrowData = unfilteredList;
-              
-              //if data 0 (no available escrows) -> show message "no escrows available"
-              if(this.escrowData.length == 0)
-                  this.escrowData = null;
+                    
+                //if data 0 (no available escrows) -> show message "no escrows available"
+                if(this.escrowData.length == 0)
+                    this.escrowData = null;
+                else {
+                    this.escrowData = this.escrowData.sort((escrow1, escrow2) => {
+                        if(escrow1.FinishAfter && escrow2.FinishAfter)
+                            return escrow1.FinishAfter - escrow2.FinishAfter;
+                        else if(escrow1.CancelAfter - escrow2.CancelAfter)
+                            return escrow1.CancelAfter - escrow2.CancelAfter;
+                        else return 1;
+                    });
+                }
+
+            
                   
               this.loading = false;
             }
