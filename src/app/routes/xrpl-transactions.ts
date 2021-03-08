@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
+import { GenericDialogComponent } from '../components/genericDialog';
 import { Subject } from 'rxjs'
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -82,7 +83,10 @@ export class XrplTransactionsComponent implements OnInit {
               this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
             }    
         } else {
+
           let transactionResult:TransactionValidation = await this.xummApi.validateTransaction(payloadId);
+
+          transactionResult.payloadId = payloadId;
 
           await this.handleTransactionInfo(transactionResult);
 
@@ -259,8 +263,11 @@ export class XrplTransactionsComponent implements OnInit {
           this.lastTrxLinkXrplorer = "https://xrplorer.com/transaction/"+trxInfo.txid;
         }
 
-        if(trxInfo.success)
+        if(trxInfo.success) {
           this.transactionSuccessfull.next();
+
+          this.handleEscrowCreate(trxInfo);
+        }
           
       }
     } else {
@@ -272,6 +279,36 @@ export class XrplTransactionsComponent implements OnInit {
 
     if(this.xrplAccount) {
       await this.loadAccountData(false);
+    }
+  }
+
+  async handleEscrowCreate(trxInfo: TransactionValidation) {
+    if(trxInfo.payloadId) {
+      let payload:XummTypes.XummGetPayloadResponse = await this.xummApi.getPayloadInfo(trxInfo.payloadId);
+      if(payload && payload.payload && payload.payload.request_json) {
+        let trx:XummTypes.XummJsonTransaction = payload.payload.request_json;
+        if(trx.TransactionType === "EscrowCreate" && trx.FinishAfter && !trx.Condition && (!trx.CancelAfter || (Number(trx.CancelAfter) - Number(trx.FinishAfter)) > 90*60)) {
+          //ask user to add escrow to auto execution
+          const dialogRef = this.matDialog.open(GenericDialogComponent, {
+            width: 'auto',
+            height: 'auto;',
+            data: {
+              line1: "Do you want to add your new Escrow to the automatic 'Escrow Releaser' service?",
+              line2: "That means you do not need to take care of releasing your Escrow once it's finished. We will do it for you!",
+              btnLeft: "Yes",
+              btnRight: "No"
+            }
+          });
+      
+          dialogRef.afterClosed().subscribe((result:any) => {
+            //console.log('The generic dialog was closed: ' + JSON.stringify(info));
+      
+            if(result) {
+              this.router.navigate(['/tools'], {queryParams:{"escrowReleaser":"open"}});
+            }
+          });
+        }
+      }
     }
   }
 

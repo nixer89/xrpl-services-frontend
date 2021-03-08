@@ -85,7 +85,7 @@ export class Tools implements OnInit {
       if(this.localStorage.keys().includes("testMode") && this.localStorage.get("testMode") != null)
         this.isTestMode = this.localStorage.get("testMode");
 
-      this.loadAccountData(true);
+      await this.loadAccountData(true);
     }
 
     //this.xrplAccount="r3K1TgPvTPkWZR2Lhawpvv9YR7yYuqSXBp";

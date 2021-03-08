@@ -1,0 +1,14 @@
+<mat-dialog-content class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
+    <div class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
+        <label class="loading">{{line1}}</label>
+        <label *ngIf="line2">{{line2}}</label>
+        <div fxLayout="row" fxLayoutGap="0.5em">
+            <button mat-raised-button color="primary" (click)="buttonLeftClicked()">
+                {{btnLeft}}
+            </button>
+            <button mat-raised-button color="warn" (click)="buttonRightClicked()">
+                {{btnRight}}
+            </button>
+        </div>
+    </div>
+</mat-dialog-content>

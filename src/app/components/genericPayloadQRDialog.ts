@@ -18,7 +18,7 @@ export class GenericPayloadQRDialog implements OnInit {
 
     qrLink:string;
     payloadLink:string;
-    transactionInfo:any;
+    transactionInfo:TransactionValidation;
     memoInput: string;
 
     isDarkTheme:boolean = false;
@@ -167,6 +167,7 @@ export class GenericPayloadQRDialog implements OnInit {
 
                     if(txInfo && txInfo.success) {
                         this.transactionSigned = true;
+                        this.transactionInfo.payloadId = message.payload_uuidv4;
 
                         setTimeout(() => this.handleSuccessfullTransaction(), 3000);
                     } else {

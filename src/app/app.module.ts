@@ -17,6 +17,7 @@ import { TopbarComponent } from './components/topbar';
 import { FooterComponent } from './components/footer';
 import { XummSignDialogComponent } from './components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from './components/genericPayloadQRDialog';
+import { GenericDialogComponent } from './components/genericDialog';
 import { EscrowList } from './components/escrowList/escrowList';
 import { EscrowListExecuter } from './components/escrowListExecuter/escrowListExecuter';
 import { TokenList } from './components/tokenList/tokenList';
@@ -94,6 +95,7 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     FooterComponent,
     XummSignDialogComponent,
     GenericPayloadQRDialog,
+    GenericDialogComponent,
     EscrowList,
     EscrowListExecuter,
     TokenList,
