@@ -270,6 +270,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     
 
     this.issuedCurrencyInput = token.currency;
+    this.limitInput = token.amount;
 
     this.checkChanges();
 
