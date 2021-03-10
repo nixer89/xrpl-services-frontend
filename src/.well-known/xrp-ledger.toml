@@ -1,5 +1,5 @@
 [METADATA]
-modified = 2021-03-05T11:40:00.000Z
+modified = 2021-03-10T20:53:00.000Z
 
 [[ACCOUNTS]]
 address = "rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF"
@@ -7,11 +7,7 @@ desc = "XummCommunity Main"
 
 [[ACCOUNTS]]
 address = "rELeasERs3m4inA1UinRLTpXemqyStqzwh"
-desc = "XummCommunity Auto Escrow Releaser"
-
-[[ACCOUNTS]]
-address = "r9N4v3cWxfh4x6yUNjxNy3DbWUgbzMBLdk"
-desc = "XummCommunity Auto Escrow Releaser"
+desc = "XummCommunity Escrow Releaser"
 
 [[PRINCIPALS]]
 name = "XummCommunity"

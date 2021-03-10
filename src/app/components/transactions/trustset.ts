@@ -279,13 +279,13 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
 
     let currencyCode = trustline.currency;
-    let humenReadableCode = normalizer.currencyCodeHexToAsciiTrimmed(trustline.currency);
+    let humanReadableCode = normalizer.currencyCodeHexToAsciiTrimmed(trustline.currency);
     if(currencyCode.length > 3) {
       while(currencyCode.length < 40)
         currencyCode+="0";
     }
     payload.txjson.LimitAmount['currency'] = currencyCode;
-    payload.custom_meta.instruction += "\n- Token currency code: " + humenReadableCode;
+    payload.custom_meta.instruction += "\n- Token currency code: " + humanReadableCode;
 
     payload.txjson.LimitAmount['value'] = trustline.limit
     payload.custom_meta.instruction += "\n- Limit: " + trustline.limit;
