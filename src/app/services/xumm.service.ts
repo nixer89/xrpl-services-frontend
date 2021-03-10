@@ -15,7 +15,7 @@ export class XummService {
             console.log("submitting payload: " + JSON.stringify(payload));
             return this.app.post(this.xummBackendURL+"/api/v1/platform/payload", payload);
         } catch(err) {
-            console.log("error: ");
+            //console.log("error: ");
             console.log(JSON.stringify(err))
             return null;
         }

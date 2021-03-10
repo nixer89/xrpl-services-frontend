@@ -45,7 +45,7 @@ export class TransactionSchedulerComponent {
     });
 
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
-      console.log("account info changed received: " + JSON.stringify(accountData));
+      //console.log("account info changed received: " + JSON.stringify(accountData));
       if(accountData) {
         this.originalAccountInfo = accountData.info;
         this.isTestMode = accountData.mode;

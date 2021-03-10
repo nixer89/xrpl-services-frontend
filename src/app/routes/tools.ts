@@ -100,13 +100,13 @@ export class Tools implements OnInit {
 
     if(payloadInfo && payloadInfo.custom_meta && payloadInfo.custom_meta.blob) {
       let escrow:any = payloadInfo.custom_meta.blob;
-      console.log("Escrow :" + JSON.stringify(escrow));
-      console.log("Payload: " + JSON.stringify(payloadInfo));
+      //console.log("Escrow :" + JSON.stringify(escrow));
+      //console.log("Payload: " + JSON.stringify(payloadInfo));
       if(signinToValidate) {
         //handle disable auto release escrow
         let signInCheck = await this.xummApi.validateEscrowSignInToDelete(payloadId);
 
-        console.log("SignInCheck: " + JSON.stringify(signInCheck));
+        //console.log("SignInCheck: " + JSON.stringify(signInCheck));
         if(signInCheck && signInCheck.success && signInCheck.account && isValidXRPAddress(signInCheck.account) && signInCheck.account == escrow.account) {
           //console.log(JSON.stringify(disableResponse));
 
@@ -127,7 +127,7 @@ export class Tools implements OnInit {
         //handle enable auto release escrow
         let trxInfo = await this.xummApi.validateEscrowPayment(payloadId);
 
-        console.log("txInfo: " + JSON.stringify(trxInfo));
+        //console.log("txInfo: " + JSON.stringify(trxInfo));
         this.snackBar.dismiss();
 
         if(trxInfo && trxInfo.success && trxInfo.account && trxInfo.account == escrow.account && trxInfo.testnet == escrow.testnet) {
@@ -237,7 +237,7 @@ export class Tools implements OnInit {
 
     dialogRef.afterClosed().subscribe((info:TransactionValidation) => {
       //console.log('The dialog was closed');
-      console.log(info);
+      //console.log(info);
       if(info && info.redirect) {
         //nothing to do
       } else if(info && info.account) {

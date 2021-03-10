@@ -142,7 +142,6 @@ export class IssuedTokenList implements OnInit {
     if(tokenIssuers && tokenIssuers.length == 0)
       tokenIssuers = null;
 
-      console.log(tokenIssuers && tokenIssuers.length);
     return tokenIssuers;
   }
 

@@ -90,10 +90,10 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
                     this.escrowData = null;
                 }
 
-                console.log("escrowData: " + JSON.stringify(this.escrowData));
+                //console.log("escrowData: " + JSON.stringify(this.escrowData));
 
                 let storedEscrowListResponse:any = await this.xumm.getStoredEscrowList(xrplAccount, this.isTestMode);
-                console.log("storedEscrows: " + JSON.stringify(storedEscrowListResponse));
+                //console.log("storedEscrows: " + JSON.stringify(storedEscrowListResponse));
                 
 
                 if(this.escrowData && storedEscrowListResponse && storedEscrowListResponse.success && storedEscrowListResponse.escrows) {
@@ -168,12 +168,12 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
     }
 
     enableAutoFinish(escrow: any) {
-        console.log("Enable auto finish for: " + JSON.stringify(escrow));
+        //console.log("Enable auto finish for: " + JSON.stringify(escrow));
         this.payForEscrowRelease(escrow);
     }
 
     disableAutoFinish(escrow: any) {
-        console.log("Disable auto finish for: " + JSON.stringify(escrow));
+        //console.log("Disable auto finish for: " + JSON.stringify(escrow));
         this.signInToDisableAutoRelease(escrow);
     }
 

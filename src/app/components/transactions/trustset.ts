@@ -83,7 +83,9 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.route.queryParams.subscribe(async params => {
       if(params.issuer && params.currency && params.limit) {
         this.issuerAccountInput = params.issuer;
-        this.issuedCurrencyInput = normalizer.currencyCodeAsciiToHex(params.currency);
+        //console.log("subscribe received: " + params.currency);
+        this.issuedCurrencyInput = params.currency;
+        //console.log("subscribe set: " + this.issuedCurrencyInput);
         this.limitInput = params.limit;
 
         this.checkChanges();
@@ -115,6 +117,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   sendPayloadToXumm() {
+
+    //console.log("sendPayloadToXumm: " + this.issuedCurrencyInput);
 
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'sendToXumm', 'trust_set_component');
 
@@ -152,6 +156,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   issuerAccountChanged() {
+    //console.log("issuerAccountChanged: " + this.issuedCurrencyInput);
     this.checkChanges();
 
     if(this.validAddress && (this.issuerAccountInput.trim() != this.lastKnownAddress)) {
@@ -173,6 +178,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       this.issuerAccountChangedSubject.next({account: this.issuerAccountInput.trim(), mode: this.testMode});
     }
 
+    //console.log("currencyChanged: " + this.issuedCurrencyInput);
+
   }
 
   checkChanges() {
@@ -192,12 +199,32 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     
     if(this.limitInput) {
-      this.validLimit = !(/[^.0-9]|\d*\.\d{16,}/.test(this.limitInput));
 
-      if(!this.validLimit) {
-        this.maxFifthteenDigits = this.limitInput.includes('.') && this.limitInput.split('.')[1].length > 15;
+      if(!this.limitInput.includes("e")) {
+        this.validLimit = !(/[^.0-9]|\d*\.\d{16,}/.test(this.limitInput));
+
+        if(!this.validLimit) {
+          this.maxFifthteenDigits = this.limitInput.includes('.') && this.limitInput.split('.')[1].length > 15;
+        } else {
+          this.maxFifthteenDigits = false;
+        }
       } else {
-        this.maxFifthteenDigits = false;
+        //console.log("checking scientific notation");
+        try {
+          let first:number = Number(this.limitInput.substring(0, this.limitInput.indexOf('e')));
+          let second:number = Number(this.limitInput.substring(this.limitInput.indexOf('e')+1));
+
+          //console.log("first: " + first);
+          //console.log("second: " + second);
+
+          if(Number.isInteger(first) && Number.isInteger(second)) {
+            this.validLimit = first > 0 && first <= 9999999999999999 && second >= -96 && second <= 80
+          } else {
+            this.validLimit = false;
+          }
+        } catch(err) {
+          this.validLimit = false;
+        }
       }
     }
 
@@ -210,6 +237,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
     //console.log("isValidTrustSet: " + this.isValidTrustSet);
+    //console.log("checkChanges: " + this.issuedCurrencyInput);
   }
 
   clearInputs() {
@@ -226,11 +254,13 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.issuerAccountInput = trustline.account;
     this.issuedCurrencyInput = trustline.currency;
     this.limitInput = trustline.limit;
+    //console.log("onTrustLineEdit: " + this.issuedCurrencyInput);
     this.checkChanges();
   }
 
   onDisableRippling(trustline:TrustLine) {
     //console.log("onDisableRippling");
+    //console.log("onDisableRippling: " + this.issuedCurrencyInput);
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'onDisableRippling', 'trust_set_component');
 
     let payload:XummTypes.XummPostPayloadBodyJson = {
@@ -267,10 +297,10 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onIssuedCurrencyFound(token:Token) {
 
-    
-
     this.issuedCurrencyInput = token.currency;
     this.limitInput = token.amount;
+
+    //console.log("onIssuedCurrencyFound: " + this.issuedCurrencyInput);
 
     this.checkChanges();
 
@@ -281,6 +311,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   deleteTrustLine(trustline: TrustLine) {
+    //console.log("deleteTrustLine: " + this.issuedCurrencyInput);
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'deleteTrustLine', 'trust_set_component');
 
     let payload:XummTypes.XummPostPayloadBodyJson = {

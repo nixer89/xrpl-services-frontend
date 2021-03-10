@@ -50,7 +50,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(async accountData => {
-      console.log("account info changed received: " + JSON.stringify(accountData.info));
+      //console.log("account info changed received: " + JSON.stringify(accountData.info));
       this.originalAccountInfo = accountData.info;
       this.isTestMode = accountData.mode;
       
@@ -101,7 +101,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   }
 
   async handleWebSocketMessagePreconditions(message: any, accountObjects:any[]): Promise<void> {
-    console.log("websocket message: " + JSON.stringify(message));
+    //console.log("websocket message: " + JSON.stringify(message));
     if(message.status && message.type && message.type === 'response') {
       if(message.status === 'success' && message.result && message.result.account_objects && message.result.account === this.originalAccountInfo.Account) {
         accountObjects = accountObjects.concat(message.result.account_objects);
@@ -193,7 +193,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
 
       let message:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", account_info_request, this.isTestMode);
 
-      console.log("check destination account: " + JSON.stringify(message));
+      //console.log("check destination account: " + JSON.stringify(message));
 
       if(message.status && message.type && message.type === 'response') {
         if(message.status === 'success') {
