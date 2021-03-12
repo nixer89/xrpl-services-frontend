@@ -4,6 +4,19 @@ export function tokenNormalizer(numberOfTokens: string): string {
     return numberOfTokens.trim().length > 15 ? Number(numberOfTokens).toExponential(15) : numberOfTokens.trim();
 }
 
+export function currencyCodeAsciiToHexIfAscii(currencyCode: string) {
+    if(currencyCode) {
+        if(currencyCode.length == 3)
+            return currencyCode;
+        else if(currencyCode.length == 40 && isHex(currencyCode))
+            return currencyCode;
+        else
+            return Buffer.from(currencyCode, 'utf-8').toString('hex').toUpperCase();
+    } else {
+        return "";
+    }
+}
+
 export function currencyCodeHexToAsciiTrimmed(currencyCode:string): string {
         if(currencyCode && currencyCode.length == 40 && isHex(currencyCode)) { //remove trailing zeros
         while(currencyCode.endsWith("00")) {

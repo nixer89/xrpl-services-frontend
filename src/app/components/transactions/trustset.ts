@@ -84,7 +84,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       if(params.issuer && params.currency && params.limit) {
         this.issuerAccountInput = params.issuer;
         //console.log("subscribe received: " + params.currency);
-        this.issuedCurrencyInput = params.currency;
+        this.issuedCurrencyInput = normalizer.currencyCodeAsciiToHexIfAscii(params.currency);
         //console.log("subscribe set: " + this.issuedCurrencyInput);
         this.limitInput = params.limit;
 
