@@ -20,6 +20,7 @@
   <div fxLayout="column" fxLayoutGap="0.3em">
     <a href="https://xrpl.org/escrowcreate.html" target="_blank" rel="noreferrer">Escrow Create Documentation</a><br/>
     <label>Sequester XRP until the escrow process either finishes or is canceled.</label>
+    <label>Every Escrow adds 5 XRP to your account reserve and is inaccessibe. When the Escorw is finished/cancelled, the 5 XRP are back available.</label>
     <div style="margin-bottom: 1em;" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
       <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()"></escrowList>
     </div>

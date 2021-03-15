@@ -122,7 +122,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     }
     
     this.finishDateInFuture = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() < Date.now();
-    this.validFinishAfter = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() > 0;
+    this.validFinishAfter = this.finishAfterDateTime != null && this.finishAfterDateTime.getTime() > 0 && !this.finishDateInFuture;
     
     if(this.finishAfterDateTime)
       this.escrowYears = this.finishAfterDateTime.getFullYear() - (new Date()).getFullYear();

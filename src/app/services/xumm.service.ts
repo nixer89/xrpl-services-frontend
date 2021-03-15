@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AppService } from './app.service';
 import { XummTypes } from 'xumm-sdk';
-import { TransactionValidation } from '../utils/types';
+import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
 
 @Injectable()
 export class XummService {
@@ -10,7 +10,7 @@ export class XummService {
     isTestMode = false;
     xummBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://api.xumm.community';
 
-    async submitPayload(payload:any): Promise<XummTypes.XummPostPayloadResponse> {
+    async submitPayload(payload:GenericBackendPostRequest): Promise<XummTypes.XummPostPayloadResponse> {
         try {
             console.log("submitting payload: " + JSON.stringify(payload));
             return this.app.post(this.xummBackendURL+"/api/v1/platform/payload", payload);
