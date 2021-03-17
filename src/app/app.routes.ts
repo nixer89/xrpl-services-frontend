@@ -18,4 +18,4 @@ export const routes: Routes = [
     {path: '**', redirectTo: ''}
 ];
 
-export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes);
+export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' });
