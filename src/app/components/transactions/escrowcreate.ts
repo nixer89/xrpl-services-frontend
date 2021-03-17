@@ -106,6 +106,12 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       else
         this.cancelAfterDateTime = null;
     } else {
+      if(this.cancelafterDateInput && this.cancelafterDateInput.length == 4 && Number.isInteger(Number(this.cancelafterDateInput)))
+        this.cancelafterDateInput+="-"
+
+      if(this.cancelafterDateInput && this.cancelafterDateInput.length == 7 && Number.isInteger(Number(this.cancelafterDateInput.substring(5,7))))
+        this.cancelafterDateInput+="-"
+
       this.cancelAfterDateTime = this.handleDateAndTimeNonPicker(this.cancelafterDateInput, this.cancelafterTimeInput);
     }
 
@@ -118,6 +124,12 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       else
         this.finishAfterDateTime = null;
     } else {
+      if(this.finishafterDateInput && this.finishafterDateInput.length == 4 && Number.isInteger(Number(this.finishafterDateInput)))
+        this.finishafterDateInput+="-"
+
+      if(this.finishafterDateInput && this.finishafterDateInput.length == 7 && Number.isInteger(Number(this.finishafterDateInput.substring(5,7))))
+        this.finishafterDateInput+="-"
+        
       this.finishAfterDateTime = this.handleDateAndTimeNonPicker(this.finishafterDateInput, this.finishafterTimeInput);
     }
     
