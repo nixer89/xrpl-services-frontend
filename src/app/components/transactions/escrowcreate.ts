@@ -6,6 +6,8 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import { AccountInfoChanged, XrplAccountChanged } from 'src/app/utils/types';
 import * as normalizer from '../../utils/normalizers'
 import { isValidXRPAddress } from 'src/app/utils/utils';
+import { FormControl } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'escrowcreate',
@@ -13,7 +15,7 @@ import { isValidXRPAddress } from 'src/app/utils/utils';
 })
 export class EscrowCreateComponent implements OnInit, OnDestroy{
 
-  constructor(private device:DeviceDetectorService, private googleAnalytics: GoogleAnalyticsService) {}
+  constructor(private device:DeviceDetectorService, private dateAdapter: DateAdapter<any>, private googleAnalytics: GoogleAnalyticsService) {}
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -60,6 +62,9 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   cancelAfterDateTime:Date;
   finishAfterDateTime:Date;
 
+  finishAfterFormCtrl:FormControl = new FormControl();
+  cancelAfterFormCtrl:FormControl = new FormControl();
+
   cancelDateInFuture:boolean = false;
   finishDateInFuture:boolean = false;
   cancelDateBeforeFinishDate:boolean = false;
@@ -72,6 +77,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   hidePw = true;
 
   ngOnInit() {
+    this.dateAdapter.setLocale(this.getUsersLocale("en"));
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
       this.originalAccountInfo = accountData.info;
@@ -96,13 +102,25 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       this.transactionSuccessfullSubscription.unsubscribe();
   }
 
+  getUsersLocale(defaultValue: string): string {
+    if (typeof window === 'undefined' || typeof window.navigator === 'undefined') {
+      return defaultValue;
+    }
+    const wn = window.navigator as any;
+    let lang = wn.languages ? wn.languages[0] : defaultValue;
+    lang = lang || wn.language || wn.browserLanguage || wn.userLanguage;
+    return lang;
+  }
+
   checkChanges() {
     //console.log("amountInput: " + this.amountInput);
     //console.log("destinationInput: " + this.destinationInput);
     
     if(this.dateTimePickerSupported) {
-      if(this.cancelafterDateInput && this.cancelafterTimeInput)
-        this.cancelAfterDateTime = new Date(this.cancelafterDateInput.trim() + " " + this.cancelafterTimeInput.trim())
+      if(this.cancelAfterFormCtrl && this.cancelAfterFormCtrl.value && this.cancelafterTimeInput) {
+        let datePicker = new Date(this.cancelAfterFormCtrl.value);
+        this.finishAfterDateTime = new Date(datePicker.getFullYear() + "-" + ((datePicker.getMonth()+1) < 10 ? "0":"")+(datePicker.getMonth()+1) + "-" + datePicker.getDate() + "T" + this.cancelafterTimeInput.trim());    
+      }
       else
         this.cancelAfterDateTime = null;
     } else {
@@ -119,8 +137,10 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     this.validCancelAfter = this.cancelAfterDateTime != null && this.cancelAfterDateTime.getTime() > 0;
 
     if(this.dateTimePickerSupported) {
-      if(this.finishafterDateInput && this.finishafterTimeInput)
-        this.finishAfterDateTime = new Date(this.finishafterDateInput.trim() + " " + this.finishafterTimeInput.trim());
+      if(this.finishAfterFormCtrl && this.finishAfterFormCtrl.value && this.finishafterTimeInput) {
+        let datePicker = new Date(this.finishAfterFormCtrl.value);
+        this.finishAfterDateTime = new Date(datePicker.getFullYear() + "-" + ((datePicker.getMonth()+1) < 10 ? "0":"")+(datePicker.getMonth()+1) + "-" + datePicker.getDate() + "T" + this.finishafterTimeInput.trim());    
+      }
       else
         this.finishAfterDateTime = null;
     } else {
@@ -129,7 +149,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
 
       if(this.finishafterDateInput && this.finishafterDateInput.length == 7 && Number.isInteger(Number(this.finishafterDateInput.substring(5,7))))
         this.finishafterDateInput+="-"
-        
+
       this.finishAfterDateTime = this.handleDateAndTimeNonPicker(this.finishafterDateInput, this.finishafterTimeInput);
     }
     

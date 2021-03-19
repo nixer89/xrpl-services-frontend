@@ -65,7 +65,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSortModule } from '@angular/material/sort';
-import { MatChipsModule } from '@angular/material/chips'; 
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 //my services
 import { AppService } from './services/app.service';
@@ -75,7 +77,7 @@ import { GoogleAnalyticsService } from './services/google-analytics.service';
 import { XRPLWebsocket } from './services/xrplWebSocket';
 
 //special
-import { DeviceDetectorModule } from 'ngx-device-detector';
+import { DeviceDetectorService } from 'ngx-device-detector';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { LocalStorageModule } from 'angular-2-local-storage';
@@ -148,8 +150,9 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     MatSortModule,
     MatChipsModule,
     CodemirrorModule,
+    MatDatepickerModule,
+    MatMomentDateModule,
     //Special
-    DeviceDetectorModule.forRoot(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
     LocalStorageModule.forRoot({ prefix: 'XummCommunity', storageType: 'localStorage', notifyOptions: {setItem: true, removeItem: false} }),
   ],
@@ -158,7 +161,9 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     XummService,
     UtilService,
     GoogleAnalyticsService,
-    XRPLWebsocket
+    XRPLWebsocket,
+    DeviceDetectorService,
+    MatMomentDateModule
   ],
   bootstrap: [AppComponent]
 })

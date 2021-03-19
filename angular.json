@@ -30,7 +30,14 @@
               "src/styles.scss",
               "src/theme.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "codemirror",
+              "xrpl-tagged-address-codec",
+              "md5",
+              "copy-to-clipboard",
+              "qrcode"
+            ]
           },
           "configurations": {
             "production": {

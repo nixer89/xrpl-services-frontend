@@ -20,7 +20,7 @@
   <div fxLayout="column" fxLayoutGap="0.3em">
     <a href="https://xrpl.org/escrowcreate.html" target="_blank" rel="noreferrer">Escrow Create Documentation</a><br/>
     <label>Sequester XRP until the escrow process either finishes or is canceled.</label>
-    <label>Every Escrow adds 5 XRP to your account reserve and is inaccessibe. When the Escorw is finished/cancelled, the 5 XRP are back available.</label>
+    <label>Every Escrow adds 5 XRP to your account reserve. Those 5 XRP are inaccessible as long as the Escrow exists. When the Escrow is finished or cancelled, the 5 XRP are returned to your available balance.</label>
     <div style="margin-bottom: 1em;" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
       <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()"></escrowList>
     </div>
@@ -41,7 +41,10 @@
         <label>Finish After (optional)</label>
         <mat-card-content style="padding-top:1em;">
           <mat-form-field>
-            <input matInput name="finishafterdate" [type]="dateTimePickerSupported ? 'date' : 'text'" [placeholder]="dateTimePickerSupported ? 'Choose a Date' : 'yyyy-mm-dd'" [(ngModel)]="finishafterDateInput" (ngModelChange)="checkChanges()">
+            <mat-label>Choose a date</mat-label>
+            <input matInput name="finishafterdate" [matDatepicker]="picker" [formControl]="finishAfterFormCtrl" (dateChange)="checkChanges()">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
           <mat-form-field>
             <input matInput name="finishaftertime" [type]="dateTimePickerSupported ? 'time' : 'text'" step="2" [placeholder]="dateTimePickerSupported ? 'Choose a Time' : 'HH:mm:ss (24h format)'" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
@@ -56,7 +59,10 @@
         <label>Cancel After (optional)</label>
         <mat-card-content style="padding-top:1em;">
           <mat-form-field>
-            <input matInput name="cancelafterdate" [type]="dateTimePickerSupported ? 'date' : 'text'" [placeholder]="dateTimePickerSupported ? 'Choose a Date' : 'yyyy-mm-dd'" [(ngModel)]="cancelafterDateInput" (ngModelChange)="checkChanges()">
+            <mat-label>Choose a date</mat-label>
+            <input matInput name="cancelafterdate" [matDatepicker]="picker2" [formControl]="cancelAfterFormCtrl" (dateChange)="checkChanges()">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
           </mat-form-field>
           <mat-form-field>
             <input matInput name="cancelaftertime" [type]="dateTimePickerSupported ? 'time' : 'text'" step="2" [placeholder]="dateTimePickerSupported ? 'Choose a Time' : 'HH:mm:ss (24h format)'" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
