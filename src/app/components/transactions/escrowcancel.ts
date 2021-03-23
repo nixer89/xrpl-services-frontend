@@ -47,12 +47,6 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
 
   escrowOwnerChangedAutomatically:boolean = false;
 
-  private payload:XummTypes.XummPostPayloadBodyJson = {
-    txjson: {
-      TransactionType: "EscrowCancel"
-    }
-  }
-
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
@@ -87,19 +81,25 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
 
     this.googleAnalytics.analyticsEventEmitter('escrow_cancel', 'sendToXumm', 'escrow_cancel_component');
 
-    this.payload.custom_meta = {};
+    let payload:XummTypes.XummPostPayloadBodyJson = {
+      txjson: {
+        TransactionType: "EscrowCancel"
+      }
+    }
+
+    payload.custom_meta = {};
 
     if(this.escrowOwnerInput && this.escrowOwnerInput.trim().length>0 && this.validAddress) {
-      this.payload.txjson.Owner = this.escrowOwnerInput.trim();
-      this.payload.custom_meta.instruction = "- Escrow Owner: " +this.escrowOwnerInput.trim();
+      payload.txjson.Owner = this.escrowOwnerInput.trim();
+      payload.custom_meta.instruction = "- Escrow Owner: " +this.escrowOwnerInput.trim();
     }
 
     if(this.escrowSequenceInput && this.validSequence) {
-      this.payload.txjson.OfferSequence = Number(this.escrowSequenceInput);
-      this.payload.custom_meta.instruction += "\n- Escrow Sequence: " + this.escrowSequenceInput;
+      payload.txjson.OfferSequence = Number(this.escrowSequenceInput);
+      payload.custom_meta.instruction += "\n- Escrow Sequence: " + this.escrowSequenceInput;
     }    
     
-    this.onPayload.emit(this.payload);
+    this.onPayload.emit(payload);
   }
 
   xrplAccountChanged() {
@@ -148,7 +148,7 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
 
   clearInputs() {
     this.escrowOwnerInput = this.escrowSequenceInput = null;
-    this.isValidEscrowCancel = this.validAddress = this.validSequence = this.escrowOwnerChangedAutomatically = false;
+    this.isValidEscrowCancel = this.validAddress = this.validSequence = this.escrowOwnerChangedAutomatically = this.escrowSequenceSelected = false;
     this.lastKnownAddress = null;
     
     this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.testMode});

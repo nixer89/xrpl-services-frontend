@@ -55,12 +55,6 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   lastKnownSequence:string = null;
   showPwField:boolean = true;
 
-  private payload:XummTypes.XummPostPayloadBodyJson = {
-    txjson: {
-      TransactionType: "EscrowFinish"
-    }
-  }
-
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
@@ -80,7 +74,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     });
 
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
-      this.clearInputs()
+      this.clearInputs();
     });
   }
 
@@ -96,16 +90,22 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
 
     this.googleAnalytics.analyticsEventEmitter('escrow_finish', 'sendToXumm', 'escrow_finish_component');
 
-    this.payload.custom_meta = {};
+    let payload:XummTypes.XummPostPayloadBodyJson = {
+      txjson: {
+        TransactionType: "EscrowFinish"
+      }
+    }
+
+    payload.custom_meta = {};
 
     if(this.escrowOwnerInput && this.escrowOwnerInput.trim().length>0 && this.validAddress) {
-      this.payload.txjson.Owner = this.escrowOwnerInput.trim();
-      this.payload.custom_meta.instruction = "- Escrow Owner: " +this.escrowOwnerInput.trim();
+      payload.txjson.Owner = this.escrowOwnerInput.trim();
+      payload.custom_meta.instruction = "- Escrow Owner: " +this.escrowOwnerInput.trim();
     }
 
     if(this.escrowSequenceInput && this.validSequence) {
-      this.payload.txjson.OfferSequence = Number(this.escrowSequenceInput);
-      this.payload.custom_meta.instruction += "\n- Escrow Sequence: " + this.escrowSequenceInput;
+      payload.txjson.OfferSequence = Number(this.escrowSequenceInput);
+      payload.custom_meta.instruction += "\n- Escrow Sequence: " + this.escrowSequenceInput;
     }
 
     if(this.validCondition) {
@@ -137,16 +137,16 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
 
         //console.log("fulfillment_bytes.length: " + fulfillment_bytes.length);
 
-        this.payload.txjson.Condition = condition
-        this.payload.txjson.Fulfillment = fulfillment;
-        this.payload.txjson.Fee = (330 + (10 * Math.ceil(Buffer.byteLength(fulfillment_bytes)/16))).toString();
+        payload.txjson.Condition = condition
+        payload.txjson.Fulfillment = fulfillment;
+        payload.txjson.Fee = (330 + (10 * Math.ceil(Buffer.byteLength(fulfillment_bytes)/16))).toString();
 
-        this.payload.custom_meta.instruction += "\n- With a password ✓"
+        payload.custom_meta.instruction += "\n- With a password ✓"
 
-        this.onPayload.emit(this.payload);
+        this.onPayload.emit(payload);
       });
     } else {
-      this.onPayload.emit(this.payload);
+      this.onPayload.emit(payload);
     }
   }
 
@@ -198,7 +198,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
 
   clearInputs() {
     this.escrowOwnerInput = this.escrowSequenceInput = this.passwordInput = null;
-    this.isValidEscrowFinish = this.validAddress = this.validSequence = this.escrowOwnerChangedAutomatically = false;
+    this.isValidEscrowFinish = this.validAddress = this.validSequence = this.escrowOwnerChangedAutomatically = this.validCondition = false;
     this.lastKnownAddress = null;
     
     this.escrowAccountChanged.next({account: null, mode: this.isTestMode});
