@@ -6,12 +6,14 @@ import { GenericBackendDefinition } from './routes/generic-backend';
 import { PrivacyComponent } from './routes/specific/privacy';
 import { TermsComponent } from './routes/specific/terms';
 import { EasyToken } from './routes/easyToken';
+import { Statistics } from './routes/statistics';
 
 export const routes: Routes = [
     {path: '', component: XrplTransactionsComponent},
+    {path: 'tokens', component: EasyToken},
     {path: 'tools', component: Tools},
     {path: 'generic-backend', component: GenericBackendDefinition},
-    {path: 'tokens', component: EasyToken},
+    {path: 'statistics', component: Statistics},
     {path: 'privacy', component: PrivacyComponent},
     {path: 'terms', component: TermsComponent},
     {path: 'easy-iou', redirectTo: 'tokens'},

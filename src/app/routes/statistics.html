@@ -1,0 +1,40 @@
+<mat-card fxFlex fxLayout="column" fxLayoutGap="1em" class="margin-5">
+    <label class="loading">The table below shows transactions executed through this website since March 23rd 2021.</label>
+    
+    <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.3em">
+        <label>Loading statistics ... </label>
+        <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+      </div>
+
+    <div *ngIf="!loading && statistics && statistics.length > 0">
+        <mat-table [dataSource]="statistics" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="transactiontype">
+                <mat-header-cell *matHeaderCellDef> Transaction Type </mat-header-cell>
+                <mat-cell *matCellDef="let transaction">
+                    <span fxLayout="row">
+                        <label fxShow.xs fxHide><b>Transaction Type:</b>&nbsp;</label>
+                        <label>{{transaction.name}}</label>
+                    </span>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="number">
+                <mat-header-cell *matHeaderCellDef > Number of Trx </mat-header-cell>
+                <mat-cell *matCellDef="let transaction">
+                    <span fxLayout="row">
+                        <label fxShow.xs fxHide><b>Number of Trx:</b>&nbsp;</label>
+                        <label>{{transaction.number}}</label>
+                    </span>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+        </mat-table>
+    </div>
+    <div *ngIf="!loading && (!statistics || statistics.length <= 0)">
+        <label class="warning">Could not load statistics! Please try again later.</label>
+    </div>
+</mat-card>

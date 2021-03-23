@@ -44,6 +44,9 @@ import { TestNetCredentialsComponent } from './components/tools/testNetCredentia
 import { TransactionSchedulerComponent } from './components/tools/transactionScheduler';
 import { MultiSignFlowComponent } from './components/tools/multiSignFlow';
 
+//Statistics
+import { Statistics } from './routes/statistics';
+
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -119,7 +122,8 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     RawTransactionsComponent,
     TestNetCredentialsComponent,
     MultiSignFlowComponent,
-    HighlightSearchPipe
+    HighlightSearchPipe,
+    Statistics
   ],
   imports: [
     BrowserModule,
