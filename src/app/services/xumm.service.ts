@@ -119,4 +119,13 @@ export class XummService {
             return { error: true, success: false, testnet:false }
         }
     }
+
+    async getTransactionStatistics(): Promise<any> {
+        try {
+            return this.app.get(this.xummBackendURL+"/api/v1/statistics/transactions");
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return null;
+        }
+    }
 }
