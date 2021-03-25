@@ -38,38 +38,47 @@
         <mat-hint *ngIf="amountInput && !validAmount && escrowBiggerThanAvailable()">Your escrow amount is too big. Max amount is: {{getAvailableBalanceForEscrow()}} XRP. ('Available Balance' minus 5 XRP for account reserve) <a href="https://xrpl.org/reserves.html#owner-reserves" target="_blank"> (Reserve Info)</a></mat-hint>
       </mat-form-field>
       <mat-card fxLayout="column">
-        <label>Finish After (optional)</label>
+        <label>Finish After</label>  
         <mat-card-content style="padding-top:1em;">
           <mat-form-field>
             <mat-label>Choose a date</mat-label>
-            <input matInput name="finishafterdate" [matDatepicker]="picker" [formControl]="finishAfterFormCtrl" (dateChange)="checkChanges()">
+            <input matInput name="finishafterdate" [matDatepicker]="picker" [formControl]="finishAfterFormCtrl" (dateChange)="checkChanges()" readonly="true" (click)="picker.open()">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
           <mat-form-field>
-            <input matInput name="finishaftertime" [type]="dateTimePickerSupported ? 'time' : 'text'" step="2" [placeholder]="dateTimePickerSupported ? 'Choose a Time' : 'HH:mm:ss (24h format)'" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
+            <input matInput name="finishaftertime" type="text" step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
           </mat-form-field>
+          <button mat-raised-button color ="warn" style="margin-left: 0.5em;" (click)="resetFinishAfter()">
+            Clear
+          </button>
         </mat-card-content>
-        <mat-hint *ngIf="(finishafterTimeInput || finishafterDateInput) && !validFinishAfter && !finishDateInFuture">Invalid date/time.</mat-hint>
+        <mat-hint *ngIf="finishAfterFormCtrl && finishafterTimeInput && !validFinishAfter && !finishDateInFuture">Invalid date/time.</mat-hint>
         <mat-hint *ngIf="finishDateInFuture">Finish After needs to be in the future.</mat-hint>
+        <mat-hint *ngIf="isFinishAfterDateSet() && !finishafterTimeInput">You have set a date. Please also set a time!</mat-hint>
         <mat-hint *ngIf="validFinishAfter && escrowYears > 10">ATTENTION! You will make your XRP inaccessible for {{escrowYears}} Years!!!</mat-hint>
         <mat-hint *ngIf="validFinishAfter && !finishDateInFuture" style="color: grey !important">UTC time: <b>{{finishAfterDateTime.toUTCString()}}</b></mat-hint>
+        
       </mat-card>
-      <mat-card>
-        <label>Cancel After (optional)</label>
+      <mat-card fxLayout="column">
+        <label>Cancel After (optional</label>
         <mat-card-content style="padding-top:1em;">
           <mat-form-field>
             <mat-label>Choose a date</mat-label>
-            <input matInput name="cancelafterdate" [matDatepicker]="picker2" [formControl]="cancelAfterFormCtrl" (dateChange)="checkChanges()">
+            <input matInput name="cancelafterdate" [matDatepicker]="picker2" [formControl]="cancelAfterFormCtrl" (dateChange)="checkChanges()" readonly="true" (click)="picker2.open()">
             <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
             <mat-datepicker #picker2></mat-datepicker>
           </mat-form-field>
           <mat-form-field>
-            <input matInput name="cancelaftertime" [type]="dateTimePickerSupported ? 'time' : 'text'" step="2" [placeholder]="dateTimePickerSupported ? 'Choose a Time' : 'HH:mm:ss (24h format)'" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
+            <input matInput name="cancelaftertime" type="text" step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
           </mat-form-field>
+          <button mat-raised-button color="warn" style="margin-left: 0.5em;" (click)="resetCancelAfter()">
+            Clear
+          </button>
         </mat-card-content>
-        <mat-hint *ngIf="(cancelafterTimeInput || cancelafterDateInput) && !validCancelAfter">Invalid date/time.</mat-hint>
+        <mat-hint *ngIf="cancelAfterFormCtrl && cancelafterTimeInput && !validCancelAfter">Invalid date/time.</mat-hint>
         <mat-hint *ngIf="validCancelAfter && cancelDateInFuture">Cancel After needs to be in the future.</mat-hint>
+        <mat-hint *ngIf="isCancelAfterDateSet() && !cancelafterTimeInput">You have set a date. Please also set a time!</mat-hint>
         <mat-hint *ngIf="validCancelAfter && !cancelDateInFuture && cancelDateBeforeFinishDate">Cancel After needs to be after Finish After.</mat-hint>
         <mat-hint *ngIf="validCancelAfter && !cancelDateInFuture && !cancelDateBeforeFinishDate" style="color: grey !important">UTC time: <b>{{cancelAfterDateTime.toUTCString()}}</b></mat-hint>
       </mat-card>
@@ -88,7 +97,6 @@
       <label *ngIf="!destinationInput || !validAddress">Please enter a valid XRPL address as destination.</label>
       <label *ngIf="validAddress && ( !amountInput || !validAmount )">Please enter a valid amount.</label>
       <label *ngIf="validAddress && validAmount && (!validFinishAfter && !validCondition)">Please provide a Finish After or Condition (password).</label>
-      <label *ngIf="validAddress &&validAmount &&  validCondition && (!validFinishAfter && !validCancelAfter)">Please provide a Finish After or Cancel After time.</label>
     </div>
   </div>
 </mat-expansion-panel>
