@@ -223,31 +223,6 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     return datePicker.getHours() >= 0;
   }
 
-  handleDateAndTimeNonPicker(dateInput: string, timeInput: string): Date {
-    let dateTime:Date = null;
-    if(dateInput && dateInput.trim().length > 0)
-      dateTime = new Date(dateInput.trim());
-    else
-      dateTime = null;
-
-    if(timeInput && timeInput.trim().length > 0 && dateTime) {
-      let splitValues:string[] = timeInput.trim().split(':');
-
-      if(splitValues) {
-        if(splitValues[0] && Number.isInteger(Number.parseInt(splitValues[0])))
-          dateTime.setHours(Number.parseInt(splitValues[0]));
-
-        if(splitValues[1] && Number.isInteger(Number.parseInt(splitValues[1])))
-          dateTime.setMinutes(Number.parseInt(splitValues[1]));
-
-        if(splitValues[2] && Number.isInteger(Number.parseInt(splitValues[2])))
-          dateTime.setSeconds(Number.parseInt(splitValues[2]));
-      }
-    }
-
-    return dateTime;
-  }
-
   sendPayloadToXumm() {
 
     this.googleAnalytics.analyticsEventEmitter('escrow_create', 'sendToXumm', 'escrow_create_component');
