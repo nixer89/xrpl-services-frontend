@@ -205,14 +205,16 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     return date != null && date.getTime() > 0;
   }
 
-  resetFinishAfter() {
+  async resetFinishAfter() {
     this.finishAfterFormCtrl.reset();
-    this.finishafterTimeInput = null
+    this.finishafterTimeInput = null;
+    await this.checkChanges();
   }
 
-  resetCancelAfter() {
+  async resetCancelAfter() {
     this.cancelAfterFormCtrl.reset();
-    this.cancelafterTimeInput = null
+    this.cancelafterTimeInput = null;
+    await this.checkChanges();
   }
 
   isValidDate(dateToParse: any): boolean {

@@ -49,8 +49,8 @@
           <mat-form-field>
             <input matInput name="finishaftertime" type="text" step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
           </mat-form-field>
-          <button mat-raised-button color ="warn" style="margin-left: 0.5em;" (click)="resetFinishAfter()">
-            Clear
+          <button mat-icon-button color ="warn" (click)="resetFinishAfter()">
+            <mat-icon>highlight_off</mat-icon>
           </button>
         </mat-card-content>
         <mat-hint *ngIf="finishAfterFormCtrl && finishafterTimeInput && !validFinishAfter && !finishDateInFuture">Invalid date/time.</mat-hint>
@@ -72,8 +72,8 @@
           <mat-form-field>
             <input matInput name="cancelaftertime" type="text" step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
           </mat-form-field>
-          <button mat-raised-button color="warn" style="margin-left: 0.5em;" (click)="resetCancelAfter()">
-            Clear
+          <button mat-icon-button color="warn" (click)="resetCancelAfter()">
+            <mat-icon>highlight_off</mat-icon>
           </button>
         </mat-card-content>
         <mat-hint *ngIf="cancelAfterFormCtrl && cancelafterTimeInput && !validCancelAfter">Invalid date/time.</mat-hint>

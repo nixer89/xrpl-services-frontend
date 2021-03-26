@@ -14,7 +14,8 @@
                 <mat-cell *matCellDef="let transaction">
                     <span fxLayout="row">
                         <label fxShow.xs fxHide><b>Transaction Type:</b>&nbsp;</label>
-                        <label>{{transaction.name}}</label>
+                        <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.name}}</label>
+                        <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.name}}</b></label>
                     </span>
                 </mat-cell>
             </ng-container>
@@ -24,7 +25,8 @@
                 <mat-cell *matCellDef="let transaction">
                     <span fxLayout="row">
                         <label fxShow.xs fxHide><b>Number of Trx:</b>&nbsp;</label>
-                        <label>{{transaction.number}}</label>
+                        <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.number}}</label>
+                        <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.number}}</b></label>
                     </span>
                 </mat-cell>
             </ng-container>

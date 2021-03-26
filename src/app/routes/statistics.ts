@@ -13,6 +13,7 @@ export class Statistics implements OnInit {
   statistics:any[] = [];
   displayedColumns: string[] = ['transactiontype', 'number'];
   loading:boolean = false;
+  totalTransactions:number = 0
 
   async ngOnInit() {
     this.loading = true;
@@ -29,11 +30,13 @@ export class Statistics implements OnInit {
             number: stats[trx]
           };
 
+          this.totalTransactions += stats[trx];
           this.statistics.push(readableStats);
         }
       }
 
       this.statistics.sort((trx1, trx2 ) => { return trx2.number - trx1.number });
+      this.statistics.push({name: "Overall # of Trx", number: this.totalTransactions});
     }
 
     this.loading = false;
