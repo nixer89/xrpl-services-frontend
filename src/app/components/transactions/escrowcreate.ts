@@ -115,8 +115,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     //console.log("finishafterTimeInput: " + this.finishafterTimeInput);
 
     if(this.finishAfterFormCtrl && this.finishAfterFormCtrl.value && this.finishafterTimeInput) {
-      let datePicker = new Date(this.finishAfterFormCtrl.value);
-      this.finishAfterDateTime = new Date(datePicker.getFullYear() + "-" + ((datePicker.getMonth()+1) < 10 ? "0":"")+(datePicker.getMonth()+1) + "-" + datePicker.getDate() + "T" + this.finishafterTimeInput.trim());    
+      this.finishAfterDateTime = new Date(this.finishAfterFormCtrl.value.format("yyyy-MM-DD") + "T" + this.finishafterTimeInput.trim());    
     }
     else
       this.finishAfterDateTime = null;
@@ -129,8 +128,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       this.escrowYears = this.finishAfterDateTime.getFullYear() - (new Date()).getFullYear();
 
     if(this.cancelAfterFormCtrl && this.cancelAfterFormCtrl.value && this.cancelafterTimeInput) {
-      let datePicker2 = new Date(this.cancelAfterFormCtrl.value);
-      this.cancelAfterDateTime = new Date(datePicker2.getFullYear() + "-" + ((datePicker2.getMonth()+1) < 10 ? "0":"")+(datePicker2.getMonth()+1) + "-" + datePicker2.getDate() + "T" + this.cancelafterTimeInput.trim());    
+      this.cancelAfterDateTime = new Date(this.cancelAfterFormCtrl.value.format("yyyy-MM-DD") + "T" + this.cancelafterTimeInput.trim());    
     }
     else
       this.cancelAfterDateTime = null;
