@@ -158,36 +158,30 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
 
     this.validCondition = this.passwordInput && this.passwordInput.trim().length > 0;
 
+    this.isValidEscrow = true;
     //check some fields first
     if(this.isFinishAfterDateSet() && !this.finishafterTimeInput)
       this.isValidEscrow = false;
-    else
-      this.isValidEscrow = true;
 
     if(this.finishafterTimeInput && !this.validFinishAfter)
       this.isValidEscrow = false;
-    else
-      this.isValidEscrow = true;
 
     if(this.isCancelAfterDateSet() && !this.cancelafterTimeInput)
       this.isValidEscrow = false;
-    else
-      this.isValidEscrow = true;
 
     if(this.isValidEscrow && this.cancelafterTimeInput && !this.validCancelAfter)
       this.isValidEscrow = false;
 
     if(this.isValidEscrow && this.validAmount && this.validAddress && (this.validFinishAfter || this.validCondition)) {
-      if(this.validCondition)
-        this.isValidEscrow = this.validFinishAfter || this.validCancelAfter
-      else
-        this.isValidEscrow = this.validFinishAfter 
+      if(this.validCondition && !this.validFinishAfter && !this.validCancelAfter)
+        this.isValidEscrow = false
     }
     else
       this.isValidEscrow = false;
 
     if(this.isValidEscrow && this.validFinishAfter && this.validCancelAfter) {
-      this.isValidEscrow = !this.cancelDateBeforeFinishDate && !this.cancelDateInFuture && !this.finishDateInFuture;
+      if(this.cancelDateBeforeFinishDate || this.cancelDateInFuture || this.finishDateInFuture)
+        this.isValidEscrow = false
     }
 
     //console.log("isValidEscrow: " + this.isValidEscrow);
