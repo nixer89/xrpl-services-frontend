@@ -191,7 +191,7 @@ export class CreateToken implements OnInit {
             this.issuer_account_info = message.result.account_data;
             //console.log("isser_account_info: " + JSON.stringify(this.issuer_account_info));
             this.needDefaultRipple = !flagUtil.isDefaultRippleEnabled(this.issuer_account_info.Flags)
-            this.blackholeDisallowXrp = flagUtil.isDisallowXRPEnabled(this.issuer_account_info);
+            this.blackholeDisallowXrp = flagUtil.isDisallowXRPEnabled(this.issuer_account_info.Flags);
             this.blackholeMasterDisabled = flagUtil.isMasterKeyDisabled(this.issuer_account_info.Flags)
 
           } else {
