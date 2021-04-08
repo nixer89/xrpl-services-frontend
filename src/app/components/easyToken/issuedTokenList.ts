@@ -98,7 +98,7 @@ export class IssuedTokenList implements OnInit {
       this.ledgerCloseTime = issuedTokensResponse.ledger_close_ms;
       this.issuingAccounts = 0;
 
-      let issuers:any = issuedTokensResponse.tokens;
+      let issuers:any = issuedTokensResponse.issuers ? issuedTokensResponse.issuers : issuedTokensResponse.tokens;
 
       for (var account in issuers) {
 
