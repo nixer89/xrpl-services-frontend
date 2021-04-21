@@ -127,8 +127,8 @@
                     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
                 </div>
 
-                <div *ngIf="!loading && statisticsEscrow && statisticsEscrow.length > 0">
-                    <mat-table [dataSource]="statisticsEscrow" class="mat-elevation-z8">
+                <div *ngIf="!loading && statisticsToken && statisticsToken.length > 0">
+                    <mat-table [dataSource]="statisticsToken" class="mat-elevation-z8">
 
                         <ng-container matColumnDef="transactiontype">
                             <mat-header-cell *matHeaderCellDef> Transaction Type </mat-header-cell>
@@ -157,7 +157,7 @@
 
                     </mat-table>
                 </div>
-                <div *ngIf="!loading && (!statisticsEscrow || statisticsEscrow.length <= 0)">
+                <div *ngIf="!loading && (!statisticsToken || statisticsToken.length <= 0)">
                     <label class="warning">Could not load statistics! Please try again later.</label>
                 </div>
             </mat-card>

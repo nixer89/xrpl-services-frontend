@@ -33,7 +33,7 @@
       </mat-card>
     </div>
     <form *ngIf="!loadingPreconditions && preconditionsFullFilled" fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
-      <label class="warning">ATTENTION: Please do not use an exchange account or other custodial wallet as destination address! YOU MAY LOOSE YOUR FUNDS!</label>
+      <label class="warning">ATTENTION: Please do not use an exchange account or other custodial wallet as destination address! YOU MAY LOSE YOUR FUNDS!</label>
       <mat-form-field>
         <input #inpdestinationaccount matInput name="destinationaccount" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address where remaining XRP should be sent to" [(ngModel)]="destinationAccountInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
         <mat-hint *ngIf="destinationAccountInput && !validDestinationAddress">Not a valid XRPL address</mat-hint>
@@ -51,7 +51,7 @@
       <label *ngIf="originalAccountInfo && originalAccountInfo.Balance && destinationAccountInput" class="loading">Your account balance is: {{getAccountBalance()}} XRP. 5 XRP will be burnt in transaction fee, so {{getTransferBalance()}} XRP will be sent do '{{destinationAccountInput.trim()}}''.</label>
     </form>
     <div fxLayout="column" style="padding-top: 2em;">
-      <mat-checkbox [(ngModel)]="checkBoxHint" [ngClass]="(checkBoxHint ? 'success': 'warning')">I understand not to use an exchange or other custodial wallet as destination account.</mat-checkbox>
+      <mat-checkbox [(ngModel)]="checkBoxHint" [ngClass]="(checkBoxHint ? 'success': 'warning')">I understand not to use an exchange or other custodial wallet as destination account because I might lose my funds!</mat-checkbox>
     </div>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
       <div fxLayout="column">
