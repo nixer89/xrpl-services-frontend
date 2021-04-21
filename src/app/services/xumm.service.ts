@@ -120,9 +120,12 @@ export class XummService {
         }
     }
 
-    async getTransactionStatistics(): Promise<any> {
+    async getTransactionStatistics(origin? :string): Promise<any> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/statistics/transactions");
+            if(!origin)
+                return this.app.get(this.xummBackendURL+"/api/v1/statistics/transactions");
+            else 
+                return this.app.get(this.xummBackendURL+"/api/v1/statistics/transactions?origin="+origin);
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;

@@ -10,36 +10,62 @@ export class Statistics implements OnInit {
   
   constructor(private xummApi: XummService) {}
 
-  statistics:any[] = [];
+  statisticsWeb:any[] = [];
+  statisticsEscrow:any[] = [];
+  statisticsToken:any[] = [];
+  
+  totalTransactionsWeb:number = 0
+  totalTransactionsEscrow:number = 0
+  totalTransactionsToken:number = 0
+
   displayedColumns: string[] = ['transactiontype', 'number'];
   loading:boolean = false;
-  totalTransactions:number = 0
 
   async ngOnInit() {
     this.loading = true;
-    let stats = await this.xummApi.getTransactionStatistics();
+    let promises:any[] = [];
+    promises.push(this.xummApi.getTransactionStatistics());
+    promises.push(this.xummApi.getTransactionStatistics("https://escrowcreate.xapp.xumm.community"));
+    promises.push(this.xummApi.getTransactionStatistics("https://tokencreate.xapp.xumm.community"));
 
-    if(stats) {
-      console.log("received stats: " + JSON.stringify(stats));
-      for(let trx in stats) {
-        if (stats.hasOwnProperty(trx)) {
+
+    let results = await Promise.all(promises);
+
+    let statsWeb = results[0];
+    let statsEscrow = results[1];
+    let statsToken = results[2];
+
+    this.calculateStats(statsWeb, this.statisticsWeb, this.totalTransactionsWeb);
+    this.calculateStats(statsEscrow, this.statisticsEscrow, this.totalTransactionsEscrow);
+    this.calculateStats(statsToken, this.statisticsToken, this.totalTransactionsToken);
+
+    this.loading = false;
+  }
+
+  calculateStats(apiResult: any, statsArray: any[], totalTransaction: number) {
+    if(apiResult) {
+      console.log("received stats: " + JSON.stringify(apiResult));
+      for(let trx in apiResult) {
+        if (apiResult.hasOwnProperty(trx)) {
 
           let readableName = this.resolveTransactionName(trx);
           let readableStats = {
             name: readableName,
-            number: stats[trx]
+            number: apiResult[trx]
           };
 
-          this.totalTransactions += stats[trx];
-          this.statistics.push(readableStats);
+          totalTransaction += apiResult[trx];
+          statsArray.push(readableStats);
         }
       }
 
-      this.statistics.sort((trx1, trx2 ) => { return trx2.number - trx1.number });
-      this.statistics.push({name: "Overall # of Trx", number: this.totalTransactions});
-    }
+      if(statsArray && statsArray.length > 1)
+        statsArray.sort((trx1, trx2 ) => { return trx2.number - trx1.number });
 
-    this.loading = false;
+      statsArray.push({name: "Overall # of Trx", number: totalTransaction});
+
+      console.log("constructed stats array: " + JSON.stringify(statsArray));
+    }
   }
 
   resolveTransactionName(deliveredName: string) {
