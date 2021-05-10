@@ -226,7 +226,7 @@ export class IssueMoreToken implements OnInit {
   }
 
   getCurrencyCodeAscii(currency: string): string {
-    return normalizer.currencyCodeHexToAsciiTrimmed(currency);
+    return normalizer.normalizeCurrencyCodeXummImpl(currency);
 }
 
   clearIssuerAccount() {

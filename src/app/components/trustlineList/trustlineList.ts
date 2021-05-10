@@ -125,6 +125,6 @@ export class TrustLineList implements OnInit, OnDestroy {
     }
 
     getCurrencyCode(currency: string): string {
-        return normalizer.currencyCodeHexToAsciiTrimmed(currency);
+        return normalizer.normalizeCurrencyCodeXummImpl(currency);
     }
 }

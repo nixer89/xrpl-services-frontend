@@ -150,7 +150,7 @@ export class IssuedTokenList implements OnInit {
   }
 
   getCurrencyCode(currency: string): string {
-    let normalizedCode = normalizer.currencyCodeHexToAsciiTrimmed(currency);
+    let normalizedCode = normalizer.normalizeCurrencyCodeXummImpl(currency);
     if(!normalizedCode || normalizedCode.trim().length == 0)
       return currency
     else

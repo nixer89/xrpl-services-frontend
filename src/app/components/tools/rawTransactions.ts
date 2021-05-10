@@ -5,7 +5,6 @@ import { AccountInfoChanged, GenericBackendPostRequest, TransactionTemplate } fr
 import { XummTypes } from 'xumm-sdk';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { UtilService } from '../../services/util.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'rawTransactions',

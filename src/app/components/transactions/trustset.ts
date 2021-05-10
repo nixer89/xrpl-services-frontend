@@ -279,7 +279,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
 
     let currencyCode = trustline.currency;
-    let humanReadableCode = normalizer.currencyCodeHexToAsciiTrimmed(trustline.currency);
+    let humanReadableCode = normalizer.normalizeCurrencyCodeXummImpl(trustline.currency);
     if(currencyCode.length > 3) {
       while(currencyCode.length < 40)
         currencyCode+="0";
@@ -330,7 +330,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
 
     let currencyCode = trustline.currency;
-    let humenReadableCode = normalizer.currencyCodeHexToAsciiTrimmed(trustline.currency);
+    let humenReadableCode = normalizer.normalizeCurrencyCodeXummImpl(trustline.currency);
     if(currencyCode.length > 3) {
       while(currencyCode.length < 40)
         currencyCode+="0";
@@ -351,7 +351,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   get currencyCodeAsAscii() {
-    return normalizer.currencyCodeHexToAsciiTrimmed(this.issuedCurrencyInput);
+    return normalizer.normalizeCurrencyCodeXummImpl(this.issuedCurrencyInput);
   }
 
   set currencyCodeAsAscii(currency: string) {

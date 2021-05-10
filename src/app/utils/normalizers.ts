@@ -106,3 +106,66 @@ export function utcToRippleEpocheTime(utcTime: number): number {
 export function isHex(string: string): boolean {
     return /^[0-9A-Fa-f]*$/.test(string);
 }
+
+export function normalizeCurrencyCodeXummImpl(currencyCode: string): string {
+    if (!currencyCode) return '';
+
+    // Native XRP
+    if (currencyCode === 'XRP') {
+        return currencyCode;
+    }
+
+    // IOU claims as XRP which consider as fake XRP
+    if (currencyCode != 'XRP' && currencyCode.toLowerCase() === 'xrp') {
+        return 'FakeXRP';
+    }
+
+    // IOU
+    // currency code is hex try to decode it
+    if (currencyCode.match(/^[A-F0-9]{40}$/)) {
+        let decoded = '';
+
+        // check for XLS15d
+        if (currencyCode.startsWith('02')) {
+            try {
+                const binary = HexEncoding.toBinary(currencyCode);
+                decoded = binary.slice(8).toString('utf-8');
+            } catch {
+                decoded = HexEncoding.toString(currencyCode);
+            }
+        } else {
+            decoded = HexEncoding.toString(currencyCode);
+        }
+
+        if (decoded) {
+            // cleanup break lines and null bytes
+            const clean = decoded.replace(/\0/g, '').replace(/(\r\n|\n|\r)/gm, ' ');
+
+            // check if decoded contains xrp
+            if (clean.toLowerCase().trim() === 'xrp') {
+                return 'FakeXRP';
+            }
+            return clean;
+        }
+
+        // if not decoded then return truncated hex value
+        return `${currencyCode.slice(0, 4)}...`;
+    }
+
+    return currencyCode;
+};
+
+/* Hex Encoding  ==================================================================== */
+const HexEncoding = {
+    toBinary: (hex: string): Buffer => {
+        return hex ? Buffer.from(hex, 'hex') : undefined;
+    },
+
+    toString: (hex: string): string | undefined => {
+        return hex ? Buffer.from(hex, 'hex').toString('utf-8') : undefined;
+    },
+
+    toHex: (text: string): string | undefined => {
+        return text ? Buffer.from(text).toString('hex') : undefined;
+    },
+};
