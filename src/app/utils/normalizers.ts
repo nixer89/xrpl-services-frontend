@@ -122,7 +122,7 @@ export function normalizeCurrencyCodeXummImpl(currencyCode: string): string {
 
     // IOU
     // currency code is hex try to decode it
-    if (currencyCode.match(/^[A-F0-9]{40}$/)) {
+    if (currencyCode.match(/^[A-F0-9]{1,40}$/)) {
         let decoded = '';
 
         // check for XLS15d

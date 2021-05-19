@@ -62,7 +62,7 @@
     <input matInput (keyup)="applyFilter($event)" placeholder="account, currency, number, ...">
   </mat-form-field>
 
-  <mat-table [dataSource]="datasource" class="mat-elevation-z8" matSort multiTemplateDataRows>
+  <mat-table [dataSource]="datasource" class="mat-elevation-z8" matSort multiTemplateDataRows matSortActive="trustlines" matSortDirection="desc">
 
     <ng-container matColumnDef="account">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer Account </mat-header-cell>
