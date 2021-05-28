@@ -51,7 +51,7 @@
       <label *ngIf="originalAccountInfo && originalAccountInfo.Balance && destinationAccountInput" class="loading">Your account balance is: {{getAccountBalance()}} XRP. 5 XRP will be burnt in transaction fee, so {{getTransferBalance()}} XRP will be sent to '{{destinationAccountInput.trim()}}'.</label>
     </form>
     <div fxLayout="column" style="padding-top: 2em;">
-      <mat-checkbox [(ngModel)]="checkBoxHint" [ngClass]="(checkBoxHint ? 'success': 'warning')">I understand to NOT use an exchange or other custodial wallet as destination account because I might lose my funds!</mat-checkbox>
+      <mat-checkbox [(ngModel)]="checkBoxHint" [disabled]="!preconditionsFullFilled" [ngClass]="(checkBoxHint ? 'success': 'warning')">I understand to NOT use an exchange or other custodial wallet as destination account because I might lose my funds!</mat-checkbox>
     </div>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
       <div fxLayout="column">

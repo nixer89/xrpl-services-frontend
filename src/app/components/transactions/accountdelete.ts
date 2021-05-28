@@ -164,8 +164,6 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
               this.errorMsg += "\n- Checks: " + checks;
 
             this.errorMsg+= "\n\nYou can only delete your account if you have not linked any of the above objects to your account."
-          } else {
-            this.preconditionsFullFilled = true;
           }
 
           this.loadingPreconditions = false;
