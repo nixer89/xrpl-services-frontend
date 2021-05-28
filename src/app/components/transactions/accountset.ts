@@ -14,9 +14,11 @@ import { AccountObjectsChanged, AccountInfoChanged } from 'src/app/utils/types';
 export class AccountSetComponent implements OnInit, OnDestroy {
 
   private ACCOUNT_FLAG_REQUIRE_DESTINATION_TAG:number = 1;
+  private ACCOUNT_FLAG_DISALLOW_XRP:number = 3;
   private ACCOUNT_FLAG_DISABLE_MASTER_KEY:number = 4;
   private ACCOUNT_FLAG_DEFAULT_RIPPLE:number = 8;
-  private ACCOUNT_FLAG_DISALLOW_XRP:number = 3;
+  private ACCOUNT_FLAG_DEPOSIT_AUTH:number = 9;
+  
 
   constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
@@ -47,6 +49,9 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   @ViewChild('inpdisallowxrp') inpdisallowxrp;
   disallowXrpInput: boolean = false;
 
+  @ViewChild('inpdepositauth') inpdepositauth;
+  depositAuthInput: boolean = false;
+
   private accountInfoChangedSubscription: Subscription;
   private accountObjectsChangedSubscription: Subscription;
   originalAccountInfo:any;
@@ -58,6 +63,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   disableMasterKeyChangeDetected:boolean = false;
   defaultRippleChangeDetected:boolean = false;
   disallowXrpChangeDetected: boolean = false;
+  deposithAuthChangeDetected: boolean = false;
 
   isValidAccountSet:boolean = false;
 
@@ -117,15 +123,17 @@ export class AccountSetComponent implements OnInit, OnDestroy {
       this.disableMasterKeyInput = flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags);
       this.defaultRippleInput = flagsutil.isDefaultRippleEnabled(this.originalAccountInfo.Flags);
       this.disallowXrpInput = flagsutil.isDisallowXRPEnabled(this.originalAccountInfo.Flags);
+      this.depositAuthInput = flagsutil.isDepositAuthEnabled(this.originalAccountInfo.Flags);
     } else {
       this.requireDestTagInput = false;
       this.disableMasterKeyInput = false;
       this.defaultRippleInput = false;
       this.disallowXrpInput = false;
+      this.depositAuthInput = false;
     }
 
-    this.requireDestTagChangeDetected = this.disableMasterKeyChangeDetected = this.domainChangeDetected = this.emailChangeDetected = false;
-    
+    this.requireDestTagChangeDetected = this.disableMasterKeyChangeDetected = this.defaultRippleChangeDetected = this.disallowXrpChangeDetected = this.deposithAuthChangeDetected = this.domainChangeDetected = this.emailChangeDetected = false;
+      
     this.checkChanges();
   }
 
@@ -206,6 +214,17 @@ export class AccountSetComponent implements OnInit, OnDestroy {
         this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_DISALLOW_XRP;
         this.payload.custom_meta.instruction += "- Allow incoming XRP\n"
       }
+    }
+
+    if(this.deposithAuthChangeDetected) {
+      if(this.depositAuthInput) {
+        this.payload.txjson.SetFlag = this.ACCOUNT_FLAG_DEPOSIT_AUTH;
+        this.payload.custom_meta.instruction += "- Enable Deposit Authorization\n\nATTENTION: No one can send funds to this account until authorized!"
+      }
+      else {
+        this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_DEPOSIT_AUTH;
+        this.payload.custom_meta.instruction += "- Disable Deposit Authorization\n"
+      }
     }  
 
     this.onPayload.emit(this.payload);
@@ -275,7 +294,14 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     else
       this.disallowXrpChangeDetected = false;
 
-    this.isValidAccountSet = this.validDomain && this.validEmail && (this.domainChangeDetected || this.emailChangeDetected || this.requireDestTagChangeDetected || this.disableMasterKeyChangeDetected || this.defaultRippleChangeDetected || this.disallowXrpChangeDetected) && !(this.requireDestTagChangeDetected && this.disableMasterKeyChangeDetected) && !(this.requireDestTagChangeDetected && this.defaultRippleChangeDetected && this.disallowXrpChangeDetected) && !(this.disableMasterKeyChangeDetected && this.defaultRippleChangeDetected && this.disallowXrpChangeDetected);
+    if((!this.originalAccountInfo || !this.originalAccountInfo.Flags || this.originalAccountInfo.Flags == 0) && this.depositAuthInput)
+      this.deposithAuthChangeDetected = true;
+    else if(this.originalAccountInfo && this.originalAccountInfo.Flags && (flagsutil.isDepositAuthEnabled(this.originalAccountInfo.Flags) != this.depositAuthInput))
+      this.deposithAuthChangeDetected = true;
+    else
+      this.deposithAuthChangeDetected = false;
+
+    this.isValidAccountSet = this.validDomain && this.validEmail && (this.domainChangeDetected || this.emailChangeDetected || this.requireDestTagChangeDetected || this.disableMasterKeyChangeDetected || this.defaultRippleChangeDetected || this.disallowXrpChangeDetected || this.deposithAuthChangeDetected) && !(this.requireDestTagChangeDetected && this.disableMasterKeyChangeDetected) && !(this.requireDestTagChangeDetected && this.defaultRippleChangeDetected && this.disallowXrpChangeDetected) && !(this.disableMasterKeyChangeDetected && this.defaultRippleChangeDetected && this.disallowXrpChangeDetected);
 
     //console.log("domainChangeDetected: " + this.domainChangeDetected);
     //console.log("validDomain: " + this.validDomain);

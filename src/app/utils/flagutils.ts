@@ -23,3 +23,7 @@ export function isDefaultRippleEnabled(flags:number) {
 export function isDisallowXRPEnabled(flags:number) {
     return flags && (flags & ROOT_FLAG_DISALLOW_XRP) == ROOT_FLAG_DISALLOW_XRP;
 }
+
+export function isDepositAuthEnabled(flags:number) {
+    return flags && (flags & ROOT_FLAG_DEPOSIT_AUTH) == ROOT_FLAG_DEPOSIT_AUTH;
+}
