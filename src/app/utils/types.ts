@@ -47,7 +47,8 @@ export interface XrplAccountChanged {
 export interface Token {
     currency: string,
     amount: string,
-    trustlines?: string
+    trustlines?: string,
+    offers?: string
 }
 
 export interface TrustLine {
@@ -73,6 +74,7 @@ export interface TokenIssuer {
     currency: string,
     amount: string,
     trustlines: string,
+    offers: string,
     verified: boolean,
     username?: string,
     resolvedBy?: string

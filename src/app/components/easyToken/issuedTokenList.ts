@@ -32,7 +32,7 @@ export class IssuedTokenList implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
 
-  displayedColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines', "link"];
+  displayedColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines', 'offers',  'link'];
   datasource:MatTableDataSource<TokenIssuer> = null;
   expandedElement: TokenIssuer | null;
 
@@ -126,6 +126,7 @@ export class IssuedTokenList implements OnInit {
                   currency: this.getCurrencyCode(issuedCurrency.currency),
                   amount: issuedCurrency.amount,
                   trustlines: issuedCurrency.trustlines,
+                  offers: issuedCurrency.offers,
                   username: username,
                   resolvedBy: resolvedBy,
                   verified: verified,

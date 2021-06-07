@@ -126,7 +126,9 @@ export function normalizeCurrencyCodeXummImpl(currencyCode: string): string {
         let decoded = '';
 
         // check for XLS15d
-        if (currencyCode.startsWith('02')) {
+        if(currencyCode.startsWith("01"))
+            decoded = convertDemurrageToAscii(currencyCode);
+        else if (currencyCode.startsWith('02')) {
             try {
                 const binary = HexEncoding.toBinary(currencyCode);
                 decoded = binary.slice(8).toString('utf-8');

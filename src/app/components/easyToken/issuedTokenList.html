@@ -133,6 +133,19 @@
       </mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="offers">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Current Dex Offers </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+          <span fxShow fxHide.xs >
+            <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
+          </span>
+          <span fxShow.xs fxHide >
+            <b>Current Dex Offers:</b>&nbsp;
+            <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
+          </span>
+      </mat-cell>
+    </ng-container>
+
     <ng-container matColumnDef="link">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Links </mat-header-cell>
       <mat-cell *matCellDef="let row">
