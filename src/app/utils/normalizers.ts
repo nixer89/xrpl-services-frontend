@@ -120,6 +120,9 @@ export function normalizeCurrencyCodeXummImpl(currencyCode: string): string {
         return 'FakeXRP';
     }
 
+    if(currencyCode.length == 3)
+        return currencyCode;
+
     // IOU
     // currency code is hex try to decode it
     if (currencyCode.match(/^[A-F0-9]{1,40}$/)) {
