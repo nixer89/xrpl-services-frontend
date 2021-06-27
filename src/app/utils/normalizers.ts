@@ -9,7 +9,7 @@ export function currencyCodeAsciiToHexIfAscii(currencyCode: string) {
         if(currencyCode.length == 3)
             return currencyCode;
         else if(currencyCode.length == 40 && isHex(currencyCode))
-            return currencyCode;
+            return currencyCode.toUpperCase();
         else
             return Buffer.from(currencyCode, 'utf-8').toString('hex').toUpperCase();
     } else {
