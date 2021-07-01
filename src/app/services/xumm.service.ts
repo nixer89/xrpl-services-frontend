@@ -131,4 +131,31 @@ export class XummService {
             return null;
         }
     }
+
+    async getEscrowNextRelease(): Promise<number> {
+        try {
+            return this.app.get(this.xummBackendURL+"/api/v1/statistics/escrows/nextRelease");
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return null;
+        }
+    }
+
+    async getEscrowLastRelease(): Promise<number> {
+        try {
+            return this.app.get(this.xummBackendURL+"/api/v1/statistics/escrows/lastRelease");
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return null;
+        }
+    }
+
+    async getEscrowCurrentCount(): Promise<number> {
+        try {
+            return this.app.get(this.xummBackendURL+"/api/v1/statistics/escrows/currentCount");
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return null;
+        }
+    }
 }

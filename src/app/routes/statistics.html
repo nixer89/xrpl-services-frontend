@@ -73,6 +73,23 @@
                     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
                 </div>
 
+                <div *ngIf="escrowNextRelease && escrowLastRelease && escrowCurrentCount" fxLayout="column" fxLayoutGap="0.5em">
+                    <table style="display: block;">
+                        <tr>
+                          <td><label>Current Escrows enabled for Auto Release:&nbsp;</label></td>
+                          <td><label class="loading">{{escrowCurrentCount}}</label></td>
+                        </tr>
+                        <tr>
+                          <td><label>Next Escrow Auto Release:&nbsp;</label></td>
+                          <td><label class="loading">{{escrowNextRelease.toLocaleString()}}</label></td>
+                        </tr>
+                        <tr>
+                          <td><label>Last Escrow Auto Release:&nbsp;</label></td>
+                          <td><label class="loading">{{escrowLastRelease.toLocaleString()}}</label></td>
+                        </tr>
+                    </table>
+                </div>
+
                 <div *ngIf="!loading && statisticsEscrow && statisticsEscrow.length > 0">
                     <mat-table [dataSource]="statisticsEscrow" class="mat-elevation-z8">
 

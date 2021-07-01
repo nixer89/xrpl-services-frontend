@@ -3,6 +3,20 @@ table {
     width: auto;
 }
 
+td {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+
+    word-break: break-word;
+
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
 @media (max-width:599px) {
 
     .mat-footer-row , .mat-row {

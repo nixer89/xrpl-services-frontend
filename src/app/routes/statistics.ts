@@ -18,6 +18,10 @@ export class Statistics implements OnInit {
   totalTransactionsEscrow:number = 0
   totalTransactionsToken:number = 0
 
+  escrowNextRelease:Date;
+  escrowLastRelease:Date;
+  escrowCurrentCount:number = -1;
+
   displayedColumns: string[] = ['transactiontype', 'number'];
   loading:boolean = false;
 
@@ -27,6 +31,9 @@ export class Statistics implements OnInit {
     promises.push(this.xummApi.getTransactionStatistics());
     promises.push(this.xummApi.getTransactionStatistics("https://escrowcreate.xapp.xumm.community"));
     promises.push(this.xummApi.getTransactionStatistics("https://tokencreate.xapp.xumm.community"));
+    promises.push(this.xummApi.getEscrowNextRelease());
+    promises.push(this.xummApi.getEscrowLastRelease());
+    promises.push(this.xummApi.getEscrowCurrentCount());
 
 
     let results = await Promise.all(promises);
@@ -34,6 +41,9 @@ export class Statistics implements OnInit {
     let statsWeb = results[0];
     let statsEscrow = results[1];
     let statsToken = results[2];
+    this.escrowNextRelease = results[3] != null ? new Date(results[3]) : null;
+    this.escrowLastRelease = results[4] != null ? new Date(results[4]) : null;
+    this.escrowCurrentCount = results[5];
 
     this.calculateStats(statsWeb, this.statisticsWeb, this.totalTransactionsWeb);
     this.calculateStats(statsEscrow, this.statisticsEscrow, this.totalTransactionsEscrow);
