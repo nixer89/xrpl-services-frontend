@@ -1,6 +1,6 @@
 {
   "name": "xumm-community",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
@@ -50,9 +50,9 @@
     "@angular/cli": "^11.2.14",
     "@angular/compiler-cli": "^11.2.14",
     "@angular/language-service": "^11.2.14",
-    "@types/jasmine": "^3.7.7",
-    "@types/jasminewd2": "^2.0.9",
-    "@types/md5": "^2.2.1",
+    "@types/jasmine": "^3.7.8",
+    "@types/jasminewd2": "^2.0.10",
+    "@types/md5": "^2.3.1",
     "@types/node": "^12.20.15",
     "@types/qrcode": "^1.4.0",
     "codelyzer": "^6.0.2",

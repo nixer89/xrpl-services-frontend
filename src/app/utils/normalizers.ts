@@ -4,20 +4,20 @@ export function tokenNormalizer(numberOfTokens: string): string {
     return numberOfTokens.trim().length > 15 ? Number(numberOfTokens).toExponential(15) : numberOfTokens.trim();
 }
 
-export function currencyCodeAsciiToHexIfAscii(currencyCode: string) {
+export function currencyCodeUTF8ToHexIfUTF8(currencyCode: string) {
     if(currencyCode) {
         if(currencyCode.length == 3)
             return currencyCode;
         else if(currencyCode.length == 40 && isHex(currencyCode))
-            return currencyCode.toUpperCase();
+            return currencyCode;
         else
-            return Buffer.from(currencyCode, 'utf-8').toString('hex').toUpperCase();
+            return Buffer.from(currencyCode, 'utf-8').toString('hex');
     } else {
         return "";
     }
 }
 
-export function currencyCodeHexToAsciiTrimmed(currencyCode:string): string {
+export function currencyCodeHexToUTF8Trimmed(currencyCode:string): string {
         if(currencyCode && currencyCode.length == 40 && isHex(currencyCode)) { //remove trailing zeros
         while(currencyCode.endsWith("00")) {
             currencyCode = currencyCode.substring(0, currencyCode.length-2);
@@ -27,7 +27,7 @@ export function currencyCodeHexToAsciiTrimmed(currencyCode:string): string {
     if(currencyCode) {
         if(currencyCode.length > 3 && isHex(currencyCode)) {
             if(currencyCode.startsWith("01"))
-                return convertDemurrageToAscii(currencyCode);
+                return convertDemurrageToUTF8(currencyCode);
             else
                 return Buffer.from(currencyCode, "hex").toString('utf-8').trim();
         } else {
@@ -38,7 +38,7 @@ export function currencyCodeHexToAsciiTrimmed(currencyCode:string): string {
     }
 }
 
-export function convertDemurrageToAscii(demurrageCode: string): string {
+export function convertDemurrageToUTF8(demurrageCode: string): string {
 
     let bytes = Buffer.from(demurrageCode, "hex")
     let code = String.fromCharCode(bytes[1]) + String.fromCharCode(bytes[2]) + String.fromCharCode(bytes[3]);
@@ -55,7 +55,7 @@ function precision(num, precision): number {
     return +(Math.round(Number(num + 'e+'+precision))  + 'e-'+precision);
 }
 
-export function currencyCodeAsciiToHex(currencyCode: string): string {
+export function currencyCodeUTF8ToHex(currencyCode: string): string {
     //console.log("NORMALIZER INPUT: " + currencyCode);
     if(currencyCode && currencyCode.length == 40) { //remove trailing zeros
         while(currencyCode.endsWith("00")) {
@@ -66,7 +66,7 @@ export function currencyCodeAsciiToHex(currencyCode: string): string {
     let output: string;
     //console.log("currency to change: " + currency);
     if(currencyCode.length > 3)
-        output = Buffer.from(currencyCode.trim(), "utf-8").toString("hex").toUpperCase(); 
+        output = Buffer.from(currencyCode.trim(), "utf-8").toString("hex");
     else
         output = currencyCode;
 
@@ -80,7 +80,7 @@ export function getCurrencyCodeForXRPL(currencyCode: string): string {
         let currency = currencyCode.trim();
 
         if(currency && currency.length > 3) {
-            currency = Buffer.from(currency, 'utf-8').toString('hex').toUpperCase();
+            currency = Buffer.from(currency, 'utf-8').toString('hex');
 
         while(currency.length < 40)
             currency+="0";
@@ -125,12 +125,12 @@ export function normalizeCurrencyCodeXummImpl(currencyCode: string): string {
 
     // IOU
     // currency code is hex try to decode it
-    if (currencyCode.match(/^[A-F0-9]{1,40}$/)) {
+    if (currencyCode.match(/^[a-fA-F0-9]{1,40}$/)) {
         let decoded = '';
 
         // check for XLS15d
         if(currencyCode.startsWith("01"))
-            decoded = convertDemurrageToAscii(currencyCode);
+            decoded = convertDemurrageToUTF8(currencyCode);
         else if (currencyCode.startsWith('02')) {
             try {
                 const binary = HexEncoding.toBinary(currencyCode);
