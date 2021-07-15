@@ -45,6 +45,12 @@ export class IssuedTokenList implements OnInit {
   ledgerHash: string;
   ledgerCloseTime: number;
   issuingAccounts: number = 0;
+  accountNameTotal: number = 0;
+  currencyCodeTotal: number = 0;
+  issuedTokensTotal: number = 0;
+  numberOfTrustlinesTotal: number = 0;
+  dexOffersTotal: number = 0;
+  previousFilter: string;
 
   async ngOnInit() {
     this.pageSize = this.deviceDetector.isMobile() ? 5 : this.pageSize;
@@ -77,11 +83,31 @@ export class IssuedTokenList implements OnInit {
         if(filter)
           filter = filter.trim().toLowerCase()
 
-        return data.account && data.account.toLowerCase().includes(filter)
+        let matches:boolean =  data.account && data.account.toLowerCase().includes(filter)
                 || data.amount && data.amount.toString().toLowerCase().includes(filter)
                   || data.currency && data.currency.toLowerCase().includes(filter)
                     || data.trustlines && data.trustlines.toString().toLowerCase().includes(filter)
                       || (data.username && data.username.toLowerCase().includes(filter));
+
+        if(filter != this.previousFilter || (filter == null && this.previousFilter != null)) {
+          this.dexOffersTotal = 0;
+          this.accountNameTotal = 0;
+          this.issuedTokensTotal = 0;
+          this.currencyCodeTotal = 0;
+          this.numberOfTrustlinesTotal = 0;
+          this.previousFilter = filter;
+        }
+
+        if(matches) {
+          this.accountNameTotal += data.username ? 1 : 0;
+          this.currencyCodeTotal += data.currency ? 1 : 0;
+          this.issuedTokensTotal += data.amount ? Number(data.amount) : 0;
+          this.dexOffersTotal += data.offers ? parseInt(data.offers) : 0;
+          this.numberOfTrustlinesTotal += data.trustlines ? parseInt(data.trustlines) : 0;
+        }
+
+        
+        return matches;
       };
 
       this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
@@ -133,6 +159,12 @@ export class IssuedTokenList implements OnInit {
                   domain: domain,
                   twitter: twitter
                 });
+
+              this.accountNameTotal += username ? 1 : 0;
+              this.currencyCodeTotal += issuedCurrency.currency ? 1 : 0;
+              this.issuedTokensTotal += issuedCurrency.amount ? Number(issuedCurrency.amount) : 0;
+              this.dexOffersTotal += issuedCurrency.offers ? parseInt(issuedCurrency.offers) : 0;
+              this.numberOfTrustlinesTotal += issuedCurrency.trustlines ? parseInt(issuedCurrency.trustlines) : 0;
             });
         }
       }

@@ -75,6 +75,7 @@
             <label [innerHTML]="row.account | highlightSearch: filterText"></label>
           </span>
       </mat-cell>
+      <mat-footer-cell *matFooterCellDef> Totals: </mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="username">
@@ -92,6 +93,7 @@
             </div>
           </span>
       </mat-cell>
+      <mat-footer-cell *matFooterCellDef> {{accountNameTotal}} </mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="currency">
@@ -105,6 +107,7 @@
               <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
             </span>
         </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{currencyCodeTotal}} </mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="amount">
@@ -118,6 +121,7 @@
               <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
             </span>
         </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{issuedTokensTotal}} </mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="trustlines">
@@ -131,6 +135,7 @@
             <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
           </span>
       </mat-cell>
+      <mat-footer-cell *matFooterCellDef> {{numberOfTrustlinesTotal}} </mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="offers">
@@ -144,6 +149,7 @@
             <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
           </span>
       </mat-cell>
+      <mat-footer-cell *matFooterCellDef> {{dexOffersTotal}} </mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="link">
@@ -161,6 +167,7 @@
             <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
           </span>
       </mat-cell>
+      <mat-footer-cell *matFooterCellDef> - </mat-footer-cell>
     </ng-container>
 
     <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
@@ -179,6 +186,7 @@
 
     <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    <mat-footer-row fxShow fxHide.xs *matFooterRowDef="displayedColumns"></mat-footer-row>
     <!--mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" class="example-element-row" [class.example-expanded-row]="expandedElement === row" (click)="expandedElement = expandedElement === row ? null : row"></mat-row-->
     <!--mat-row *matRowDef="let detail; columns: ['expandedDetail']" class="example-detail-row"></mat-row-->
 
