@@ -61,7 +61,7 @@
                 <label>Escrow Creator xApp</label>
             </mat-panel-title>
             <mat-panel-description>
-                Statistics for the XummCommunity xApp 'Escrow creator'
+                Statistics for xApp 'Escrow creator'
             </mat-panel-description>
             </mat-expansion-panel-header>
 
@@ -132,7 +132,7 @@
                 <label>Token Creator xApp</label>
             </mat-panel-title>
             <mat-panel-description>
-                Statistics for the XummCommunity xApp 'Token creator'
+                Statistics xApp 'Token creator'
             </mat-panel-description>
             </mat-expansion-panel-header>
 
@@ -175,6 +175,60 @@
                     </mat-table>
                 </div>
                 <div *ngIf="!loading && (!statisticsToken || statisticsToken.length <= 0)">
+                    <label class="warning">Could not load statistics! Please try again later.</label>
+                </div>
+            </mat-card>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="false">
+            <mat-expansion-panel-header>
+            <mat-panel-title>
+                <label>NFT Creator xApp</label>
+            </mat-panel-title>
+            <mat-panel-description>
+                Statistics xApp 'NFT creator'
+            </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <mat-card fxFlex fxLayout="column" fxLayoutGap="1em" class="margin-5">
+                <label class="loading">The table below shows transactions executed through the xApp 'NFT creator' since July 10th 2021.</label>
+                
+                <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.3em">
+                    <label>Loading statistics ... </label>
+                    <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+                </div>
+
+                <div *ngIf="!loading && statisticsNFT && statisticsNFT.length > 0">
+                    <mat-table [dataSource]="statisticsNFT" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="transactiontype">
+                            <mat-header-cell *matHeaderCellDef> Transaction Type </mat-header-cell>
+                            <mat-cell *matCellDef="let transaction">
+                                <span fxLayout="row">
+                                    <label fxShow.xs fxHide><b>Transaction Type:</b>&nbsp;</label>
+                                    <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.name}}</label>
+                                    <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.name}}</b></label>
+                                </span>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="number">
+                            <mat-header-cell *matHeaderCellDef > Number of Trx </mat-header-cell>
+                            <mat-cell *matCellDef="let transaction">
+                                <span fxLayout="row">
+                                    <label fxShow.xs fxHide><b>Number of Trx:</b>&nbsp;</label>
+                                    <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.number}}</label>
+                                    <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.number}}</b></label>
+                                </span>
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+                    </mat-table>
+                </div>
+                <div *ngIf="!loading && (!statisticsNFT || statisticsNFT.length <= 0)">
                     <label class="warning">Could not load statistics! Please try again later.</label>
                 </div>
             </mat-card>

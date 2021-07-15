@@ -13,10 +13,12 @@ export class Statistics implements OnInit {
   statisticsWeb:any[] = [];
   statisticsEscrow:any[] = [];
   statisticsToken:any[] = [];
+  statisticsNFT:any[] = [];
   
   totalTransactionsWeb:number = 0
   totalTransactionsEscrow:number = 0
   totalTransactionsToken:number = 0
+  totalTransactionsNFT:number = 0;
 
   escrowNextRelease:Date;
   escrowLastRelease:Date;
@@ -34,6 +36,7 @@ export class Statistics implements OnInit {
     promises.push(this.xummApi.getEscrowNextRelease());
     promises.push(this.xummApi.getEscrowLastRelease());
     promises.push(this.xummApi.getEscrowCurrentCount());
+    promises.push(this.xummApi.getTransactionStatistics("https://nftcreate.xapp.xumm.community"));
 
 
     let results = await Promise.all(promises);
@@ -44,10 +47,12 @@ export class Statistics implements OnInit {
     this.escrowNextRelease = results[3] != null ? new Date(results[3]) : null;
     this.escrowLastRelease = results[4] != null ? new Date(results[4]) : null;
     this.escrowCurrentCount = results[5];
+    let statsNFT = results[6];
 
     this.calculateStats(statsWeb, this.statisticsWeb, this.totalTransactionsWeb);
     this.calculateStats(statsEscrow, this.statisticsEscrow, this.totalTransactionsEscrow);
     this.calculateStats(statsToken, this.statisticsToken, this.totalTransactionsToken);
+    this.calculateStats(statsNFT, this.statisticsNFT, this.totalTransactionsNFT);
 
     this.loading = false;
   }
