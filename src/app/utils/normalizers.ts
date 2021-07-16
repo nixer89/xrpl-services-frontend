@@ -119,7 +119,7 @@ export function normalizeCurrencyCodeXummImpl(currencyCode: string, maxLength = 
     // HEX currency code
     const hex = currencyCode.toString().replace(/(00)+$/g, '')
     if (hex.startsWith('01')) {
-        return this.convertDemurrageToUTF8(currencyCode);
+        return convertDemurrageToUTF8(currencyCode);
     }
     if (hex.startsWith('02')) {
         const xlf15d = Buffer.from(hex, 'hex').slice(8).toString('utf-8').slice(0, maxLength).trim()

@@ -137,6 +137,7 @@ export class IssuedTokenList implements OnInit {
         }
       }
     } catch(err) {
+      console.log(err)
       tokenIssuers = null
     }
 
