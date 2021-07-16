@@ -143,7 +143,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         while(currencyCode.length < 40)
           currencyCode+="0";
       }
-      payload.txjson.LimitAmount['currency'] = currencyCode;
+      payload.txjson.LimitAmount['currency'] = currencyCode.toUpperCase();
       payload.custom_meta.instruction += "\n- Token currency code: " + this.currencyCodeAsAscii;
     }
 
@@ -211,13 +211,16 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         //console.log("checking scientific notation");
         try {
+          console.log("string first: " + this.limitInput.substring(0, this.limitInput.indexOf('e')))
+          console.log("string second: " + this.limitInput.substring(this.limitInput.indexOf('e')+1))
+
           let first:number = Number(this.limitInput.substring(0, this.limitInput.indexOf('e')));
           let second:number = Number(this.limitInput.substring(this.limitInput.indexOf('e')+1));
 
-          //console.log("first: " + first);
-          //console.log("second: " + second);
+          console.log("first: " + first);
+          console.log("second: " + second);
 
-          if(Number.isInteger(first) && Number.isInteger(second)) {
+          if(!Number.isNaN(first) && Number.isInteger(second)) {
             this.validLimit = first > 0 && first <= 9999999999999999 && second >= -96 && second <= 80
           } else {
             this.validLimit = false;
@@ -227,6 +230,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         }
       }
     }
+
+    console.log("is valid limit: " + this.validLimit);
 
     if(this.validLimit)
       this.validLimit = this.limitInput && parseFloat(this.limitInput) >= 0;

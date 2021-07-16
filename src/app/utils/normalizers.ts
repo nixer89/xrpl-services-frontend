@@ -115,22 +115,23 @@ export function normalizeCurrencyCodeXummImpl(currencyCode: string, maxLength = 
         return currencyCode.trim()
     }
 
-    if(currencyCode.match(/^[a-fA-F0-9]{40}$/) && !isNaN(parseInt(currencyCode, 16))) {
-    // HEX currency code
-    const hex = currencyCode.toString().replace(/(00)+$/g, '')
-    if (hex.startsWith('01')) {
-        return convertDemurrageToUTF8(currencyCode);
-    }
-    if (hex.startsWith('02')) {
-        const xlf15d = Buffer.from(hex, 'hex').slice(8).toString('utf-8').slice(0, maxLength).trim()
-        if (xlf15d.match(/[a-zA-Z0-9]{3,}/) && xlf15d.toLowerCase() !== 'xrp') {
-        return xlf15d
+    if(currencyCode.match(/^[a-fA-F0-9]{4,40}$/) && !isNaN(parseInt(currencyCode, 16))) {
+        //console.log("is hex xumm impl")
+        // HEX currency code
+        const hex = currencyCode.toString().replace(/(00)+$/g, '')
+        if (hex.startsWith('01')) {
+            return convertDemurrageToUTF8(currencyCode);
         }
-    }
-    const decodedHex = Buffer.from(hex, 'hex').toString('utf-8').slice(0, maxLength).trim()
-    if (decodedHex.match(/[a-zA-Z0-9]{3,}/) && decodedHex.toLowerCase() !== 'xrp') {
-        return decodedHex
-    }
+        if (hex.startsWith('02')) {
+            const xlf15d = Buffer.from(hex, 'hex').slice(8).toString('utf-8').slice(0, maxLength).trim()
+            if (xlf15d.match(/[a-zA-Z0-9]{3,}/) && xlf15d.toLowerCase() !== 'xrp') {
+            return xlf15d
+            }
+        }
+        const decodedHex = Buffer.from(hex, 'hex').toString('utf-8').slice(0, maxLength).trim()
+        if (decodedHex.match(/[a-zA-Z0-9]{3,}/) && decodedHex.toLowerCase() !== 'xrp') {
+            return decodedHex
+        }
     }
     return "";
 };

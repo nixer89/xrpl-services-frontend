@@ -32,7 +32,7 @@ export class IssuedTokenList implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
 
-  displayedColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines', 'offers',  'link'];
+  displayedColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines', 'offers',  'link', 'explorer'];
   datasource:MatTableDataSource<TokenIssuer> = null;
   expandedElement: TokenIssuer | null;
 
@@ -181,5 +181,9 @@ export class IssuedTokenList implements OnInit {
 
   getXRPScanLink(account:string): string {
     return "https://xrpscan.com/account/"+account;
+  }
+
+  getTrustlineQueryParams(account: string, currency: string, limit: string): any {
+    return { issuer: account , currency: currency , limit: limit};
   }
 }

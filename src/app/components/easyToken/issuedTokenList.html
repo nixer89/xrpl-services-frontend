@@ -123,10 +123,10 @@
     <ng-container matColumnDef="trustlines">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Number of TrustLines </mat-header-cell>
       <mat-cell *matCellDef="let row">
-          <span fxShow fxHide.xs >
+          <span fxShow fxHide.xs fxLayout="column">
             <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
           </span>
-          <span fxShow.xs fxHide >
+          <span fxShow.xs fxHide fxLayout="row">
             <b>Number of TrustLines:</b>&nbsp;
             <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
           </span>
@@ -150,12 +150,25 @@
       <mat-header-cell *matHeaderCellDef mat-sort-header> Links </mat-header-cell>
       <mat-cell *matCellDef="let row">
           <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
+            <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
+          </span>
+          <span fxShow.xs fxHide fxLayout="row">
+            <b>Links:</b>&nbsp;
+            <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
+          </span>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="explorer">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> Explorers </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+          <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
             <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
             <label fxHide fxShow.gt-md>&nbsp;|&nbsp;</label>
             <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
           </span>
           <span fxShow.xs fxHide fxLayout="row">
-            <b>Links:</b>&nbsp;
+            <b>Explorers:</b>&nbsp;
             <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
             <label>&nbsp;|&nbsp;</label>
             <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
