@@ -75,7 +75,7 @@
             <label [innerHTML]="row.account | highlightSearch: filterText"></label>
           </span>
       </mat-cell>
-      <mat-footer-cell *matFooterCellDef> Totals: </mat-footer-cell>
+      <mat-footer-cell *matFooterCellDef><b>Totals: {{uniqueFilteredAccount.size}}</b></mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="username">
@@ -93,7 +93,7 @@
             </div>
           </span>
       </mat-cell>
-      <mat-footer-cell *matFooterCellDef> {{accountNameTotal}} </mat-footer-cell>
+      <mat-footer-cell *matFooterCellDef><b>{{accountNameTotal}}</b></mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="currency">
@@ -107,7 +107,7 @@
               <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
             </span>
         </mat-cell>
-        <mat-footer-cell *matFooterCellDef> {{currencyCodeTotal}} </mat-footer-cell>
+        <mat-footer-cell *matFooterCellDef><b>{{currencyCodeTotal}}</b></mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="amount">
@@ -121,7 +121,7 @@
               <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
             </span>
         </mat-cell>
-        <mat-footer-cell *matFooterCellDef> {{issuedTokensTotal}} </mat-footer-cell>
+        <mat-footer-cell *matFooterCellDef><b>{{issuedTokensTotal}}</b></mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="trustlines">
@@ -135,7 +135,7 @@
             <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
           </span>
       </mat-cell>
-      <mat-footer-cell *matFooterCellDef> {{numberOfTrustlinesTotal}} </mat-footer-cell>
+      <mat-footer-cell *matFooterCellDef><b>{{numberOfTrustlinesTotal}}</b></mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="offers">
@@ -149,7 +149,7 @@
             <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
           </span>
       </mat-cell>
-      <mat-footer-cell *matFooterCellDef> {{dexOffersTotal}} </mat-footer-cell>
+      <mat-footer-cell *matFooterCellDef><b>{{dexOffersTotal}}</b></mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="link">
@@ -163,6 +163,7 @@
             <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
           </span>
       </mat-cell>
+      <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
     </ng-container>
 
     <ng-container matColumnDef="explorer">
@@ -180,7 +181,7 @@
             <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
           </span>
       </mat-cell>
-      <mat-footer-cell *matFooterCellDef> - </mat-footer-cell>
+      <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
     </ng-container>
 
     <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->

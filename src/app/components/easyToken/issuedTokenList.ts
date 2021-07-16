@@ -50,6 +50,7 @@ export class IssuedTokenList implements OnInit {
   issuedTokensTotal: number = 0;
   numberOfTrustlinesTotal: number = 0;
   dexOffersTotal: number = 0;
+  uniqueFilteredAccount: Map<String, Number> = new Map<String, Number>();
   previousFilter: string;
 
   async ngOnInit() {
@@ -88,24 +89,6 @@ export class IssuedTokenList implements OnInit {
                   || data.currency && data.currency.toLowerCase().includes(filter)
                     || data.trustlines && data.trustlines.toString().toLowerCase().includes(filter)
                       || (data.username && data.username.toLowerCase().includes(filter));
-
-        if(filter != this.previousFilter || (filter == null && this.previousFilter != null)) {
-          this.dexOffersTotal = 0;
-          this.accountNameTotal = 0;
-          this.issuedTokensTotal = 0;
-          this.currencyCodeTotal = 0;
-          this.numberOfTrustlinesTotal = 0;
-          this.previousFilter = filter;
-        }
-
-        if(matches) {
-          this.accountNameTotal += data.username ? 1 : 0;
-          this.currencyCodeTotal += data.currency ? 1 : 0;
-          this.issuedTokensTotal += data.amount ? Number(data.amount) : 0;
-          this.dexOffersTotal += data.offers ? parseInt(data.offers) : 0;
-          this.numberOfTrustlinesTotal += data.trustlines ? parseInt(data.trustlines) : 0;
-        }
-
         
         return matches;
       };
@@ -160,6 +143,7 @@ export class IssuedTokenList implements OnInit {
                   twitter: twitter
                 });
 
+              this.uniqueFilteredAccount.set(account, 1);
               this.accountNameTotal += username ? 1 : 0;
               this.currencyCodeTotal += issuedCurrency.currency ? 1 : 0;
               this.issuedTokensTotal += issuedCurrency.amount ? Number(issuedCurrency.amount) : 0;
@@ -193,7 +177,25 @@ export class IssuedTokenList implements OnInit {
 
   applyFilter(event: Event) {
     this.filterText = (event.target as HTMLInputElement).value;
-    this.datasource.filter = this.filterText.toLowerCase().trim();
+    this.datasource.filter = this.filterText.toLowerCase();
+
+    //count totals
+    this.uniqueFilteredAccount = new Map<String, Number>();
+    this.dexOffersTotal = 0;
+    this.accountNameTotal = 0;
+    this.issuedTokensTotal = 0;
+    this.currencyCodeTotal = 0;
+    this.numberOfTrustlinesTotal = 0;
+    this.previousFilter = null;
+    //count everything!
+    this.datasource.filteredData.forEach(data => {
+        this.uniqueFilteredAccount.set(data.account, 1);
+        this.accountNameTotal += data.username ? 1 : 0;
+        this.currencyCodeTotal += data.currency ? 1 : 0;
+        this.issuedTokensTotal += data.amount ? Number(data.amount) : 0;
+        this.dexOffersTotal += data.offers ? parseInt(data.offers) : 0;
+        this.numberOfTrustlinesTotal += data.trustlines ? parseInt(data.trustlines) : 0;
+    });
 
     if (this.datasource.paginator) {
       this.datasource.paginator.firstPage();
