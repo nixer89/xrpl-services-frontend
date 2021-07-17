@@ -17,7 +17,7 @@
             </div>
             <div style="padding-top: 0.5em;" class="floatcenter">
                 <div *ngIf="!xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
-                    <label>Login to load your account data, use cool features and to receive XUMM push notifications.</label>
+                    <label class="loading">Login to load your account data, use cool features and to receive XUMM push notifications.</label>
                 </div>
                 <div *ngIf="xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
                     <label fxHide.xs>Logged in with:</label>
