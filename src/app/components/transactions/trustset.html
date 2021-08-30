@@ -31,16 +31,18 @@
       <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
         <tokenList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></tokenList>
       </div>
-      <mat-form-field [ngClass]="{'changed': showIssuedCurrencySelectedStyle}">
-        <input #inpissuedcurrency matInput name="issuedcurrency" matInput placeholder="Token currency code" [(ngModel)]="currencyCodeAsAscii" (ngModelChange)="currencyChanged()" [disabled]="isEditMode">
-        <mat-hint *ngIf="issuedCurrencyInput && !validCurrency">Not a valid Token currency</mat-hint>
-      </mat-form-field>
-      <mat-form-field>
-        <input #inplimit matInput type="text" name="limit" placeholder="Limit to set on this TrustLine." [(ngModel)]="limitInput" (ngModelChange)="checkChanges()">
-        <mat-hint *ngIf="limitInput && !validLimit && maxFifthteenDigits">Limit cannot have more than 15 decimals.</mat-hint>
-        <mat-hint *ngIf="limitInput && !validLimit && !maxFifthteenDigits && limitInput.toString().includes(',')">Not a valid amount. Please use '.' as decimal operator.</mat-hint>
-        <mat-hint *ngIf="limitInput && !validLimit && !maxFifthteenDigits && !limitInput.toString().includes(',')">Not a valid amount</mat-hint>
-      </mat-form-field>
+      <div *ngIf="issuedCurrencyInput && validCurrency" fxLayout="column" fxLayoutGap="0.5em">
+        <mat-form-field [ngClass]="{'changed': showIssuedCurrencySelectedStyle}">
+          <input readonly disabled="true" #inpissuedcurrency matInput name="issuedcurrency" matInput placeholder="Token currency code" [(ngModel)]="currencyCodeAsAscii" (ngModelChange)="currencyChanged()" [disabled]="isEditMode">
+          <mat-hint *ngIf="issuedCurrencyInput && !validCurrency">Not a valid Token currency</mat-hint>
+        </mat-form-field>
+        <mat-form-field>
+          <input #inplimit matInput type="text" name="limit" placeholder="Limit to set on this TrustLine." [(ngModel)]="limitInput" (ngModelChange)="checkChanges()">
+          <mat-hint *ngIf="limitInput && !validLimit && maxFifthteenDigits">Limit cannot have more than 15 decimals.</mat-hint>
+          <mat-hint *ngIf="limitInput && !validLimit && !maxFifthteenDigits && limitInput.toString().includes(',')">Not a valid amount. Please use '.' as decimal operator.</mat-hint>
+          <mat-hint *ngIf="limitInput && !validLimit && !maxFifthteenDigits && !limitInput.toString().includes(',')">Not a valid amount</mat-hint>
+        </mat-form-field>
+      </div>
     </form>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidTrustSet">

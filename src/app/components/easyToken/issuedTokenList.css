@@ -38,21 +38,26 @@ td {
     background-color: #3279B6 !important;
 }
 
-.example-element-row td {
-    border-bottom-width: 0;
+.example-container {
+    display: flex !important;
+    flex-direction: column !important;
   }
-
-.example-detail-row {
-    height: 0;
-    min-height: 0;
-    width: 100%;
-  }
-    
   
-.example-element-detail {
-    overflow: hidden;
-    display:flex;
-}
+  .mat-table {
+    overflow: auto !important;
+  }
+  
+  .element-row {
+    position: relative !important;
+  }
+  
+  .element-row:not(.expanded) {
+    cursor: pointer;
+  }
+  
+  .element-row.expanded {
+    border-bottom-color: transparent;
+  }
 
 
 @media (min-width:600px) {

@@ -70,6 +70,7 @@ export interface TransactionTemplate {
 }
 
 export interface TokenIssuer {
+    position: number,
     account: string,
     currency: string,
     amount: string,

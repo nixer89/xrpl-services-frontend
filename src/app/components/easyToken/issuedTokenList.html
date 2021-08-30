@@ -14,196 +14,206 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <mat-card fxLayout="column" fxLayoutGap="0.5em">
-    <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.5em">
-      <label class="warning">Loading XRP Ledger tokens ...&nbsp;</label>
-      <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
-    </div>
-    <div *ngIf="!loading && datasource.data" fxLayout="column" fxLayoutGap="0.5em">
-      <label><b>The below token table is based on XRP Ledger:</b></label>
-      <table style="display: block;">
-        <tr>
-          <td><label>Ledger Index:&nbsp;</label></td>
-          <td><label class="loading">{{ledgerIndex}}</label></td>
-        </tr>
-        <tr>
-          <td><label>Ledger Hash:&nbsp;</label></td>
-          <td><label class="loading">{{ledgerHash}}</label></td>
-        </tr>
-        <tr>
-          <td><label>Ledger Close Time:&nbsp;</label></td>
-          <td><label class="loading">{{humanReadableCloseTime()}}</label></td>
-        </tr>
-        <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td><label>Additional stats:</label></td>
-        </tr>
-        <tr>
-          <td><label>Unique accounts issuing tokens:&nbsp;</label></td>
-          <td><label class="loading">{{issuingAccounts}}</label></td>
-        </tr>
-        <tr>
-          <td><label>Issued tokens:&nbsp;</label></td>
-          <td><label class="loading">{{datasource && datasource.data && datasource.data.length}}</label></td>
-        </tr>
-      </table>
-      
-    </div>
-    <div *ngIf="!loading && !datasource.data"  fxLayout="column" fxLayoutGap="0.5em">
-      <label class="warning">Could not load XRP Ledger tokens. Please try again later!</label>
-    </div>
-  </mat-card>
+  <div fxLayout="column" fxLayoutGap="0.3em">
+    <mat-card fxLayout="column" fxLayoutGap="0.5em">
+      <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.5em">
+        <label class="warning">Loading XRP Ledger tokens ...&nbsp;</label>
+        <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+      </div>
+      <div *ngIf="!loading && datasource.data" fxLayout="column" fxLayoutGap="0.5em">
+        <label><b>The below token table is based on XRP Ledger:</b></label>
+        <table style="display: block;">
+          <tr>
+            <td><label>Ledger Index:&nbsp;</label></td>
+            <td><label class="loading">{{ledgerIndex}}</label></td>
+          </tr>
+          <tr>
+            <td><label>Ledger Hash:&nbsp;</label></td>
+            <td><label class="loading">{{ledgerHash}}</label></td>
+          </tr>
+          <tr>
+            <td><label>Ledger Close Time:&nbsp;</label></td>
+            <td><label class="loading">{{humanReadableCloseTime()}}</label></td>
+          </tr>
+          <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+          </tr>
+          <tr>
+            <td><label>Additional stats:</label></td>
+          </tr>
+          <tr>
+            <td><label>Unique accounts issuing tokens:&nbsp;</label></td>
+            <td><label class="loading">{{issuingAccounts}}</label></td>
+          </tr>
+          <tr>
+            <td><label>Issued tokens:&nbsp;</label></td>
+            <td><label class="loading">{{datasource && datasource.data && datasource.data.length}}</label></td>
+          </tr>
+        </table>
+        
+      </div>
+      <div *ngIf="!loading && !datasource.data"  fxLayout="column" fxLayoutGap="0.5em">
+        <label class="warning">Could not load XRP Ledger tokens. Please try again later!</label>
+      </div>
+    </mat-card>
 
-  <mat-form-field ngStyle.xs="width: 100%" ngStyle.gt-xs="width: 50%" style="padding-top: 1em;">
-    <mat-label class="loading">Write here to filter below table</mat-label>
-    <input matInput (keyup)="applyFilter($event)" placeholder="account, currency, number, ...">
-  </mat-form-field>
+    <mat-form-field ngStyle.xs="width: 100%" ngStyle.gt-xs="width: 50%" style="padding-top: 1em;">
+      <mat-label class="loading">
+        <i class="material-icons">
+          search
+        </i>
+      </mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="account, currency, number, ...">
+    </mat-form-field>
 
-  <mat-table [dataSource]="datasource" class="mat-elevation-z8" matSort multiTemplateDataRows matSortActive="trustlines" matSortDirection="desc">
+    <mat-table [dataSource]="datasource" class="mat-elevation-z8" matSort multiTemplateDataRows matSortActive="trustlines" matSortDirection="desc">
 
-    <ng-container matColumnDef="account">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer Account </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-          <span fxShow fxHide.xs >
-            <label [innerHTML]="row.account | highlightSearch: filterText"></label>
-          </span>
-          <span fxShow.xs fxHide >
-            <b>Issuer Account:</b>&nbsp;
-            <label [innerHTML]="row.account | highlightSearch: filterText"></label>
-          </span>
-      </mat-cell>
-      <mat-footer-cell *matFooterCellDef><b>Totals: {{uniqueFilteredAccount.size}}</b></mat-footer-cell>
-    </ng-container>
+      <ng-container matColumnDef="account">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer Account </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <span fxShow fxHide.xs fxLayout="row" fxLayoutGap="0.3em">
+              <label [innerHTML]="row.account | highlightSearch: filterText"></label>
+              <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.verified">
+                <i class="material-icons" style="color: green; font-size: 1em;">
+                  check_circle_outline
+                </i>
+              </mat-chip-list>
+            </span>
+            <span fxShow.xs fxHide >
+              <b>Issuer Account:</b>&nbsp;
+              <label [innerHTML]="row.account | highlightSearch: filterText"></label>
+            </span>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef><b>Totals: {{uniqueFilteredAccount.size}}</b></mat-footer-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="username">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Accountname </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-          <span fxShow fxHide.xs fxLayout="row">
-            <label [innerHTML]="row.username | highlightSearch: filterText"></label>
-            <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
-          </span>
-          <span fxShow.xs fxHide fxLayout="row">
-            <b>Accountname:</b>&nbsp;
-            <div fxLayout="row">
+      <ng-container matColumnDef="username">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Accountname </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <span fxShow fxHide.xs fxLayout="row">
               <label [innerHTML]="row.username | highlightSearch: filterText"></label>
               <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
-            </div>
-          </span>
-      </mat-cell>
-      <mat-footer-cell *matFooterCellDef><b>{{accountNameTotal}}</b></mat-footer-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="currency">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-            <span fxShow fxHide.xs >
-              <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
             </span>
-            <span fxShow.xs fxHide >
-              <b>Token Currency Code:</b>&nbsp;
-              <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
+            <span fxShow.xs fxHide fxLayout="row">
+              <b>Accountname:</b>&nbsp;
+              <div fxLayout="row">
+                <label [innerHTML]="row.username | highlightSearch: filterText"></label>
+                <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
+              </div>
             </span>
         </mat-cell>
-        <mat-footer-cell *matFooterCellDef><b>{{currencyCodeTotal}}</b></mat-footer-cell>
-    </ng-container>
+        <mat-footer-cell *matFooterCellDef><b>{{accountNameTotal}}</b></mat-footer-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="amount">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Total issued value of this token </mat-header-cell>
+      <ng-container matColumnDef="currency">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+              <span fxShow fxHide.xs >
+                <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
+              </span>
+              <span fxShow.xs fxHide >
+                <b>Token Currency Code:</b>&nbsp;
+                <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
+              </span>
+          </mat-cell>
+          <mat-footer-cell *matFooterCellDef><b>{{currencyCodeTotal}}</b></mat-footer-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Total issued value of this token </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+              <span fxShow fxHide.xs >
+                <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
+              </span>
+              <span fxShow.xs fxHide >
+                <b>Total issued value:</b>&nbsp;
+                <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
+              </span>
+          </mat-cell>
+          <mat-footer-cell *matFooterCellDef><b>{{issuedTokensTotal}}</b></mat-footer-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="trustlines">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Number of TrustLines </mat-header-cell>
         <mat-cell *matCellDef="let row">
-            <span fxShow fxHide.xs >
-              <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
+            <span fxShow fxHide.xs fxLayout="column">
+              <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
             </span>
-            <span fxShow.xs fxHide >
-              <b>Total issued value:</b>&nbsp;
-              <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
+            <span fxShow.xs fxHide fxLayout="row">
+              <b>Number of TrustLines:</b>&nbsp;
+              <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
             </span>
         </mat-cell>
-        <mat-footer-cell *matFooterCellDef><b>{{issuedTokensTotal}}</b></mat-footer-cell>
-    </ng-container>
+        <mat-footer-cell *matFooterCellDef><b>{{numberOfTrustlinesTotal}}</b></mat-footer-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="trustlines">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Number of TrustLines </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-          <span fxShow fxHide.xs fxLayout="column">
-            <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
-          </span>
-          <span fxShow.xs fxHide fxLayout="row">
-            <b>Number of TrustLines:</b>&nbsp;
-            <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
-          </span>
-      </mat-cell>
-      <mat-footer-cell *matFooterCellDef><b>{{numberOfTrustlinesTotal}}</b></mat-footer-cell>
-    </ng-container>
+      <ng-container matColumnDef="offers">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Current Dex Offers </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <span fxShow fxHide.xs >
+              <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
+            </span>
+            <span fxShow.xs fxHide >
+              <b>Current Dex Offers:</b>&nbsp;
+              <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
+            </span>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef><b>{{dexOffersTotal}}</b></mat-footer-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="offers">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Current Dex Offers </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-          <span fxShow fxHide.xs >
-            <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
-          </span>
-          <span fxShow.xs fxHide >
-            <b>Current Dex Offers:</b>&nbsp;
-            <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
-          </span>
-      </mat-cell>
-      <mat-footer-cell *matFooterCellDef><b>{{dexOffersTotal}}</b></mat-footer-cell>
-    </ng-container>
+      <ng-container matColumnDef="link">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Links </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
+              <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
+            </span>
+            <span fxShow.xs fxHide fxLayout="row">
+              <b>Links:</b>&nbsp;
+              <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
+            </span>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="link">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Links </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-          <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
-            <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
-          </span>
-          <span fxShow.xs fxHide fxLayout="row">
-            <b>Links:</b>&nbsp;
-            <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
-          </span>
-      </mat-cell>
-      <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
-    </ng-container>
+      <ng-container matColumnDef="explorer">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Explorers </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+            <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
+              <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
+              <label fxHide fxShow.gt-md>&nbsp;|&nbsp;</label>
+              <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
+            </span>
+            <span fxShow.xs fxHide fxLayout="row">
+              <b>Explorers:</b>&nbsp;
+              <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
+              <label>&nbsp;|&nbsp;</label>
+              <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
+            </span>
+        </mat-cell>
+        <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
+      </ng-container>
 
-    <ng-container matColumnDef="explorer">
-      <mat-header-cell *matHeaderCellDef mat-sort-header> Explorers </mat-header-cell>
-      <mat-cell *matCellDef="let row">
-          <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
-            <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
-            <label fxHide fxShow.gt-md>&nbsp;|&nbsp;</label>
-            <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
-          </span>
-          <span fxShow.xs fxHide fxLayout="row">
-            <b>Explorers:</b>&nbsp;
-            <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
-            <label>&nbsp;|&nbsp;</label>
-            <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
-          </span>
-      </mat-cell>
-      <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
-    </ng-container>
+      <!-- Expanded Content Column - The detail row is made up of this one column -->
+      <ng-container matColumnDef="expandedDetail">
+        <mat-cell *matCellDef="let detail"> 
+          this is a test
+        </mat-cell>
+      </ng-container>
 
-    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-    <!--ng-container matColumnDef="expandedDetail">
-      <td mat-cell *matCellDef="let detail" [attr.colspan]="displayedColumns.length">
-        <div class="example-element-detail" [@detailExpand]="detail == expandedElement ? 'expanded' : 'collapsed'">
-          <div fxLayout="example-element-description">
-            <div> {{detail.resolvedBy}} </div>
-            <div> {{detail.domain}} </div>
-            <div> {{detail.twitter}} </div>
-            <div> {{detail.verified}} </div>
-          </div>
-        </div>
-      </td>
-    </ng-container-->
+      <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-footer-row fxShow fxHide.xs *matFooterRowDef="displayedColumns"></mat-footer-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"
+              matRipple 
+              class="element-row" 
+              [class.expanded]="expandedElement == row"
+              (click)="expandedElement = row"></mat-row>
+      <mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow"
+              [@detailExpand]="row.element == expandedElement ? 'expanded' : 'collapsed'"
+              style="overflow: hidden"> 
+      </mat-row>
 
-    <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
-    <mat-footer-row fxShow fxHide.xs *matFooterRowDef="displayedColumns"></mat-footer-row>
-    <!--mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" class="example-element-row" [class.example-expanded-row]="expandedElement === row" (click)="expandedElement = expandedElement === row ? null : row"></mat-row-->
-    <!--mat-row *matRowDef="let detail; columns: ['expandedDetail']" class="example-detail-row"></mat-row-->
-
-  </mat-table>
-  <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50, 100]"></mat-paginator>
+    </mat-table>
+    <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50, 100]"></mat-paginator>
+  </div>
 </mat-expansion-panel>

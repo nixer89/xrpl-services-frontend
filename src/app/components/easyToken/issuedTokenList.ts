@@ -34,7 +34,9 @@ export class IssuedTokenList implements OnInit {
 
   displayedColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines', 'offers',  'link', 'explorer'];
   datasource:MatTableDataSource<TokenIssuer> = null;
-  expandedElement: TokenIssuer | null;
+
+  isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
+  expandedElement: any;
 
   loading:boolean = false;
 
@@ -100,6 +102,7 @@ export class IssuedTokenList implements OnInit {
   async loadLedgerData(): Promise<TokenIssuer[]> {
     let tokenIssuers:TokenIssuer[] = [];
     try {
+      let position = 0;
       let issuedTokensResponse:any = await this.app.get('https://xrpldata.com/api/v1/tokens');
 
       this.ledgerIndex = issuedTokensResponse.ledger_index;
@@ -130,7 +133,9 @@ export class IssuedTokenList implements OnInit {
             this.issuingAccounts++;
 
             issuedCurrencies.forEach(issuedCurrency => {
+              position++;
               tokenIssuers.push({
+                position: position,
                   account: account,
                   currency: this.getCurrencyCode(issuedCurrency.currency),
                   amount: issuedCurrency.amount,
