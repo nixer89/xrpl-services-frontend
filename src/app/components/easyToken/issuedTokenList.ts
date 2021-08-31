@@ -8,6 +8,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import { MatDialog } from '@angular/material/dialog';
+import { TokenDetailsDialog } from './tokenDetailsDialog';
 
 @Component({
   selector: 'issuedTokenList',
@@ -26,17 +28,16 @@ export class IssuedTokenList implements OnInit {
   constructor(
     private app: AppService,
     private deviceDetector: DeviceDetectorService,
+    private matDialog: MatDialog,
     private googleAnalytics: GoogleAnalyticsService) {}
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-
+  sortColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines', 'offers'];
+  
   displayedColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines', 'offers',  'link', 'explorer'];
   datasource:MatTableDataSource<TokenIssuer> = null;
-
-  isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
-  expandedElement: any;
 
   loading:boolean = false;
 
@@ -100,9 +101,9 @@ export class IssuedTokenList implements OnInit {
   }
 
   async loadLedgerData(): Promise<TokenIssuer[]> {
+
     let tokenIssuers:TokenIssuer[] = [];
     try {
-      let position = 0;
       let issuedTokensResponse:any = await this.app.get('https://xrpldata.com/api/v1/tokens');
 
       this.ledgerIndex = issuedTokensResponse.ledger_index;
@@ -133,9 +134,7 @@ export class IssuedTokenList implements OnInit {
             this.issuingAccounts++;
 
             issuedCurrencies.forEach(issuedCurrency => {
-              position++;
               tokenIssuers.push({
-                position: position,
                   account: account,
                   currency: this.getCurrencyCode(issuedCurrency.currency),
                   amount: issuedCurrency.amount,
@@ -224,5 +223,13 @@ export class IssuedTokenList implements OnInit {
 
   getTrustlineQueryParams(account: string, currency: string, limit: string): any {
     return { issuer: account , currency: currency , limit: limit};
+  }
+
+  openDetailsDialog(tokenIssuer:TokenIssuer): void {
+    this.matDialog.open(TokenDetailsDialog, {
+      width: 'auto',
+      height: 'auto;',
+      data: tokenIssuer
+    });
   }
 }

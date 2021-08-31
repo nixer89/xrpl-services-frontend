@@ -19,7 +19,7 @@ export class XRPLWebsocket {
         }
     }
 
-    getWebsocketMessage(componentname:string, command:any, newTestMode:boolean, retry?:boolean): Promise<any> {
+    async getWebsocketMessage(componentname:string, command:any, newTestMode:boolean, retry?:boolean): Promise<any> {
 
         if(this.websocketMap.get(componentname) && this.websocketMap.get(componentname).mode != newTestMode) {
             //console.log("test mode changed")
@@ -62,13 +62,19 @@ export class XRPLWebsocket {
         });        
     }
 
-    connectToSecondWS(command): Promise<any> {
+    async connectToSecondWS(command): Promise<any> {
         if(this.originalTestModeValue)
             this.testFirst = !this.testFirst;
         else
             this.mainFirst = !this.mainFirst;
 
         return this.getWebsocketMessage(command, this.originalTestModeValue, true);
+    }
+
+    async send(command:any): Promise<any> {
+        console.log("offers command: " + JSON.stringify(command));
+        
+        return this.getWebsocketMessage("liquidity-check", command, false)
     }
 }
 

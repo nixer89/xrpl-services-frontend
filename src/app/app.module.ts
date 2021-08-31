@@ -26,6 +26,7 @@ import { TrustLineListIssuing } from './components/trustlineList/trustlineListIs
 import { CreateToken } from './components/easyToken/createToken';
 import { IssueMoreToken } from './components/easyToken/issueMoreToken';
 import { IssuedTokenList } from './components/easyToken/issuedTokenList';
+import { TokenDetailsDialog } from './components/easyToken/tokenDetailsDialog';
 
 //XRPL transactions
 import { AccountSetComponent } from './components/transactions/accountset';
@@ -123,7 +124,8 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     TestNetCredentialsComponent,
     MultiSignFlowComponent,
     HighlightSearchPipe,
-    Statistics
+    Statistics,
+    TokenDetailsDialog
   ],
   imports: [
     BrowserModule,

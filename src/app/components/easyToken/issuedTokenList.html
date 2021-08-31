@@ -14,7 +14,7 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <div fxLayout="column" fxLayoutGap="0.3em">
+  <div fxLayout="column">
     <mat-card fxLayout="column" fxLayoutGap="0.5em">
       <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.5em">
         <label class="warning">Loading XRP Ledger tokens ...&nbsp;</label>
@@ -67,6 +67,17 @@
       <input matInput (keyup)="applyFilter($event)" placeholder="account, currency, number, ...">
     </mat-form-field>
 
+    <div fxHide fxShow.xs fxLayout="row" fxLayoutGap="0.3em" style="padding-bottom: 1em">
+      <mat-form-field style="width: 100%;">
+        <mat-label>Sort table by:</mat-label>
+        <mat-chip-list>
+          <mat-chip *ngFor="let column of sortColumns" [selectable]="true">
+            {{column}}
+          </mat-chip>
+        </mat-chip-list>
+      </mat-form-field>
+    </div>
+
     <mat-table [dataSource]="datasource" class="mat-elevation-z8" matSort multiTemplateDataRows matSortActive="trustlines" matSortDirection="desc">
 
       <ng-container matColumnDef="account">
@@ -74,11 +85,11 @@
         <mat-cell *matCellDef="let row">
             <span fxShow fxHide.xs fxLayout="row" fxLayoutGap="0.3em">
               <label [innerHTML]="row.account | highlightSearch: filterText"></label>
-              <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.verified">
+              <!--mat-chip-list style="padding-left: 0.2em;" *ngIf="row.verified">
                 <i class="material-icons" style="color: green; font-size: 1em;">
                   check_circle_outline
                 </i>
-              </mat-chip-list>
+              </mat-chip-list-->
             </span>
             <span fxShow.xs fxHide >
               <b>Issuer Account:</b>&nbsp;
@@ -194,25 +205,9 @@
         <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
       </ng-container>
 
-      <!-- Expanded Content Column - The detail row is made up of this one column -->
-      <ng-container matColumnDef="expandedDetail">
-        <mat-cell *matCellDef="let detail"> 
-          this is a test
-        </mat-cell>
-      </ng-container>
-
       <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" (click)="openDetailsDialog(row)"></mat-row>
       <mat-footer-row fxShow fxHide.xs *matFooterRowDef="displayedColumns"></mat-footer-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"
-              matRipple 
-              class="element-row" 
-              [class.expanded]="expandedElement == row"
-              (click)="expandedElement = row"></mat-row>
-      <mat-row *matRowDef="let row; columns: ['expandedDetail']; when: isExpansionDetailRow"
-              [@detailExpand]="row.element == expandedElement ? 'expanded' : 'collapsed'"
-              style="overflow: hidden"> 
-      </mat-row>
-
     </mat-table>
     <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50, 100]"></mat-paginator>
   </div>

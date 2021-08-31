@@ -16,11 +16,9 @@ td {
     justify-content: center;
 }
 
-/*
-.mat-cell:hover{
+.mat-row {
     cursor: pointer;
 }
-*/
 
 .mat-chip-bithomp {
     font-size: 9px !important;
@@ -38,26 +36,6 @@ td {
     background-color: #3279B6 !important;
 }
 
-.example-container {
-    display: flex !important;
-    flex-direction: column !important;
-  }
-  
-  .mat-table {
-    overflow: auto !important;
-  }
-  
-  .element-row {
-    position: relative !important;
-  }
-  
-  .element-row:not(.expanded) {
-    cursor: pointer;
-  }
-  
-  .element-row.expanded {
-    border-bottom-color: transparent;
-  }
 
 
 @media (min-width:600px) {
