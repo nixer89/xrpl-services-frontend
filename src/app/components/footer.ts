@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { version } from '../../../package.json';
+import packageInfo from '../../../package.json';
 import { XummService } from '../services/xumm.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { XummService } from '../services/xumm.service';
 })
 export class FooterComponent implements OnInit {
 
-  public appVersion:string = version;
+  public appVersion:string = packageInfo.version;
 
   constructor(private xummApi: XummService) { }
 
