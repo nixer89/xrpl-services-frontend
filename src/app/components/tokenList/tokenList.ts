@@ -40,8 +40,10 @@ export class TokenList implements OnInit, OnDestroy {
                 
                 this.loadTokenList(this.originalIsserAccount);
             }   
-            else
+            else {
+                this.originalIsserAccount = null;
                 this.tokenList = [];
+            }
         });
     }
 
