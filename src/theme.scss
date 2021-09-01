@@ -1,12 +1,13 @@
+@use '~@angular/material' as mat;
 @import '~@angular/material/theming';
 
-@include mat-core();
+@include mat.core();
 
 .light-theme {
-  $primary: mat-palette($mat-indigo);
-  $accent: mat-palette($mat-pink, A200, A100, A400);
-  $warn: mat-palette($mat-red);
-  $light-theme: mat-light-theme($primary, $accent, $warn);
+  $primary: mat.define-palette(mat.$indigo-palette);
+  $accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+  $warn: mat.define-palette(mat.$red-palette);
+  $light-theme: mat.define-light-theme($primary, $accent, $warn);
 
   .mat-expansion-panel {
     background-color: rgba(238,238,238, 0.5) !important;
@@ -48,15 +49,15 @@
     background-color: white !important;
   }
 
-  @include angular-material-theme($light-theme);
+  @include mat.all-component-themes($light-theme);
 }
 
 // Our dark theme
 .dark-theme {
-  $dark-primary: mat-palette($mat-indigo);
-  $dark-accent: mat-palette($mat-amber, A200, A100, A400);
-  $dark-warn: mat-palette($mat-red);   
-  $dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+  $dark-primary: mat.define-palette(mat.$indigo-palette);
+  $dark-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400);
+  $dark-warn: mat.define-palette(mat.$red-palette);   
+  $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
   a {
     color: #FFB300;
@@ -118,5 +119,5 @@
     color: #FF8F00 !important
   }
 
-  @include angular-material-theme($dark-theme);
+  @include mat.all-component-themes($dark-theme);
 }
