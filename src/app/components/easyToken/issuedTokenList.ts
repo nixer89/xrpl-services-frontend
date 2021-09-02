@@ -91,7 +91,8 @@ export class IssuedTokenList implements OnInit {
                 || data.amount && data.amount.toString().toLowerCase().includes(filter)
                   || data.currency && data.currency.toLowerCase().includes(filter)
                     || data.trustlines && data.trustlines.toString().toLowerCase().includes(filter)
-                      || (data.username && data.username.toLowerCase().includes(filter));
+                      || (data.username && data.username.toLowerCase().includes(filter))
+                        || (data.currencyHex && data.currencyHex.toLowerCase().includes(filter));
         
         return matches;
       };
@@ -137,6 +138,7 @@ export class IssuedTokenList implements OnInit {
               tokenIssuers.push({
                   account: account,
                   currency: this.getCurrencyCode(issuedCurrency.currency),
+                  currencyHex: this.getCurrencyHexCode(issuedCurrency.currency),
                   amount: issuedCurrency.amount,
                   trustlines: issuedCurrency.trustlines,
                   offers: issuedCurrency.offers,
@@ -177,6 +179,12 @@ export class IssuedTokenList implements OnInit {
       return currency
     else
       return normalizedCode
+  }
+
+  getCurrencyHexCode(currency: string): string {
+    if(currency && currency.length > 3)
+      return currency;
+    return null;
   }
 
   applyFilter(event: Event) {

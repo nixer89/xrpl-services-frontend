@@ -72,6 +72,7 @@ export interface TransactionTemplate {
 export interface TokenIssuer {
     account: string,
     currency: string,
+    currencyHex?: string,
     amount: string,
     trustlines: string,
     offers: string,
