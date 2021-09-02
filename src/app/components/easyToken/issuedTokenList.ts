@@ -92,7 +92,7 @@ export class IssuedTokenList implements OnInit {
                   || data.currency && data.currency.toLowerCase().includes(filter)
                     || data.trustlines && data.trustlines.toString().toLowerCase().includes(filter)
                       || (data.username && data.username.toLowerCase().includes(filter))
-                        || (data.currencyHex && data.currencyHex.toLowerCase().includes(filter));
+                        || (data.currencyHex && data.currencyHex.toLowerCase().includes(filter) && filter.length == 40 && normalizer.isHex(filter));
         
         return matches;
       };
