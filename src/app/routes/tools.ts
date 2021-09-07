@@ -39,6 +39,9 @@ export class Tools implements OnInit {
 
   dismissInfo:boolean = false;
 
+  accountReserve:number = 20000000;
+  ownerReserve:number = 5000000;
+
   constructor(
     private matDialog: MatDialog,
     private router: Router,
@@ -59,6 +62,8 @@ export class Tools implements OnInit {
         this.overlayContainer.getContainerElement().classList.remove('light-theme');
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
     }
+
+    this.loadFeeReserves();
 
     this.dismissInfo = this.localStorage && this.localStorage.get("dismissInfo");
 
@@ -176,6 +181,23 @@ export class Tools implements OnInit {
 
   changeNetwork() {
     this.loadAccountData(false);
+  }
+
+  async loadFeeReserves() {
+    let fee_request:any = {
+      command: "ledger_entry",
+      index: "4BC50C9B0D8515D3EAAE1E74B29A95804346C491EE1A95BF25E4AAB854A6A651",
+      ledger_index: "validated"
+    }
+
+    let feeSetting:any = await this.xrplWebSocket.getWebsocketMessage("fee-settings", fee_request, this.isTestMode);
+    this.accountReserve = feeSetting?.result?.node["ReserveBase"];
+    this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
+
+    console.log("resolved accountReserve: " + this.accountReserve);
+    console.log("resolved ownerReserve: " + this.ownerReserve);
+
+    this.emitAccountInfoChanged();
   }
 
   async loadAccountData(isInit?: boolean) {
@@ -312,7 +334,7 @@ export class Tools implements OnInit {
 
   emitAccountInfoChanged() {
     //console.log("emit account info changed");
-    this.accountInfoChanged.next({info: this.xrplAccount_Info, mode: this.isTestMode});
+    this.accountInfoChanged.next({info: this.xrplAccount_Info, accountReserve: this.accountReserve, ownerReserve: this.ownerReserve, mode: this.isTestMode});
   }
 
   async onPayloadReceived(genericBackendRequest: GenericBackendPostRequest) {
@@ -338,8 +360,8 @@ export class Tools implements OnInit {
   getAvailableBalance(): number {
     if(this.xrplAccount_Info && this.xrplAccount_Info.Balance) {
       let balance:number = Number(this.xrplAccount_Info.Balance);
-      balance = balance - (20*1000000); //deduct acc reserve
-      balance = balance - (this.xrplAccount_Info.OwnerCount * 5 * 1000000); //deduct owner count
+      balance = balance - this.accountReserve; //deduct acc reserve
+      balance = balance - (this.xrplAccount_Info.OwnerCount * this.ownerReserve); //deduct owner count
       return balance/1000000;
     } else {
       return 0;

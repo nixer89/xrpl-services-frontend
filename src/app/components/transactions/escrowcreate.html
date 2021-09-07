@@ -20,7 +20,7 @@
   <div fxLayout="column" fxLayoutGap="0.3em">
     <a href="https://xrpl.org/escrowcreate.html" target="_blank" rel="noreferrer">Escrow Create Documentation</a><br/>
     <label>Sequester XRP until the escrow process either finishes or is canceled.</label>
-    <label>Every Escrow adds 5 XRP to your account reserve. Those 5 XRP are inaccessible as long as the Escrow exists. When the Escrow is finished or cancelled, the 5 XRP are returned to your available balance.</label>
+    <label>Every Escrow adds {{ownerReserve/1000000}} XRP to your account reserve. Those {{ownerReserve/1000000}} XRP are inaccessible as long as the Escrow exists. When the Escrow is finished or cancelled, the {{ownerReserve/1000000}} XRP are returned to your available balance.</label>
     <div style="margin-bottom: 1em;" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
       <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()"></escrowList>
     </div>
@@ -35,7 +35,7 @@
         <mat-hint *ngIf="amountInput && !validAmount && maxSixDigits">The XRP amount cannot have more than 6 decimals.</mat-hint>
         <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && amountInput.toString().includes(',')">Not a valid amount. Please use '.' as decimal operator.</mat-hint>
         <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && !amountInput.toString().includes(',') && !escrowBiggerThanAvailable()">Not a valid amount</mat-hint>
-        <mat-hint *ngIf="amountInput && !validAmount && escrowBiggerThanAvailable()">Your escrow amount is too big. Max amount is: {{getAvailableBalanceForEscrow()}} XRP. ('Available Balance' minus 5 XRP for account reserve) <a href="https://xrpl.org/reserves.html#owner-reserves" target="_blank"> (Reserve Info)</a></mat-hint>
+        <mat-hint *ngIf="amountInput && !validAmount && escrowBiggerThanAvailable()">Your escrow amount is too big. Max amount is: {{getAvailableBalanceForEscrow()}} XRP. ('Available Balance' minus {{ownerReserve/1000000}} XRP for account reserve) <a href="https://xrpl.org/reserves.html#owner-reserves" target="_blank"> (Reserve Info)</a></mat-hint>
       </mat-form-field>
       <mat-card fxLayout="column">
         <label>Finish After</label>  

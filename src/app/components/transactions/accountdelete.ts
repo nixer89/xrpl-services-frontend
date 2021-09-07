@@ -48,10 +48,15 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   errorMsg:string = null;
   checkBoxHint:boolean = false;
 
+  accountReserve:number = 20000000;
+  ownerReserve:number = 5000000;
+
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(async accountData => {
       //console.log("account info changed received: " + JSON.stringify(accountData.info));
       this.originalAccountInfo = accountData.info;
+      this.accountReserve = accountData.accountReserve;
+      this.ownerReserve = accountData.ownerReserve;
       this.isTestMode = accountData.mode;
       
       if(this.originalAccountInfo && this.originalAccountInfo.Account) {
@@ -270,7 +275,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   getTransferBalance(): number {
     if(this.originalAccountInfo && this.originalAccountInfo.Balance) {
       let balance:number = Number(this.originalAccountInfo.Balance);
-      return (balance-5000000)/1000000;
+      return (balance-this.ownerReserve)/1000000;
     } else {
       return 0;
     }

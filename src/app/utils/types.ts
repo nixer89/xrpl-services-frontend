@@ -31,6 +31,8 @@ export interface TransactionValidation {
 
 export interface AccountInfoChanged {
     info: any,
+    accountReserve: number,
+    ownerReserve: number,
     mode: boolean
 }
 

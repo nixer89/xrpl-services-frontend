@@ -70,11 +70,18 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
 
   hidePw = true;
 
+  accountReserve:number = 20000000;
+  ownerReserve:number = 5000000;
+
   ngOnInit() {
     this.dateAdapter.setLocale(this.getUsersLocale("en"));
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
       this.originalAccountInfo = accountData.info;
+
+      this.accountReserve = accountData.accountReserve;
+      this.ownerReserve = accountData.ownerReserve;
+
       if(this.originalAccountInfo && this.originalAccountInfo.Account && isValidXRPAddress(this.originalAccountInfo.Account)) {
         this.escrowAccountChanged.next({account: this.originalAccountInfo.Account, mode: accountData.mode});
       }
@@ -291,9 +298,9 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   getAvailableBalanceForEscrow(): number {
     if(this.originalAccountInfo && this.originalAccountInfo.Balance) {
       let balance:number = Number(this.originalAccountInfo.Balance);
-      balance = balance - (20*1000000); //deduct acc reserve
-      balance = balance - (this.originalAccountInfo.OwnerCount * 5 * 1000000); //deduct owner count
-      balance = balance - 5 * 1000000; //deduct account reserve for escrow
+      balance = balance - this.accountReserve; //deduct acc reserve
+      balance = balance - (this.originalAccountInfo.OwnerCount * this.ownerReserve); //deduct owner count
+      balance = balance - this.ownerReserve; //deduct account reserve for escrow
       balance = balance/1000000;
 
       if(balance >= 0.000001)
