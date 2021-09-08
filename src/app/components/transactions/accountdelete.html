@@ -1,5 +1,5 @@
 <mat-expansion-panel [disabled]="originalAccountInfo && originalAccountInfo.error">
-  <mat-expansion-panel-header fxShow fxHide.xs  id="accountdelete">
+  <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">delete</mat-icon> </span>
       <span class="loading" style="margin-left: 0.5em;"> Account Delete </span>
@@ -8,7 +8,7 @@
       Delete your XRP Ledger account to get back {{(accountReserve-ownerReserve)/1000000}} XRP of the wallet reserve.
     </mat-panel-description>
   </mat-expansion-panel-header>
-  <mat-expansion-panel-header fxShow.xs fxHide  id="accountdelete">
+  <mat-expansion-panel-header fxShow.xs fxHide>
     <mat-panel-title>
       <label class="loading">Account Delete</label>
     </mat-panel-title>
