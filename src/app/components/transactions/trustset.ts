@@ -96,7 +96,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   ngAfterViewInit() {
     if(this.isValidTrustSet) {
       setTimeout(() => {
-        this.mep.open();
+        //this.mep.open();
         this.sendPayloadToXumm()
       });
     }
