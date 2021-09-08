@@ -27,6 +27,7 @@ import { CreateToken } from './components/easyToken/createToken';
 import { IssueMoreToken } from './components/easyToken/issueMoreToken';
 import { IssuedTokenList } from './components/easyToken/issuedTokenList';
 import { TokenDetailsDialog } from './components/easyToken/tokenDetailsDialog';
+import { BlackholeAccount } from './components/easyToken/blackholeAccount';
 
 //XRPL transactions
 import { AccountSetComponent } from './components/transactions/accountset';
@@ -119,6 +120,7 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     TrustSetComponent,
     NoRippleCheckComponent,
     TransactionSchedulerComponent,
+    BlackholeAccount,
     AccountDeleteComponent,
     RawTransactionsComponent,
     TestNetCredentialsComponent,
