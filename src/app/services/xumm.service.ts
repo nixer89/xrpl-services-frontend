@@ -158,4 +158,31 @@ export class XummService {
             return null;
         }
     }
+
+    async getHottestToken1D(): Promise<number> {
+        try {
+            return this.app.get(this.xummBackendURL+"/api/v1/trustlines/hot/d");
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return null;
+        }
+    }
+
+    async getHottestToken1W(): Promise<number> {
+        try {
+            return this.app.get(this.xummBackendURL+"/api/v1/trustlines/hot/w");
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return null;
+        }
+    }
+
+    async getHottestToken1M(): Promise<number> {
+        try {
+            return this.app.get(this.xummBackendURL+"/api/v1/trustlines/hot/m");
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return null;
+        }
+    }
 }

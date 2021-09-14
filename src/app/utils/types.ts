@@ -82,7 +82,9 @@ export interface TokenIssuer {
     username?: string,
     resolvedBy?: string
     twitter?: string,
-    domain?: string
+    domain?: string,
+    isHot?: boolean,
+    newTrustlines?: number
 }
 
 export interface IssuerVerification {

@@ -10,6 +10,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { TokenDetailsDialog } from './tokenDetailsDialog';
+import { XummService } from 'src/app/services/xumm.service';
 
 @Component({
   selector: 'issuedTokenList',
@@ -27,6 +28,7 @@ export class IssuedTokenList implements OnInit {
 
   constructor(
     private app: AppService,
+    private xummBackend: XummService,
     private deviceDetector: DeviceDetectorService,
     private matDialog: MatDialog,
     private googleAnalytics: GoogleAnalyticsService) {}
@@ -56,10 +58,41 @@ export class IssuedTokenList implements OnInit {
   uniqueFilteredAccount: Map<String, Number> = new Map<String, Number>();
   previousFilter: string;
 
+  hotToken1D:any;
+  hotToken1W:any;
+  hotToken1M:any;
+
   async ngOnInit() {
     this.pageSize = this.deviceDetector.isMobile() ? 5 : this.pageSize;
     this.loading = true;
-    let issuers:TokenIssuer[] = await this.loadLedgerData();
+
+    let promises:any[] = [];
+    promises.push(this.loadLedgerData());
+    promises.push(this.xummBackend.getHottestToken1D());
+    //promises.push(this.xummBackend.getHottestToken1W());
+    //promises.push(this.xummBackend.getHottestToken1M());
+
+    let results = await Promise.all(promises);
+
+    let issuers:TokenIssuer[] = results[0];
+    this.hotToken1D = results[1].slice(0,9);
+    //this.hotToken1W = results[2];
+    //this.hotToken1M = results[3];
+
+    //console.time("scanning issuer")
+
+    this.hotToken1D.forEach(hotToken => {
+      issuers.find(issuer => {
+        if(hotToken['_id'].issuer === issuer.account) {
+          issuer.isHot = true;
+          issuer.newTrustlines = hotToken.count;
+          console.log(issuer.account + " is hot!");
+        }
+      })
+    })
+
+    //console.timeEnd("scanning issuer")
+
     this.loading = false;
   
     this.datasource = new MatTableDataSource(issuers);
@@ -99,6 +132,10 @@ export class IssuedTokenList implements OnInit {
 
       this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
     }
+
+    //console.log("Hottest token 1D: " + JSON.stringify(this.hotToken1D));
+    //console.log("Hottest token 1W: " + JSON.stringify(this.hotToken1W));
+    //console.log("Hottest token 1M: " + JSON.stringify(this.hotToken1M));
   }
 
   async loadLedgerData(): Promise<TokenIssuer[]> {

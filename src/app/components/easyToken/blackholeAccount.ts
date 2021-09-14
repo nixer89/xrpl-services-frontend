@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
+import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import { Subject } from 'rxjs';
 import { TransactionValidation, GenericBackendPostRequest } from '../../utils/types';
@@ -8,7 +9,6 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
-import * as normalizer from '../../utils/normalizers';
 import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
@@ -17,7 +17,6 @@ import { isValidXRPAddress } from 'src/app/utils/utils';
 })
 export class BlackholeAccount implements OnInit {
 
-  private ACCOUNT_FLAG_DEFAULT_RIPPLE:number = 8;
   private ACCOUNT_FLAG_DISABLE_MASTER_KEY:number = 4;
   private ACCOUNT_FLAG_DISABLE_INCOMING_XRP:number = 3;
 
@@ -43,21 +42,27 @@ export class BlackholeAccount implements OnInit {
 
   checkBoxIssuingText:boolean = false;
 
+  hasLowXrpBalance:boolean = false;
+  hasTokenBalance:boolean = false;
+
   blackholeDisallowXrp:boolean = false;
   blackholeRegularKeySet:boolean = false;
   blackholeMasterDisabled:boolean = false;
 
   issuer_account_info:any;
+  recipient_account_info:any;
   isTestMode:boolean = false;
 
   private issuerAccount: string;
+  private recipientAccount: string;
   //private issuerAccount: string;
   validIssuer:boolean = false;
+  validRecipient:boolean = false;
 
   transactionSuccessfull: Subject<void> = new Subject<void>();
 
-  paymentNotSuccessfull:boolean = false;
-  paymentNotFound: boolean = false;
+  paymentInitiated: boolean = false;
+  paymentNotSuccessfull:boolean = true;
   loadingIssuerAccount:boolean = false;
 
   @ViewChild('stepper') stepper: MatStepper;
@@ -74,10 +79,93 @@ export class BlackholeAccount implements OnInit {
     return this.issuerAccount;
   }
 
+  loginForBlackhole() {
+    const dialogRef = this.matDialog.open(XummSignDialogComponent, {
+      width: 'auto',
+      height: 'auto;',
+      data: {xrplAccount: null}
+    });
+
+    dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
+      //console.log('The signin dialog was closed: ' + JSON.stringify(info));
+      this.loadingIssuerAccount = true;
+
+      if(info && info.success && info.account && isValidXRPAddress(info.account)) {
+        this.issuerAccount = info.account;
+        this.validIssuer = true;
+
+        //load balance data
+
+        let accountInfoCommand:any = {
+          command: "account_info",
+          account: info.account,
+          "strict": true,
+          ledger_index: "validated"
+        }
+
+        let accountLinesCommand:any = {
+          command: "account_lines",
+          account: info.account,
+          ledger_index: "validated"
+        }
+
+        let promises:any[] = [];
+        promises.push(this.loadAccountData())
+        promises.push(this.xrplWebSocket.getWebsocketMessage('blackhole_component_2', accountLinesCommand, this.isTestMode))
+
+        promises = await Promise.all(promises);
+
+        let accountLines:any = promises[1];
+
+        console.log("accountLines: " + JSON.stringify(accountLines));
+
+        
+        this.hasTokenBalance = accountLines && accountLines.result && accountLines.result.lines && accountLines.result.lines.length > 0 && accountLines.result.lines.filter(line => Number(line.balance) > 0).length > 0;
+
+        this.loadingIssuerAccount = false;
+      } else {
+        this.issuerAccount = null;
+        this.validIssuer = false;
+        this.loadingIssuerAccount = false;
+      }
+    });
+  }
+
+  signInWithRecipientAccount() {
+    const dialogRef = this.matDialog.open(XummSignDialogComponent, {
+      width: 'auto',
+      height: 'auto;',
+      data: {xrplAccount: null}
+    });
+
+    dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
+      //console.log('The signin dialog was closed: ' + JSON.stringify(info));
+      this.loadingIssuerAccount = true;
+
+      if(info && info.success && info.account && isValidXRPAddress(info.account)) {
+        await this.loadAccountDataRecipient(info.account);
+        this.recipientAccount = info.account;
+        this.validRecipient = true;
+
+        //load balance data
+
+        this.loadingIssuerAccount = false;
+      } else {
+        this.recipientAccount = null;
+        this.validRecipient = false;
+        this.loadingIssuerAccount = false;
+      }
+    });
+  }
+
   payForBlackhole() {
     let genericBackendRequest:GenericBackendPostRequest = {
+      options: {
+        xrplAccount: this.getIssuer()
+      },
       payload: {
         txjson: {
+          Account: this.getIssuer(),
           TransactionType: "Payment",
           Memos : [{Memo: {MemoType: Buffer.from("[https://xumm.community]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment to blackhole XRPL account.", 'utf8').toString('hex').toUpperCase()}}]
         },
@@ -95,18 +183,17 @@ export class BlackholeAccount implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
       //console.log('The generic dialog was closed: ' + JSON.stringify(info));
+      this.paymentInitiated = true;
 
       if(info && info.success && info.account && (!info.testnet || this.isTestMode)) {
         if(isValidXRPAddress(info.account))
           this.issuerAccount = info.account;
           this.validIssuer = true;
           this.paymentNotSuccessfull = false;
-          this.paymentNotFound = false;
           await this.loadAccountData();
           this.googleAnalytics.analyticsEventEmitter('pay_for_blackhole', 'blackhole', 'blackhole_component');
       } else {
         this.paymentNotSuccessfull = true;
-        this.paymentNotFound = false;
       }
     });
   }
@@ -122,7 +209,7 @@ export class BlackholeAccount implements OnInit {
         "strict": true,
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("easyToken", account_info_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage("blackhole_component", account_info_request, this.isTestMode);
       //console.log("websocket message: " + JSON.stringify(message));
       if(message.status && message.type && message.type === 'response') {
         if(message.status === 'success') {
@@ -131,6 +218,7 @@ export class BlackholeAccount implements OnInit {
             //console.log("isser_account_info: " + JSON.stringify(this.issuer_account_info));
             this.blackholeDisallowXrp = flagUtil.isDisallowXRPEnabled(this.issuer_account_info.Flags);
             this.blackholeMasterDisabled = flagUtil.isMasterKeyDisabled(this.issuer_account_info.Flags)
+            this.hasLowXrpBalance = this.issuer_account_info  && this.issuer_account_info.Balance && parseInt(this.issuer_account_info.Balance) < 3000000;
 
           } else {
             //console.log(JSON.stringify(message));
@@ -150,6 +238,68 @@ export class BlackholeAccount implements OnInit {
         this.loadingIssuerAccount = false;
       }
     }
+  }
+
+  async loadAccountDataRecipient(xrplAccount: string) {
+    this.loadingIssuerAccount = true;
+    //this.infoLabel = "loading " + xrplAccount;
+    if(xrplAccount && isValidXRPAddress(xrplAccount)) {
+      this.loadingIssuerAccount = true;
+      
+      let account_info_request:any = {
+        command: "account_info",
+        account: xrplAccount,
+        "strict": true,
+      }
+
+      let message_acc_info:any = await this.xrplWebSocket.getWebsocketMessage("blackhole_component", account_info_request, this.isTestMode);
+      //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
+      //this.infoLabel = JSON.stringify(message_acc_info);
+      if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
+        if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
+          this.recipient_account_info = message_acc_info.result.account_data;
+        } else {
+          this.recipient_account_info = message_acc_info;
+        }
+      } else {
+        this.recipient_account_info = "no account";
+      }
+    } else {
+      this.recipient_account_info = "no account"
+    }
+  }
+
+  sendRemainingXRP() {
+    let genericBackendRequest:GenericBackendPostRequest = {
+      options: {
+        issuing: true,
+        xrplAccount: this.getIssuer()
+      },
+      payload: {
+        txjson: {
+          Account: this.getIssuer(),
+          TransactionType: "Payment",
+          Destination: this.recipient_account_info.Account,
+          Amount: this.getAvailableBalanceIssuer()*1000000+""
+        },
+        custom_meta: {
+          instruction: "- Sending " + this.getAvailableBalanceIssuer() + " XRP to an account of your choice.\n\n- Please sign with the ISSUER account!"
+        }
+      }
+    }
+
+    const dialogRef = this.matDialog.open(GenericPayloadQRDialog, {
+      width: 'auto',
+      height: 'auto;',
+      data: genericBackendRequest
+    });
+
+    dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
+      //console.log('The generic dialog was closed: ' + JSON.stringify(info));
+      //refresh account data
+      await this.loadAccountData();
+    });
+
   }
 
   disallowIncomingXrp() {
@@ -258,6 +408,27 @@ export class BlackholeAccount implements OnInit {
 
   }
 
+  getAvailableBalanceIssuer(): number {
+    return this.getAvailableBalance(this.issuer_account_info);
+  }
+
+  getAvailableBalance(accountInfo: any): number {
+    if(accountInfo && accountInfo.Balance) {
+      let balance:number = Number(accountInfo.Balance);
+      balance = balance - (20*1000000); //deduct acc reserve
+      balance = balance - (accountInfo.OwnerCount * 5 * 1000000); //deduct owner count
+      balance = balance/1000000;
+
+      if(balance >= 0.000001)
+        return balance
+      else
+        return 0;
+      
+    } else {
+      return 0;
+    }
+  }
+
   moveNext() {
     // complete the current step
     this.stepper.selected.completed = true;
@@ -286,17 +457,18 @@ export class BlackholeAccount implements OnInit {
   clearIssuerAccount() {
     this.issuerAccount = null;
     this.loadingIssuerAccount = false;
-    this.paymentNotFound = false;
-    this.paymentNotSuccessfull = false;
+    this.paymentNotSuccessfull = true;
     this.validIssuer = false;
     this.issuer_account_info = null;
+    this.hasTokenBalance = false;
+    this.hasLowXrpBalance = false;
   }
 
   reset() {
     this.isTestMode = false;
     this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = this.checkBoxDisclaimer = this.checkBoxIssuingText = this.checkBoxIssuerInfo = false;
     this.issuerAccount = this.issuer_account_info = null;
-    this.validIssuer = this.paymentNotFound = this.paymentNotSuccessfull = false;
+    this.validIssuer = this.paymentNotSuccessfull = this.hasLowXrpBalance = this.hasTokenBalance = false;
     this.checkBoxBlackhole1 = this.checkBoxBlackhole2 = this.checkBoxBlackhole3 = this.checkBoxBlackhole4 =this.checkBoxBlackhole5 = false;
     this.blackholeMasterDisabled = this.blackholeRegularKeySet = this.blackholeDisallowXrp =  false;
     this.stepper.reset();

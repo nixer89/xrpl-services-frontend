@@ -120,10 +120,17 @@
       <ng-container matColumnDef="currency">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
           <mat-cell *matCellDef="let row">
-              <span fxShow fxHide.xs >
+              <span fxShow fxHide.xs fxLayout="row">
                 <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
+                <div *ngIf="row.isHot">
+                  &nbsp;<i #tooltip="matTooltip"
+                  matTooltip="{{row.newTrustlines}} new TrustLines in 24h"
+                  matTooltipPosition="above"
+                  class="material-icons" 
+                  style="color: #FF6B6B; font-size: 1.2em;">local_fire_department</i>
+                </div>
               </span>
-              <span fxShow.xs fxHide >
+              <span fxShow.xs fxHide fxLayout="row">
                 <b>Token Currency Code:</b>&nbsp;
                 <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
               </span>
