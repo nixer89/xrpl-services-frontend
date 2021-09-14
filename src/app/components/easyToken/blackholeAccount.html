@@ -222,10 +222,6 @@
             </i>
             <label>You have successfully lost all access to the issuer account {{getIssuer()}}</label>
           </div>
-          <div fxLayoutGap="0.5em" style="padding-top: 0.5em;">
-            <button mat-raised-button color="primary" (click)="moveNext()" [disabled]="checkBoxBlackhole5 && !blackholeRegularKeySet && !blackholeMasterDisabled">{{blackholeRegularKeySet && blackholeMasterDisabled ? 'Next' : 'Skip'}}</button>
-            <button mat-raised-button (click)="moveBack()">Back</button>
-          </div>
         </mat-card>
       </mat-step>
     </mat-vertical-stepper>
