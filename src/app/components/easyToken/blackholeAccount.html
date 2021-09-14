@@ -13,6 +13,13 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
+  <mat-card *ngIf="!isDektop()" fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
+    <label class="warning">This function is not available on mobile devices.</label>
+    <label class="warning">Please visit this page from a desktop browser.</label>
+    <br/><br/>
+    <label class="loading">Trust me. Don't even try on mobile. It is not working :)</label>
+  </mat-card>
+
   <mat-card *ngIf="isDektop()" fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
     <mat-vertical-stepper linear #stepper>
       <mat-step completed="false" editable="false">

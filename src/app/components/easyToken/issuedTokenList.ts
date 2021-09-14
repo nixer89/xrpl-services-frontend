@@ -86,7 +86,7 @@ export class IssuedTokenList implements OnInit {
         if(hotToken['_id'].issuer === issuer.account) {
           issuer.isHot = true;
           issuer.newTrustlines = hotToken.count;
-          console.log(issuer.account + " is hot!");
+          //console.log(issuer.account + " is hot!");
         }
       })
     })
