@@ -1,4 +1,4 @@
-import { webSocket } from 'rxjs/webSocket';
+import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Injectable, Optional, SkipSelf } from '@angular/core';
 
 @Injectable()
@@ -82,9 +82,26 @@ export class XRPLWebsocket {
     }
 
     async send(command:any): Promise<any> {
-        console.log("offers command: " + JSON.stringify(command));
-        
-        return this.getWebsocketMessage("liquidity-check", command, false)
+        //console.log("offers command: " + JSON.stringify(command));
+
+        let newWebsocket:WebSocketSubject<any> = webSocket('wss://xrplcluster.com');
+
+        return new Promise((resolve, reject) => {
+            newWebsocket.asObservable().subscribe(async message => {
+                //console.log(JSON.stringify(message));
+                
+                if(message && message.error) {
+                    reject("error");    
+                } else {
+                    resolve(message.result);
+                }               
+            }, async error => {
+                reject("error");
+            });
+
+            //console.log("setting up command: " + JSON.stringify(command))
+            newWebsocket.next(command);
+        }); 
     }
 }
 

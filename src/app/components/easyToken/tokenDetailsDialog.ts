@@ -25,6 +25,12 @@ export class TokenDetailsDialog implements OnInit {
 
     creationDate:any = null;
 
+    loadingLiquidity:boolean = true;
+    liquidityCheckFailed:boolean = false;
+    fullStars:number[] = [];
+    halfStars: number[] = [];
+    emptyStars: number[] = [1,2,3,4,5];
+
     constructor(
         private app: AppService,
         private xrplWebSocket: XRPLWebsocket,
@@ -35,6 +41,7 @@ export class TokenDetailsDialog implements OnInit {
         }
 
     async ngOnInit() {
+        this.loadingLiquidity = true;
         this.checkLiquidity = CheckLiquidityClass.Instance;
 
         if(this.localStorage && !this.localStorage.get("darkMode")) {
@@ -62,6 +69,9 @@ export class TokenDetailsDialog implements OnInit {
         let results:any[] = await Promise.all(promises)
 
         let message_acc_info:any = results[0];
+
+        this.creationDate = results[1];
+
         //console.log("token-information account info: " + JSON.stringify(message_acc_info));
     
         if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
@@ -78,9 +88,32 @@ export class TokenDetailsDialog implements OnInit {
             this.signerList = null;
         }
 
-        //await this.checkLiquidity.checkLiquidity(this.tokenIssuer.account, this.tokenIssuer.currency);
+        console.log("currency: " +this.tokenIssuer.currency)
+        let liquidityIndex = await this.checkLiquidity.checkLiquidity(this.tokenIssuer.account, normalizer.getCurrencyCodeForXRPL(this.tokenIssuer.currency));
 
-        this.creationDate = results[1];
+        if(liquidityIndex == -1) {
+            this.liquidityCheckFailed = true;
+        } else {
+
+            let fullStarsIndex = Math.floor(liquidityIndex);
+            for(let i = 0; i < fullStarsIndex;i++)
+                this.fullStars.push(1);
+
+            if(liquidityIndex%1 == 0.5)
+                this.halfStars.push(1);
+            
+            for(let i = 0 ; i < (this.fullStars.length + this.halfStars.length);i++)
+                this.emptyStars.pop()
+
+            console.log("liquidityIndex: "+ liquidityIndex);
+            
+            console.log("fullStars "+ this.fullStars.length);
+            console.log("halfStars "+ this.halfStars.length);
+            console.log("emptyStars "+ this.emptyStars.length);
+        }
+
+        this.loadingLiquidity = false;
+
         //console.log("token creation date: " + this.creationDate.date);
     }
 

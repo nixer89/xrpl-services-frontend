@@ -1,8 +1,13 @@
 import {
-    LiquidityCheck,
-    Params as LiquidityCheckParams,
-    RatesInCurrency
-  } from "./liquidity"
+  LiquidityCheck,
+  Params as LiquidityCheckParams,
+  Result as LiquidityResult,
+  RatesInCurrency,
+  Errors,
+  Options,
+} from 'xrpl-orderbook-reader';
+
+  import { LedgerExchange } from './ledgerExchange'
   
   const options = {
     timeoutSeconds: 10,
@@ -27,50 +32,58 @@ import {
         return this._instance || (this._instance = new this());
     }
   
-    async checkLiquidity(issuer:string, currency: string) {
+    async checkLiquidity(issuer:string, currency: string): Promise<number> {
 
-      if(!this.isRunning) {
+      let liquidityIndex = -1;
 
-        this.isRunning = true;
+      try {
 
-        const pairs = [
-          {issuer: issuer, currency: currency},
-        ]
-      
-        const data = await Promise.all(
-          pairs.map(
-            async p => {
-              return await Promise.all([100].map(async a => {
-                const Params: LiquidityCheckParams = {
-                  trade: {
-                    from: {currency: 'XRP'},
+        if(!this.isRunning) {
+
+          this.isRunning = true;
+
+          const pair = {issuer: issuer, currency: currency, displayName: currency};
+          
+        
+          let data = await Promise.all(
+                await Promise.all([100, 1000, 2500, 5000, 10000].map(async a => {
+                        
+                  const Check = new LedgerExchange(pair)
+                  Check.initialize();
+                  const r = await Check.getLiquidity('sell', a);
+        
+                  return {
+                    name: pair.displayName,
                     amount: a,
-                    to: {currency: p.currency, issuer: p.issuer}
-                  },
-                  options
+                    rate: r.rate,
+                    errors: r.errors
+                  }
                 }
-      
-                const Check = new LiquidityCheck(Params)
-                const r = await Check.get()
-      
-                return {
-                  amount: a,
-                  rate: r.rate,
-                  errors: r.errors
-                }
-              }
+              )
             )
-          )
-        }))
-      
-        // console.table(data.reduce((a, b) => {
-        //   b.forEach(r => a.push(r))
-        //   return a
-        // }, []))
-        data.forEach(d => console.table(d))
+          );
+        
+          liquidityIndex = 5;
+          data.forEach(d => {
+            if(d && d.errors) {
+              if(d.errors.length == 1)
+                liquidityIndex -= 0.5;
+              else if(d.errors.length > 1)
+                liquidityIndex -= 1;
+            } else {
+              liquidityIndex = -1
+            }
+            console.log(d)
+          })
 
-        this.isRunning = false;
+          this.isRunning = false;
+        }
+      } catch(err) {
+        console.log(err)
+        return -1;
       }
+
+      return liquidityIndex;
     
     }
 }
