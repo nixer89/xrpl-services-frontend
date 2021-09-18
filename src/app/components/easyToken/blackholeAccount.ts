@@ -218,7 +218,7 @@ export class BlackholeAccount implements OnInit {
             //console.log("isser_account_info: " + JSON.stringify(this.issuer_account_info));
             this.blackholeDisallowXrp = flagUtil.isDisallowXRPEnabled(this.issuer_account_info.Flags);
             this.blackholeMasterDisabled = flagUtil.isMasterKeyDisabled(this.issuer_account_info.Flags)
-            this.hasLowXrpBalance = this.issuer_account_info  && this.issuer_account_info.Balance && parseInt(this.issuer_account_info.Balance) < 3000000;
+            this.hasLowXrpBalance = this.issuer_account_info  && this.issuer_account_info.Balance && parseInt(this.issuer_account_info.Balance) < 5000000;
 
           } else {
             //console.log(JSON.stringify(message));
