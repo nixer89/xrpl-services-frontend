@@ -74,21 +74,21 @@
                     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
                 </div>
                 <div *ngIf="!loadingLiquidity && !liquidityCheckFailed" fxLayout="row">
-                    <li *ngFor="let in of fullStars">
+                    <div *ngFor="let in of fullStars">
                         <i class="material-icons" style="color:#FFB300 ; font-size: 1.4em;">
                             star
                         </i>
-                    </li>
-                    <li *ngFor="let in of halfStars">
+                    </div>
+                    <div *ngFor="let in of halfStars">
                         <i class="material-icons" style="color:#FFB300 ; font-size: 1.4em;">
                             star_half
                         </i>
-                    </li>
-                    <li *ngFor="let in of emptyStars">
+                    </div>
+                    <div *ngFor="let in of emptyStars">
                         <i class="material-icons" style="color:#FFB300 ; font-size: 1.4em;">
                             star_outline
                         </i>
-                    </li>
+                    </div>
                 </div>
                 <div *ngIf="!loadingLiquidity && liquidityCheckFailed" fxLayout="row">
                     <label class="warning">Liquidity check failed!</label>

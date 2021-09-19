@@ -1,22 +1,6 @@
-import {
-  LiquidityCheck,
-  Params as LiquidityCheckParams,
-  Result as LiquidityResult,
-  RatesInCurrency,
-  Errors,
-  Options,
-} from 'xrpl-orderbook-reader';
-
+  import { Errors } from 'xrpl-orderbook-reader';
   import { LedgerExchange } from './ledgerExchange'
-  
-  const options = {
-    timeoutSeconds: 10,
-    rates: RatesInCurrency.to,
-    maxSpreadPercentage: 6,
-    maxSlippagePercentage: 4,
-    maxSlippagePercentageReverse: 4,
-    maxBookLines: 500
-  }
+
 
   export class CheckLiquidityClass {
 
@@ -66,7 +50,9 @@ import {
           liquidityIndex = 5;
           data.forEach(d => {
             if(d && d.errors) {
-              if(d.errors.length == 1)
+              if(d.errors.includes(Errors.REQUESTED_LIQUIDITY_NOT_AVAILABLE))
+                liquidityIndex -= 1;
+              else if(d.errors.length == 1)
                 liquidityIndex -= 0.5;
               else if(d.errors.length > 1)
                 liquidityIndex -= 1;

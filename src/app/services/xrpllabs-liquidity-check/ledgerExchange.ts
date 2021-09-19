@@ -1,11 +1,8 @@
-import { has } from 'lodash';
-
 import {
     LiquidityCheck,
     Params as LiquidityCheckParams,
     Result as LiquidityResult,
     RatesInCurrency,
-    Errors,
     Options,
 } from 'xrpl-orderbook-reader';
 
