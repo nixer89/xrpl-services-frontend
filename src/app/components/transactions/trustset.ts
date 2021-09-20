@@ -141,7 +141,7 @@ export class TrustSetComponent implements OnInit, OnDestroy {
 
           //console.log(JSON.stringify(issuer_account_info));
 
-          this.issuerHasDefaultRipple = !flagUtil.isDefaultRippleEnabled(issuer_account_info.Flags);
+          this.issuerHasDefaultRipple = flagUtil.isDefaultRippleEnabled(issuer_account_info.Flags);
 
         } else {
           this.issuerHasDefaultRipple = false;
