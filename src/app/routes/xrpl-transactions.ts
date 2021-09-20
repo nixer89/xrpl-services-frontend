@@ -129,7 +129,8 @@ export class XrplTransactionsComponent implements OnInit {
     //await this.loadAccountData(false);
   }
 
-  changeNetwork() {
+  networkChanged() {
+    this.loadFeeReserves()
     this.loadAccountData(false);
   }
 
