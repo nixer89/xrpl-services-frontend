@@ -95,9 +95,9 @@ export class TrustSetComponent implements OnInit, OnDestroy {
         //console.log("subscribe set: " + this.issuedCurrencyInput);
         this.limitInput = params.limit;
 
-        await this.issuerAccountChanged();
-
         this.mep.open();
+
+        await this.issuerAccountChanged();
 
         if(this.isValidTrustSet) {
           setTimeout(() => {
