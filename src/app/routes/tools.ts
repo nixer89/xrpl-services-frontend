@@ -179,7 +179,8 @@ export class Tools implements OnInit {
     }
   }
 
-  changeNetwork() {
+  networkChanged() {
+    this.loadFeeReserves();
     this.loadAccountData(false);
   }
 
