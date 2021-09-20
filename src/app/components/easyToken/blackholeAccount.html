@@ -25,7 +25,7 @@
       <mat-step completed="false" editable="false">
           <mat-card fxLayout="column" fxLayoutGap="0.5em">
               <ng-template matStepLabel>Description</ng-template>
-              <label>To black hole an account means to loose ALL ACCESS to it. You won't be able to recover this access. In fact, NO ONE CAN!.</label>
+              <label>To black hole an account means to loose ALL ACCESS to it. You won't be able to recover this access. In fact, NO ONE CAN !</label>
               <label>We will need to execute some transactions in a specific order.</label><br/><br/>
 
               <label class="warning">We will charge you 5 XRP for using this service.</label>
@@ -73,16 +73,16 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card fxLayout="column" fxLayoutGap="1em">
           <ng-template matStepLabel>Issuer account</ng-template>
           <label class="loading">What is the XRP Ledger account you want to black hole?</label>
           <label>You need to sign in with the account you want to loose all access for!</label>
           <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
-            <div *ngIf="!getIssuer() || !validIssuer">
+            <div *ngIf="!getIssuer() || !validIssuer" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="0.5em">
               <button mat-button matTooltip="SignIn via XUMM." matTooltipPosition="above" (click)="loginForBlackhole()" style="padding:0px;">
                 <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
               </button>
-              &nbsp;<label class="loading">Sign in with the account you want to black hole!</label>
+              <label class="loading">Sign in with the account you want to black hole!</label>
             </div>
 
             <div fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !loadingIssuerAccount">
