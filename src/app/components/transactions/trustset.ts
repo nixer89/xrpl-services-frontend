@@ -76,9 +76,9 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       },500);
     });
 
-    this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
-      this.clearInputs()
-    });
+    //this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
+    //  this.clearInputs()
+    //});
 
     this.route.queryParams.subscribe(async params => {
       if(params.issuer && params.currency && params.limit) {
