@@ -14,7 +14,7 @@ import * as flagUtil from '../../utils/flagutils'
   selector: 'trustset',
   templateUrl: './trustset.html'
 })
-export class TrustSetComponent implements OnInit, OnDestroy {
+export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private TRUST_SET_FLAG_SET_NO_RIPPLE:number = 131072;
   private TRUST_SET_FLAG_CLEAR_NO_RIPPLE:number = 262144;
@@ -95,8 +95,6 @@ export class TrustSetComponent implements OnInit, OnDestroy {
         //console.log("subscribe set: " + this.issuedCurrencyInput);
         this.limitInput = params.limit;
 
-        this.mep.open();
-
         await this.issuerAccountChanged();
 
         if(this.isValidTrustSet) {
@@ -106,6 +104,11 @@ export class TrustSetComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  ngAfterViewInit() {
+    if(this.issuerAccountInput && this.issuedCurrencyInput && this.limitInput)
+      this.mep.open();
   }
 
   ngOnDestroy() {
@@ -233,13 +236,6 @@ export class TrustSetComponent implements OnInit, OnDestroy {
     this.validCurrency = this.issuedCurrencyInput && this.issuedCurrencyInput.trim().length >= 3 && this.issuedCurrencyInput.length <= 40;
     this.validAddress = this.issuerAccountInput && this.issuerAccountInput.trim().length > 0 && isValidXRPAddress(this.issuerAccountInput.trim());
 
-    if(this.validAddress && (this.issuerAccountInput.trim() != this.lastKnownAddress)) {
-      //console.log("issuerAccountInput: " +this.issuerAccountInput)
-      //console.log("lastKnownAddress: " +this.lastKnownAddress)
-      //load new issuer data!
-      await this.loadAccountDataIssuer(this.issuerAccountInput);
-    }
-
     if(this.validCurrency) {
       if((!this.lastKnownCurrency || this.lastKnownCurrency.trim().length == 0 ) && (!this.limitInput || this.limitInput.trim().length == 0))
         this.limitInput = "1000000";
@@ -285,6 +281,13 @@ export class TrustSetComponent implements OnInit, OnDestroy {
 
     if(this.validLimit)
       this.validLimit = this.limitInput && parseFloat(this.limitInput) >= 0;
+
+    if(this.validAddress && (this.issuerAccountInput.trim() != this.lastKnownAddress)) {
+      //console.log("issuerAccountInput: " +this.issuerAccountInput)
+      //console.log("lastKnownAddress: " +this.lastKnownAddress)
+      //load new issuer data!
+      await this.loadAccountDataIssuer(this.issuerAccountInput);
+    }
 
     this.isValidTrustSet = this.validAddress && this.validCurrency && this.validLimit && this.issuerHasDefaultRipple;
 
