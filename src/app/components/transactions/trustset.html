@@ -51,7 +51,7 @@
       </div>
       <div *ngIf="!loadingIssuerData" fxLayout="column" fxLayoutAlign="start start"  fxLayoutGap="0.5em">
         <div>
-          <label class="warning" *ngIf="validAddress && !issuerHasDefaultRipple">The issuer has the "DefaultRipple" flag not set. We do not allow you to set this trust line. Please contact the token issuer to fix this problem!</label>
+          <label class="warning" *ngIf="validAddress && !issuerHasDefaultRipple">The issuer has the "DefaultRipple" flag not set. We do not allow you to set this trust line because you will not be able to transfer your tokens to others, and will possibly be unable to ever remove the TrustLine again. Please contact the token issuer to fix this problem!</label>
         </div>
         
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em">
