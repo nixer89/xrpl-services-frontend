@@ -7,6 +7,8 @@ import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { isValidXRPAddress } from 'src/app/utils/utils';
+import { XRPLWebsocket } from 'src/app/services/xrplWebSocket';
+import * as flagUtil from '../../utils/flagutils'
 
 @Component({
   selector: 'trustset',
@@ -19,7 +21,9 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   private TRUST_SET_FLAG_SET_FREEZE:number = 1048576;
   private TRUST_SET_FLAG_CLEAR_FREEZE:number = 2097152;
 
-  constructor(private route: ActivatedRoute,private googleAnalytics: GoogleAnalyticsService) { }
+  constructor(private xrplWebSocket: XRPLWebsocket,
+              private route: ActivatedRoute,
+              private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -61,9 +65,12 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   lastKnownAddress:string = null;
   lastKnownCurrency:string = null;
 
+  loadingIssuerData:boolean = false;
+  issuerHasDefaultRipple:boolean = false;
+
   isEditMode:boolean = false;
 
-  ngOnInit() {
+  async ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received: " + JSON.stringify(accountData));
       this.originalAccountInfo = accountData.info;
@@ -76,9 +83,9 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       },500);
     });
 
-    this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
-      this.clearInputs()
-    });
+    //this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
+    //  this.clearInputs()
+    //});
 
     this.route.queryParams.subscribe(async params => {
       if(params.issuer && params.currency && params.limit) {
@@ -88,18 +95,20 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         //console.log("subscribe set: " + this.issuedCurrencyInput);
         this.limitInput = params.limit;
 
-        this.checkChanges();
+        await this.issuerAccountChanged();
+
+        if(this.isValidTrustSet) {
+          setTimeout(() => {
+            this.sendPayloadToXumm()
+          });
+        }
       }
     });
   }
 
   ngAfterViewInit() {
-    if(this.isValidTrustSet) {
-      setTimeout(() => {
-        this.mep.open();
-        this.sendPayloadToXumm()
-      });
-    }
+    if(this.issuerAccountInput && this.issuedCurrencyInput && this.limitInput)
+      this.mep.open();
   }
 
   ngOnDestroy() {
@@ -114,6 +123,38 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     if(this.issuerAccountChangedSubject)
       this.issuerAccountChangedSubject.unsubscribe();
+  }
+
+  async loadAccountDataIssuer(xrplAccount: string) {
+    //this.infoLabel = "loading " + xrplAccount;
+    if(xrplAccount && isValidXRPAddress(xrplAccount)) {
+      
+      let account_info_request:any = {
+        command: "account_info",
+        account: xrplAccount,
+        "strict": true,
+      }
+
+      let message_acc_info:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline", account_info_request, this.testMode);
+      //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
+      //this.infoLabel = JSON.stringify(message_acc_info);
+      if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
+        if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
+          let issuer_account_info = message_acc_info.result.account_data;
+
+          //console.log(JSON.stringify(issuer_account_info));
+
+          this.issuerHasDefaultRipple = flagUtil.isDefaultRippleEnabled(issuer_account_info.Flags);
+
+        } else {
+          this.issuerHasDefaultRipple = false;
+        }
+      } else {
+        this.issuerHasDefaultRipple = false;
+      }
+    } else {
+      this.issuerHasDefaultRipple = false;
+    }
   }
 
   sendPayloadToXumm() {
@@ -155,22 +196,25 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onPayload.emit(payload);
   }
 
-  issuerAccountChanged() {
+  async issuerAccountChanged() {
     //console.log("issuerAccountChanged: " + this.issuedCurrencyInput);
-    this.checkChanges();
+    if(this.issuerAccountInput.trim() != this.lastKnownAddress) {
+      await this.checkChanges();
 
-    if(this.validAddress && (this.issuerAccountInput.trim() != this.lastKnownAddress)) {
-      this.lastKnownAddress = this.issuerAccountInput.trim();
-      //console.log("emitting issuerAccountChanged event");
-      this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
-    } else if(!this.validAddress) {
-      this.lastKnownAddress = null;
-      this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
+      if(this.validAddress) {
+        this.lastKnownAddress = this.issuerAccountInput.trim();
+        //console.log("emitting issuerAccountChanged event");
+        this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
+      } else if(!this.validAddress) {
+        this.lastKnownAddress = null;
+        this.issuerHasDefaultRipple = false;
+        this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
+      }
     }
   }
 
-  currencyChanged() {
-    this.checkChanges();
+  async currencyChanged() {
+    await this.checkChanges();
 
     if(!this.validCurrency && this.lastKnownCurrency && this.validAddress) {
       //currency changed
@@ -182,10 +226,12 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  checkChanges() {
+  async checkChanges() {
     //console.log("amountInput: " + this.amountInput);
     //console.log("destinationInput: " + this.destinationInput);
     //console.log(this.issuerAccountInput);
+
+    this.loadingIssuerData = true;
 
     this.validCurrency = this.issuedCurrencyInput && this.issuedCurrencyInput.trim().length >= 3 && this.issuedCurrencyInput.length <= 40;
     this.validAddress = this.issuerAccountInput && this.issuerAccountInput.trim().length > 0 && isValidXRPAddress(this.issuerAccountInput.trim());
@@ -236,7 +282,16 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     if(this.validLimit)
       this.validLimit = this.limitInput && parseFloat(this.limitInput) >= 0;
 
-    this.isValidTrustSet = this.validAddress && this.validCurrency && this.validLimit;
+    if(this.validAddress && (this.issuerAccountInput.trim() != this.lastKnownAddress)) {
+      //console.log("issuerAccountInput: " +this.issuerAccountInput)
+      //console.log("lastKnownAddress: " +this.lastKnownAddress)
+      //load new issuer data!
+      await this.loadAccountDataIssuer(this.issuerAccountInput);
+    }
+
+    this.isValidTrustSet = this.validAddress && this.validCurrency && this.validLimit && this.issuerHasDefaultRipple;
+
+    this.loadingIssuerData = false;
 
     this.issuedCurrencySelected = false;
 
@@ -254,13 +309,13 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.issuerAccountChangedSubject.next({account: null, mode: this.testMode});
   }
 
-  onTrustLineEdit(trustline:TrustLine) {
+  async onTrustLineEdit(trustline:TrustLine) {
     this.isEditMode = true;
     this.issuerAccountInput = trustline.account;
     this.issuedCurrencyInput = trustline.currency;
     this.limitInput = trustline.limit;
     //console.log("onTrustLineEdit: " + this.issuedCurrencyInput);
-    this.checkChanges();
+    await this.checkChanges();
   }
 
   onDisableRippling(trustline:TrustLine) {
@@ -300,14 +355,14 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onPayload.emit(payload);
   }
 
-  onIssuedCurrencyFound(token:Token) {
+  async onIssuedCurrencyFound(token:Token) {
 
     this.issuedCurrencyInput = token.currency;
     this.limitInput = token.amount;
 
     //console.log("onIssuedCurrencyFound: " + this.issuedCurrencyInput);
 
-    this.checkChanges();
+    await this.checkChanges();
 
     this.issuedCurrencySelected = true;
 
@@ -349,9 +404,9 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onPayload.emit(payload);
   }
 
-  cancelEdit() {
+  async cancelEdit() {
     this.issuerAccountInput = this.limitInput = this.issuedCurrencyInput = null;
-    this.checkChanges();
+    await this.checkChanges();
     this.isEditMode = false;
   }
 

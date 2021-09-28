@@ -78,26 +78,22 @@ export class IssuedTokenList implements OnInit {
     this.hotToken1D = results[1].slice(0,9);
     //this.hotToken1W = results[2];
     //this.hotToken1M = results[3];
-
-    //console.time("scanning issuer")
-
-    this.hotToken1D.forEach(hotToken => {
-      issuers.find(issuer => {
-        if(hotToken['_id'].issuer === issuer.account) {
-          issuer.isHot = true;
-          issuer.newTrustlines = hotToken.count;
-          //console.log(issuer.account + " is hot!");
-        }
-      })
-    })
-
-    //console.timeEnd("scanning issuer")
-
-    this.loading = false;
+    
   
     this.datasource = new MatTableDataSource(issuers);
 
     if(issuers != null) {
+
+      this.hotToken1D.forEach(hotToken => {
+        issuers.find(issuer => {
+          if(hotToken['_id'].issuer === issuer.account) {
+            issuer.isHot = true;
+            issuer.newTrustlines = hotToken.count;
+            //console.log(issuer.account + " is hot!");
+          }
+        })
+      });
+
       this.datasource.paginator = this.paginator;
       this.datasource.sort = this.sort;
 
@@ -132,6 +128,8 @@ export class IssuedTokenList implements OnInit {
 
       this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
     }
+
+    this.loading = false;
 
     //console.log("Hottest token 1D: " + JSON.stringify(this.hotToken1D));
     //console.log("Hottest token 1W: " + JSON.stringify(this.hotToken1W));

@@ -45,18 +45,30 @@
       </div>
     </form>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em" style="padding-top: 2em;">
-      <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidTrustSet">
-        Send Trust Set to XUMM
-      </button>
-      <button *ngIf="isEditMode" mat-raised-button color="secondary" (click)="cancelEdit()">
-        Cancel Edit
-      </button>
-      <button *ngIf="isValidTrustSet" mat-raised-button color="secondary" (click)="clearInputs()">
-        Clear Inputs
-      </button>
-      <label *ngIf="!issuerAccountInput || !validAddress">Please enter a valid XRPL address.</label>
-      <label *ngIf="validAddress && ( !issuedCurrencyInput || !validCurrency )">Please enter a valid Token currency code.</label>
-      <label *ngIf="validAddress && validCurrency && ( !limitInput || !validLimit )">Please enter a valid Limit for this TrustLine.</label>
+      <div *ngIf="loadingIssuerData" fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em">
+        <label>Loading ...&nbsp;</label>
+        <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+      </div>
+      <div *ngIf="!loadingIssuerData" fxLayout="column" fxLayoutAlign="start start"  fxLayoutGap="0.5em">
+        <div>
+          <label class="warning" *ngIf="validAddress && !issuerHasDefaultRipple">The issuer has the "DefaultRipple" flag not set. We do not allow you to set this trust line because you will not be able to transfer your tokens to others, and will possibly be unable to ever remove the TrustLine again. Please contact the token issuer to fix this problem!</label>
+        </div>
+        
+        <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em">
+          <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidTrustSet || !issuerHasDefaultRipple || loadingIssuerData">
+            Send Trust Set to XUMM
+          </button>
+          <button *ngIf="isEditMode" mat-raised-button color="secondary" (click)="cancelEdit()">
+            Cancel Edit
+          </button>
+          <button *ngIf="isValidTrustSet" mat-raised-button color="secondary" (click)="clearInputs()">
+            Clear Inputs
+          </button>
+          <label *ngIf="!issuerAccountInput || !validAddress">Please enter a valid XRPL address.</label>
+          <label *ngIf="validAddress && ( !issuedCurrencyInput || !validCurrency )">Please enter a valid Token currency code.</label>
+          <label *ngIf="validAddress && validCurrency && ( !limitInput || !validLimit )">Please enter a valid Limit for this TrustLine.</label>
+        </div>
+      </div>
     </div>
   </div>
 </mat-expansion-panel>

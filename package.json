@@ -1,6 +1,6 @@
 {
   "name": "xumm-community",
-  "version": "2.10.4",
+  "version": "2.10.9",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
@@ -31,7 +31,7 @@
     "@ctrl/ngx-codemirror": "^4.1.1",
     "angular-2-local-storage": "^3.0.2",
     "buffer": "^6.0.3",
-    "codemirror": "^5.62.3",
+    "codemirror": "^5.63.0",
     "copy-to-clipboard": "^3.3.1",
     "email-validator": "^2.0.4",
     "five-bells-condition": "^5.0.1",
