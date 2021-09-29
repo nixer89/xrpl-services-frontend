@@ -1,6 +1,6 @@
 {
   "name": "xumm-community",
-  "version": "2.10.10",
+  "version": "2.10.11",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",

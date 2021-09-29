@@ -89,6 +89,8 @@ export class TokenDetailsDialog implements OnInit {
         }
 
         console.log("currency: " +this.tokenIssuer.currency)
+
+        /**
         let liquidityIndex = await this.checkLiquidity.checkLiquidity(this.tokenIssuer.account, normalizer.getCurrencyCodeForXRPL(this.tokenIssuer.currency));
 
         if(liquidityIndex == -1) {
@@ -111,6 +113,8 @@ export class TokenDetailsDialog implements OnInit {
             console.log("halfStars "+ this.halfStars.length);
             console.log("emptyStars "+ this.emptyStars.length);
         }
+
+        */
 
         this.loadingLiquidity = false;
 
