@@ -5,6 +5,7 @@ import { AccountInfoChanged, GenericBackendPostRequest, TransactionTemplate } fr
 import { XummTypes } from 'xumm-sdk';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { UtilService } from '../../services/util.service';
+import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
   selector: 'rawTransactions',
@@ -24,6 +25,8 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
 
   @ViewChild('inprawjsontransaction') inprawjsontransaction;
   rawJsonTransaction: string = "{}";
+
+  @ViewChild('mep', {static: true}) mep: MatExpansionPanel;
 
   isValidJson:boolean = false;
   errorMsg:string;
