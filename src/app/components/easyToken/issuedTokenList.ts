@@ -41,6 +41,11 @@ export class IssuedTokenList implements OnInit {
   displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers',  'link', 'explorer'];
   datasource:MatTableDataSource<TokenIssuer> = null;
 
+  allTokens: TokenIssuer[] = null;
+  kycTokensOnly: TokenIssuer[] = null;
+
+  showKycOnly:boolean = false;
+
   loading:boolean = false;
 
   pageSize:number = 25;
@@ -50,6 +55,8 @@ export class IssuedTokenList implements OnInit {
   ledgerHash: string;
   ledgerCloseTime: number;
   issuingAccounts: number = 0;
+  numberOfIssuedTokens: number = 0;
+
   accountNameTotal: number = 0;
   currencyCodeTotal: number = 0;
   issuedTokensTotal: number = 0;
@@ -75,19 +82,20 @@ export class IssuedTokenList implements OnInit {
 
     let results = await Promise.all(promises);
 
-    let issuers:TokenIssuer[] = results[0];
+    this.allTokens = results[0];
+    
     this.hotToken1D = results[1];
     //console.log(JSON.stringify(this.hotToken1D));
     //this.hotToken1W = results[2];
     //this.hotToken1M = results[3];
     
   
-    this.datasource = new MatTableDataSource(issuers);
+    this.datasource = new MatTableDataSource(this.allTokens);
 
-    if(issuers != null) {
+    if(this.allTokens != null) {
 
       for(let i = 0; i < 10; i++) {
-        issuers.find(issuer => {
+        this.allTokens.find(issuer => {
           if(this.hotToken1D[i]['_id'].issuer === issuer.account && this.hotToken1D[i]['_id'].currency === normalizer.getCurrencyCodeForXRPL(issuer.currency)) {
             issuer.isHot = true;
             issuer.newTrustlines = this.hotToken1D[i].count;
@@ -128,8 +136,14 @@ export class IssuedTokenList implements OnInit {
         return matches;
       };
 
+      if(this.datasource&& this.datasource.data) {
+        this.numberOfIssuedTokens = this.datasource.data.length;
+      }
+
       this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
     }
+
+    this.kycTokensOnly = this.allTokens.filter(token => token.kyc);
 
     this.loading = false;
 
@@ -279,5 +293,12 @@ export class IssuedTokenList implements OnInit {
       height: 'auto;',
       data: tokenIssuer
     });
+  }
+
+  switchTokenList() {
+    if(this.showKycOnly)
+      this.datasource.data = this.kycTokensOnly
+    else
+      this.datasource.data = this.allTokens;
   }
 }

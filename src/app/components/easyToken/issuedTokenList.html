@@ -14,7 +14,7 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <div fxLayout="column">
+  <div fxLayout="column" fxLayoutGap="0.5em">
     <mat-card fxLayout="column" fxLayoutGap="0.5em">
       <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.5em">
         <label class="warning">Loading XRP Ledger tokens ...&nbsp;</label>
@@ -48,7 +48,7 @@
           </tr>
           <tr>
             <td><label>Issued tokens:&nbsp;</label></td>
-            <td><label class="loading">{{datasource && datasource.data && datasource.data.length}}</label></td>
+            <td><label class="loading">{{numberOfIssuedTokens}}</label></td>
           </tr>
         </table>
         
@@ -67,6 +67,8 @@
       <input matInput (keyup)="applyFilter($event)" placeholder="account, currency, number, ...">
     </mat-form-field>
 
+    <mat-checkbox [(ngModel)]="showKycOnly" class="loading" (change)="switchTokenList()">Show KYC'd issuers only</mat-checkbox>
+
     <!--div fxHide fxShow.xs fxLayout="row" fxLayoutGap="0.3em" style="padding-bottom: 1em">
       <mat-form-field style="width: 100%;">
         <mat-label>Sort table by:</mat-label>
@@ -78,168 +80,171 @@
       </mat-form-field>
     </div-->
 
-    <mat-table [dataSource]="datasource" class="mat-elevation-z8" matSort multiTemplateDataRows matSortActive="trustlines" matSortDirection="desc">
+    <div fxLayout="column">
 
-      <ng-container matColumnDef="account">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer Account </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-            <span fxShow fxHide.xs fxLayout="row" fxLayoutGap="0.3em">
-              <label [innerHTML]="row.account | highlightSearch: filterText"></label>
-            </span>
-            <span fxShow.xs fxHide >
-              <b>Issuer Account:</b>&nbsp;
-              <label [innerHTML]="row.account | highlightSearch: filterText"></label>
-            </span>
-        </mat-cell>
-        <mat-footer-cell *matFooterCellDef><b>Totals: {{uniqueFilteredAccount.size}}</b></mat-footer-cell>
-      </ng-container>
+      <mat-table [dataSource]="datasource" class="mat-elevation-z8" matSort multiTemplateDataRows matSortActive="trustlines" matSortDirection="desc">
 
-      <ng-container matColumnDef="kyc">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer KYC </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-            <span fxShow fxHide.xs fxLayout="row" fyLayoutAlign="center center" fxLayoutGap="0.3em">
-              <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.kyc">
-                <i class="material-icons" style="color: green; font-size: 1.4em;">
-                  check_circle
-                </i>
-              </mat-chip-list>
-            </span>
-            <span fxShow.xs fxHide fxLayout="row">
-              <b>KYC:</b>&nbsp;
-              <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.kyc">
-                <i class="material-icons" style="color: green; font-size: 1.4em;">
-                  check_circle_outline
-                </i>
-              </mat-chip-list>
-            </span>
-        </mat-cell>
-        <mat-footer-cell *matFooterCellDef><b>{{kycAccountsTotal}}</b></mat-footer-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="username">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Accountname </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-            <span fxShow fxHide.xs fxLayout="row">
-              <label [innerHTML]="row.username | highlightSearch: filterText"></label>
-              <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
-            </span>
-            <span fxShow.xs fxHide fxLayout="row">
-              <b>Accountname:</b>&nbsp;
-              <div fxLayout="row">
-                <label [innerHTML]="row.username | highlightSearch: filterText"></label>
-                <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
-              </div>
-            </span>
-        </mat-cell>
-        <mat-footer-cell *matFooterCellDef><b>{{accountNameTotal}}</b></mat-footer-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="currency">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
+        <ng-container matColumnDef="account">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer Account </mat-header-cell>
           <mat-cell *matCellDef="let row">
-              <span fxShow fxHide.xs fxLayout="row">
-                <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
-                <div *ngIf="row.isHot">
-                  &nbsp;<i #tooltip="matTooltip"
-                  matTooltip="{{row.newTrustlines}} new TrustLines in 24h"
-                  matTooltipPosition="above"
-                  class="material-icons" 
-                  style="color: #FF6B6B; font-size: 1.2em;">local_fire_department</i>
-                </div>
-              </span>
-              <span fxShow.xs fxHide fxLayout="row">
-                <b>Token Currency Code:</b>&nbsp;
-                <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
-                <div *ngIf="row.isHot">
-                  &nbsp;<i #tooltip="matTooltip"
-                  matTooltip="{{row.newTrustlines}} new TrustLines in 24h"
-                  matTooltipPosition="above"
-                  class="material-icons" 
-                  style="color: #FF6B6B; font-size: 1.2em;">local_fire_department</i>
-                </div>
-              </span>
-          </mat-cell>
-          <mat-footer-cell *matFooterCellDef><b>{{currencyCodeTotal}}</b></mat-footer-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="amount">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Total issued value of this token </mat-header-cell>
-          <mat-cell *matCellDef="let row">
-              <span fxShow fxHide.xs >
-                <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
+              <span fxShow fxHide.xs fxLayout="row" fxLayoutGap="0.3em">
+                <label [innerHTML]="row.account | highlightSearch: filterText"></label>
               </span>
               <span fxShow.xs fxHide >
-                <b>Total issued value:</b>&nbsp;
-                <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
+                <b>Issuer Account:</b>&nbsp;
+                <label [innerHTML]="row.account | highlightSearch: filterText"></label>
               </span>
           </mat-cell>
-          <mat-footer-cell *matFooterCellDef><b>{{issuedTokensTotal}}</b></mat-footer-cell>
-      </ng-container>
+          <mat-footer-cell *matFooterCellDef><b>Totals: {{uniqueFilteredAccount.size}}</b></mat-footer-cell>
+        </ng-container>
 
-      <ng-container matColumnDef="trustlines">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Number of TrustLines </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-            <span fxShow fxHide.xs fxLayout="column">
-              <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
-            </span>
-            <span fxShow.xs fxHide fxLayout="row">
-              <b>Number of TrustLines:</b>&nbsp;
-              <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
-            </span>
-        </mat-cell>
-        <mat-footer-cell *matFooterCellDef><b>{{numberOfTrustlinesTotal}}</b></mat-footer-cell>
-      </ng-container>
+        <ng-container matColumnDef="kyc">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer KYC </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+              <span fxShow fxHide.xs fxLayout="row" fyLayoutAlign="center center" fxLayoutGap="0.3em">
+                <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.kyc">
+                  <i class="material-icons" style="color: green; font-size: 1.4em;">
+                    check_circle
+                  </i>
+                </mat-chip-list>
+              </span>
+              <span fxShow.xs fxHide fxLayout="row">
+                <b>KYC:</b>&nbsp;
+                <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.kyc">
+                  <i class="material-icons" style="color: green; font-size: 1.4em;">
+                    check_circle_outline
+                  </i>
+                </mat-chip-list>
+              </span>
+          </mat-cell>
+          <mat-footer-cell *matFooterCellDef><b>{{kycAccountsTotal}}</b></mat-footer-cell>
+        </ng-container>
 
-      <ng-container matColumnDef="offers">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Current Dex Offers </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-            <span fxShow fxHide.xs >
-              <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
-            </span>
-            <span fxShow.xs fxHide >
-              <b>Current Dex Offers:</b>&nbsp;
-              <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
-            </span>
-        </mat-cell>
-        <mat-footer-cell *matFooterCellDef><b>{{dexOffersTotal}}</b></mat-footer-cell>
-      </ng-container>
+        <ng-container matColumnDef="username">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Accountname </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+              <span fxShow fxHide.xs fxLayout="row">
+                <label [innerHTML]="row.username | highlightSearch: filterText"></label>
+                <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
+              </span>
+              <span fxShow.xs fxHide fxLayout="row">
+                <b>Accountname:</b>&nbsp;
+                <div fxLayout="row">
+                  <label [innerHTML]="row.username | highlightSearch: filterText"></label>
+                  <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
+                </div>
+              </span>
+          </mat-cell>
+          <mat-footer-cell *matFooterCellDef><b>{{accountNameTotal}}</b></mat-footer-cell>
+        </ng-container>
 
-      <ng-container matColumnDef="link">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Links </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-            <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
-              <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
-            </span>
-            <span fxShow.xs fxHide fxLayout="row">
-              <b>Links:</b>&nbsp;
-              <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
-            </span>
-        </mat-cell>
-        <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
-      </ng-container>
+        <ng-container matColumnDef="currency">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <span fxShow fxHide.xs fxLayout="row">
+                  <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
+                  <div *ngIf="row.isHot">
+                    &nbsp;<i #tooltip="matTooltip"
+                    matTooltip="{{row.newTrustlines}} new TrustLines in 24h"
+                    matTooltipPosition="above"
+                    class="material-icons" 
+                    style="color: #FF6B6B; font-size: 1.2em;">local_fire_department</i>
+                  </div>
+                </span>
+                <span fxShow.xs fxHide fxLayout="row">
+                  <b>Token Currency Code:</b>&nbsp;
+                  <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
+                  <div *ngIf="row.isHot">
+                    &nbsp;<i #tooltip="matTooltip"
+                    matTooltip="{{row.newTrustlines}} new TrustLines in 24h"
+                    matTooltipPosition="above"
+                    class="material-icons" 
+                    style="color: #FF6B6B; font-size: 1.2em;">local_fire_department</i>
+                  </div>
+                </span>
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef><b>{{currencyCodeTotal}}</b></mat-footer-cell>
+        </ng-container>
 
-      <ng-container matColumnDef="explorer">
-        <mat-header-cell *matHeaderCellDef mat-sort-header> Explorers </mat-header-cell>
-        <mat-cell *matCellDef="let row">
-            <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
-              <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
-              <label fxHide fxShow.gt-md>&nbsp;|&nbsp;</label>
-              <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
-            </span>
-            <span fxShow.xs fxHide fxLayout="row">
-              <b>Explorers:</b>&nbsp;
-              <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
-              <label>&nbsp;|&nbsp;</label>
-              <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
-            </span>
-        </mat-cell>
-        <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
-      </ng-container>
+        <ng-container matColumnDef="amount">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Total issued value of this token </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <span fxShow fxHide.xs >
+                  <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
+                </span>
+                <span fxShow.xs fxHide >
+                  <b>Total issued value:</b>&nbsp;
+                  <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
+                </span>
+            </mat-cell>
+            <mat-footer-cell *matFooterCellDef><b>{{issuedTokensTotal}}</b></mat-footer-cell>
+        </ng-container>
 
-      <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" (click)="openDetailsDialog(row)"></mat-row>
-      <mat-footer-row fxShow fxHide.xs *matFooterRowDef="displayedColumns"></mat-footer-row>
-    </mat-table>
-    <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50, 100]"></mat-paginator>
+        <ng-container matColumnDef="trustlines">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Number of TrustLines </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+              <span fxShow fxHide.xs fxLayout="column">
+                <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
+              </span>
+              <span fxShow.xs fxHide fxLayout="row">
+                <b>Number of TrustLines:</b>&nbsp;
+                <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
+              </span>
+          </mat-cell>
+          <mat-footer-cell *matFooterCellDef><b>{{numberOfTrustlinesTotal}}</b></mat-footer-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="offers">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Current Dex Offers </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+              <span fxShow fxHide.xs >
+                <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
+              </span>
+              <span fxShow.xs fxHide >
+                <b>Current Dex Offers:</b>&nbsp;
+                <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
+              </span>
+          </mat-cell>
+          <mat-footer-cell *matFooterCellDef><b>{{dexOffersTotal}}</b></mat-footer-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="link">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Links </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+              <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
+                <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
+              </span>
+              <span fxShow.xs fxHide fxLayout="row">
+                <b>Links:</b>&nbsp;
+                <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
+              </span>
+          </mat-cell>
+          <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="explorer">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Explorers </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+              <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
+                <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
+                <label fxHide fxShow.gt-md>&nbsp;|&nbsp;</label>
+                <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
+              </span>
+              <span fxShow.xs fxHide fxLayout="row">
+                <b>Explorers:</b>&nbsp;
+                <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
+                <label>&nbsp;|&nbsp;</label>
+                <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
+              </span>
+          </mat-cell>
+          <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
+        </ng-container>
+
+        <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" (click)="openDetailsDialog(row)"></mat-row>
+        <mat-footer-row fxShow fxHide.xs *matFooterRowDef="displayedColumns"></mat-footer-row>
+      </mat-table>
+      <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50, 100]"></mat-paginator>
+    </div>
   </div>
 </mat-expansion-panel>
