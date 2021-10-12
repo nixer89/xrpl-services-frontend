@@ -168,8 +168,17 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
                       }
                   }
               }
-          
-              this.currencyExists = tokenList && tokenList.length > 0 && tokenList.includes(normalizer.getCurrencyCodeForXRPL(this.issuedCurrencyInput));
+              
+              let currencyToCheck = normalizer.getCurrencyCodeForXRPL(this.currencyCodeAsAscii);
+
+              if(tokenList && tokenList.length > 0) {
+                for(let i = 0; i < tokenList.length; i++) {
+                  if(tokenList[i] === currencyToCheck) {
+                    this.currencyExists = true;
+                    break;
+                  }
+                }
+              }
           } else {                
             this.currencyExists = false;
           }
