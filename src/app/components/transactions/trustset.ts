@@ -69,6 +69,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   issuerHasDefaultRipple:boolean = false;
   currencyExists:boolean = false;
 
+  allFieldsSet:boolean = false;
+
   isEditMode:boolean = false;
 
   async ngOnInit() {
@@ -98,6 +100,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.limitInput = params.limit;
 
         await this.issuerAccountChanged();
+
+        await this.checkCurrencyExists();
 
         if(this.isValidTrustSet) {
           setTimeout(() => {
@@ -148,41 +152,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
           this.issuerHasDefaultRipple = flagUtil.isDefaultRippleEnabled(issuer_account_info.Flags);
 
-          //settings ok, now check for the actual currenxy!
-          let gateway_balances_request:any = {
-            command: "gateway_balances",
-            account: xrplAccount,
-            ledger_index: "validated",
-          }
-    
-          let message:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline", gateway_balances_request, this.testMode);
-
-          if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.obligations) {
-              let tokenList:string[] = [];
-              let obligations:any = message.result.obligations;
-              
-              if(obligations) {
-                  for (var currency in obligations) {
-                      if (obligations.hasOwnProperty(currency)) {
-                          tokenList.push(currency);
-                      }
-                  }
-              }
-              
-              let currencyToCheck = normalizer.getCurrencyCodeForXRPL(this.currencyCodeAsAscii);
-
-              if(tokenList && tokenList.length > 0) {
-                for(let i = 0; i < tokenList.length; i++) {
-                  if(tokenList[i] === currencyToCheck) {
-                    this.currencyExists = true;
-                    break;
-                  }
-                }
-              }
-          } else {                
-            this.currencyExists = false;
-          }
-
         } else {
           this.issuerHasDefaultRipple = false;
         }
@@ -191,6 +160,52 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     } else {
       this.issuerHasDefaultRipple = false;
+    }
+  }
+
+  async checkCurrencyExists() {
+    //this.infoLabel = "loading " + xrplAccount;
+    if(this.issuerAccountInput && this.issuedCurrencyInput && this.limitInput && isValidXRPAddress(this.issuerAccountInput)) {
+
+      this.allFieldsSet = true;
+
+      //settings ok, now check for the actual currenxy!
+      let gateway_balances_request:any = {
+        command: "gateway_balances",
+        account: this.issuerAccountInput,
+        ledger_index: "validated",
+      }
+
+      let message:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline", gateway_balances_request, this.testMode);
+
+      if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.obligations) {
+          let tokenList:string[] = [];
+          let obligations:any = message.result.obligations;
+          
+          if(obligations) {
+              for (var currency in obligations) {
+                  if (obligations.hasOwnProperty(currency)) {
+                      tokenList.push(currency);
+                  }
+              }
+          }
+          
+          let currencyToCheck = normalizer.getCurrencyCodeForXRPL(this.currencyCodeAsAscii);
+
+          if(tokenList && tokenList.length > 0) {
+            for(let i = 0; i < tokenList.length; i++) {
+              if(tokenList[i] === currencyToCheck) {
+                this.currencyExists = true;
+                console.log("currency exsists")
+                break;
+              }
+            }
+          }
+      } else {                
+        this.currencyExists = false;
+      }
+    } else {
+      this.allFieldsSet = false;
     }
   }
 
@@ -325,6 +340,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       //load new issuer data!
       await this.loadAccountDataIssuer(this.issuerAccountInput);
     }
+
+    await this.checkCurrencyExists();
 
     this.isValidTrustSet = this.validAddress && this.validCurrency && this.validLimit && this.issuerHasDefaultRipple && this.currencyExists;
 
