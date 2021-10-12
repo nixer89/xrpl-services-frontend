@@ -103,20 +103,20 @@
         <ng-container matColumnDef="kyc">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer KYC </mat-header-cell>
           <mat-cell *matCellDef="let row">
-              <span fxShow fxHide.xs fxLayout="row" fyLayoutAlign="center center" fxLayoutGap="0.3em">
-                <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.kyc">
+              <span fxShow fxHide.xs fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="0.3em">
+                <div *ngIf="row.kyc" fxLayout="row" fxLayoutAlign="center center">
                   <i class="material-icons" style="color: green; font-size: 1.4em;">
                     check_circle
                   </i>
-                </mat-chip-list>
+                </div>
               </span>
-              <span fxShow.xs fxHide fxLayout="row">
+              <span fxShow.xs fxHide fxLayout="row" fxLayoutAlign="center start">
                 <b>KYC:</b>&nbsp;
-                <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.kyc">
-                  <i class="material-icons" style="color: green; font-size: 1.4em;">
-                    check_circle_outline
+                <div *ngIf="row.kyc">
+                  <i class="material-icons" style="color: green; font-size: 1.2em;">
+                    check_circle
                   </i>
-                </mat-chip-list>
+                </div>
               </span>
           </mat-cell>
           <mat-footer-cell *matFooterCellDef><b>{{kycAccountsTotal}}</b></mat-footer-cell>
