@@ -64,10 +64,12 @@
           search
         </i>
       </mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="account, currency, number, ...">
+      <input matInput [disabled]="loading"  (keyup)="applyFilter($event)" placeholder="account, currency, number, ...">
     </mat-form-field>
 
-    <mat-checkbox [(ngModel)]="showKycOnly" class="loading" (change)="switchTokenList()">Show KYC'd issuers only</mat-checkbox>
+    <div fxLayout="row" style="padding-bottom: 0.5em;">
+      <mat-checkbox [disabled]="loading" [(ngModel)]="showKycOnly" class="loading" (change)="switchTokenList()">Show KYC'd issuers only</mat-checkbox>
+    </div>
 
     <!--div fxHide fxShow.xs fxLayout="row" fxLayoutGap="0.3em" style="padding-bottom: 1em">
       <mat-form-field style="width: 100%;">
