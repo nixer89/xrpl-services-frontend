@@ -58,6 +58,24 @@ td {
         text-align: center;
     }
 
+    .mat-column-kyc {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        flex: 0 0 4% !important;
+        width: 4% !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    
+        word-break: break-word;
+    
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        justify-content: center;
+        text-align: center;
+    }
+
     .mat-column-username {
         word-wrap: break-word !important;
         white-space: unset !important;

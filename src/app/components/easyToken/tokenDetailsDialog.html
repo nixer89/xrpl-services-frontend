@@ -54,6 +54,28 @@
 
         <mat-card fxLayout="row" fxLayoutGap="1em"class="theme-background">
 
+            <div fxLayout="column" fxLayoutGap="0.3em" style="width: 50%;" >
+                <label><b>KYC:</b></label>
+                <div *ngIf="tokenIssuer.kyc" style="display: flex">
+                    <i class="material-icons" style="color: green; font-size: 1.4em;">
+                        verified
+                    </i>
+                </div>
+                <div *ngIf="!tokenIssuer.kyc" style="display: flex">
+                    <i class="material-icons" style="color: red; font-size: 1.4em;">
+                        highlight_off
+                    </i>
+                </div>
+            </div>
+
+            <div fxLayout="column" fxLayoutGap="0.3em" style="width: 50%;">
+                <label><b>Provided by:</b></label>
+                <label>XUMM</label>
+            </div>
+        </mat-card>
+
+        <mat-card fxLayout="row" fxLayoutGap="1em"class="theme-background">
+
             <div fxLayout="column" fxLayoutGap="0.3em" style="width:50%">
                 <label><b>Trustlines:</b></label>
                 <label>{{tokenIssuer.trustlines}}</label>
@@ -137,33 +159,6 @@
             <div fxLayout="column" fxLayoutGap="0.3em" style="width:50%">
                 <label><b>Provided by:</b></label>
                 <a href="https://xrplorer.com" target="_blank">xrplorer.com</a>
-            </div>
-        </mat-card>
-
-        <mat-card fxLayout="row" fxLayoutGap="1em"class="theme-background">
-
-            <div fxLayout="column" fxLayoutGap="0.3em" style="width: 50%;" >
-                <label><b>Verified:</b></label>
-                <div *ngIf="tokenIssuer.verified" style="display: flex">
-                    <i class="material-icons" style="color: green; font-size: 1.4em;">
-                        verified
-                    </i>
-                </div>
-                <div *ngIf="!tokenIssuer.verified" style="display: flex">
-                    <i class="material-icons" style="color: red; font-size: 1.4em;">
-                        highlight_off
-                    </i>
-                </div>
-            </div>
-
-            <div fxLayout="column" fxLayoutGap="0.3em" style="width: 50%;">
-                <label><b>Resolved by:</b></label>
-                <div *ngIf="tokenIssuer.resolvedBy">
-                    <a [href]="getExplorerLink()" target="_blank">{{tokenIssuer.resolvedBy}}</a>
-                </div>
-                <div *ngIf="!tokenIssuer.resolvedBy">
-                    -
-                </div>
             </div>
         </mat-card>
 

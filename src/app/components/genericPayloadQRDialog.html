@@ -1,12 +1,34 @@
 <mat-dialog-content fxFlex fxLayout="column" ngStyle.gt-xs="min-width: 20em">
-    <div *ngIf="isOverview" fxLayout="column" fxLayoutGap="1em">
+    <div *ngIf="isOverview && !loading" fxLayout="column" fxLayoutGap="1em">
         <h3 class="floatcenter">{{genericPayload.payload.txjson.TransactionType}}</h3>
         <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="0.8em" ngStyle.gt-xs="width: 90%;">
             <mat-card class="theme-background" *ngIf="genericPayload.payload.custom_meta">
                 <h4>Summary:</h4>
                 <label class="break-words">{{genericPayload.payload.custom_meta.instruction}}</label>
             </mat-card>
-            <mat-card class="theme-background" ngStyle.gt-xs="width: 90%;" *ngIf="!genericPayload.payload.txjson.Memos">
+            <mat-card class="theme-background" *ngIf="showKyc" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">
+                <div fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
+                    <label><b>KYC:</b></label>
+                    <div *ngIf="hasKyc">
+                        <i class="material-icons" style="color: green; font-size: 1.4em;">
+                            check_circle
+                        </i>
+                    </div>
+                    <div *ngIf="!hasKyc">
+                        <i class="material-icons" style="color: red; font-size: 1.4em;">
+                            highlight_off
+                        </i>
+                    </div>
+                </div>
+                <div *ngIf="hasKyc">
+                    <label class="loading" style="font-size:0.7em;">Disclaimer: just because an issuer went through KYC does not mean that<br>the token has any value! Please proceed with caution and do your own research!</label>
+                </div>
+                <div *ngIf="!hasKyc">
+                    <label class="loading" style="font-size:0.7em;">Disclaimer: the token issuer did not went through KYC yet.<br>Please proceed with caution and do your own research!</label>
+                </div>
+                
+            </mat-card>
+            <mat-card class="theme-background" *ngIf="!genericPayload.payload.txjson.Memos" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">
                 <h4>Transaction Memo (optional):</h4>
                 <mat-form-field style="width: 100%;">
                     <input matInput type="text" [(ngModel)]="memoInput" placeholder="Memo" aria-label="XRPL Transaction Memo">

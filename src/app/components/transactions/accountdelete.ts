@@ -48,8 +48,8 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   errorMsg:string = null;
   checkBoxHint:boolean = false;
 
-  accountReserve:number = 20000000;
-  ownerReserve:number = 5000000;
+  accountReserve:number = 10000000;
+  ownerReserve:number = 2000000;
 
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(async accountData => {

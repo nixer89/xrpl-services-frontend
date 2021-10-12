@@ -1,4 +1,4 @@
-import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
@@ -67,6 +67,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   loadingIssuerData:boolean = false;
   issuerHasDefaultRipple:boolean = false;
+  currencyExists:boolean = false;
 
   isEditMode:boolean = false;
 
@@ -89,6 +90,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.route.queryParams.subscribe(async params => {
       if(params.issuer && params.currency && params.limit) {
+
         this.issuerAccountInput = params.issuer;
         //console.log("subscribe received: " + params.currency);
         this.issuedCurrencyInput = normalizer.currencyCodeUTF8ToHexIfUTF8(params.currency);
@@ -107,7 +109,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if(this.issuerAccountInput && this.issuedCurrencyInput && this.limitInput)
+    if(this.issuerAccountInput != null && this.issuedCurrencyInput != null && this.limitInput != null)
       this.mep.open();
   }
 
@@ -145,6 +147,32 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
           //console.log(JSON.stringify(issuer_account_info));
 
           this.issuerHasDefaultRipple = flagUtil.isDefaultRippleEnabled(issuer_account_info.Flags);
+
+          //settings ok, now check for the actual currenxy!
+          let gateway_balances_request:any = {
+            command: "gateway_balances",
+            account: xrplAccount,
+            ledger_index: "validated",
+          }
+    
+          let message:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline", gateway_balances_request, this.testMode);
+
+          if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.obligations) {
+              let tokenList:string[] = [];
+              let obligations:any = message.result.obligations;
+              
+              if(obligations) {
+                  for (var currency in obligations) {
+                      if (obligations.hasOwnProperty(currency)) {
+                          tokenList.push(currency);
+                      }
+                  }
+              }
+          
+              this.currencyExists = tokenList && tokenList.length > 0 && tokenList.includes(normalizer.getCurrencyCodeForXRPL(this.issuedCurrencyInput));
+          } else {                
+            this.currencyExists = false;
+          }
 
         } else {
           this.issuerHasDefaultRipple = false;
@@ -289,7 +317,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       await this.loadAccountDataIssuer(this.issuerAccountInput);
     }
 
-    this.isValidTrustSet = this.validAddress && this.validCurrency && this.validLimit && this.issuerHasDefaultRipple;
+    this.isValidTrustSet = this.validAddress && this.validCurrency && this.validLimit && this.issuerHasDefaultRipple && this.currencyExists;
 
     this.loadingIssuerData = false;
 

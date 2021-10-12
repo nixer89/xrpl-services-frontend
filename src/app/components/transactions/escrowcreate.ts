@@ -70,8 +70,8 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
 
   hidePw = true;
 
-  accountReserve:number = 20000000;
-  ownerReserve:number = 5000000;
+  accountReserve:number = 10000000;
+  ownerReserve:number = 2000000;
 
   ngOnInit() {
     this.dateAdapter.setLocale(this.getUsersLocale("en"));

@@ -79,6 +79,8 @@ export interface TokenIssuer {
     trustlines: string,
     offers: string,
     verified: boolean,
+    kyc?: boolean,
+    created?: any,
     username?: string,
     resolvedBy?: string
     twitter?: string,
@@ -90,7 +92,9 @@ export interface TokenIssuer {
 export interface IssuerVerification {
     resolvedBy: string,
     account: string,
-    verified: boolean
+    verified: boolean,
+    kyc?: boolean,
+    created?: any,
     domain?: string,
     username?: string,
     twitter?: string

@@ -36,9 +36,9 @@ export class IssuedTokenList implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  sortColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines', 'offers'];
+  sortColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers'];
   
-  displayedColumns: string[] = ['account', 'username', 'currency', 'amount', 'trustlines', 'offers',  'link', 'explorer'];
+  displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers',  'link', 'explorer'];
   datasource:MatTableDataSource<TokenIssuer> = null;
 
   loading:boolean = false;
@@ -55,12 +55,13 @@ export class IssuedTokenList implements OnInit {
   issuedTokensTotal: number = 0;
   numberOfTrustlinesTotal: number = 0;
   dexOffersTotal: number = 0;
+  kycAccountsTotal: number = 0;
   uniqueFilteredAccount: Map<String, Number> = new Map<String, Number>();
   previousFilter: string;
 
-  hotToken1D:any;
-  hotToken1W:any;
-  hotToken1M:any;
+  hotToken1D:any[];
+  hotToken1W:any[];
+  hotToken1M:any[];
 
   async ngOnInit() {
     this.pageSize = this.deviceDetector.isMobile() ? 5 : this.pageSize;
@@ -75,7 +76,8 @@ export class IssuedTokenList implements OnInit {
     let results = await Promise.all(promises);
 
     let issuers:TokenIssuer[] = results[0];
-    this.hotToken1D = results[1].slice(0,9);
+    this.hotToken1D = results[1];
+    //console.log(JSON.stringify(this.hotToken1D));
     //this.hotToken1W = results[2];
     //this.hotToken1M = results[3];
     
@@ -84,15 +86,15 @@ export class IssuedTokenList implements OnInit {
 
     if(issuers != null) {
 
-      this.hotToken1D.forEach(hotToken => {
+      for(let i = 0; i < 10; i++) {
         issuers.find(issuer => {
-          if(hotToken['_id'].issuer === issuer.account) {
+          if(this.hotToken1D[i]['_id'].issuer === issuer.account && this.hotToken1D[i]['_id'].currency === normalizer.getCurrencyCodeForXRPL(issuer.currency)) {
             issuer.isHot = true;
-            issuer.newTrustlines = hotToken.count;
+            issuer.newTrustlines = this.hotToken1D[i].count;
             //console.log(issuer.account + " is hot!");
           }
         })
-      });
+      }
 
       this.datasource.paginator = this.paginator;
       this.datasource.sort = this.sort;
@@ -162,7 +164,7 @@ export class IssuedTokenList implements OnInit {
               verified = data.verified;
               username = data.username ? data.username : "";
               domain = data.domain;
-              twitter = data.twitter
+              twitter = data.twitter;
             } else {
               username = "";
             }
@@ -181,7 +183,9 @@ export class IssuedTokenList implements OnInit {
                   resolvedBy: resolvedBy,
                   verified: verified,
                   domain: domain,
-                  twitter: twitter
+                  twitter: twitter,
+                  kyc: data.kyc,
+                  created: data.created
                 });
 
               this.uniqueFilteredAccount.set(account, 1);
@@ -190,6 +194,7 @@ export class IssuedTokenList implements OnInit {
               this.issuedTokensTotal += issuedCurrency.amount ? Number(issuedCurrency.amount) : 0;
               this.dexOffersTotal += issuedCurrency.offers ? parseInt(issuedCurrency.offers) : 0;
               this.numberOfTrustlinesTotal += issuedCurrency.trustlines ? parseInt(issuedCurrency.trustlines) : 0;
+              this.kycAccountsTotal += data.kyc ? 1 : 0;
             });
         }
       }

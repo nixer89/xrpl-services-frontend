@@ -8,6 +8,7 @@ import { XummTypes} from 'xumm-sdk'
 import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { AppService } from "../services/app.service";
 
 @Component({
     selector: "genericPayloadQRDialog",
@@ -35,9 +36,12 @@ export class GenericPayloadQRDialog implements OnInit {
     transactionSigned:boolean = false;
     pushed:boolean = false;
     isOverview:boolean = true;
+    showKyc:boolean = false;
+    hasKyc:boolean = false;
 
     constructor(
         private xummApi: XummService,
+        private app: AppService,
         private deviceDetector: DeviceDetectorService,
         public dialogRef: MatDialogRef<GenericPayloadQRDialog>,
         @Inject(MAT_DIALOG_DATA) public genericPayload: GenericBackendPostRequest,
@@ -53,7 +57,21 @@ export class GenericPayloadQRDialog implements OnInit {
         } else {
             this.overlayContainer.getContainerElement().classList.remove('light-theme');
             this.overlayContainer.getContainerElement().classList.add('dark-theme');
-        }        
+        }
+
+        if(this.genericPayload?.payload?.txjson?.TransactionType === "TrustSet") {
+            this.loading = true;
+            let issuer:string = this.genericPayload.payload.txjson.LimitAmount['issuer'];
+
+            let kycResponse = await this.app.get("https://xrpldata.com/api/v1//kyc/"+issuer)
+
+            console.log(JSON.stringify(kycResponse));
+
+            this.showKyc = true;
+            this.hasKyc = kycResponse && kycResponse.kyc;
+
+            this.loading = false;
+        }
 
         window.scrollTo(0,0);
     }
