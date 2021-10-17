@@ -124,11 +124,7 @@ export class GenericPayloadQRDialog implements OnInit {
                 this.loading = false;
                 this.backendNotAvailable = true;
 
-                let anyresponse:any = xummResponse;
-                if(anyresponse && anyresponse.error && anyresponse.message)
-                    this.backendErrorMessage = anyresponse.message;
-                else
-                    this.backendErrorMessage = "Sorry, there was an error contacting the backend. Please try again later.";
+                this.backendErrorMessage = "Sorry, there was an error contacting the backend. Please try again later.";
 
                 this.showError = true;
                 setTimeout(() => this.handleFailedTransaction(), 5000);

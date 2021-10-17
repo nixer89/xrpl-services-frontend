@@ -95,11 +95,12 @@ export class XummSignDialogComponent implements OnInit{
 
         let xummResponse:XummTypes.XummPostPayloadResponse;
         try {
-            //console.log("sending xumm payload: " + JSON.stringify(xummPayload));
+            //console.log("sending xumm payload: " + JSON.stringify(backendPayload));
             xummResponse = await this.xummApi.submitPayload(backendPayload);
             //console.log(JSON.stringify(xummResponse));
             if(!xummResponse || !xummResponse.uuid) {
                 this.loading = false;
+                this.backendNotAvailable = true;
                 this.showError = true;
                 setTimeout(() => this.handleFailedSignIn(null), 3000);
             }

@@ -28,10 +28,10 @@
               <label>To black hole an account means to loose ALL ACCESS to it. You won't be able to recover this access. In fact, NO ONE CAN !</label>
               <label>We will need to execute some transactions in a specific order.</label><br/><br/>
 
-              <label class="warning">We will charge you 5 XRP for using this service.</label>
+              <label class="warning">We will charge you {{paymentAmount}} XRP for using this service.</label>
               <label>The payment is a ONE TIME PAYMENT. So if you pay and then close the website, you would need to pay again!</label><br/><br/>
 
-              <label class="loading">Please make sure to not have any remaining funds (XRP or other tokens) in your account! (except 5 XRP and self issued tokens!)</label><br/><br/>
+              <label class="loading">Please make sure to not have any remaining funds (XRP or other tokens) in your account! (except {{paymentAmount}} XRP and self issued tokens!)</label><br/><br/>
               <label>Click 'Next' and follow the instructions if you are ready and you know what your are doing!</label>
               <div style="padding-top: 0.5em;">
                   <button mat-raised-button color="primary" (click)="moveNext()">Next</button>
@@ -58,7 +58,7 @@
                 </mat-card>
                 <span style="flex: 1 1 auto;"></span>
               </div>
-              <label class="warning" *ngIf="isTestMode">If you want to blackhole on the test net, the 5 XRP payment can be done on the test net as well!</label>
+              <label class="warning" *ngIf="isTestMode">If you want to blackhole on the test net, the {{paymentAmount}} XRP payment can be done on the test net as well!</label>
               <label class="success" *ngIf="isTestMode">Make sure your XUMM app is connected to the TEST network!</label>
               <label class="success" *ngIf="!isTestMode">Make sure your XUMM app is connected to the MAIN network!</label>
             </div>
@@ -96,15 +96,15 @@
             </div>
           </div>
 
-          <mat-hint *ngIf="!loadingIssuerAccount && validIssuer && hasLowXrpBalance" style="padding-top: 0.5em;">Your XRP balance is too high. We do not allow to black hole the account. Please send all XRP away, except 5 XRP for the payment.</mat-hint>
-          <mat-hint *ngIf="!loadingIssuerAccount && validIssuer && hasTokenBalance" style="padding-top: 0.5em;">You still have some tokens in your account. We do not allow to black hole the account. Please send the token to another account before you start to black hole this one..</mat-hint>
+          <mat-hint *ngIf="!loadingIssuerAccount && validIssuer && hasLowXrpBalance" style="padding-top: 0.5em;">Your XRP balance is too high. We do not allow to black hole the account. Please send all XRP away, except {{paymentAmount}} XRP for the payment.</mat-hint>
+          <mat-hint *ngIf="!loadingIssuerAccount && validIssuer && hasTokenBalance" style="padding-top: 0.5em;">You still have some tokens in your account. We do not allow you to black hole the account. Please send the token to another account before you start to black hole this one.</mat-hint>
 
           <div *ngIf="loadingIssuerAccount" fxLayout="row" fxLayoutGap="0.3em">
             <label>Loading account data... </label>
             <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
           </div>
           <div fxLayoutGap="0.5em">
-              <button mat-raised-button color="primary" [disabled]="!getIssuer() || !validIssuer || hasLowXrpBalance || hasTokenBalance || loadingIssuerAccount" (click)="moveNext()">Next</button>
+              <button mat-raised-button color="primary" [disabled]="!getIssuer() || !validIssuer || hasLowXrpBalance || hasTokenBalance || loadingIssuerAccount || loadingTokens" (click)="moveNext()">Next</button>
               <button mat-raised-button (click)="moveBack()">Back</button>
           </div>
         </mat-card>
@@ -150,7 +150,7 @@
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
           <ng-template matStepLabel>Payment</ng-template>
-          <label>You need to pay a fee of 5 XRP with the account you want to blackhole to use this service.</label>
+          <label>You need to pay {{paymentAmount}} XRP with the account you want to blackhole to use this service.</label>
           <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
             <div  style="padding-top: 0.5em;" *ngIf="!paymentInitiated || paymentNotSuccessfull">
               <button mat-button matTooltip="Pay via XUMM." matTooltipPosition="above" (click)="payForBlackhole()" style="padding:0px;">

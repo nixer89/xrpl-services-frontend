@@ -10,6 +10,8 @@ import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
 import { isValidXRPAddress } from 'src/app/utils/utils';
+import { XummService } from 'src/app/services/xumm.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'blackholeAccount',
@@ -21,10 +23,12 @@ export class BlackholeAccount implements OnInit {
   private ACCOUNT_FLAG_DISABLE_INCOMING_XRP:number = 3;
 
   constructor(
+    private xummBackend: XummService,
     private matDialog: MatDialog,
     private googleAnalytics: GoogleAnalyticsService,
     private device: DeviceDetectorService,
-    private xrplWebSocket: XRPLWebsocket) { }
+    private xrplWebSocket: XRPLWebsocket,
+    private router: Router) { }
 
   checkBoxTwoAccounts:boolean = false;
   checkBoxIssuerInfo:boolean = false;
@@ -64,11 +68,34 @@ export class BlackholeAccount implements OnInit {
   paymentInitiated: boolean = false;
   paymentNotSuccessfull:boolean = true;
   loadingIssuerAccount:boolean = false;
+  loadingTokens:boolean = false;
+
+  accountReserve:number = 10000000;
+  ownerReserve:number = 2000000;
+
+  paymentAmount:number = 10;
 
   @ViewChild('stepper') stepper: MatStepper;
 
-  ngOnInit(): void {
-    this.loadAccountData();
+  async ngOnInit() {
+    this.loadFeeReserves();
+    try {
+      //load payment amount
+      let fixAmounts:any = await this.xummBackend.getFixAmounts();
+      console.log("resolved fix amounts: " + JSON.stringify(fixAmounts));
+
+      console.log("origin: " + window.location.origin+this.router.url)
+
+      if(fixAmounts && fixAmounts[window.location.origin+this.router.url]) {
+        let blackholeAmount:number = Number(fixAmounts[window.location.origin+this.router.url]);
+        this.paymentAmount = blackholeAmount / 1000000;
+      }
+
+    } catch(err) {
+
+    }
+
+    await this.loadAccountData();
   }
 
   isDektop(): boolean {
@@ -80,6 +107,9 @@ export class BlackholeAccount implements OnInit {
   }
 
   loginForBlackhole() {
+    this.loadingIssuerAccount = true;
+    this.loadingTokens = true;
+
     const dialogRef = this.matDialog.open(XummSignDialogComponent, {
       width: 'auto',
       height: 'auto;',
@@ -88,21 +118,12 @@ export class BlackholeAccount implements OnInit {
 
     dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
       //console.log('The signin dialog was closed: ' + JSON.stringify(info));
-      this.loadingIssuerAccount = true;
 
       if(info && info.success && info.account && isValidXRPAddress(info.account)) {
         this.issuerAccount = info.account;
         this.validIssuer = true;
 
         //load balance data
-
-        let accountInfoCommand:any = {
-          command: "account_info",
-          account: info.account,
-          "strict": true,
-          ledger_index: "validated"
-        }
-
         let accountLinesCommand:any = {
           command: "account_lines",
           account: info.account,
@@ -123,10 +144,12 @@ export class BlackholeAccount implements OnInit {
         this.hasTokenBalance = accountLines && accountLines.result && accountLines.result.lines && accountLines.result.lines.length > 0 && accountLines.result.lines.filter(line => Number(line.balance) > 0).length > 0;
 
         this.loadingIssuerAccount = false;
+        this.loadingTokens = false;
       } else {
         this.issuerAccount = null;
         this.validIssuer = false;
         this.loadingIssuerAccount = false;
+        this.loadingTokens = false;
       }
     });
   }
@@ -218,7 +241,7 @@ export class BlackholeAccount implements OnInit {
             //console.log("isser_account_info: " + JSON.stringify(this.issuer_account_info));
             this.blackholeDisallowXrp = flagUtil.isDisallowXRPEnabled(this.issuer_account_info.Flags);
             this.blackholeMasterDisabled = flagUtil.isMasterKeyDisabled(this.issuer_account_info.Flags)
-            this.hasLowXrpBalance = this.issuer_account_info  && this.issuer_account_info.Balance && parseInt(this.issuer_account_info.Balance) < 5000000;
+            this.hasLowXrpBalance = this.issuer_account_info  && this.issuer_account_info.Balance && parseInt(this.issuer_account_info.Balance) < (this.paymentAmount*1000000);
 
           } else {
             //console.log(JSON.stringify(message));
@@ -415,8 +438,8 @@ export class BlackholeAccount implements OnInit {
   getAvailableBalance(accountInfo: any): number {
     if(accountInfo && accountInfo.Balance) {
       let balance:number = Number(accountInfo.Balance);
-      balance = balance - (20*1000000); //deduct acc reserve
-      balance = balance - (accountInfo.OwnerCount * 5 * 1000000); //deduct owner count
+      balance = balance - this.accountReserve; //deduct acc reserve
+      balance = balance - (accountInfo.OwnerCount * this.ownerReserve); //deduct owner count
       balance = balance/1000000;
 
       if(balance >= 0.000001)
@@ -427,6 +450,21 @@ export class BlackholeAccount implements OnInit {
     } else {
       return 0;
     }
+  }
+
+  async loadFeeReserves() {
+    let fee_request:any = {
+      command: "ledger_entry",
+      index: "4BC50C9B0D8515D3EAAE1E74B29A95804346C491EE1A95BF25E4AAB854A6A651",
+      ledger_index: "validated"
+    }
+
+    let feeSetting:any = await this.xrplWebSocket.getWebsocketMessage("fee-settings", fee_request, this.isTestMode);
+    this.accountReserve = feeSetting?.result?.node["ReserveBase"];
+    this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
+
+    console.log("resolved accountReserve: " + this.accountReserve);
+    console.log("resolved ownerReserve: " + this.ownerReserve);
   }
 
   moveNext() {

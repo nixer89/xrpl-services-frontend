@@ -185,4 +185,13 @@ export class XummService {
             return null;
         }
     }
+
+    async getFixAmounts(): Promise<number> {
+        try {
+            return this.app.get(this.xummBackendURL+"/api/v1/payment/amounts");
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return null;
+        }
+    }
 }
