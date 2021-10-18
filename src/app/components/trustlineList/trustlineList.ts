@@ -25,6 +25,9 @@ export class TrustLineList implements OnInit, OnDestroy {
 
     @Output()
     disableRippling: EventEmitter<TrustLine> = new EventEmitter();
+
+    @Output()
+    enableRippling: EventEmitter<TrustLine> = new EventEmitter();
     
     trustLines:TrustLine[] = [];
     displayedColumns: string[] = ['currency', 'account','balance', 'limit', 'limit_peer', 'no_ripple', 'actions'];
@@ -117,6 +120,10 @@ export class TrustLineList implements OnInit, OnDestroy {
             this.googleAnalytics.analyticsEventEmitter('setNoRippleFlag', 'trustline_list', 'trustline_list_component');
             //console.log("trustline selected: " + JSON.stringify(trustline));
             this.disableRippling.emit(trustLine);
+        } else {
+            this.googleAnalytics.analyticsEventEmitter('setNoRippleFlag', 'trustline_list', 'trustline_list_component');
+            //console.log("trustline selected: " + JSON.stringify(trustline));
+            this.enableRippling.emit(trustLine);
         }
     }
 

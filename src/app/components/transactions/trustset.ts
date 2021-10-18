@@ -407,6 +407,43 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onPayload.emit(payload);
   }
 
+  onEnableRippling(trustline:TrustLine) {
+    //console.log("onDisableRippling");
+    //console.log("onDisableRippling: " + this.issuedCurrencyInput);
+    this.googleAnalytics.analyticsEventEmitter('trust_set', 'onDisableRippling', 'trust_set_component');
+
+    let payload:XummTypes.XummPostPayloadBodyJson = {
+      txjson: {
+        TransactionType: "TrustSet",
+        ClearFlag: this.TRUST_SET_FLAG_SET_NO_RIPPLE
+      }
+    }
+
+    payload.txjson.LimitAmount = {};
+    payload.custom_meta = {
+      instruction: "Unset 'NoRipple' Flag on this TrustLine\n\n"
+    };
+
+    payload.txjson.LimitAmount['issuer'] = trustline.account;
+    payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
+
+    let currencyCode = trustline.currency;
+    let humanReadableCode = normalizer.normalizeCurrencyCodeXummImpl(trustline.currency);
+    if(currencyCode.length > 3) {
+      while(currencyCode.length < 40)
+        currencyCode+="0";
+    }
+    payload.txjson.LimitAmount['currency'] = currencyCode;
+    payload.custom_meta.instruction += "\n- Token currency code: " + humanReadableCode;
+
+    payload.txjson.LimitAmount['value'] = trustline.limit
+    payload.custom_meta.instruction += "\n- Limit: " + trustline.limit;
+
+    payload.custom_meta.instruction += "\n- Enable Rippling: true";
+
+    this.onPayload.emit(payload);
+  }
+
   async onIssuedCurrencyFound(token:Token) {
 
     this.issuedCurrencyInput = token.currency;

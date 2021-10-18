@@ -21,7 +21,7 @@
     <a href="https://xrpl.org/trustset.html" target="_blank" rel="noreferrer">Trust Set Documentation</a><br/>
     <label>Create or modify a trust line linking two accounts.</label>
     <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
-      <trustlineList [xrplAccountInfoChanged]="xrplAccountInfoChangedSubject.asObservable()" (trustLineEdit)="onTrustLineEdit($event)" (trustLineDelete)="deleteTrustLine($event)" (disableRippling)="onDisableRippling($event)"></trustlineList>
+      <trustlineList [xrplAccountInfoChanged]="xrplAccountInfoChangedSubject.asObservable()" (trustLineEdit)="onTrustLineEdit($event)" (trustLineDelete)="deleteTrustLine($event)" (disableRippling)="onDisableRippling($event)" (enableRippling)="onEnableRippling($event)"></trustlineList>
     </div>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
