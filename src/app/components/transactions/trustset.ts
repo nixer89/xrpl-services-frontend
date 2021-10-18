@@ -101,8 +101,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
         await this.issuerAccountChanged();
 
-        await this.checkCurrencyExists();
-
         if(this.isValidTrustSet) {
           setTimeout(() => {
             this.sendPayloadToXumm()

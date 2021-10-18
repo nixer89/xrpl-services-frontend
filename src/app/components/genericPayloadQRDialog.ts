@@ -59,6 +59,12 @@ export class GenericPayloadQRDialog implements OnInit {
             this.overlayContainer.getContainerElement().classList.add('dark-theme');
         }
 
+        this.loadKycData();
+
+        window.scrollTo(0,0);
+    }
+
+    async loadKycData() {
         if(this.genericPayload?.payload?.txjson?.TransactionType === "TrustSet") {
             this.loading = true;
             let issuer:string = this.genericPayload.payload.txjson.LimitAmount['issuer'];
@@ -72,8 +78,6 @@ export class GenericPayloadQRDialog implements OnInit {
 
             this.loading = false;
         }
-
-        window.scrollTo(0,0);
     }
 
     async sendToXumm() {
