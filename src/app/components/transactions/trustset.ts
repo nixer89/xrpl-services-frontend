@@ -415,7 +415,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
         TransactionType: "TrustSet",
-        ClearFlag: this.TRUST_SET_FLAG_SET_NO_RIPPLE
+        Flags: this.TRUST_SET_FLAG_CLEAR_NO_RIPPLE
       }
     }
 

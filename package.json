@@ -1,6 +1,6 @@
 {
   "name": "xumm-community",
-  "version": "2.12.3",
+  "version": "2.12.5",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
@@ -11,6 +11,8 @@
     "invalidate-dev": "aws cloudfront --profile myevride create-invalidation --distribution-id E3ME6BAQG95QSA --paths /*",
     "upload-qa": "ng build --configuration production & aws s3 --profile myevride rm s3://qa.xumm.community/ --recursive & aws s3 --profile myevride cp ./dist/xumm-community s3://qa.xumm.community/ --recursive --include '*' --acl public-read --cache-control public,max-age=31536000,no-transform",
     "invalidate-qa": "aws cloudfront --profile myevride create-invalidation --distribution-id E1G1RT942XBN57 --paths /*",
+    "upload-fixissuertrustline": "ng build --configuration production & aws s3 --profile myevride rm s3://fixissuertrustline.xumm.community/ --recursive & aws s3 --profile myevride cp ./dist/xumm-community s3://fixissuertrustline.xumm.community/ --recursive --include '*' --acl public-read --cache-control public,max-age=31536000,no-transform",
+    "invalidate-fixissuertrustline": "aws cloudfront --profile myevride create-invalidation --distribution-id E24A2R23KCDS07 --paths /*",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
