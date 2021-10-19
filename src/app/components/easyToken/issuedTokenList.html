@@ -168,6 +168,20 @@
             <mat-footer-cell *matFooterCellDef><b>{{currencyCodeTotal}}</b></mat-footer-cell>
         </ng-container>
 
+        <ng-container matColumnDef="created">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Created </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+              <span fxShow fxHide.xs >
+                <label>{{getTokenCreation(row.created)}}</label>
+              </span>
+              <span fxShow.xs fxHide >
+                <b>Created:</b>&nbsp;
+                <label>{{getTokenCreation(row.created)}}</label>
+              </span>
+          </mat-cell>
+          <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
+      </ng-container>
+
         <ng-container matColumnDef="amount">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Total issued value of this token </mat-header-cell>
             <mat-cell *matCellDef="let row">

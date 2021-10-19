@@ -36,9 +36,9 @@ export class IssuedTokenList implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  sortColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers'];
+  sortColumns: string[] = ['account', 'kyc', 'username', 'currency', 'created', 'amount', 'trustlines', 'offers'];
   
-  displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers',  'link', 'explorer'];
+  displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'created', 'amount', 'trustlines', 'offers',  'link', 'explorer'];
   datasource:MatTableDataSource<TokenIssuer> = null;
 
   allTokens: TokenIssuer[] = null;
@@ -240,6 +240,14 @@ export class IssuedTokenList implements OnInit {
       return currency;
     return null;
   }
+
+  getTokenCreation(created: any): string {
+    //console.log("converting: " +JSON.stringify(dateString));
+    if(created && created.date && created.date != "Unknown")
+        return new Date(created.date).toLocaleString();
+    else
+        return "Unknown";
+}
 
   applyFilter(event: Event) {
     this.filterText = (event.target as HTMLInputElement).value;

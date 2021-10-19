@@ -94,6 +94,24 @@ td {
         text-align: center;
     }
 
+    .mat-column-created {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        flex: 0 0 10% !important;
+        width: 10% !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    
+        word-break: break-word;
+    
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        justify-content: center;
+        text-align: center;
+    }
+
     .mat-column-currency {
         word-wrap: break-word !important;
         white-space: unset !important;
