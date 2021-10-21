@@ -128,6 +128,9 @@ export class XrplTransactionsComponent implements OnInit {
     //this.xrplAccount="rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B";
     //this.isTestMode = true;
     //await this.loadAccountData(false);
+
+    this.xrplAccount = "rsXdt9Sr9AwZbQtFxSLN9yYVsJ8XidJEVK";
+    await this.loadAccountData(false);
   }
 
   networkChanged() {

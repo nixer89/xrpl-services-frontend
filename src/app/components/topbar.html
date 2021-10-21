@@ -27,8 +27,9 @@
       </span>
     </mat-toolbar-row>
   </mat-toolbar>
-  <mat-toolbar class="second-toolbar" color="primary" fxLayout="row" ngStyle.xs="padding:0px; font-size: 0.5em;">
-    <!-- normal menu -->
+  
+  <!--mat-toolbar class="second-toolbar" color="primary" fxLayout="row" ngStyle.xs="padding:0px; font-size: 0.5em;">
+    <-- normal menu >
     <div fxShow fxHide.xs>
       <button mat-button [routerLink]="['']" matTooltip="XRPL Transactions">
         <i class="material-icons topbar-menu-icon">mobile_friendly</i> XRPL Transactions
@@ -39,9 +40,9 @@
       <button mat-button [routerLink]="['/tools']" matTooltip="Tools">
         <i class="material-icons topbar-menu-icon">build</i> XRPL Tools
       </button>
-      <!--button mat-button [routerLink]="['/generic-backend']" matTooltip="Xumm Community Generic Backend">
+      <--button mat-button [routerLink]="['/generic-backend']" matTooltip="Xumm Community Generic Backend">
         <i class="material-icons topbar-menu-icon">device_hub</i> Generic Backend
-      </button-->
+      </button>
       <button mat-button [routerLink]="['/statistics']" matTooltip="Xumm Community Statistics">
         <i class="material-icons topbar-menu-icon">query_stats</i> Statistics
       </button>
@@ -64,10 +65,10 @@
           <mat-icon class="material-icons">build</mat-icon>
           <span>XRPL Tools</span>
         </button>
-        <!--button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/generic-backend']" matTooltip="Xumm Community Generic Backend">
+        <--button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/generic-backend']" matTooltip="Xumm Community Generic Backend">
           <mat-icon class="material-icons">device_hub</mat-icon>
           <span>Generic Backend</span>
-        </button-->
+        </button>
         <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/statistics']" matTooltip="Xumm Community Statistics">
           <mat-icon class="material-icons">query_stats</mat-icon>
           <span>Statistics</span>
@@ -79,7 +80,7 @@
     <button mat-icon-button (click)="toggleDarkTheme()">
       <i class="material-icons topbar-menu-icon">{{isDarkTheme ? 'wb_sunny' : 'nights_stay'}}</i>
     </button>
-  </mat-toolbar>
+  </mat-toolbar-->
   <mat-toolbar>
     <mat-toolbar-row fxLayout="row" fxLayoutAlign="center center" style="background-color: yellow">
       <span fxLayout="column" style="font-size: 0.8em; color: crimson; font-weight: bold;;" fxLayoutAlign="center center">

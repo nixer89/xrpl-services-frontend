@@ -1,11 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import * as util from '../../utils/flagutils';
 import * as normalizer from 'src/app/utils/normalizers';
 import { AccountInfoChanged, TrustLine } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
-import { normalize } from 'path';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from "@angular/material/table";
 
 @Component({
     selector: "trustlineList",
@@ -28,12 +29,19 @@ export class TrustLineList implements OnInit, OnDestroy {
 
     @Output()
     enableRippling: EventEmitter<TrustLine> = new EventEmitter();
-    
+
+    @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+
+    pageSize:number = 50;
+
+    datasource:MatTableDataSource<TrustLine> = null;
+
     trustLines:TrustLine[] = [];
     displayedColumns: string[] = ['currency', 'account','balance', 'limit', 'limit_peer', 'no_ripple', 'actions'];
     loading:boolean = false;
     testMode:boolean = false;
     originalTestModeValue:boolean = false;
+    originalAccount:string = null;
     trustlineClicked:boolean = false;
 
     account_Info:any = null;
@@ -43,16 +51,19 @@ export class TrustLineList implements OnInit, OnDestroy {
     constructor(private xrplWebSocket: XRPLWebsocket, private googleAnalytics: GoogleAnalyticsService) {}
 
     ngOnInit() {
-        this.trustLineAccountChangedSubscription = this.xrplAccountInfoChanged.subscribe(account => {
+        this.trustLineAccountChangedSubscription = this.xrplAccountInfoChanged.subscribe(async account => {
             //console.log("trustline account changed received: " + xrplAccount);
             //console.log("test mode: " + this.testMode);
             this.account_Info = account.info;
             this.testMode = account.mode;
             
-            if(this.account_Info && this.account_Info.Account) {
-                this.loadTrustLineList(this.account_Info.Account);
+            if(this.account_Info && this.account_Info.Account && (!this.originalAccount || this.originalAccount != this.account_Info.Account)) {
+                this.originalAccount = this.account_Info.Account;
+                await this.loadTrustLineList(this.account_Info.Account);
             } else
                 this.trustLines = [];
+
+            console.log("finished all")
         });
     }
 
@@ -61,7 +72,7 @@ export class TrustLineList implements OnInit, OnDestroy {
           this.trustLineAccountChangedSubscription.unsubscribe();
     }
 
-    async loadTrustLineList(xrplAccount: string) {
+    async loadTrustLineList(xrplAccount: string): Promise<void> {
         this.googleAnalytics.analyticsEventEmitter('load_trustline_list', 'trustline_list', 'trustline_list_component');
 
         //console.log("load trustlines");
@@ -69,16 +80,22 @@ export class TrustLineList implements OnInit, OnDestroy {
         if(xrplAccount) {
             this.loading = true;
 
+            let marker:any = null;
+            let ledger_hash:string = null;
+
             let account_lines_request:any = {
               command: "account_lines",
               account: xrplAccount,
               ledger_index: "validated",
+              limit: 100
             }
 
             let message:any = await this.xrplWebSocket.getWebsocketMessage("trustlineList", account_lines_request, this.testMode);
 
             if(message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.lines) {
                 this.trustLines = message.result.lines;
+                marker = message.result.marker;
+                ledger_hash = message.result.ledger_hash;
 
                 if(this.trustLines && this.trustLines.length > 0)
                     this.trustLines = this.trustLines.sort((lineA, lineB) => lineA.currency.localeCompare(lineB.currency));
@@ -86,10 +103,52 @@ export class TrustLineList implements OnInit, OnDestroy {
                 //if data 0 (no available trustlines) -> show message "no trustlines available"
                 if(this.trustLines && this.trustLines.length == 0)
                     this.trustLines = null;
-                    
+
                 
-                //console.log("account trust lines: " + JSON.stringify(this.trustLines));
+                while(marker != null) {
+                    let account_lines_request:any = {
+                        command: "account_lines",
+                        account: xrplAccount,
+                        ledger_hash: ledger_hash,
+                        marker: marker,
+                        limit: 1000
+                    }
+
+                    let message2:any = await this.xrplWebSocket.getWebsocketMessage("trustlineList", account_lines_request, this.testMode);
+
+                    console.log("new marker: " + message2.result.marker);
+
+                    if(message2.status && message2.status === 'success' && message2.type && message2.type === 'response' && message2.result && message2.result.lines) {
+                        this.trustLines = this.trustLines.concat(message2.result.lines);
+                        marker = message2.result.marker;
+
+                        if(typeof marker != 'string')
+                            break;
+                    }
+                }
+                
+
+                console.log("sorting")
+                if(this.trustLines && this.trustLines.length > 0) {
+                    this.trustLines = this.trustLines.sort((lineA, lineB) => lineA.currency.localeCompare(lineB.currency));
+
+                    this.trustLines = this.trustLines.filter(trustline =>  trustline.limit === "0");
+                }
+
+                
+                console.log("sorting finished")
+
+                this.datasource = new MatTableDataSource(this.trustLines);
+                this.datasource.paginator = this.paginator;
+
+                if (this.datasource.paginator) {
+                    this.datasource.paginator.firstPage();
+                }
+
                 this.loading = false;
+                console.log("datasource set")
+                console.log("account trust lines: " + JSON.stringify(this.trustLines.length));
+                
             } else {                
               this.trustLines = null;
               this.loading = false;
