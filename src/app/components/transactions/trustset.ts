@@ -99,6 +99,9 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         //console.log("subscribe set: " + this.issuedCurrencyInput);
         this.limitInput = params.limit;
 
+        this.testMode = params.testmode ? params.testmode : false;
+        //console.log("testmode: " + this.testMode);
+
         await this.issuerAccountChanged();
 
         if(this.isValidTrustSet) {
