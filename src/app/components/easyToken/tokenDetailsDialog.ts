@@ -54,41 +54,46 @@ export class TokenDetailsDialog implements OnInit {
 
         window.scrollTo(0,0);
 
-        //load issuer data
-        let account_info_request:any = {
-            command: "account_info",
-            account: this.tokenIssuer.account,
-            strict: true,
-            signer_lists: true
-        }
+        try {
 
-        let promises:any[] = [];
-        promises.push(this.xrplWebSocket.getWebsocketMessage("token-information", account_info_request, false));
-        promises.push(this.app.get('https://xrpldata.com/api/v1/tokencreation?issuer='+this.tokenIssuer.account+"&currency="+normalizer.getCurrencyCodeForXRPL(this.tokenIssuer.currency)))
-    
-        let results:any[] = await Promise.all(promises)
+            //load issuer data
+            let account_info_request:any = {
+                command: "account_info",
+                account: this.tokenIssuer.account,
+                strict: true,
+                signer_lists: true
+            }
 
-        let message_acc_info:any = results[0];
+            let promises:any[] = [];
+            promises.push(this.xrplWebSocket.getWebsocketMessage("token-information", account_info_request, false));
+            promises.push(this.app.get('https://xrpldata.com/api/v1/tokencreation?issuer='+this.tokenIssuer.account+"&currency="+normalizer.getCurrencyCodeForXRPL(this.tokenIssuer.currency)))
+        
+            let results:any[] = await Promise.all(promises)
 
-        this.creationDate = results[1];
+            let message_acc_info:any = results[0];
 
-        //console.log("token-information account info: " + JSON.stringify(message_acc_info));
-    
-        if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
-            if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
-              this.accountData = message_acc_info.result.account_data;
-              if(message_acc_info.result.signer_lists)
-                this.signerList = message_acc_info.result.signer_lists;
+            this.creationDate = results[1];
+
+            //console.log("token-information account info: " + JSON.stringify(message_acc_info));
+        
+            if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
+                if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
+                this.accountData = message_acc_info.result.account_data;
+                if(message_acc_info.result.signer_lists)
+                    this.signerList = message_acc_info.result.signer_lists;
+                } else {
+                    this.accountData = null;
+                    this.signerList = null;
+                }
             } else {
                 this.accountData = null;
                 this.signerList = null;
             }
-        } else {
-            this.accountData = null;
-            this.signerList = null;
-        }
 
-        console.log("currency: " +this.tokenIssuer.currency)
+            console.log("currency: " +this.tokenIssuer.currency)
+        } catch(err) {
+            console.log(JSON.stringify(err));
+        }
 
         /**
         let liquidityIndex = await this.checkLiquidity.checkLiquidity(this.tokenIssuer.account, normalizer.getCurrencyCodeForXRPL(this.tokenIssuer.currency));

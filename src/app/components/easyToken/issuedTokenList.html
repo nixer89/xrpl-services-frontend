@@ -20,7 +20,7 @@
         <label class="warning">Loading XRP Ledger tokens ...&nbsp;</label>
         <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
       </div>
-      <div *ngIf="!loading && datasource.data" fxLayout="column" fxLayoutGap="0.5em">
+      <div *ngIf="!loading && datasource && datasource.data" fxLayout="column" fxLayoutGap="0.5em">
         <label><b>The below token table is based on XRP Ledger:</b></label>
         <table style="display: block;">
           <tr>
@@ -53,7 +53,7 @@
         </table>
         
       </div>
-      <div *ngIf="!loading && !datasource.data"  fxLayout="column" fxLayoutGap="0.5em">
+      <div *ngIf="!loading && (!datasource || !datasource.data)"  fxLayout="column" fxLayoutGap="0.5em">
         <label class="warning">Could not load XRP Ledger tokens. Please try again later!</label>
       </div>
     </mat-card>

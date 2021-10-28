@@ -36,6 +36,9 @@ export class GenericPayloadQRDialog implements OnInit {
     transactionSigned:boolean = false;
     pushed:boolean = false;
     isOverview:boolean = true;
+
+    loadingKYC:boolean = false;
+    loadingKycFailed:boolean = false;
     showKyc:boolean = false;
     hasKyc:boolean = false;
 
@@ -65,19 +68,25 @@ export class GenericPayloadQRDialog implements OnInit {
     }
 
     async loadKycData() {
-        if(this.genericPayload?.payload?.txjson?.TransactionType === "TrustSet") {
-            this.loading = true;
-            let issuer:string = this.genericPayload.payload.txjson.LimitAmount['issuer'];
+        this.loadingKYC = true;
+        this.showKyc = true;
+        try {
+            if(this.genericPayload?.payload?.txjson?.TransactionType === "TrustSet") {
+                let issuer:string = this.genericPayload.payload.txjson.LimitAmount['issuer'];
 
-            let kycResponse = await this.app.get("https://xrpldata.com/api/v1//kyc/"+issuer)
+                let kycResponse = await this.app.get("https://xrpldata.com/api/v1//kyc/"+issuer)
 
-            console.log(JSON.stringify(kycResponse));
+                console.log(JSON.stringify(kycResponse));
 
-            this.showKyc = true;
-            this.hasKyc = kycResponse && kycResponse.kyc;
+                this.hasKyc = kycResponse && kycResponse.kyc;
 
-            this.loading = false;
+                this.loading = false;
+            }
+        } catch(err) {
+            console.log(JSON.stringify(err));
+            this.loadingKycFailed = true;
         }
+        this.loadingKYC = false;
     }
 
     async sendToXumm() {

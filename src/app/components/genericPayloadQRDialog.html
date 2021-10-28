@@ -9,21 +9,24 @@
             <mat-card class="theme-background" *ngIf="showKyc" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">
                 <div fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
                     <label><b>KYC:</b></label>
-                    <div *ngIf="hasKyc">
+                    <div *ngIf="!loadingKYC && !loadingKycFailed && hasKyc">
                         <i class="material-icons" style="color: green; font-size: 1.4em;">
                             check_circle
                         </i>
                     </div>
-                    <div *ngIf="!hasKyc">
+                    <div *ngIf="!loadingKYC && !loadingKycFailed && !hasKyc">
                         <i class="material-icons" style="color: red; font-size: 1.4em;">
                             highlight_off
                         </i>
                     </div>
+                    <div *ngIf="!loadingKYC && loadingKycFailed">
+                        <label class="warning"  style="font-size:0.9em;">( KYC data of the token creator could not be loaded! )</label>
+                    </div>
                 </div>
-                <div *ngIf="hasKyc">
+                <div *ngIf="!loadingKYC && !loadingKycFailed && hasKyc">
                     <label class="loading" style="font-size:0.7em;">Disclaimer: just because an issuer completed KYC does not mean that<br>the token has any value! Please proceed with caution and do your own research!</label>
                 </div>
-                <div *ngIf="!hasKyc">
+                <div *ngIf="!loadingKYC && !loadingKycFailed && !hasKyc">
                     <label class="loading" style="font-size:0.7em;">Disclaimer: the token issuer hasn’t gone through KYC yet.<br>Please proceed with caution and do your own research!</label>
                 </div>
                 

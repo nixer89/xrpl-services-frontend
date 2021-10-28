@@ -74,76 +74,83 @@ export class IssuedTokenList implements OnInit {
     this.pageSize = this.deviceDetector.isMobile() ? 5 : this.pageSize;
     this.loading = true;
 
-    let promises:any[] = [];
-    promises.push(this.loadLedgerData());
-    promises.push(this.xummBackend.getHottestToken1D());
-    //promises.push(this.xummBackend.getHottestToken1W());
-    //promises.push(this.xummBackend.getHottestToken1M());
+    try {
+      let promises:any[] = [];
+      promises.push(this.loadLedgerData());
+      promises.push(this.xummBackend.getHottestToken1D());
+      //promises.push(this.xummBackend.getHottestToken1W());
+      //promises.push(this.xummBackend.getHottestToken1M());
 
-    let results = await Promise.all(promises);
+      let results = await Promise.all(promises);
 
-    this.allTokens = results[0];
-    
-    this.hotToken1D = results[1];
-    //console.log(JSON.stringify(this.hotToken1D));
-    //this.hotToken1W = results[2];
-    //this.hotToken1M = results[3];
+      this.allTokens = results[0];
+      
+      this.hotToken1D = results[1];
+      //console.log(JSON.stringify(this.hotToken1D));
+      //this.hotToken1W = results[2];
+      //this.hotToken1M = results[3];
+    } catch(err) {
+      console.log(JSON.stringify(err));
+      this.allTokens = null;
+    }
     
   
-    this.datasource = new MatTableDataSource(this.allTokens);
-
     if(this.allTokens != null) {
+      this.datasource = new MatTableDataSource(this.allTokens);
 
-      for(let i = 0; i < 10; i++) {
-        this.allTokens.find(issuer => {
-          if(this.hotToken1D[i]['_id'].issuer === issuer.account && this.hotToken1D[i]['_id'].currency === normalizer.getCurrencyCodeForXRPL(issuer.currency)) {
-            issuer.isHot = true;
-            issuer.newTrustlines = this.hotToken1D[i].count;
-            //console.log(issuer.account + " is hot!");
-          }
-        })
-      }
+      if(this.allTokens != null) {
 
-      this.datasource.paginator = this.paginator;
-      this.datasource.sort = this.sort;
-
-      this.datasource.sortingDataAccessor = (data: any, sortHeaderId: string): string => {
-        if (typeof data[sortHeaderId] === 'string') {
-          if(!data[sortHeaderId] || data[sortHeaderId].trim().length == 0) {
-            if(this.sort.direction === 'asc')
-              return "zzzzzzzzzzzzzzzzzzzzzzzzz"
-            else
-              return "0000000000000000000000000"
-          }
-          else
-            return data[sortHeaderId].toLocaleLowerCase();
+        for(let i = 0; i < 10; i++) {
+          this.allTokens.find(issuer => {
+            if(this.hotToken1D[i]['_id'].issuer === issuer.account && this.hotToken1D[i]['_id'].currency === normalizer.getCurrencyCodeForXRPL(issuer.currency)) {
+              issuer.isHot = true;
+              issuer.newTrustlines = this.hotToken1D[i].count;
+              //console.log(issuer.account + " is hot!");
+            }
+          })
         }
-      
-        return data[sortHeaderId];
-      };
 
-      this.datasource.filterPredicate = (data: TokenIssuer, filter: string) => {
-        if(filter)
-          filter = filter.trim().toLowerCase()
+        this.datasource.paginator = this.paginator;
+        this.datasource.sort = this.sort;
 
-        let matches:boolean =  data.account && data.account.toLowerCase().includes(filter)
-                || data.amount && data.amount.toString().toLowerCase().includes(filter)
-                  || data.currency && data.currency.toLowerCase().includes(filter)
-                    || data.trustlines && data.trustlines.toString().toLowerCase().includes(filter)
-                      || (data.username && data.username.toLowerCase().includes(filter))
-                        || (data.currencyHex && data.currencyHex.toLowerCase().includes(filter) && filter.length == 40 && normalizer.isHex(filter));
+        this.datasource.sortingDataAccessor = (data: any, sortHeaderId: string): string => {
+          if (typeof data[sortHeaderId] === 'string') {
+            if(!data[sortHeaderId] || data[sortHeaderId].trim().length == 0) {
+              if(this.sort.direction === 'asc')
+                return "zzzzzzzzzzzzzzzzzzzzzzzzz"
+              else
+                return "0000000000000000000000000"
+            }
+            else
+              return data[sortHeaderId].toLocaleLowerCase();
+          }
         
-        return matches;
-      };
+          return data[sortHeaderId];
+        };
 
-      if(this.datasource&& this.datasource.data) {
-        this.numberOfIssuedTokens = this.datasource.data.length;
+        this.datasource.filterPredicate = (data: TokenIssuer, filter: string) => {
+          if(filter)
+            filter = filter.trim().toLowerCase()
+
+          let matches:boolean =  data.account && data.account.toLowerCase().includes(filter)
+                  || data.amount && data.amount.toString().toLowerCase().includes(filter)
+                    || data.currency && data.currency.toLowerCase().includes(filter)
+                      || data.trustlines && data.trustlines.toString().toLowerCase().includes(filter)
+                        || (data.username && data.username.toLowerCase().includes(filter))
+                          || (data.currencyHex && data.currencyHex.toLowerCase().includes(filter) && filter.length == 40 && normalizer.isHex(filter));
+          
+          return matches;
+        };
+
+        if(this.datasource && this.datasource.data) {
+          this.numberOfIssuedTokens = this.datasource.data.length;
+        }
+
+        this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
+
+        this.kycTokensOnly = this.allTokens.filter(token => token.kyc);
       }
-
-      this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
     }
-
-    this.kycTokensOnly = this.allTokens.filter(token => token.kyc);
 
     this.loading = false;
 
@@ -242,29 +249,31 @@ export class IssuedTokenList implements OnInit {
   }
 
   applyFilter(event: Event) {
-    this.filterText = (event.target as HTMLInputElement).value;
-    this.datasource.filter = this.filterText.toLowerCase();
+    if(this.datasource && this.datasource.data) {
+      this.filterText = (event.target as HTMLInputElement).value;
+      this.datasource.filter = this.filterText.toLowerCase();
 
-    //count totals
-    this.uniqueFilteredAccount = new Map<String, Number>();
-    this.dexOffersTotal = 0;
-    this.accountNameTotal = 0;
-    this.issuedTokensTotal = 0;
-    this.currencyCodeTotal = 0;
-    this.numberOfTrustlinesTotal = 0;
-    this.previousFilter = null;
-    //count everything!
-    this.datasource.filteredData.forEach(data => {
-        this.uniqueFilteredAccount.set(data.account, 1);
-        this.accountNameTotal += data.username ? 1 : 0;
-        this.currencyCodeTotal += data.currency ? 1 : 0;
-        this.issuedTokensTotal += data.amount ? Number(data.amount) : 0;
-        this.dexOffersTotal += data.offers ? parseInt(data.offers) : 0;
-        this.numberOfTrustlinesTotal += data.trustlines ? parseInt(data.trustlines) : 0;
-    });
+      //count totals
+      this.uniqueFilteredAccount = new Map<String, Number>();
+      this.dexOffersTotal = 0;
+      this.accountNameTotal = 0;
+      this.issuedTokensTotal = 0;
+      this.currencyCodeTotal = 0;
+      this.numberOfTrustlinesTotal = 0;
+      this.previousFilter = null;
+      //count everything!
+      this.datasource.filteredData.forEach(data => {
+          this.uniqueFilteredAccount.set(data.account, 1);
+          this.accountNameTotal += data.username ? 1 : 0;
+          this.currencyCodeTotal += data.currency ? 1 : 0;
+          this.issuedTokensTotal += data.amount ? Number(data.amount) : 0;
+          this.dexOffersTotal += data.offers ? parseInt(data.offers) : 0;
+          this.numberOfTrustlinesTotal += data.trustlines ? parseInt(data.trustlines) : 0;
+      });
 
-    if (this.datasource.paginator) {
-      this.datasource.paginator.firstPage();
+      if (this.datasource.paginator) {
+        this.datasource.paginator.firstPage();
+      }
     }
   }
 
@@ -296,9 +305,11 @@ export class IssuedTokenList implements OnInit {
   }
 
   switchTokenList() {
-    if(this.showKycOnly)
-      this.datasource.data = this.kycTokensOnly
-    else
-      this.datasource.data = this.allTokens;
+    if(this.datasource && this.datasource.data) {
+      if(this.showKycOnly)
+        this.datasource.data = this.kycTokensOnly
+      else
+        this.datasource.data = this.allTokens;
+    }
   }
 }
