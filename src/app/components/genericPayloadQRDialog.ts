@@ -69,12 +69,12 @@ export class GenericPayloadQRDialog implements OnInit {
 
     async loadKycData() {
         this.loadingKYC = true;
-        this.showKyc = true;
         try {
             if(this.genericPayload?.payload?.txjson?.TransactionType === "TrustSet") {
+                this.showKyc = true;
                 let issuer:string = this.genericPayload.payload.txjson.LimitAmount['issuer'];
 
-                let kycResponse = await this.app.get("https://xrpldata.com/api/v1//kyc/"+issuer)
+                let kycResponse = await this.app.get("https://xrpldata.com/api/v1/kyc/"+issuer)
 
                 console.log(JSON.stringify(kycResponse));
 

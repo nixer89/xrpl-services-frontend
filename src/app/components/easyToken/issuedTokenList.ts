@@ -102,7 +102,7 @@ export class IssuedTokenList implements OnInit {
 
         for(let i = 0; i < 10; i++) {
           this.allTokens.find(issuer => {
-            if(this.hotToken1D[i]['_id'].issuer === issuer.account && this.hotToken1D[i]['_id'].currency === normalizer.getCurrencyCodeForXRPL(issuer.currency)) {
+            if(this.hotToken1D && this.hotToken1D.length >= 10 && this.hotToken1D[i]['_id'].issuer === issuer.account && this.hotToken1D[i]['_id'].currency === normalizer.getCurrencyCodeForXRPL(issuer.currency)) {
               issuer.isHot = true;
               issuer.newTrustlines = this.hotToken1D[i].count;
               //console.log(issuer.account + " is hot!");
