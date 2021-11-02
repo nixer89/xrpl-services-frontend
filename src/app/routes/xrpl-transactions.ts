@@ -13,8 +13,6 @@ import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
-import { promisify } from 'util';
-import { XummGetPayloadResponse } from 'xumm-sdk/dist/src/types';
 
 @Component({
   selector: 'xrpl-transactions',
