@@ -23,8 +23,6 @@ export class TokenDetailsDialog implements OnInit {
 
     private checkLiquidity:CheckLiquidityClass;
 
-    creationDate:any = null;
-
     loadingLiquidity:boolean = true;
     liquidityCheckFailed:boolean = false;
     fullStars:number[] = [];
@@ -64,15 +62,7 @@ export class TokenDetailsDialog implements OnInit {
                 signer_lists: true
             }
 
-            let promises:any[] = [];
-            promises.push(this.xrplWebSocket.getWebsocketMessage("token-information", account_info_request, false));
-            promises.push(this.app.get('https://xrpldata.com/api/v1/tokencreation?issuer='+this.tokenIssuer.account+"&currency="+normalizer.getCurrencyCodeForXRPL(this.tokenIssuer.currency)))
-        
-            let results:any[] = await Promise.all(promises)
-
-            let message_acc_info:any = results[0];
-
-            this.creationDate = results[1];
+            let message_acc_info = await this.xrplWebSocket.getWebsocketMessage("token-information", account_info_request, false);
 
             //console.log("token-information account info: " + JSON.stringify(message_acc_info));
         
@@ -162,8 +152,8 @@ export class TokenDetailsDialog implements OnInit {
     }
 
     getTokenCreation(): string {
-        if(this.creationDate)
-            return new Date(this.creationDate.date).toLocaleString();
+        if(this.tokenIssuer && this.tokenIssuer.created && this.tokenIssuer.created.date)
+            return new Date(this.tokenIssuer.created.date).toLocaleString();
         else
             return "-";
     }

@@ -29,6 +29,11 @@
                 <div *ngIf="!loadingKYC && !loadingKycFailed && !hasKyc">
                     <label class="loading" style="font-size:0.7em;">Disclaimer: the token issuer hasn’t gone through KYC yet.<br>Please proceed with caution and do your own research!</label>
                 </div>
+                <div *ngIf="loadingKYC" fxLayout="row" fxLayoutGap="0.5em">
+                    <label>Loading KYC...</label>
+                    <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+                </div>
+
                 
             </mat-card>
             <mat-card class="theme-background" *ngIf="!genericPayload.payload.txjson.Memos" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">

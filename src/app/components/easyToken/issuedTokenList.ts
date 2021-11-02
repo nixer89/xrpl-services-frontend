@@ -206,7 +206,7 @@ export class IssuedTokenList implements OnInit {
                   domain: domain,
                   twitter: twitter,
                   kyc: data.kyc,
-                  created: data.created
+                  created: issuedCurrency.created
                 });
 
               this.uniqueFilteredAccount.set(account, 1);

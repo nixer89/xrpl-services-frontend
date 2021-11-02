@@ -19,6 +19,7 @@ export interface GenericBackendPostRequest {
 export interface TransactionValidation {
     success: boolean,
     testnet: boolean,
+    transactionType?: string,
     txid?: string,
     error?: boolean,
     message?: string,
@@ -26,7 +27,8 @@ export interface TransactionValidation {
     noValidationTimeFrame?: boolean,
     redirect?: boolean,
     account?: string,
-    payloadId?: string
+    payloadId?: string,
+    originalPayload?: XummTypes.XummGetPayloadResponse
 }
 
 export interface AccountInfoChanged {
@@ -50,7 +52,8 @@ export interface Token {
     currency: string,
     amount: string,
     trustlines?: string,
-    offers?: string
+    offers?: string,
+    created?: string
 }
 
 export interface TrustLine {
@@ -80,13 +83,13 @@ export interface TokenIssuer {
     offers: string,
     verified: boolean,
     kyc?: boolean,
-    created?: any,
     username?: string,
     resolvedBy?: string
     twitter?: string,
     domain?: string,
     isHot?: boolean,
-    newTrustlines?: number
+    newTrustlines?: number,
+    created?: any
 }
 
 export interface IssuerVerification {

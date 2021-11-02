@@ -83,8 +83,24 @@ export class GenericPayloadQRDialog implements OnInit {
                 this.loading = false;
             }
         } catch(err) {
-            console.log(JSON.stringify(err));
-            this.loadingKycFailed = true;
+            //fallback to xumm api in case of error
+            try {
+                if(this.genericPayload?.payload?.txjson?.TransactionType === "TrustSet") {
+                    this.showKyc = true;
+                    let issuer:string = this.genericPayload.payload.txjson.LimitAmount['issuer'];
+    
+                    let kycResponse = await this.app.get("https://xumm.app/api/v1/platform/kyc-status/"+issuer)
+    
+                    console.log(JSON.stringify(kycResponse));
+    
+                    this.hasKyc = kycResponse && kycResponse.kycApproved;
+    
+                    this.loading = false;
+                }
+            } catch(err) {
+                console.log(JSON.stringify(err));
+                this.loadingKycFailed = true;
+            }
         }
         this.loadingKYC = false;
     }

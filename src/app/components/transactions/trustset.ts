@@ -106,7 +106,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
         if(this.isValidTrustSet) {
           setTimeout(() => {
-            this.sendPayloadToXumm()
+            this.sendPayloadToXumm(true)
           });
         }
       }
@@ -210,7 +210,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  sendPayloadToXumm() {
+  sendPayloadToXumm(isDirectLink?: boolean) {
 
     //console.log("sendPayloadToXumm: " + this.issuedCurrencyInput);
 
@@ -244,6 +244,10 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     if(this.limitInput && this.validLimit) {
       payload.txjson.LimitAmount['value'] = normalizer.tokenNormalizer(this.limitInput.trim());
       payload.custom_meta.instruction += "\n- Limit: " + this.limitInput.trim();
+    }
+
+    if(isDirectLink) {
+      payload.custom_meta.blob = {noSignIn: isDirectLink};
     }
 
     this.onPayload.emit(payload);

@@ -88,7 +88,7 @@
 
         <ng-container matColumnDef="account">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer Account </mat-header-cell>
-          <mat-cell *matCellDef="let row">
+          <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
               <span fxShow fxHide.xs fxLayout="row" fxLayoutGap="0.3em">
                 <label [innerHTML]="row.account | highlightSearch: filterText"></label>
               </span>
@@ -102,7 +102,7 @@
 
         <ng-container matColumnDef="kyc">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer KYC </mat-header-cell>
-          <mat-cell *matCellDef="let row">
+          <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
               <span fxShow fxHide.xs fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="0.3em">
                 <div *ngIf="row.kyc" fxLayout="row" fxLayoutAlign="center center">
                   <i class="material-icons" style="color: green; font-size: 1.4em;">
@@ -124,7 +124,7 @@
 
         <ng-container matColumnDef="username">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Accountname </mat-header-cell>
-          <mat-cell *matCellDef="let row">
+          <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
               <span fxShow fxHide.xs fxLayout="row">
                 <label [innerHTML]="row.username | highlightSearch: filterText"></label>
                 <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
@@ -142,7 +142,7 @@
 
         <ng-container matColumnDef="currency">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
-            <mat-cell *matCellDef="let row">
+            <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
                 <span fxShow fxHide.xs fxLayout="row">
                   <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
                   <div *ngIf="row.isHot">
@@ -170,7 +170,7 @@
 
         <ng-container matColumnDef="amount">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Total issued value of this token </mat-header-cell>
-            <mat-cell *matCellDef="let row">
+            <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
                 <span fxShow fxHide.xs >
                   <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
                 </span>
@@ -184,7 +184,7 @@
 
         <ng-container matColumnDef="trustlines">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Number of TrustLines </mat-header-cell>
-          <mat-cell *matCellDef="let row">
+          <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
               <span fxShow fxHide.xs fxLayout="column">
                 <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
               </span>
@@ -198,7 +198,7 @@
 
         <ng-container matColumnDef="offers">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Current Dex Offers </mat-header-cell>
-          <mat-cell *matCellDef="let row">
+          <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
               <span fxShow fxHide.xs >
                 <label [innerHTML]="row.offers | highlightSearch: filterText"></label>
               </span>
@@ -243,7 +243,7 @@
         </ng-container>
 
         <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" (click)="openDetailsDialog(row)"></mat-row>
+        <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
         <mat-footer-row fxShow fxHide.xs *matFooterRowDef="displayedColumns"></mat-footer-row>
       </mat-table>
       <mat-paginator [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 50, 100]"></mat-paginator>

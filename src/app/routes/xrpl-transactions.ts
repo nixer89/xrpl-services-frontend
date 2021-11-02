@@ -14,6 +14,7 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { promisify } from 'util';
+import { XummGetPayloadResponse } from 'xumm-sdk/dist/src/types';
 
 @Component({
   selector: 'xrpl-transactions',
@@ -265,7 +266,7 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   async handleTransactionInfo(trxInfo:TransactionValidation) {
-    if(trxInfo && trxInfo.account) {
+    if(trxInfo && trxInfo.account && (!trxInfo.originalPayload || (trxInfo.originalPayload && trxInfo.originalPayload.custom_meta && trxInfo.originalPayload.custom_meta.blob && !trxInfo.originalPayload.custom_meta.blob.noSignIn))) {
       this.loadingData = true;
       this.xrplAccount = trxInfo.account;
     }
@@ -307,8 +308,8 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   async handleEscrowCreate(trxInfo: TransactionValidation) {
-    if(trxInfo.payloadId) {
-      let payload:XummTypes.XummGetPayloadResponse = await this.xummApi.getPayloadInfo(trxInfo.payloadId);
+    if(trxInfo.originalPayload) {
+      let payload:XummTypes.XummGetPayloadResponse = trxInfo.originalPayload;
       if(payload && payload.payload && payload.payload.request_json) {
         let trx:XummTypes.XummJsonTransaction = payload.payload.request_json;
         if(trx.TransactionType === "EscrowCreate" && trx.FinishAfter && !trx.Condition && (!trx.CancelAfter || (Number(trx.CancelAfter) - Number(trx.FinishAfter)) > 90*60)) {
