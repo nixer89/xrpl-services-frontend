@@ -153,7 +153,7 @@ export class GenericPayloadQRDialog implements OnInit {
                 this.loading = false;
                 this.backendNotAvailable = true;
 
-                this.backendErrorMessage = "Sorry, there was an error contacting the backend. Please try again later.";
+                this.backendErrorMessage = "Sorry, there was an error contacting the backend. Please try again later!";
 
                 this.showError = true;
                 setTimeout(() => this.handleFailedTransaction(), 5000);
@@ -163,6 +163,15 @@ export class GenericPayloadQRDialog implements OnInit {
             //console.log(JSON.stringify(err));
             this.loading = false;
             this.backendNotAvailable = true;
+
+            if(err) {
+                this.backendErrorMessage = err;
+            } else if(err && err.message && (typeof err.message === 'string')) {
+                this.backendErrorMessage = err.message;
+            } else {
+                this.backendErrorMessage = "Sorry, there was an error contacting the backend. Please try again later!";
+            }
+
             this.showError = true;
             setTimeout(() => this.handleFailedTransaction(), 5000);
             return;

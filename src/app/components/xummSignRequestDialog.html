@@ -25,7 +25,7 @@
     </div>
     <div *ngIf="showError && !waitingForPayment && !loading" class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
         <div *ngIf="!requestExpired && backendNotAvailable" style="color: red;">
-            Sorry, there was an error contacting the backend. Please try again later.
+            {{backendErrorMessage}}
         </div>
         <div *ngIf="!requestExpired && !backendNotAvailable" style="color: red;">
             Sorry, your transaction could not be verified. Please reload the page and try again!

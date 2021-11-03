@@ -46,7 +46,6 @@ export class BlackholeAccount implements OnInit {
 
   checkBoxIssuingText:boolean = false;
 
-  hasLowXrpBalance:boolean = false;
   hasTokenBalance:boolean = false;
 
   blackholeDisallowXrp:boolean = false;
@@ -74,6 +73,7 @@ export class BlackholeAccount implements OnInit {
   ownerReserve:number = 2000000;
 
   paymentAmount:number = 10;
+  paymentCurrency:string = "EUR";
 
   @ViewChild('stepper') stepper: MatStepper;
 
@@ -87,8 +87,16 @@ export class BlackholeAccount implements OnInit {
       console.log("origin: " + window.location.origin+this.router.url)
 
       if(fixAmounts && fixAmounts[window.location.origin+this.router.url]) {
-        let blackholeAmount:number = Number(fixAmounts[window.location.origin+this.router.url]);
-        this.paymentAmount = blackholeAmount / 1000000;
+        let amount = fixAmounts[window.location.origin+this.router.url];
+
+        if(amount && !amount.issuer) {
+          let blackholeAmount:number = Number(fixAmounts[window.location.origin+this.router.url]);
+          this.paymentAmount = blackholeAmount / 1000000;
+          this.paymentCurrency = "XRP"
+        } else if(amount && amount.issuer) {
+          this.paymentAmount = amount.value;
+          this.paymentCurrency = amount.currency;
+        }
       }
 
     } catch(err) {
@@ -241,8 +249,6 @@ export class BlackholeAccount implements OnInit {
             //console.log("isser_account_info: " + JSON.stringify(this.issuer_account_info));
             this.blackholeDisallowXrp = flagUtil.isDisallowXRPEnabled(this.issuer_account_info.Flags);
             this.blackholeMasterDisabled = flagUtil.isMasterKeyDisabled(this.issuer_account_info.Flags)
-            this.hasLowXrpBalance = this.issuer_account_info  && this.issuer_account_info.Balance && parseInt(this.issuer_account_info.Balance) < (this.paymentAmount*1000000);
-
           } else {
             //console.log(JSON.stringify(message));
           }
@@ -499,14 +505,13 @@ export class BlackholeAccount implements OnInit {
     this.validIssuer = false;
     this.issuer_account_info = null;
     this.hasTokenBalance = false;
-    this.hasLowXrpBalance = false;
   }
 
   reset() {
     this.isTestMode = false;
     this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = this.checkBoxDisclaimer = this.checkBoxIssuingText = this.checkBoxIssuerInfo = false;
     this.issuerAccount = this.issuer_account_info = null;
-    this.validIssuer = this.paymentNotSuccessfull = this.hasLowXrpBalance = this.hasTokenBalance = false;
+    this.validIssuer = this.paymentNotSuccessfull = this.hasTokenBalance = false;
     this.checkBoxBlackhole1 = this.checkBoxBlackhole2 = this.checkBoxBlackhole3 = this.checkBoxBlackhole4 =this.checkBoxBlackhole5 = false;
     this.blackholeMasterDisabled = this.blackholeRegularKeySet = this.blackholeDisallowXrp =  false;
     this.stepper.reset();

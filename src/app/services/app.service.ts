@@ -42,10 +42,11 @@ export class AppService {
         return this.handleResponse(this.http.get(url, {responseType: "text"}));
     }
 
-    private handleError(error: any): Promise<any> {
+    private handleError(error: any): Promise<string> {
         console.error('An error occurred', JSON.stringify(error)); // XXX for debugging purposes
         if (!error.status) error.message = "Sorry, it cannot be reached.";
         let errmsg: string = error.error.message || error.message || error;
+        console.log("returning message: " + errmsg);
         return Promise.reject(errmsg);
     }
 }

@@ -21,6 +21,7 @@ export class XummSignDialogComponent implements OnInit{
     websocket: WebSocketSubject<any>;
     payloadUUID: string;
     showError: boolean = false;
+    backendErrorMessage:string = null;
     waitingForPayment:boolean = false;
     showQR:boolean = false;
     requestExpired:boolean = false;
@@ -101,15 +102,32 @@ export class XummSignDialogComponent implements OnInit{
             if(!xummResponse || !xummResponse.uuid) {
                 this.loading = false;
                 this.backendNotAvailable = true;
+
+                this.backendErrorMessage = "Sorry, there was an error contacting the backend. Please try again later!";
+
                 this.showError = true;
                 setTimeout(() => this.handleFailedSignIn(null), 3000);
             }
         } catch (err) {
-            //console.log(JSON.stringify(err));
-            this.loading = false;
+            console.log("RECEIVED ERROR: " + JSON.stringify(err));
+            
             this.backendNotAvailable = true;
+
+            if(err) {
+                console.log("111111111")
+                this.backendErrorMessage = err;
+            } else if(err && err.message && (typeof err.message === 'string')) {
+                console.log("222222222")
+                this.backendErrorMessage = err.message;
+            } else {
+                console.log("333333333")
+                this.backendErrorMessage = "Sorry, there was an error contacting the backend. Please try again later!";
+            }
+
             this.showError = true;
-            setTimeout(() => this.handleFailedSignIn(null), 3000);
+            this.loading = false;
+            setTimeout(() => this.handleFailedSignIn(null), 10000);
+            return;
         }
 
         this.payloadUUID = xummResponse.uuid;
