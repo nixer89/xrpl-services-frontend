@@ -163,7 +163,7 @@ export class IssuedTokenList implements OnInit {
 
     let tokenIssuers:TokenIssuer[] = [];
     try {
-      let issuedTokensResponse:any = await this.app.get('https://xrpldata.com/api/v1/tokens');
+      let issuedTokensResponse:any = await this.app.get('https://api.xrpldata.com/api/v1/tokens');
 
       this.ledgerIndex = issuedTokensResponse.ledger_index;
       this.ledgerHash = issuedTokensResponse.ledger_hash;
