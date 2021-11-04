@@ -108,19 +108,14 @@ export class XummSignDialogComponent implements OnInit{
                 this.showError = true;
                 setTimeout(() => this.handleFailedSignIn(null), 3000);
             }
-        } catch (err) {
-            console.log("RECEIVED ERROR: " + JSON.stringify(err));
-            
+        } catch (err) {            
             this.backendNotAvailable = true;
 
-            if(err) {
-                console.log("111111111")
+            if(err && (typeof err === 'string')) {
                 this.backendErrorMessage = err;
             } else if(err && err.message && (typeof err.message === 'string')) {
-                console.log("222222222")
                 this.backendErrorMessage = err.message;
             } else {
-                console.log("333333333")
                 this.backendErrorMessage = "Sorry, there was an error contacting the backend. Please try again later!";
             }
 

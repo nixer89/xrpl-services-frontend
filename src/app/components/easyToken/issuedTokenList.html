@@ -54,7 +54,7 @@
         
       </div>
       <div *ngIf="!loading && (!datasource || !datasource.data)"  fxLayout="column" fxLayoutGap="0.5em">
-        <label class="warning">Could not load XRP Ledger tokens. Please try again later!</label>
+        <label class="warning">{{errorMessage}}</label>
       </div>
     </mat-card>
 

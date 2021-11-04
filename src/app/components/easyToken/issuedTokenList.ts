@@ -70,6 +70,8 @@ export class IssuedTokenList implements OnInit {
   hotToken1W:any[];
   hotToken1M:any[];
 
+  errorMessage:string = "Could not load XRP Ledger tokens. Please try again later!";
+
   async ngOnInit() {
     this.pageSize = this.deviceDetector.isMobile() ? 5 : this.pageSize;
     this.loading = true;
@@ -221,6 +223,12 @@ export class IssuedTokenList implements OnInit {
       }
     } catch(err) {
       console.log(err)
+
+      if(err && (typeof err === 'string')) {
+        console.log("setting message: " + err)
+        this.errorMessage = err;
+      }
+      
       tokenIssuers = null
     }
 

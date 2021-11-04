@@ -164,7 +164,7 @@ export class GenericPayloadQRDialog implements OnInit {
             this.loading = false;
             this.backendNotAvailable = true;
 
-            if(err) {
+            if(err && (typeof err === 'string')) {
                 this.backendErrorMessage = err;
             } else if(err && err.message && (typeof err.message === 'string')) {
                 this.backendErrorMessage = err.message;
