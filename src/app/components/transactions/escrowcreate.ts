@@ -218,7 +218,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
 
   isValidDate(dateToParse: any): boolean {
     let datePicker = new Date(dateToParse);
-    console.log(datePicker);
+    //console.log(datePicker);
     return datePicker.getHours() >= 0;
   }
 

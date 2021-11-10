@@ -156,7 +156,7 @@ export class XummSignDialogComponent implements OnInit{
                     else
                         transactionResult = await this.xummApi.validateEscrowSignInToDelete(message.payload_uuidv4);
 
-                    console.log("sign result: " + JSON.stringify(transactionResult));
+                    //console.log("sign result: " + JSON.stringify(transactionResult));
                     
                     this.waitingForPayment = false;
 

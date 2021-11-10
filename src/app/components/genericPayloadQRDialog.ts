@@ -76,7 +76,7 @@ export class GenericPayloadQRDialog implements OnInit {
 
                 let kycResponse = await this.app.get("https://xrpldata.com/api/v1/kyc/"+issuer)
 
-                console.log(JSON.stringify(kycResponse));
+                //console.log(JSON.stringify(kycResponse));
 
                 this.hasKyc = kycResponse && kycResponse.kyc;
 
@@ -91,7 +91,7 @@ export class GenericPayloadQRDialog implements OnInit {
     
                     let kycResponse = await this.app.get("https://xumm.app/api/v1/platform/kyc-status/"+issuer)
     
-                    console.log(JSON.stringify(kycResponse));
+                    //console.log(JSON.stringify(kycResponse));
     
                     this.hasKyc = kycResponse && kycResponse.kycApproved;
     
@@ -212,7 +212,7 @@ export class GenericPayloadQRDialog implements OnInit {
                         txInfo = await this.xummApi.validateTransaction(message.payload_uuidv4);
                     }
                     
-                    console.log("txInfo: " + JSON.stringify(txInfo));
+                    //console.log("txInfo: " + JSON.stringify(txInfo));
                     this.waitingForPayment = false;
 
                     this.transactionInfo = txInfo;

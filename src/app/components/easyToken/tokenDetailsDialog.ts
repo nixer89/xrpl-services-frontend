@@ -80,7 +80,7 @@ export class TokenDetailsDialog implements OnInit {
                 this.signerList = null;
             }
 
-            console.log("currency: " +this.tokenIssuer.currency)
+            //console.log("currency: " +this.tokenIssuer.currency)
         } catch(err) {
             console.log(JSON.stringify(err));
         }

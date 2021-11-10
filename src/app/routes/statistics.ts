@@ -59,7 +59,7 @@ export class Statistics implements OnInit {
 
   calculateStats(apiResult: any, statsArray: any[], totalTransaction: number) {
     if(apiResult) {
-      console.log("received stats: " + JSON.stringify(apiResult));
+      //console.log("received stats: " + JSON.stringify(apiResult));
       for(let trx in apiResult) {
         if (apiResult.hasOwnProperty(trx)) {
 
@@ -79,7 +79,7 @@ export class Statistics implements OnInit {
 
       statsArray.push({name: "Overall # of Trx", number: totalTransaction});
 
-      console.log("constructed stats array: " + JSON.stringify(statsArray));
+      //console.log("constructed stats array: " + JSON.stringify(statsArray));
     }
   }
 

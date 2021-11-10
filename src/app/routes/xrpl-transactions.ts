@@ -144,8 +144,8 @@ export class XrplTransactionsComponent implements OnInit {
     this.accountReserve = feeSetting?.result?.node["ReserveBase"];
     this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
 
-    console.log("resolved accountReserve: " + this.accountReserve);
-    console.log("resolved ownerReserve: " + this.ownerReserve);
+    //console.log("resolved accountReserve: " + this.accountReserve);
+    //console.log("resolved ownerReserve: " + this.ownerReserve);
 
     this.emitAccountInfoChanged();
   }

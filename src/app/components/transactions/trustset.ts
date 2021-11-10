@@ -99,10 +99,10 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         //console.log("subscribe set: " + this.issuedCurrencyInput);
         this.limitInput = params.limit;
 
-        this.testMode = params.testmode ? params.testmode : false;
+        this.testMode = params.testmode ? params.testmode : (params.testnet ? params.testnet : false);
         //console.log("testmode: " + this.testMode);
 
-        await this.issuerAccountChanged();
+        await this.issuerAccountChanged(true);
 
         if(this.isValidTrustSet) {
           setTimeout(() => {
@@ -197,7 +197,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
             for(let i = 0; i < tokenList.length; i++) {
               if(tokenList[i] === currencyToCheck) {
                 this.currencyExists = true;
-                console.log("currency exsists")
+                //console.log("currency exsists")
                 break;
               }
             }
@@ -253,7 +253,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.onPayload.emit(payload);
   }
 
-  async issuerAccountChanged() {
+  async issuerAccountChanged(isDirectLink?:boolean) {
     //console.log("issuerAccountChanged: " + this.issuedCurrencyInput);
     if(this.issuerAccountInput.trim() != this.lastKnownAddress) {
       await this.checkChanges();
@@ -261,11 +261,15 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       if(this.validAddress) {
         this.lastKnownAddress = this.issuerAccountInput.trim();
         //console.log("emitting issuerAccountChanged event");
-        this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
+        if(!isDirectLink) {
+          this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
+        }
       } else if(!this.validAddress) {
         this.lastKnownAddress = null;
         this.issuerHasDefaultRipple = false;
-        this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
+        if(!isDirectLink) {
+          this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
+        }
       }
     }
   }
@@ -314,14 +318,14 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       } else {
         //console.log("checking scientific notation");
         try {
-          console.log("string first: " + this.limitInput.substring(0, this.limitInput.indexOf('e')))
-          console.log("string second: " + this.limitInput.substring(this.limitInput.indexOf('e')+1))
+          //console.log("string first: " + this.limitInput.substring(0, this.limitInput.indexOf('e')))
+          //console.log("string second: " + this.limitInput.substring(this.limitInput.indexOf('e')+1))
 
           let first:number = Number(this.limitInput.substring(0, this.limitInput.indexOf('e')));
           let second:number = Number(this.limitInput.substring(this.limitInput.indexOf('e')+1));
 
-          console.log("first: " + first);
-          console.log("second: " + second);
+          //console.log("first: " + first);
+          //console.log("second: " + second);
 
           if(!Number.isNaN(first) && Number.isInteger(second)) {
             this.validLimit = first > 0 && first <= 9999999999999999 && second >= -96 && second <= 80
@@ -334,7 +338,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
 
-    console.log("is valid limit: " + this.validLimit);
+    //console.log("is valid limit: " + this.validLimit);
 
     if(this.validLimit)
       this.validLimit = this.limitInput && parseFloat(this.limitInput) >= 0;

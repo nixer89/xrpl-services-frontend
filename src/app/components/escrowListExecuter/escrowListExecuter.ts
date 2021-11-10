@@ -40,7 +40,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.escrowAccountChangedSubscription = this.escrowAccountChanged.subscribe(accountData => {
-            console.log("escrow account changed received: " + accountData);
+            //console.log("escrow account changed received: " + accountData);
             //console.log("test mode: " + this.testMode);
             if(accountData) {
                 this.isTestMode = accountData.mode;

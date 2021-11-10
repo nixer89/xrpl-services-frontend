@@ -225,7 +225,7 @@ export class IssuedTokenList implements OnInit {
       console.log(err)
 
       if(err && (typeof err === 'string')) {
-        console.log("setting message: " + err)
+        //console.log("setting message: " + err)
         this.errorMessage = err;
       }
       

@@ -46,7 +46,12 @@ export class BlackholeAccount implements OnInit {
 
   checkBoxIssuingText:boolean = false;
 
+  checkBoxIgnoreOwnerCount:boolean = false;
+
+  hasSignerList:boolean = false;
+
   hasTokenBalance:boolean = false;
+  hasOwnerCount:boolean = false;
 
   blackholeDisallowXrp:boolean = false;
   blackholeRegularKeySet:boolean = false;
@@ -82,9 +87,9 @@ export class BlackholeAccount implements OnInit {
     try {
       //load payment amount
       let fixAmounts:any = await this.xummBackend.getFixAmounts();
-      console.log("resolved fix amounts: " + JSON.stringify(fixAmounts));
+      //console.log("resolved fix amounts: " + JSON.stringify(fixAmounts));
 
-      console.log("origin: " + window.location.origin+this.router.url)
+      //console.log("origin: " + window.location.origin+this.router.url)
 
       if(fixAmounts && fixAmounts[window.location.origin+this.router.url]) {
         let amount = fixAmounts[window.location.origin+this.router.url];
@@ -138,18 +143,12 @@ export class BlackholeAccount implements OnInit {
           ledger_index: "validated"
         }
 
-        let promises:any[] = [];
-        promises.push(this.loadAccountData())
-        promises.push(this.xrplWebSocket.getWebsocketMessage('blackhole_component_2', accountLinesCommand, this.isTestMode))
-
-        promises = await Promise.all(promises);
-
-        let accountLines:any = promises[1];
-
-        console.log("accountLines: " + JSON.stringify(accountLines));
-
+        let accountLines:any = await this.xrplWebSocket.getWebsocketMessage('blackhole_component_2', accountLinesCommand, this.isTestMode);
+        //console.log("accountLines: " + JSON.stringify(accountLines));
         
         this.hasTokenBalance = accountLines && accountLines.result && accountLines.result.lines && accountLines.result.lines.length > 0 && accountLines.result.lines.filter(line => Number(line.balance) > 0).length > 0;
+
+        await this.loadAccountData();
 
         this.loadingIssuerAccount = false;
         this.loadingTokens = false;
@@ -221,6 +220,8 @@ export class BlackholeAccount implements OnInit {
           this.issuerAccount = info.account;
           this.validIssuer = true;
           this.paymentNotSuccessfull = false;
+
+          //refresh amounts
           await this.loadAccountData();
           this.googleAnalytics.analyticsEventEmitter('pay_for_blackhole', 'blackhole', 'blackhole_component');
       } else {
@@ -237,18 +238,35 @@ export class BlackholeAccount implements OnInit {
       let account_info_request:any = {
         command: "account_info",
         account: this.issuerAccount,
+        signer_lists: true,
         "strict": true,
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("blackhole_component", account_info_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage("blackhole_component_2", account_info_request, this.isTestMode);
       //console.log("websocket message: " + JSON.stringify(message));
       if(message.status && message.type && message.type === 'response') {
         if(message.status === 'success') {
           if(message.result && message.result.account_data) {
             this.issuer_account_info = message.result.account_data;
             //console.log("isser_account_info: " + JSON.stringify(this.issuer_account_info));
-            this.blackholeDisallowXrp = flagUtil.isDisallowXRPEnabled(this.issuer_account_info.Flags);
-            this.blackholeMasterDisabled = flagUtil.isMasterKeyDisabled(this.issuer_account_info.Flags)
+
+            if(this.issuer_account_info.Flags > 0) {
+              this.blackholeDisallowXrp = flagUtil.isDisallowXRPEnabled(this.issuer_account_info.Flags);
+              this.blackholeMasterDisabled = flagUtil.isMasterKeyDisabled(this.issuer_account_info.Flags);
+            }
+
+            this.hasOwnerCount = this.issuer_account_info.OwnerCount && this.issuer_account_info.OwnerCount > 0;
+            this.checkBoxIgnoreOwnerCount = !this.hasOwnerCount;
+
+            //console.log("signer list: " + JSON.stringify(message.result.account_data.signer_lists));
+
+            this.hasSignerList = message.result.account_data.signer_lists && message.result.account_data.signer_lists.length > 0;
+
+            //console.log("Balance: " + this.getAvailableBalanceIssuer());
+            //console.log("blackholeDisallowXrp: " + this.blackholeDisallowXrp);
+            //console.log("blackholeMasterDisabled: " + this.blackholeMasterDisabled);
+            //console.log("hasSignerList: " + this.hasSignerList);
+
           } else {
             //console.log(JSON.stringify(message));
           }
@@ -404,7 +422,6 @@ export class BlackholeAccount implements OnInit {
   disableMasterKeyForIssuer() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
-        issuing: true,
         xrplAccount: this.getIssuer()
       },
       payload: {
@@ -434,7 +451,36 @@ export class BlackholeAccount implements OnInit {
         this.blackholeMasterDisabled = false;
       }
     });
+  }
 
+
+  deleteSignerList() {
+
+    let genericBackendRequest:GenericBackendPostRequest = {
+      options: {
+        xrplAccount: this.getIssuer()
+      },
+      payload: {
+        txjson: {
+          TransactionType: "SignerListSet",
+          SignerQuorum: 0
+        },
+        custom_meta: {
+          instruction: 'Delete Signer List.'
+        }
+      }
+    }
+
+    const dialogRef = this.matDialog.open(GenericPayloadQRDialog, {
+      width: 'auto',
+      height: 'auto;',
+      data: genericBackendRequest
+    });
+
+    dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
+      //console.log('The generic dialog was closed: ' + JSON.stringify(info));
+      await this.loadAccountData();
+    });
   }
 
   getAvailableBalanceIssuer(): number {
@@ -469,8 +515,8 @@ export class BlackholeAccount implements OnInit {
     this.accountReserve = feeSetting?.result?.node["ReserveBase"];
     this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
 
-    console.log("resolved accountReserve: " + this.accountReserve);
-    console.log("resolved ownerReserve: " + this.ownerReserve);
+    //console.log("resolved accountReserve: " + this.accountReserve);
+    //console.log("resolved ownerReserve: " + this.ownerReserve);
   }
 
   moveNext() {
@@ -499,21 +545,17 @@ export class BlackholeAccount implements OnInit {
   }
 
   clearIssuerAccount() {
-    this.issuerAccount = null;
-    this.loadingIssuerAccount = false;
-    this.paymentNotSuccessfull = true;
-    this.validIssuer = false;
-    this.issuer_account_info = null;
-    this.hasTokenBalance = false;
-  }
-
-  reset() {
-    this.isTestMode = false;
     this.checkBoxFiveXrp = this.checkBoxNetwork = this.checkBoxSufficientFunds = this.checkBoxTwoAccounts = this.checkBoxNoLiability = this.checkBoxDisclaimer = this.checkBoxIssuingText = this.checkBoxIssuerInfo = false;
     this.issuerAccount = this.issuer_account_info = null;
     this.validIssuer = this.paymentNotSuccessfull = this.hasTokenBalance = false;
     this.checkBoxBlackhole1 = this.checkBoxBlackhole2 = this.checkBoxBlackhole3 = this.checkBoxBlackhole4 =this.checkBoxBlackhole5 = false;
     this.blackholeMasterDisabled = this.blackholeRegularKeySet = this.blackholeDisallowXrp =  false;
+    this.hasTokenBalance = this.hasOwnerCount = this.hasSignerList = false;
+  }
+
+  reset() {
+    this.isTestMode = false;
+    this.clearIssuerAccount();
     this.stepper.reset();
   }
 }

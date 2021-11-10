@@ -8,22 +8,22 @@ export const ROOT_FLAG_PASSWORD_SPENT:number = 65536;
 export const ROOT_FLAG_REQUIRE_AUTH:number = 262144;
 export const ROOT_FLAG_REQUIREDESTINATION_TAG:number = 131072;
 
-export function isRequireDestinationTagEnabled(flags:number) {
+export function isRequireDestinationTagEnabled(flags:number): boolean {
     return flags && (flags & ROOT_FLAG_REQUIREDESTINATION_TAG) == ROOT_FLAG_REQUIREDESTINATION_TAG;
 }
 
-export function isMasterKeyDisabled(flags:number) {
+export function isMasterKeyDisabled(flags:number): boolean {
     return flags && (flags & ROOT_FLAG_DISABLE_MASTER) == ROOT_FLAG_DISABLE_MASTER;
 }
 
-export function isDefaultRippleEnabled(flags:number) {
+export function isDefaultRippleEnabled(flags:number): boolean {
     return flags && (flags & ROOT_FLAG_DEFAULT_RIPPLE) == ROOT_FLAG_DEFAULT_RIPPLE;
 }
 
-export function isDisallowXRPEnabled(flags:number) {
+export function isDisallowXRPEnabled(flags:number): boolean {
     return flags && (flags & ROOT_FLAG_DISALLOW_XRP) == ROOT_FLAG_DISALLOW_XRP;
 }
 
-export function isDepositAuthEnabled(flags:number) {
+export function isDepositAuthEnabled(flags:number): boolean {
     return flags && (flags & ROOT_FLAG_DEPOSIT_AUTH) == ROOT_FLAG_DEPOSIT_AUTH;
 }

@@ -55,7 +55,7 @@ export class XRPLWebsocket {
                 resolve(await this.cleanupAndChangeNode(componentname, command, retry));
             });
 
-            console.log("setting up command: " + JSON.stringify(command))
+            //console.log("setting up command: " + JSON.stringify(command))
             this.websocketMap.get(componentname).socket.next(command);
         });        
     }
