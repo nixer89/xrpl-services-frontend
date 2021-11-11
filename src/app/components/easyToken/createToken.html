@@ -261,11 +261,11 @@
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
           <ng-template matStepLabel>Black hole Issuer (optional!)</ng-template>
-          <label class="loading">This is an optional step. You can "black hole" the issuer account. That means you would not be able to issue more tokens (fixed supply) AND you would loose access to the issuer account!</label>
+          <label class="loading">This is an optional step. You can "black hole" the issuer account. That means you would not be able to issue more tokens (fixed supply) AND you would lose access to the issuer account!</label>
           <label class="warning">Please skip this step if you don't know what that means!</label>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole1" [ngClass]="(checkBoxBlackhole1 ? 'success': 'warning')">I understand the implications and want to black hole the issuer account.</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole2" [ngClass]="(checkBoxBlackhole2 ? 'success': 'warning')">I understand that I can not create more tokens. The supply of my Token will be fixed.</mat-checkbox>
-          <mat-checkbox [(ngModel)]="checkBoxBlackhole3" [ngClass]="(checkBoxBlackhole3 ? 'success': 'warning')">I understand that I will loose access to the issuer account: {{getIssuer()}}. I WON'T BE ABLE TO RECOVER THE ACCESS!</mat-checkbox>
+          <mat-checkbox [(ngModel)]="checkBoxBlackhole3" [ngClass]="(checkBoxBlackhole3 ? 'success': 'warning')">I understand that I will lose access to the issuer account: {{getIssuer()}}. I WON'T BE ABLE TO RECOVER THE ACCESS!</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole4" [ngClass]="(checkBoxBlackhole4 ? 'success': 'warning')">Before you start, please send all remaining balance from the issuer account to an account of your choice. You don't need any remaining funds!</mat-checkbox>
           <mat-card *ngIf="checkBoxBlackhole1 && checkBoxBlackhole2 && checkBoxBlackhole3 && checkBoxBlackhole4 && (!blackholeRegularKeySet || !blackholeMasterDisabled)" fxLayout="column" fxLayoutGap="0.5em">
             <label>Okay, lets black hole the issuer account!</label>

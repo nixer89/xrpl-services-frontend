@@ -25,7 +25,7 @@
       <mat-step completed="false" editable="false">
           <mat-card fxLayout="column" fxLayoutGap="0.5em">
               <ng-template matStepLabel>Description</ng-template>
-              <label>To black hole an account means to loose ALL ACCESS to it. You won't be able to recover this access. In fact, NO ONE CAN !</label>
+              <label>To black hole an account means to lose ALL ACCESS to it. You won't be able to recover this access. In fact, NO ONE CAN !</label>
               <label>We will need to execute some transactions in a specific order.</label><br/><br/>
 
               <label class="warning">We will charge you the XRP equivalent of {{paymentAmount}} {{paymentCurrency}} for using this service.</label>
@@ -76,7 +76,7 @@
         <mat-card fxLayout="column" fxLayoutGap="1em">
           <ng-template matStepLabel>Issuer account</ng-template>
           <label class="loading">What is the XRP Ledger account you want to black hole?</label>
-          <label>You need to sign in with the account you want to loose all access for!</label>
+          <label>You need to sign in with the account you want to lose all access for!</label>
           <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
             <div *ngIf="!getIssuer() || !validIssuer" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="0.5em">
               <button mat-button matTooltip="SignIn via XUMM." matTooltipPosition="above" (click)="loginForBlackhole()" style="padding:0px;">
@@ -86,7 +86,7 @@
             </div>
 
             <div fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !loadingIssuerAccount">
-              <label>The account you want to loose all access for: </label>
+              <label>The account you want to looe all access for: </label>
               <div fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
                 <label class="warning">{{getIssuer()}}</label>
                 <button mat-icon-button (click)="clearIssuerAccount()" aria-label="Clear Issuer Account">
@@ -185,10 +185,10 @@
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
           <ng-template matStepLabel>Black hole account</ng-template>
-          <label class="loading">You are going to "black hole" your account. That means you would not be able to issue more tokens (fixed supply) AND you would loose ALL access to your account!</label>
+          <label class="loading">You are going to "black hole" your account. That means you would not be able to issue more tokens (fixed supply) AND you would lose ALL access to your account!</label>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole1" [ngClass]="(checkBoxBlackhole1 ? 'success': 'warning')">I understand the implications and want to black hole my account.</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole2" [ngClass]="(checkBoxBlackhole2 ? 'success': 'warning')">I understand that I can not create more tokens. The supply of my Token will be fixed.</mat-checkbox>
-          <mat-checkbox [(ngModel)]="checkBoxBlackhole3" [ngClass]="(checkBoxBlackhole3 ? 'success': 'warning')">I understand that I will loose access to the issuer account: {{getIssuer()}}. I WON'T BE ABLE TO RECOVER THE ACCESS!</mat-checkbox>
+          <mat-checkbox [(ngModel)]="checkBoxBlackhole3" [ngClass]="(checkBoxBlackhole3 ? 'success': 'warning')">I understand that I will lose access to the issuer account: {{getIssuer()}}. I WON'T BE ABLE TO RECOVER THE ACCESS!</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole4" [ngClass]="(checkBoxBlackhole4 ? 'success': 'warning')">Before you start, please send ALL remaining balance from your account to an account of your choice. (XRP and any Tokens!) You don't need any remaining funds!</mat-checkbox>
           <mat-card *ngIf="checkBoxBlackhole1 && checkBoxBlackhole2 && checkBoxBlackhole3 && checkBoxBlackhole4 && (!blackholeRegularKeySet || !blackholeMasterDisabled)" fxLayout="column" fxLayoutGap="0.5em">
             <label>Okay, lets black hole the issuer account!</label>
