@@ -210,15 +210,29 @@
           <mat-footer-cell *matFooterCellDef><b>{{dexOffersTotal}}</b></mat-footer-cell>
         </ng-container>
 
-        <ng-container matColumnDef="link">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Links </mat-header-cell>
+        <ng-container matColumnDef="trustlinelink">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Trustline </mat-header-cell>
           <mat-cell *matCellDef="let row">
               <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
                 <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
               </span>
               <span fxShow.xs fxHide fxLayout="row">
-                <b>Links:</b>&nbsp;
+                <b>Trustline:</b>&nbsp;
                 <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
+              </span>
+          </mat-cell>
+          <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="dexlink">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Dex </mat-header-cell>
+          <mat-cell *matCellDef="let row">
+              <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
+                <a [href]="getDexLink(row.account,row.currency)" target="_blank">XUMM Dex xApp</a>
+              </span>
+              <span fxShow.xs fxHide fxLayout="row">
+                <b>Dex:</b>&nbsp;
+                <a [href]="getDexLink(row.account,row.currency)" target="_blank">XUMM Dex xApp</a>
               </span>
           </mat-cell>
           <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>

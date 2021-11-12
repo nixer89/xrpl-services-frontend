@@ -79,8 +79,8 @@ td {
     .mat-column-username {
         word-wrap: break-word !important;
         white-space: unset !important;
-        flex: 0 0 15% !important;
-        width: 15% !important;
+        flex: 0 0 13% !important;
+        width: 13% !important;
         overflow-wrap: break-word;
         word-wrap: break-word;
     
@@ -97,8 +97,8 @@ td {
     .mat-column-currency {
         word-wrap: break-word !important;
         white-space: unset !important;
-        flex: 0 0 10% !important;
-        width: 10% !important;
+        flex: 0 0 9% !important;
+        width: 9% !important;
         overflow-wrap: break-word;
         word-wrap: break-word;
     
@@ -115,8 +115,8 @@ td {
     .mat-column-amount {
         word-wrap: break-word !important;
         white-space: unset !important;
-        flex: 0 0 15% !important;
-        width: 15% !important;
+        flex: 0 0 14% !important;
+        width: 14% !important;
         overflow-wrap: break-word;
         word-wrap: break-word;
     
@@ -133,8 +133,8 @@ td {
     .mat-column-trustlines {
         word-wrap: break-word !important;
         white-space: unset !important;
-        flex: 0 0 10% !important;
-        width: 10% !important;
+        flex: 0 0 7% !important;
+        width: 7% !important;
         overflow-wrap: break-word;
         word-wrap: break-word;
     
@@ -166,7 +166,25 @@ td {
         text-align: center;
     }
 
-    .mat-column-link {
+    .mat-column-trustlinelink {
+        word-wrap: break-word !important;
+        white-space: unset !important;
+        flex: 0 0 7% !important;
+        width: 7% !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    
+        word-break: break-word;
+    
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .mat-column-dexlink {
         word-wrap: break-word !important;
         white-space: unset !important;
         flex: 0 0 7% !important;

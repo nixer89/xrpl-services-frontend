@@ -38,7 +38,7 @@ export class IssuedTokenList implements OnInit {
 
   sortColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers'];
   
-  displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers',  'link', 'explorer'];
+  displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers',  'trustlinelink', 'dexlink', 'explorer'];
   datasource:MatTableDataSource<TokenIssuer> = null;
 
   allTokens: TokenIssuer[] = null;
@@ -298,6 +298,10 @@ export class IssuedTokenList implements OnInit {
 
   getXRPScanLink(account:string): string {
     return "https://xrpscan.com/account/"+account;
+  }
+
+  getDexLink(issuer:string, currency:string) {
+    return "https://xumm.app/detect/xapp:xumm.dex?issuer="+issuer+"&currency="+normalizer.getCurrencyCodeForXRPL(currency);
   }
 
   getTrustlineQueryParams(account: string, currency: string, limit: string): any {
