@@ -74,7 +74,7 @@ export class GenericPayloadQRDialog implements OnInit {
                 this.showKyc = true;
                 let issuer:string = this.genericPayload.payload.txjson.LimitAmount['issuer'];
 
-                let kycResponse = await this.app.get("https://xrpldata.com/api/v1/kyc/"+issuer)
+                let kycResponse = await this.app.get("https://api.xrpldata.com/api/v1/kyc/"+issuer)
 
                 //console.log(JSON.stringify(kycResponse));
 
