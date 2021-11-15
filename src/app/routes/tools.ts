@@ -200,7 +200,7 @@ export class Tools implements OnInit {
       ledger_index: "validated"
     }
 
-    let feeSetting:any = await this.xrplWebSocket.getWebsocketMessage("fee-settings", fee_request, this.isTestMode);
+    let feeSetting:any = await this.xrplWebSocket.getWebsocketMessage(fee_request, this.isTestMode);
     this.accountReserve = feeSetting?.result?.node["ReserveBase"];
     this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
 
@@ -226,7 +226,7 @@ export class Tools implements OnInit {
         "strict": true,
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("tools", account_info_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.isTestMode);
       //console.log("tools account info: " + JSON.stringify(message));
 
       if(message.status && message.type && message.type === 'response') {

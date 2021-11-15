@@ -143,7 +143,7 @@ export class BlackholeAccount implements OnInit {
           ledger_index: "validated"
         }
 
-        let accountLines:any = await this.xrplWebSocket.getWebsocketMessage('blackhole_component_2', accountLinesCommand, this.isTestMode);
+        let accountLines:any = await this.xrplWebSocket.getWebsocketMessage(accountLinesCommand, this.isTestMode);
         //console.log("accountLines: " + JSON.stringify(accountLines));
         
         this.hasTokenBalance = accountLines && accountLines.result && accountLines.result.lines && accountLines.result.lines.length > 0 && accountLines.result.lines.filter(line => Number(line.balance) > 0).length > 0;
@@ -242,7 +242,7 @@ export class BlackholeAccount implements OnInit {
         "strict": true,
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("blackhole_component_2", account_info_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.isTestMode);
       //console.log("websocket message: " + JSON.stringify(message));
       if(message.status && message.type && message.type === 'response') {
         if(message.status === 'success') {
@@ -299,7 +299,7 @@ export class BlackholeAccount implements OnInit {
         "strict": true,
       }
 
-      let message_acc_info:any = await this.xrplWebSocket.getWebsocketMessage("blackhole_component", account_info_request, this.isTestMode);
+      let message_acc_info:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.isTestMode);
       //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
       //this.infoLabel = JSON.stringify(message_acc_info);
       if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
@@ -511,7 +511,7 @@ export class BlackholeAccount implements OnInit {
       ledger_index: "validated"
     }
 
-    let feeSetting:any = await this.xrplWebSocket.getWebsocketMessage("fee-settings", fee_request, this.isTestMode);
+    let feeSetting:any = await this.xrplWebSocket.getWebsocketMessage(fee_request, this.isTestMode);
     this.accountReserve = feeSetting?.result?.node["ReserveBase"];
     this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
 

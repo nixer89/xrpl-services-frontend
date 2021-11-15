@@ -68,7 +68,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
                     ledger_index: "validated",
                 }
         
-                let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowListExecuter", account_objects_request, this.isTestMode);
+                let message:any = await this.xrplWebSocket.getWebsocketMessage(account_objects_request, this.isTestMode);
                 
                 if(message && message.status && message.status === 'success' && message.type && message.type === 'response') {
                     if(message.result && message.result.account_objects) {
@@ -128,7 +128,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             transaction: escrow.PreviousTxnID,
         }
 
-        let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowListExecuter", txInfo, this.isTestMode);
+        let message:any = await this.xrplWebSocket.getWebsocketMessage(txInfo, this.isTestMode);
         if(message && message.status && message.status === 'success' && message.type && message.type === 'response') {
             if(message.result && message.result.TransactionType === 'EscrowCreate') {
                 //console.log("Sequence: " + message.result.Sequence);

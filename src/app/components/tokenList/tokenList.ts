@@ -64,7 +64,7 @@ export class TokenList implements OnInit, OnDestroy {
               ledger_index: "validated",
             }
       
-            let message:any = await this.xrplWebSocket.getWebsocketMessage("tokenList", gateway_balances_request, this.testMode);
+            let message:any = await this.xrplWebSocket.getWebsocketMessage(gateway_balances_request, this.testMode);
 
             if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.obligations) {
                 this.tokenList = [];

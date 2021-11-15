@@ -140,7 +140,7 @@ export class XrplTransactionsComponent implements OnInit {
       ledger_index: "validated"
     }
 
-    let feeSetting:any = await this.xrplWebsocket.getWebsocketMessage("fee-settings", fee_request, this.isTestMode);
+    let feeSetting:any = await this.xrplWebsocket.getWebsocketMessage(fee_request, this.isTestMode);
     this.accountReserve = feeSetting?.result?.node["ReserveBase"];
     this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
 
@@ -165,7 +165,7 @@ export class XrplTransactionsComponent implements OnInit {
         "strict": true,
       }
 
-      let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage("xrpl-transactions", account_info_request, this.isTestMode)
+      let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage(account_info_request, this.isTestMode)
       //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
 
       if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
@@ -194,7 +194,7 @@ export class XrplTransactionsComponent implements OnInit {
           type: "signer_list",
         }
 
-        let message_acc_objects:any = await this.xrplWebsocket.getWebsocketMessage("xrpl-transactions", account_objects_request, this.isTestMode);
+        let message_acc_objects:any = await this.xrplWebsocket.getWebsocketMessage(account_objects_request, this.isTestMode);
         //console.log("xrpl-transactions account objects:: " + JSON.stringify(message_acc_objects));
 
         if(message_acc_objects && message_acc_objects.status && message_acc_objects.type && message_acc_objects.type === 'response') {

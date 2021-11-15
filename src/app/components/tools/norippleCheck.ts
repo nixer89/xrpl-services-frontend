@@ -90,7 +90,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
         ledger_index: "validated",
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("norippleCheck", gateway_balances_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage(gateway_balances_request, this.isTestMode);
 
       this.handleWebsocketMessage(message);
 
@@ -146,7 +146,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
           transactions: true
         }
 
-        let no_ripple_message:any = await this.xrplWebSocket.getWebsocketMessage("norippleCheck", noripple_check_command, this.isTestMode);
+        let no_ripple_message:any = await this.xrplWebSocket.getWebsocketMessage(noripple_check_command, this.isTestMode);
 
         this.handleWebsocketMessage(no_ripple_message);
       }

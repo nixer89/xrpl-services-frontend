@@ -62,7 +62,7 @@ export class TokenDetailsDialog implements OnInit {
                 signer_lists: true
             }
 
-            let message_acc_info = await this.xrplWebSocket.getWebsocketMessage("token-information", account_info_request, false);
+            let message_acc_info = await this.xrplWebSocket.getWebsocketMessage(account_info_request, false);
 
             //console.log("token-information account info: " + JSON.stringify(message_acc_info));
         

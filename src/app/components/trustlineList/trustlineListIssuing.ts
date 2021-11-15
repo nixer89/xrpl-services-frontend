@@ -85,7 +85,7 @@ export class TrustLineListIssuing implements OnInit, OnDestroy {
               peer: this.issuerAccount
             }
 
-            let message:any = await this.xrplWebSocket.getWebsocketMessage("trustlineListIssuing", account_lines_request, this.testMode);
+            let message:any = await this.xrplWebSocket.getWebsocketMessage(account_lines_request, this.testMode);
       
             if(message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.lines) {
                 this.trustLines = message.result.lines;

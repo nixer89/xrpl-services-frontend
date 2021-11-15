@@ -183,7 +183,7 @@ export class CreateToken implements OnInit {
         "strict": true,
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("easyToken", account_info_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.isTestMode);
       //console.log("websocket message: " + JSON.stringify(message));
       if(message.status && message.type && message.type === 'response') {
         if(message.status === 'success') {

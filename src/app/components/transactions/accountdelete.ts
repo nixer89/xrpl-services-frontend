@@ -99,7 +99,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         limit: 201
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", account_objects_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_objects_request, this.isTestMode);
 
       await this.handleWebSocketMessagePreconditions(message, accountObjects);
     }
@@ -133,7 +133,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
             marker: message.result.marker
           };
 
-          let message_marker:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", marker_command, this.isTestMode);
+          let message_marker:any = await this.xrplWebSocket.getWebsocketMessage(marker_command, this.isTestMode);
 
           await this.handleWebSocketMessagePreconditions(message_marker, accountObjects);
         } else {
@@ -194,7 +194,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         "strict": true,
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", account_info_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.isTestMode);
 
       //console.log("check destination account: " + JSON.stringify(message));
 

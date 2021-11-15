@@ -142,7 +142,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         "strict": true,
       }
 
-      let message_acc_info:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline", account_info_request, this.testMode);
+      let message_acc_info:any = await this.xrplWebSocket.getWebsocketMessage(account_info_request, this.testMode);
       //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
       //this.infoLabel = JSON.stringify(message_acc_info);
       if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
@@ -177,7 +177,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         ledger_index: "validated",
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline", gateway_balances_request, this.testMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage(gateway_balances_request, this.testMode);
 
       if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.obligations) {
           let tokenList:string[] = [];

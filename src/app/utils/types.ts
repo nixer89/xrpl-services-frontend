@@ -1,3 +1,4 @@
+import { WebSocketSubject } from 'rxjs/webSocket';
 import { XummTypes } from 'xumm-sdk';
 
 export interface GenericBackendPostRequestOptions {
@@ -101,4 +102,10 @@ export interface IssuerVerification {
     domain?: string,
     username?: string,
     twitter?: string
+}
+
+export interface XRPLWebSocketType {
+    socket: WebSocketSubject<any>,
+    mode: boolean,
+    isBusy: boolean
 }

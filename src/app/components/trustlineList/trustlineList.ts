@@ -72,7 +72,7 @@ export class TrustLineList implements OnInit, OnDestroy {
               ledger_index: "validated",
             }
 
-            let message:any = await this.xrplWebSocket.getWebsocketMessage("trustlineList", account_lines_request, this.testMode);
+            let message:any = await this.xrplWebSocket.getWebsocketMessage(account_lines_request, this.testMode);
 
             if(message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.lines) {
                 this.trustLines = message.result.lines;
