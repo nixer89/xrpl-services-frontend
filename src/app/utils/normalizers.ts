@@ -81,19 +81,21 @@ export function getCurrencyCodeForXRPL(currencyCode: string): string {
         let currency = currencyCode.trim();
 
         if(currency && currency.length > 3) {
-            currency = Buffer.from(currency, 'utf-8').toString('hex');
+
+            if(!isHex(currency))
+                currency = Buffer.from(currency, 'utf-8').toString('hex');
 
             while(currency.length < 40)
                 currency+="0";
 
-            returnString = currency
+            returnString = currency.toUpperCase();
 
         } else {
             returnString = currency;
         }
     }
 
-    return returnString.toUpperCase();
+    return returnString;
 }
 
 export function rippleEpocheTimeToUTC(rippleEpocheTime: number): number {

@@ -61,7 +61,10 @@ export class TopbarComponent implements OnInit {
           TransactionType: "Payment"
       },
       custom_meta: {
-        instruction: "Thank you for your donation!"
+        instruction: "Thank you for your donation!",
+        blob: {
+          isDonation: true
+        }
       }
     }
 
@@ -72,7 +75,8 @@ export class TopbarComponent implements OnInit {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
         xrplAccount: this.localStorage.get("xrplAccount"),
-        referer: 'abcde'
+        referer: 'abcde',
+        issuing: true
       },
       payload: xummPayload
     }

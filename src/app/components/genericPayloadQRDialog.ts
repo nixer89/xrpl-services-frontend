@@ -132,7 +132,9 @@ export class GenericPayloadQRDialog implements OnInit {
             this.genericPayload.options.referer = refererURL;
         }
 
-        if(this.memoInput && this.memoInput.trim().length > 0 && !this.genericPayload.payload.txjson.Memos) {
+        if(this.genericPayload?.payload?.custom_meta?.blob?.isDonation) {
+            this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xumm.community]-Donation", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from((this.memoInput && this.memoInput.trim().length > 0 ? this.memoInput.trim() : "Donation"), 'utf8').toString('hex').toUpperCase()}}]
+        } else if(this.memoInput && this.memoInput.trim().length > 0 && !this.genericPayload.payload.txjson.Memos) {
             this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xumm.community]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(this.memoInput.trim(), 'utf8').toString('hex').toUpperCase()}}];
         }
 
@@ -204,7 +206,8 @@ export class GenericPayloadQRDialog implements OnInit {
                 if(message.signed) {
                     //get xrpl account
                     let txInfo:TransactionValidation;
-                    if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment' && this.genericPayload.payload.custom_meta && this.genericPayload.payload.custom_meta.blob) {
+                    if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment' && this.genericPayload.payload.custom_meta && this.genericPayload.payload.custom_meta.blob
+                        && this.genericPayload.payload.custom_meta.blob.account && this.genericPayload.payload.custom_meta.blob.sequence && this.genericPayload.payload.custom_meta.blob.finishafter) {
                         txInfo = await this.xummApi.validateEscrowPayment(message.payload_uuidv4);
                     } else if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment' && !this.genericPayload.options.issuing) {
                         txInfo = await this.xummApi.checkTimedPaymentReferer(message.payload_uuidv4, this.genericPayload.options.referer);

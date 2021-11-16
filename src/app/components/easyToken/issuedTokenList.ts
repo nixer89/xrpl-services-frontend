@@ -196,10 +196,6 @@ export class IssuedTokenList implements OnInit {
 
             issuedCurrencies.forEach(issuedCurrency => {
 
-              if(account === "rHADAXwGgVtqjgTdN6g2YQoqiKSKZRANXG") {
-                console.log(JSON.stringify(issuedCurrency));
-              }
-
               tokenIssuers.push({
                   account: account,
                   currencyCode: issuedCurrency.currency,
