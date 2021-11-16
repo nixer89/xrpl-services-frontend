@@ -17,13 +17,13 @@
         <mat-card fxLayout="row" fxLayoutGap="1em"class="theme-background">
             <div fxLayout="column" fxLayoutGap="0.3em" style="width:50%">
                 <label><b>Currency:</b></label>
-                <label>{{tokenIssuer.currency}}</label>
+                <label>{{tokenIssuer.currencyCodeUTF8}}</label>
             </div>
 
             <div fxLayout="column" fxLayoutGap="0.3em" style="width:50%">
                 <label><b>Currency (HEX-Code):</b></label>
-                <label class="break-words" *ngIf="tokenIssuer.currency.length > 3">{{getCurrencyCodeAsHex()}}</label>
-                <label *ngIf="tokenIssuer.currency.length == 3">-</label>
+                <label class="break-words" *ngIf="tokenIssuer.currencyCode.length > 3">{{tokenIssuer.currencyCode}}</label>
+                <label *ngIf="tokenIssuer.currencyCode.length == 3">-</label>
             </div>
         </mat-card>
 

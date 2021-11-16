@@ -31,10 +31,10 @@
       <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
         <tokenList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></tokenList>
       </div>
-      <div *ngIf="issuedCurrencyInput && validCurrency" fxLayout="column" fxLayoutGap="0.5em">
+      <div *ngIf="selectedCurrency && validCurrency" fxLayout="column" fxLayoutGap="0.5em">
         <mat-form-field [ngClass]="{'changed': showIssuedCurrencySelectedStyle}">
-          <input readonly disabled="true" #inpissuedcurrency matInput name="issuedcurrency" matInput placeholder="Token currency code" [(ngModel)]="currencyCodeAsAscii" (ngModelChange)="currencyChanged()" [disabled]="isEditMode">
-          <mat-hint *ngIf="issuedCurrencyInput && !validCurrency">Not a valid Token currency</mat-hint>
+          <input readonly disabled="true" #inpissuedcurrency matInput name="issuedcurrency" matInput placeholder="Token currency code" [(ngModel)]="selectedCurrency.currencyCodeUTF8" (ngModelChange)="currencyChanged()" [disabled]="isEditMode">
+          <mat-hint *ngIf="selectedCurrency && !validCurrency">Not a valid Token currency</mat-hint>
         </mat-form-field>
         <mat-form-field>
           <input #inplimit matInput type="text" name="limit" placeholder="Limit to set on this TrustLine." [(ngModel)]="limitInput" (ngModelChange)="checkChanges()">
@@ -51,7 +51,7 @@
       </div>
       <div *ngIf="!loadingIssuerData" fxLayout="column" fxLayoutAlign="start start"  fxLayoutGap="0.5em">
         <div>
-          <label class="warning" *ngIf="allFieldsSet && validAddress && !currencyExists">The above account does not issue the token "{{currencyCodeAsAscii}}". We do not allow you to create this trust line. Please check your token currency code!</label>
+          <label class="warning" *ngIf="allFieldsSet && validAddress && !currencyExists">The above account does not issue the token "{{selectedCurrency.currencyCodeUTF8}}". We do not allow you to create this trust line. Please check your token currency code!</label>
           <label class="warning" *ngIf="allFieldsSet && validAddress && currencyExists && !issuerHasDefaultRipple">The issuer has the "DefaultRipple" flag not set. We do not allow you to set this trust line because you will not be able to transfer your tokens to others, and will possibly be unable to ever remove the TrustLine again. Please contact the token issuer to fix this problem!</label>
         </div>
         
@@ -66,7 +66,7 @@
             Clear Inputs
           </button>
           <label *ngIf="!issuerAccountInput || !validAddress">Please enter a valid XRPL address.</label>
-          <label *ngIf="validAddress && ( !issuedCurrencyInput || !validCurrency )">Please enter a valid Token currency code.</label>
+          <label *ngIf="validAddress && ( !selectedCurrency || !validCurrency )">Please enter a valid Token currency code.</label>
           <label *ngIf="validAddress && validCurrency && ( !limitInput || !validLimit )">Please enter a valid Limit for this TrustLine.</label>
         </div>
       </div>

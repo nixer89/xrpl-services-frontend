@@ -109,30 +109,76 @@ export function isHex(string: string): boolean {
 }
 
 export function normalizeCurrencyCodeXummImpl(currencyCode: string, maxLength = 20): string {
-    if(!currencyCode) return "";
+    if (!currencyCode) return '';
 
-    if(currencyCode.length === 3 && currencyCode.trim().toLowerCase() !== 'xrp') {
-        // Normal currency code
-        return currencyCode.trim()
+    // Native XRP
+    if (currencyCode === 'XRP') {
+        return currencyCode;
     }
 
-    if(currencyCode.match(/^[a-fA-F0-9]{4,40}$/) && !isNaN(parseInt(currencyCode, 16))) {
-        //console.log("is hex xumm impl")
-        // HEX currency code
-        const hex = currencyCode.toString().replace(/(00)+$/g, '')
-        if (hex.startsWith('01')) {
-            return convertDemurrageToUTF8(currencyCode);
-        }
-        if (hex.startsWith('02')) {
-            const xlf15d = Buffer.from(hex, 'hex').slice(8).toString('utf-8').slice(0, maxLength).trim()
-            if (xlf15d.match(/[a-zA-Z0-9]{3,}/) && xlf15d.toLowerCase() !== 'xrp') {
-            return xlf15d
+    // IOU claims as XRP which consider as fake XRP
+    if (currencyCode.toLowerCase() === 'xrp') {
+        return 'FakeXRP';
+    }
+
+    // IOU
+    // currency code is hex try to decode it
+    if (currencyCode.match(/^[A-F0-9]{40}$/)) {
+        let decoded = '';
+
+        // check for XLS15d
+        if (currencyCode.startsWith('02')) {
+            try {
+                const binary = HexEncoding.toBinary(currencyCode);
+                decoded = binary.slice(8).toString('utf-8');
+            } catch {
+                decoded = HexEncoding.toString(currencyCode);
             }
+        } else {
+            decoded = HexEncoding.toString(currencyCode);
         }
-        const decodedHex = Buffer.from(hex, 'hex').toString('utf-8').slice(0, maxLength).trim()
-        if (decodedHex.match(/[a-zA-Z0-9]{3,}/) && decodedHex.toLowerCase() !== 'xrp') {
-            return decodedHex
+
+        if (decoded) {
+            // cleanup break lines and null bytes
+            const clean = decoded.replace(/\0/g, '').replace(/(\r\n|\n|\r)/gm, ' ');
+
+            // check if decoded contains xrp
+            if (clean.toLowerCase().trim() === 'xrp') {
+                return 'FakeXRP';
+            }
+            return clean;
         }
+
+        // if not decoded then return truncated hex value
+        return `${currencyCode.slice(0, 4)}...`;
     }
-    return "";
+
+    return currencyCode;
+};
+
+/* Hex Encoding  ==================================================================== */
+const HexEncoding = {
+    toBinary: (hex: string): Buffer => {
+        return hex ? Buffer.from(hex, 'hex') : undefined;
+    },
+
+    toString: (hex: string): string | undefined => {
+        return hex ? Buffer.from(hex, 'hex').toString('utf8') : undefined;
+    },
+
+    toHex: (text: string): string | undefined => {
+        return text ? Buffer.from(text).toString('hex') : undefined;
+    },
+
+    toUTF8: (hex: string): string | undefined => {
+        if (!hex) return undefined;
+
+        const buffer = Buffer.from(hex, 'hex');
+        const isValid = Buffer.compare(Buffer.from(buffer.toString(), 'utf8'), buffer) === 0;
+
+        if (isValid) {
+            return buffer.toString('utf8');
+        }
+        return hex;
+    },
 };

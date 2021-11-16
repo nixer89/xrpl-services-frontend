@@ -76,8 +76,8 @@ export interface TransactionTemplate {
 
 export interface TokenIssuer {
     account: string,
-    currency: string,
-    currencyHex?: string,
+    currencyCode: string,
+    currencyCodeUTF8: string,
     amount: string,
     trustlines: string,
     offers: string,
@@ -101,4 +101,9 @@ export interface IssuerVerification {
     domain?: string,
     username?: string,
     twitter?: string
+}
+
+export interface XrplCurrency {
+    currencyCode:string,
+    currencyCodeUTF8:string
 }

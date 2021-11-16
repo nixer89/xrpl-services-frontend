@@ -144,7 +144,7 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
             <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
                 <span fxShow fxHide.xs fxLayout="row">
-                  <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
+                  <label [innerHTML]="row.currencyCodeUTF8 | highlightSearch: filterText"></label>
                   <div *ngIf="row.isHot">
                     &nbsp;<i #tooltip="matTooltip"
                     matTooltip="{{row.newTrustlines}} new TrustLines in 24h"
@@ -155,7 +155,7 @@
                 </span>
                 <span fxShow.xs fxHide fxLayout="row">
                   <b>Token Currency Code:</b>&nbsp;
-                  <label [innerHTML]="row.currency | highlightSearch: filterText"></label>
+                  <label [innerHTML]="row.currencyCodeUTF8 | highlightSearch: filterText"></label>
                   <div *ngIf="row.isHot">
                     &nbsp;<i #tooltip="matTooltip"
                     matTooltip="{{row.newTrustlines}} new TrustLines in 24h"
@@ -214,11 +214,11 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header> Trustline </mat-header-cell>
           <mat-cell *matCellDef="let row">
               <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
-                <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
+                <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row)" target="_blank">Set Trustline</a>
               </span>
               <span fxShow.xs fxHide fxLayout="row">
                 <b>Trustline:</b>&nbsp;
-                <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row.account, row.currency, row.amount)" target="_blank">Set Trustline</a>
+                <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row)" target="_blank">Set Trustline</a>
               </span>
           </mat-cell>
           <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
@@ -228,11 +228,11 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header> Dex </mat-header-cell>
           <mat-cell *matCellDef="let row">
               <span fxShow fxHide.xs fxLayout="column" fxLayout.gt-md="row">
-                <a [href]="getDexLink(row.account,row.currency)" target="_blank">XUMM Dex xApp</a>
+                <a [href]="getDexLink(row.account,row.currencyCode)" target="_blank">XUMM Dex xApp</a>
               </span>
               <span fxShow.xs fxHide fxLayout="row">
                 <b>Dex:</b>&nbsp;
-                <a [href]="getDexLink(row.account,row.currency)" target="_blank">XUMM Dex xApp</a>
+                <a [href]="getDexLink(row.account,row.currencyCode)" target="_blank">XUMM Dex xApp</a>
               </span>
           </mat-cell>
           <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>

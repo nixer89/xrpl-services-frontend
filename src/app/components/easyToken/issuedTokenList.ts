@@ -104,7 +104,7 @@ export class IssuedTokenList implements OnInit {
 
         for(let i = 0; i < 10; i++) {
           this.allTokens.find(issuer => {
-            if(this.hotToken1D && this.hotToken1D.length >= 10 && this.hotToken1D[i]['_id'].issuer === issuer.account && this.hotToken1D[i]['_id'].currency === normalizer.getCurrencyCodeForXRPL(issuer.currency)) {
+            if(this.hotToken1D && this.hotToken1D.length >= 10 && this.hotToken1D[i]['_id'].issuer === issuer.account && this.hotToken1D[i]['_id'].currency === normalizer.getCurrencyCodeForXRPL(issuer.currencyCode)) {
               issuer.isHot = true;
               issuer.newTrustlines = this.hotToken1D[i].count;
               //console.log(issuer.account + " is hot!");
@@ -136,10 +136,10 @@ export class IssuedTokenList implements OnInit {
 
           let matches:boolean =  data.account && data.account.toLowerCase().includes(filter)
                   || data.amount && data.amount.toString().toLowerCase().includes(filter)
-                    || data.currency && data.currency.toLowerCase().includes(filter)
+                    || data.currencyCodeUTF8 && data.currencyCodeUTF8.toLowerCase().includes(filter)
                       || data.trustlines && data.trustlines.toString().toLowerCase().includes(filter)
                         || (data.username && data.username.toLowerCase().includes(filter))
-                          || (data.currencyHex && data.currencyHex.toLowerCase().includes(filter) && filter.length == 40 && normalizer.isHex(filter));
+                          || (data.currencyCode && data.currencyCode.includes(filter) && filter.length == 40 && normalizer.isHex(filter));
           
           return matches;
         };
@@ -195,10 +195,15 @@ export class IssuedTokenList implements OnInit {
             this.issuingAccounts++;
 
             issuedCurrencies.forEach(issuedCurrency => {
+
+              if(account === "rHADAXwGgVtqjgTdN6g2YQoqiKSKZRANXG") {
+                console.log(JSON.stringify(issuedCurrency));
+              }
+
               tokenIssuers.push({
                   account: account,
-                  currency: this.getCurrencyCode(issuedCurrency.currency),
-                  currencyHex: this.getCurrencyHexCode(issuedCurrency.currency),
+                  currencyCode: issuedCurrency.currency,
+                  currencyCodeUTF8: normalizer.normalizeCurrencyCodeXummImpl(issuedCurrency.currency),
                   amount: issuedCurrency.amount,
                   trustlines: issuedCurrency.trustlines,
                   offers: issuedCurrency.offers,
@@ -242,20 +247,6 @@ export class IssuedTokenList implements OnInit {
     return parseFloat(number);
   }
 
-  getCurrencyCode(currency: string): string {
-    let normalizedCode = normalizer.normalizeCurrencyCodeXummImpl(currency);
-    if(!normalizedCode || normalizedCode.trim().length == 0)
-      return currency
-    else
-      return normalizedCode
-  }
-
-  getCurrencyHexCode(currency: string): string {
-    if(currency && currency.length > 3)
-      return currency;
-    return null;
-  }
-
   applyFilter(event: Event) {
     if(this.datasource && this.datasource.data) {
       this.filterText = (event.target as HTMLInputElement).value;
@@ -273,7 +264,7 @@ export class IssuedTokenList implements OnInit {
       this.datasource.filteredData.forEach(data => {
           this.uniqueFilteredAccount.set(data.account, 1);
           this.accountNameTotal += data.username ? 1 : 0;
-          this.currencyCodeTotal += data.currency ? 1 : 0;
+          this.currencyCodeTotal += data.currencyCode ? 1 : 0;
           this.issuedTokensTotal += data.amount ? Number(data.amount) : 0;
           this.dexOffersTotal += data.offers ? parseInt(data.offers) : 0;
           this.numberOfTrustlinesTotal += data.trustlines ? parseInt(data.trustlines) : 0;
@@ -301,11 +292,14 @@ export class IssuedTokenList implements OnInit {
   }
 
   getDexLink(issuer:string, currency:string) {
-    return "https://xumm.app/detect/xapp:xumm.dex?issuer="+issuer+"&currency="+normalizer.getCurrencyCodeForXRPL(currency);
+    return "https://xumm.app/detect/xapp:xumm.dex?issuer="+issuer+"&currency="+currency;
   }
 
-  getTrustlineQueryParams(account: string, currency: string, limit: string): any {
-    return { issuer: account , currency: currency , limit: limit};
+  getTrustlineQueryParams(tokenIssuer:TokenIssuer): any {
+    if(tokenIssuer.account === "rHADAXwGgVtqjgTdN6g2YQoqiKSKZRANXG")
+      console.log(JSON.stringify(tokenIssuer));
+
+    return { issuer: tokenIssuer.account , currency: tokenIssuer.currencyCode , limit: tokenIssuer.amount};
   }
 
   openDetailsDialog(tokenIssuer:TokenIssuer): void {

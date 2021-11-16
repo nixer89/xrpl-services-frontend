@@ -2,7 +2,7 @@ import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, A
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { AccountInfoChanged, XrplAccountChanged, Token, TrustLine } from 'src/app/utils/types';
+import { AccountInfoChanged, XrplAccountChanged, Token, TrustLine, XrplCurrency } from 'src/app/utils/types';
 import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
@@ -42,7 +42,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('mep') mep: MatExpansionPanel
 
-  issuedCurrencyInput: string;
+  selectedCurrency: XrplCurrency;
 
   maxFifthteenDigits:boolean = false;
 
@@ -95,8 +95,13 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
         this.issuerAccountInput = params.issuer;
         //console.log("subscribe received: " + params.currency);
-        this.issuedCurrencyInput = normalizer.currencyCodeUTF8ToHexIfUTF8(params.currency);
-        //console.log("subscribe set: " + this.issuedCurrencyInput);
+
+        this.selectedCurrency = {
+          currencyCode: normalizer.currencyCodeUTF8ToHexIfUTF8(params.currency),
+          currencyCodeUTF8: normalizer.normalizeCurrencyCodeXummImpl(params.currency)
+        }
+
+        //console.log("subscribe set: " + this.selectedCurrency);
         this.limitInput = params.limit;
 
         this.testMode = params.testmode ? params.testmode : (params.testnet ? params.testnet : false);
@@ -114,7 +119,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if(this.issuerAccountInput != null && this.issuedCurrencyInput != null && this.limitInput != null)
+    if(this.issuerAccountInput != null && this.selectedCurrency != null && this.limitInput != null)
       this.mep.open();
   }
 
@@ -166,7 +171,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async checkCurrencyExists() {
     //this.infoLabel = "loading " + xrplAccount;
-    if(this.issuerAccountInput && this.issuedCurrencyInput && this.limitInput && isValidXRPAddress(this.issuerAccountInput)) {
+    if(this.issuerAccountInput && this.selectedCurrency && this.selectedCurrency.currencyCode && this.limitInput && isValidXRPAddress(this.issuerAccountInput)) {
 
       this.allFieldsSet = true;
 
@@ -191,7 +196,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
               }
           }
           
-          let currencyToCheck = normalizer.getCurrencyCodeForXRPL(this.currencyCodeAsAscii);
+          let currencyToCheck = this.selectedCurrency.currencyCode;
 
           if(tokenList && tokenList.length > 0) {
             for(let i = 0; i < tokenList.length; i++) {
@@ -231,14 +236,14 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       payload.custom_meta.instruction = "- Issuer Address: " +this.issuerAccountInput.trim();
     }
 
-    if(this.issuedCurrencyInput && this.validCurrency) {
-      let currencyCode = this.issuedCurrencyInput;
+    if(this.selectedCurrency && this.selectedCurrency.currencyCode && this.validCurrency) {
+      let currencyCode = this.selectedCurrency.currencyCode;
       if(currencyCode.length > 3) {
         while(currencyCode.length < 40)
           currencyCode+="0";
       }
       payload.txjson.LimitAmount['currency'] = currencyCode.toUpperCase();
-      payload.custom_meta.instruction += "\n- Token currency code: " + this.currencyCodeAsAscii;
+      payload.custom_meta.instruction += "\n- Token currency code: " + this.selectedCurrency.currencyCodeUTF8;
     }
 
     if(this.limitInput && this.validLimit) {
@@ -294,7 +299,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.loadingIssuerData = true;
 
-    this.validCurrency = this.issuedCurrencyInput && this.issuedCurrencyInput.trim().length >= 3 && this.issuedCurrencyInput.length <= 40;
+    this.validCurrency = this.selectedCurrency && this.selectedCurrency.currencyCode && this.selectedCurrency.currencyCode.trim().length >= 3 && this.selectedCurrency.currencyCode.length <= 40;
     this.validAddress = this.issuerAccountInput && this.issuerAccountInput.trim().length > 0 && isValidXRPAddress(this.issuerAccountInput.trim());
 
     if(this.validCurrency) {
@@ -302,9 +307,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.limitInput = "1000000";
     }
 
-    this.lastKnownCurrency = this.issuedCurrencyInput;
+    this.lastKnownCurrency = this.selectedCurrency ? this.selectedCurrency.currencyCode : null;
 
-    
     if(this.limitInput) {
 
       if(!this.limitInput.includes("e")) {
@@ -364,7 +368,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   clearInputs() {
-    this.issuerAccountInput = this.issuedCurrencyInput = this.limitInput = null;
+    this.issuerAccountInput = this.selectedCurrency = this.limitInput = null;
     this.isValidTrustSet = this.validAddress = this.validCurrency = this.validLimit = false;
     this.lastKnownAddress = null;
     this.isEditMode = false;
@@ -375,7 +379,10 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   async onTrustLineEdit(trustline:TrustLine) {
     this.isEditMode = true;
     this.issuerAccountInput = trustline.account;
-    this.issuedCurrencyInput = trustline.currency;
+    this.selectedCurrency = {
+      currencyCode: normalizer.currencyCodeUTF8ToHexIfUTF8(trustline.currency),
+      currencyCodeUTF8: normalizer.normalizeCurrencyCodeXummImpl(trustline.currency)
+    }
     this.limitInput = trustline.limit;
     //console.log("onTrustLineEdit: " + this.issuedCurrencyInput);
     await this.checkChanges();
@@ -420,7 +427,11 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async onIssuedCurrencyFound(token:Token) {
 
-    this.issuedCurrencyInput = token.currency;
+    this.selectedCurrency = {
+      currencyCode: normalizer.currencyCodeUTF8ToHexIfUTF8(token.currency),
+      currencyCodeUTF8: normalizer.normalizeCurrencyCodeXummImpl(token.currency)
+    }
+
     this.limitInput = token.amount;
 
     //console.log("onIssuedCurrencyFound: " + this.issuedCurrencyInput);
@@ -468,17 +479,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async cancelEdit() {
-    this.issuerAccountInput = this.limitInput = this.issuedCurrencyInput = null;
+    this.issuerAccountInput = this.limitInput = this.selectedCurrency = null;
     await this.checkChanges();
     this.isEditMode = false;
   }
-
-  get currencyCodeAsAscii() {
-    return normalizer.normalizeCurrencyCodeXummImpl(this.issuedCurrencyInput);
-  }
-
-  set currencyCodeAsAscii(currency: string) {
-    this.issuedCurrencyInput = normalizer.currencyCodeUTF8ToHex(currency);
-  }
-
 }

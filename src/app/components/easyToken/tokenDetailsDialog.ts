@@ -147,10 +147,6 @@ export class TokenDetailsDialog implements OnInit {
         }
     }
 
-    getCurrencyCodeAsHex() {
-        return normalizer.getCurrencyCodeForXRPL(this.tokenIssuer.currency)
-    }
-
     getTokenCreation(): string {
         if(this.tokenIssuer && this.tokenIssuer.created && this.tokenIssuer.created.date)
             return new Date(this.tokenIssuer.created.date).toLocaleString();
