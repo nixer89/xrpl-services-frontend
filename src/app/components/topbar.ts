@@ -7,6 +7,7 @@ import { XummTypes } from 'xumm-sdk';
 import { LocalStorageService } from 'angular-2-local-storage'
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { TypeWriter } from '../utils/TypeWriter';
+import { XummService } from '../services/xumm.service';
 
 @Component({
   selector: 'app-topbar',
@@ -22,11 +23,19 @@ export class TopbarComponent implements OnInit {
   title: string = "Xumm Community";
   tw: TypeWriter
 
-  constructor( private supportDialog: MatDialog, private snackBar: MatSnackBar, private localStorage: LocalStorageService, private overlayContainer: OverlayContainer) {
+  loadingBackend:boolean = true;
+  backendAvailable:boolean = false;
+
+  constructor( private xummApi: XummService, private supportDialog: MatDialog, private snackBar: MatSnackBar, private localStorage: LocalStorageService, private overlayContainer: OverlayContainer) {
     
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    this.loadingBackend = true;
+    this.backendAvailable = await this.xummApi.ping();
+    this.loadingBackend = false;
+    //console.log("backendAvailable: " + this.backendAvailable)
+
     this.isDarkTheme = this.localStorage.get("darkMode");
     this.setOverlayClass();
 

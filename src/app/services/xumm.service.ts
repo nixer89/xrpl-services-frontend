@@ -10,6 +10,19 @@ export class XummService {
     isTestMode = false;
     xummBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://api.xumm.community';
 
+    async ping(): Promise<boolean> {
+        try {
+            let ping:any = await this.app.getText(this.xummBackendURL+"/");
+            //console.log(JSON.stringify(ping));
+            return "I am alive!" === ping;
+        } catch(err) {
+            //console.log("error: ");
+            console.log(JSON.stringify(err))
+            return false;
+        }
+    }
+
+
     async submitPayload(payload:GenericBackendPostRequest): Promise<XummTypes.XummPostPayloadResponse> {
         try {
             console.log("submitting payload: " + JSON.stringify(payload));

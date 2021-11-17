@@ -29,6 +29,10 @@
     background-color: #A0A0A0 !important;
   }
 
+  .warning-background {
+    background-color: #fc1a1a !important;
+  }
+
   .warning {
     color: #EB0000;
   }
@@ -73,6 +77,10 @@
 
   .mat-form-field.mat-focused .mat-form-field-label {
     color: rgba(255, 255, 255, 0.7) !important;
+  }
+
+  .warning-background {
+    background-color: #ff3131 !important;
   }
 
   .warning {

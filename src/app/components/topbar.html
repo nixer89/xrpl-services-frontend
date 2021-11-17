@@ -80,4 +80,7 @@
       <i class="material-icons topbar-menu-icon">{{isDarkTheme ? 'wb_sunny' : 'nights_stay'}}</i>
     </button>
   </mat-toolbar>
+  <mat-toolbar *ngIf="!loadingBackend && !backendAvailable" class="warning-background" fxLayout="row" fxLayoutAlign="center center" ngStyle.xs="padding:0px; font-size: 0.9em; white-space: pre-wrap;">
+    <label>Maintenance currently ongoing. Please be patient! Thank you for your understanding!</label>
+  </mat-toolbar>
 </div>

@@ -9,6 +9,7 @@ import { MatExpansionPanel } from '@angular/material/expansion';
 import { isValidXRPAddress } from 'src/app/utils/utils';
 import { XRPLWebsocket } from 'src/app/services/xrplWebSocket';
 import * as flagUtil from '../../utils/flagutils'
+import { AppService } from 'src/app/services/app.service';
 
 @Component({
   selector: 'trustset',
@@ -22,6 +23,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   private TRUST_SET_FLAG_CLEAR_FREEZE:number = 2097152;
 
   constructor(private xrplWebSocket: XRPLWebsocket,
+              private app: AppService,
               private route: ActivatedRoute,
               private googleAnalytics: GoogleAnalyticsService) { }
 
@@ -179,47 +181,25 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     if(this.issuerAccountInput && this.selectedCurrency && this.selectedCurrency.currencyCode && this.limitInput && isValidXRPAddress(this.issuerAccountInput)) {
 
       this.allFieldsSet = true;
-      this.currencyExists = true;
 
-      return;
+      try {
+        let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+this.issuerAccountInput+"/obligations?origin=https://xumm.community")
+            
+        let currencyToCheck = this.selectedCurrency.currencyCode;
 
-      //settings ok, now check for the actual currenxy!
-      let gateway_balances_request:any = {
-        command: "gateway_balances",
-        account: this.issuerAccountInput,
-        ledger_index: "validated",
-      }
-
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline", gateway_balances_request, this.testMode);
-
-      console.log("gateway message: " + JSON.stringify(message));
-      if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.obligations) {
-          let tokenList:string[] = [];
-          let obligations:any = message.result.obligations;
-          
-          if(obligations) {
-              for (var currency in obligations) {
-                  if (obligations.hasOwnProperty(currency)) {
-                      tokenList.push(currency);
-                  }
-              }
-          }
-          
-          let currencyToCheck = this.selectedCurrency.currencyCode;
-          console.log("currencyToCheck: " + currencyToCheck);
-          console.log("tokenList: " + JSON.stringify(tokenList));
-
-          if(tokenList && tokenList.length > 0) {
-            for(let i = 0; i < tokenList.length; i++) {
-              if(tokenList[i] === currencyToCheck) {
-                this.currencyExists = true;
-                //console.log("currency exsists")
-                break;
-              }
+        if(xrpscanResponse && xrpscanResponse.length > 0) {
+          for(let i = 0; i < xrpscanResponse.length; i++) {
+            if(xrpscanResponse[i].currency === currencyToCheck && parseFloat(xrpscanResponse[i].value) > 0) {
+              this.currencyExists = true;
+              //console.log("currency exsists")
+              break;
             }
           }
-      } else {                
-        this.currencyExists = false;
+        }
+      } catch(err) {
+        console.log(err);
+        //set to true in case of error!
+        this.currencyExists = true;
       }
     } else {
       this.allFieldsSet = false;
@@ -304,9 +284,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   async checkChanges() {
-    console.log("limit: " + this.limitInput);
-    console.log("issuer: " + this.issuerAccountInput);
-    console.log("currency: " + JSON.stringify(this.selectedCurrency));
     //console.log(this.issuerAccountInput);
 
     this.loadingIssuerData = true;
@@ -314,8 +291,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.validCurrency = this.selectedCurrency && this.selectedCurrency.currencyCode && this.selectedCurrency.currencyCode.trim().length >= 3 && this.selectedCurrency.currencyCode.length <= 40;
     this.validAddress = this.issuerAccountInput && this.issuerAccountInput.trim().length > 0 && isValidXRPAddress(this.issuerAccountInput.trim());
 
-    console.log("validCurrency: " + this.validCurrency);
-    console.log("validAddress: " + this.validAddress);
     if(this.validCurrency) {
       if((!this.lastKnownCurrency || this.lastKnownCurrency.trim().length == 0 ) && (!this.limitInput || this.limitInput.trim().length == 0))
         this.limitInput = "1000000";
