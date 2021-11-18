@@ -5,6 +5,7 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import { AccountInfoChanged, GenericBackendPostRequest } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import { isValidXRPAddress } from 'src/app/utils/utils';
+import { AppService } from 'src/app/services/app.service';
 
 interface NoRippleCheck {
   problem: string,
@@ -18,7 +19,7 @@ interface NoRippleCheck {
 })
 export class NoRippleCheckComponent implements OnInit, OnDestroy {
 
-  constructor(private xrplWebSocket: XRPLWebsocket, private googleAnalytics: GoogleAnalyticsService) { }
+  constructor(private xrplWebSocket: XRPLWebsocket, private app:AppService, private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -84,15 +85,34 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
       this.googleAnalytics.analyticsEventEmitter('load_noripple_check', 'noripple_check', 'noripple_check_component');
       this.loadingProblems = true;
 
-      let gateway_balances_request:any = {
-        command: "gateway_balances",
-        account: this.xrplAccountInput.trim(),
-        ledger_index: "validated",
+      try {
+
+        let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+this.xrplAccountInput.trim()+"/obligations?origin=https://xumm.community")
+
+        if(xrpscanResponse && xrpscanResponse.length > 0) {
+            this.obligations = xrpscanResponse;
+            this.isGateway = true;
+
+            this.googleAnalytics.analyticsEventEmitter('load_token_list', 'token_list', 'token_list_component');
+        } else {                
+            this.isGateway = false;
+            this.obligations = null;
+        }
+      } catch(err) {
+          console.log(err);
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("norippleCheck", gateway_balances_request, this.isTestMode);
+      let noripple_check_command:any = {
+        command: "noripple_check",
+        account: this.xrplAccountInput.trim(),
+        role: this.isGateway ? "gateway" : "user",
+        ledger_index: "validated",
+        transactions: true
+      }
 
-      this.handleWebsocketMessage(message);
+      let no_ripple_message:any = await this.xrplWebSocket.getWebsocketMessage("norippleCheck", noripple_check_command, this.isTestMode);
+
+      this.handleWebsocketMessage(no_ripple_message);
 
     }
   }
@@ -132,23 +152,6 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
         //console.log("problemsAndTransactions: " + JSON.stringify(this.problemsAndTransactions));
 
         this.loadingProblems = false;
-      } else {
-        //console.log("account has obligations: " + JSON.stringify(message.result.obligations));
-
-        this.isGateway = message.result.obligations != null;
-        this.obligations = message.result.obligations;
-        
-        let noripple_check_command:any = {
-          command: "noripple_check",
-          account: this.xrplAccountInput.trim(),
-          role: this.isGateway ? "gateway" : "user",
-          ledger_index: "validated",
-          transactions: true
-        }
-
-        let no_ripple_message:any = await this.xrplWebSocket.getWebsocketMessage("norippleCheck", noripple_check_command, this.isTestMode);
-
-        this.handleWebsocketMessage(no_ripple_message);
       }
     } else if(message && message.error === 'actNotFound') {
       this.accountNotFound = true
