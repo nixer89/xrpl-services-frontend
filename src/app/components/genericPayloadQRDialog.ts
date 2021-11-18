@@ -133,7 +133,12 @@ export class GenericPayloadQRDialog implements OnInit {
         }
 
         if(this.genericPayload?.payload?.custom_meta?.blob?.isDonation) {
-            this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xumm.community]-Donation", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from((this.memoInput && this.memoInput.trim().length > 0 ? this.memoInput.trim() : "Donation"), 'utf8').toString('hex').toUpperCase()}}]
+            let memoText = this.memoInput;
+            
+            if(!memoText || memoText.trim().length == 0)
+                memoText = "Donation to xumm.community"
+
+            this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xumm.community]-Donation", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(memoText, 'utf8').toString('hex').toUpperCase()}}]
         } else if(this.memoInput && this.memoInput.trim().length > 0 && !this.genericPayload.payload.txjson.Memos) {
             this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xumm.community]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(this.memoInput.trim(), 'utf8').toString('hex').toUpperCase()}}];
         }

@@ -70,7 +70,7 @@ export class TopbarComponent implements OnInit {
           TransactionType: "Payment"
       },
       custom_meta: {
-        instruction: "Thank you for your donation!",
+        instruction: "You are about to donate to xumm.community,\na project by @nixerFFM and not affiliated with XRPLLabs,\nthe creator of the XUMM wallet.\n\nThank you for your donation!",
         blob: {
           isDonation: true
         }
@@ -84,8 +84,7 @@ export class TopbarComponent implements OnInit {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
         xrplAccount: this.localStorage.get("xrplAccount"),
-        referer: 'abcde',
-        issuing: true
+        referer: 'abcde'
       },
       payload: xummPayload
     }
