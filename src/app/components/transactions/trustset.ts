@@ -76,10 +76,12 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   isEditMode:boolean = false;
 
   async ngOnInit() {
-    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
+    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(async accountData => {
       //console.log("account info changed received: " + JSON.stringify(accountData));
       this.originalAccountInfo = accountData.info;
       this.testMode = accountData.mode;
+
+      await this.checkChanges(true);
 
       this.xrplAccountInfoChangedSubject.next(accountData);
       
@@ -105,8 +107,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
        //console.log("subscribe set: " + JSON.stringify(this.selectedCurrency));
         this.limitInput = params.limit;
-
-
 
         if(params && ((params.testmode && params.testmode.toLowerCase() === 'true') || (params.testnet && params.testnet.toLowerCase() === 'true') || (params.test && params.test.toLowerCase() === 'true'))) {
           this.testMode = true;
@@ -183,17 +183,59 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       this.allFieldsSet = true;
 
       try {
-        let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+this.issuerAccountInput+"/obligations?origin=https://xumm.community")
-            
-        let currencyToCheck = this.selectedCurrency.currencyCode;
+        if(!this.testMode) {
+          let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+this.issuerAccountInput+"/obligations?origin=https://xumm.community")
+              
+          let currencyToCheck = this.selectedCurrency.currencyCode;
 
-        if(xrpscanResponse && xrpscanResponse.length > 0) {
-          for(let i = 0; i < xrpscanResponse.length; i++) {
-            if(xrpscanResponse[i].currency === currencyToCheck && parseFloat(xrpscanResponse[i].value) > 0) {
-              this.currencyExists = true;
-              //console.log("currency exsists")
-              break;
+          if(xrpscanResponse && xrpscanResponse.length > 0) {
+            for(let i = 0; i < xrpscanResponse.length; i++) {
+              if(xrpscanResponse[i].currency === currencyToCheck && parseFloat(xrpscanResponse[i].value) > 0) {
+                this.currencyExists = true;
+                //console.log("currency exsists")
+                break;
+              }
             }
+          }
+        } else {
+          //use old method on test net
+          //settings ok, now check for the actual currenxy!
+          let gateway_balances_request:any = {
+            command: "gateway_balances",
+            account: this.issuerAccountInput,
+            ledger_index: "validated",
+          }
+
+          let message:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline-gateway", gateway_balances_request, this.testMode);
+
+          console.log("gateway message: " + JSON.stringify(message));
+          if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.obligations) {
+              let tokenList:string[] = [];
+              let obligations:any = message.result.obligations;
+              
+              if(obligations) {
+                  for (var currency in obligations) {
+                      if (obligations.hasOwnProperty(currency)) {
+                          tokenList.push(currency);
+                      }
+                  }
+              }
+              
+              let currencyToCheck = this.selectedCurrency.currencyCode;
+              console.log("currencyToCheck: " + currencyToCheck);
+              console.log("tokenList: " + JSON.stringify(tokenList));
+
+              if(tokenList && tokenList.length > 0) {
+                for(let i = 0; i < tokenList.length; i++) {
+                  if(tokenList[i] === currencyToCheck) {
+                    this.currencyExists = true;
+                    //console.log("currency exsists")
+                    break;
+                  }
+                }
+              }
+          } else {                
+            this.currencyExists = false;
           }
         }
       } catch(err) {
@@ -255,7 +297,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   async issuerAccountChanged(isDirectLink?:boolean) {
     //console.log("issuerAccountChanged: " + this.issuedCurrencyInput);
-    if(this.issuerAccountInput.trim() != this.lastKnownAddress) {
+    if(this.issuerAccountInput && this.issuerAccountInput.trim() != this.lastKnownAddress) {
       await this.checkChanges();
 
       if(this.validAddress) {
@@ -287,7 +329,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
 
-  async checkChanges() {
+  async checkChanges(modeChanged? :boolean) {
     //console.log(this.issuerAccountInput);
 
     this.loadingIssuerData = true;
@@ -340,7 +382,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     if(this.validLimit)
       this.validLimit = this.limitInput && parseFloat(this.limitInput) >= 0;
 
-    if(this.validAddress && (this.issuerAccountInput.trim() != this.lastKnownAddress)) {
+    if(this.validAddress && (this.issuerAccountInput.trim() != this.lastKnownAddress || modeChanged)) {
       //console.log("issuerAccountInput: " +this.issuerAccountInput)
       //console.log("lastKnownAddress: " +this.lastKnownAddress)
       //load new issuer data!

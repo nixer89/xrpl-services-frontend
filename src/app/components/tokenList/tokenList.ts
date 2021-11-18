@@ -4,6 +4,7 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import { XrplAccountChanged, Token } from 'src/app/utils/types';
 import * as normalizer from 'src/app/utils/normalizers';
 import { AppService } from "src/app/services/app.service";
+import { XRPLWebsocket } from "src/app/services/xrplWebSocket";
 
 @Component({
     selector: "tokenList",
@@ -28,7 +29,7 @@ export class TokenList implements OnInit, OnDestroy {
 
     private tokenAccountChangedSubscription: Subscription;
 
-    constructor(private app: AppService, private googleAnalytics: GoogleAnalyticsService) {}
+    constructor(private xrplWebSocket: XRPLWebsocket, private app: AppService, private googleAnalytics: GoogleAnalyticsService) {}
 
     ngOnInit() {
         this.tokenAccountChangedSubscription = this.issuerAccountChanged.subscribe(accountData => {
@@ -60,23 +61,60 @@ export class TokenList implements OnInit, OnDestroy {
 
             try {
 
-                let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+xrplAccount+"/obligations?origin=https://xumm.community")
+                this.tokenList = [];
+                
+                if(!this.testMode) {
 
-                if(xrpscanResponse && xrpscanResponse.length > 0) {
-                    for(let i = 0; i < xrpscanResponse.length; i++) {
-                        this.tokenList.push({currency: xrpscanResponse[i].currency, amount: xrpscanResponse[i].value});
-                    }
+                    let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+xrplAccount+"/obligations?origin=https://xumm.community")
 
-                    if(this.tokenList.length > 1)
-                        this.tokenList = this.tokenList.sort((tokenA, tokenB) => this.getCurrencyCode(tokenA.currency).localeCompare(this.getCurrencyCode(tokenB.currency)));
+                    if(xrpscanResponse && xrpscanResponse.length > 0) {
+                        for(let i = 0; i < xrpscanResponse.length; i++) {
+                            this.tokenList.push({currency: xrpscanResponse[i].currency, amount: xrpscanResponse[i].value});
+                        }
 
-                    //if data 0 (no available tokens) -> show message "no tokens available"
-                    if(this.tokenList && this.tokenList.length == 0)
+                        if(this.tokenList.length > 1)
+                            this.tokenList = this.tokenList.sort((tokenA, tokenB) => this.getCurrencyCode(tokenA.currency).localeCompare(this.getCurrencyCode(tokenB.currency)));
+
+                        //if data 0 (no available tokens) -> show message "no tokens available"
+                        if(this.tokenList && this.tokenList.length == 0)
+                            this.tokenList = null;
+
+                        this.googleAnalytics.analyticsEventEmitter('load_token_list', 'token_list', 'token_list_component');
+                    } else {                
                         this.tokenList = null;
+                    }
+                } else {
+                    let gateway_balances_request:any = {
+                        command: "gateway_balances",
+                        account: xrplAccount,
+                        ledger_index: "validated",
+                      }
+                
+                      let message:any = await this.xrplWebSocket.getWebsocketMessage("tokenList", gateway_balances_request, this.testMode);
 
-                    this.googleAnalytics.analyticsEventEmitter('load_token_list', 'token_list', 'token_list_component');
-                } else {                
-                    this.tokenList = null;
+                      if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.obligations) {
+                        this.tokenList = [];
+                        let obligations:any = message.result.obligations;
+                        
+                        if(obligations) {
+                            for (var currency in obligations) {
+                                if (obligations.hasOwnProperty(currency)) {
+                                    this.tokenList.push({currency: currency, amount: obligations[currency]});
+                                }
+                            }
+
+                            this.tokenList = this.tokenList.sort((tokenA, tokenB) => this.getCurrencyCode(tokenA.currency).localeCompare(this.getCurrencyCode(tokenB.currency)));
+                        }
+                                    
+                        //if data 0 (no available tokens) -> show message "no tokens available"
+                        if(this.tokenList && this.tokenList.length == 0)
+                            this.tokenList = null;
+                    
+                        //console.log(JSON.stringify(this.tokenList));
+                        this.googleAnalytics.analyticsEventEmitter('load_token_list', 'token_list', 'token_list_component');
+                    } else {                
+                      this.tokenList = null;
+                    }
                 }
             } catch(err) {
                 console.log(err);

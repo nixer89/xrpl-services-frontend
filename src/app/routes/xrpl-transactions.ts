@@ -104,6 +104,20 @@ export class XrplTransactionsComponent implements OnInit {
         }
       }
 
+      if(params.issuer && params.currency && params.limit) {
+        if(params && ((params.testmode && params.testmode.toLowerCase() === 'true') || (params.testnet && params.testnet.toLowerCase() === 'true') || (params.test && params.test.toLowerCase() === 'true'))) {
+          if(!this.isTestMode) {
+            this.isTestMode = true;
+            this.networkChanged();
+          }
+        } else {
+          if(this.isTestMode) {
+            this.isTestMode = false;
+            this.networkChanged();
+          }
+        }
+      }
+
       //console.log("check logged in account xrpl");
       //console.log(this.localStorage.get("xrplAccount"));
       //console.log(this.localStorage.get("testMode"));
