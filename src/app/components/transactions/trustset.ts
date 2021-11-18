@@ -246,6 +246,10 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       payload.custom_meta.blob = {noSignIn: isDirectLink};
     }
 
+    if(this.selectedCurrency.currencyCodeUTF8.toLowerCase().includes("xum")) {
+      payload.custom_meta.blob = {addWarningXumm: true};
+    }
+
     this.onPayload.emit(payload);
   }
 

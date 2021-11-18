@@ -7,21 +7,21 @@
     padding: 0px;
 }
 
-@media (max-width:599px) {
-    .break-words {
-        word-wrap: break-word !important;
-        white-space: pre-wrap;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-    
-        word-break: break-word;
-    
-        -ms-hyphens: auto;
-        -moz-hyphens: auto;
-        -webkit-hyphens: auto;
-        hyphens: auto;
-    }
+.break-words {
+    word-wrap: break-word !important;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 
+    word-break: break-word;
+
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+@media (max-width:599px) {
     .mat-dialog-content {
         font-size: 0.8em;
     }

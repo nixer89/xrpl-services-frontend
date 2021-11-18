@@ -9,6 +9,8 @@ import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AppService } from "../services/app.service";
+import { timeStamp } from "console";
+import { ThisReceiver } from "@angular/compiler";
 
 @Component({
     selector: "genericPayloadQRDialog",
@@ -42,6 +44,8 @@ export class GenericPayloadQRDialog implements OnInit {
     showKyc:boolean = false;
     hasKyc:boolean = false;
 
+    tokenWarningAccepted:boolean = false;
+
     constructor(
         private xummApi: XummService,
         private app: AppService,
@@ -61,6 +65,9 @@ export class GenericPayloadQRDialog implements OnInit {
             this.overlayContainer.getContainerElement().classList.remove('light-theme');
             this.overlayContainer.getContainerElement().classList.add('dark-theme');
         }
+
+        if(!this.genericPayload?.payload?.custom_meta?.blob?.addWarningXumm)
+            this.tokenWarningAccepted = true;
 
         this.loadKycData();
 

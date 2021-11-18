@@ -6,7 +6,29 @@
                 <h4>Summary:</h4>
                 <label class="break-words">{{genericPayload.payload.custom_meta.instruction}}</label>
             </mat-card>
-            <mat-card class="theme-background" *ngIf="showKyc" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">
+            <mat-card class="warning-background" fxLayout="column" style="font-weight: bold; max-width: 500px;" *ngIf="genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm">
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <i class="material-icons" style="color: yellow; font-size: 2em;">
+                        warning
+                    </i>
+                    &nbsp;
+                    <i class="material-icons" style="color: yellow; font-size: 2em;">
+                        warning
+                    </i>
+                    &nbsp;
+                    <i class="material-icons" style="color: yellow; font-size: 2em;">
+                        warning
+                    </i>
+                </div>
+                <label>&nbsp;</label>
+                <label>This token you want to set a trustline for has 'XUMM' (or XUM) in its name but is in no way related to XUMM / XUMM Wallet or the creators of the XUMM Wallet -> XRPL Labs.</label>
+                <label>&nbsp;</label>
+                <label>Please proceed with caution, as they are not affiliated with XUMM!</label>
+                <label>&nbsp;</label>
+                <label>For more information please read this tweet:</label>
+                <a href="https://twitter.com/XummWallet/status/1461225738594623488" target="_blank">@XummWallet tweet</a>
+            </mat-card>
+            <mat-card class="theme-background" *ngIf="showKyc && (!genericPayload.payload.custom_meta || !genericPayload.payload.custom_meta.blob || !genericPayload.payload.custom_meta.blob.addWarningXumm)" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">
                 <div fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
                     <label><b>KYC:</b></label>
                     <div *ngIf="!loadingKYC && !loadingKycFailed && hasKyc">
@@ -42,8 +64,11 @@
                     <input matInput type="text" [(ngModel)]="memoInput" placeholder="Memo" aria-label="XRPL Transaction Memo">
                 </mat-form-field>
             </mat-card>
+            <div *ngIf="genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm">
+                <mat-checkbox [(ngModel)]="tokenWarningAccepted" [ngClass]="(tokenWarningAccepted ? 'success': 'warning')">I understand the above warning and accept the risk.</mat-checkbox>
+            </div>
             <div fxLayout="row" fxLayoutGap="0.5em">
-                <button mat-raised-button color="primary" (click)="sendToXumm()">Confirm</button>
+                <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!tokenWarningAccepted">Confirm</button>
                 <button mat-raised-button color="warn" (click)="closeIt()">Cancel</button>
             </div>
         </div>
