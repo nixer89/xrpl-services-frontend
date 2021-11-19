@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
 import { TransactionValidation, GenericBackendPostRequest, XrplAccountChanged } from '../../utils/types';
 import * as normalizer from '../../utils/normalizers';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { isValidXRPAddress } from 'src/app/utils/utils';
@@ -31,6 +31,7 @@ export class IssueMoreToken implements OnInit {
     private matDialog: MatDialog,
     private googleAnalytics: GoogleAnalyticsService,
     private route: ActivatedRoute,
+    private router: Router,
     private xummApi: XummService,
     private snackBar: MatSnackBar) {
   }
@@ -65,7 +66,35 @@ export class IssueMoreToken implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(async params => {
-      let payloadId = params.payloadId;
+      
+      //remove payload from url and navigate again
+      if(params && params.payloadId) {
+        let state = {
+          payloadId: params.payloadId
+        }
+
+        let newParams = {};
+
+        for (var param in params) {
+          if (params.hasOwnProperty(param) && param != "payloadId") {
+            newParams[param] = params[param];
+          }
+        }
+
+
+        return this.router.navigate(
+          ['.'], 
+          { relativeTo: this.route, queryParams: newParams, state: state }
+        );
+      }
+
+      let payloadId = null;
+
+      if(this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras && this.router.getCurrentNavigation().extras.state && this.router.getCurrentNavigation().extras.state.payloadId) {
+        payloadId = this.router.getCurrentNavigation().extras.state.payloadId
+        //this.router.getCurrentNavigation().extras.state = null;
+      }
+      
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
         this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'issue_more_token', 'issue_more_token_component');

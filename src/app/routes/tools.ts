@@ -63,12 +63,38 @@ export class Tools implements OnInit {
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
     }
 
-    this.loadFeeReserves();
-
     this.dismissInfo = this.localStorage && this.localStorage.get("dismissInfo");
 
     this.route.queryParams.subscribe(async params => {
-      let payloadId = params.payloadId;
+      
+      //remove payload from url and navigate again
+      if(params && params.payloadId) {
+        let state = {
+          payloadId: params.payloadId
+        }
+
+        let newParams = {};
+
+        for (var param in params) {
+          if (params.hasOwnProperty(param) && param != "payloadId") {
+            newParams[param] = params[param];
+          }
+        }
+
+
+        return this.router.navigate(
+          ['/'], 
+          { relativeTo: this.route, queryParams: newParams, state: state }
+        );
+      }
+
+      let payloadId = null;
+
+      if(this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras && this.router.getCurrentNavigation().extras.state && this.router.getCurrentNavigation().extras.state.payloadId) {
+        payloadId = this.router.getCurrentNavigation().extras.state.payloadId;
+        //this.router.getCurrentNavigation().extras.state = null;
+      }
+      
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
         this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'tools_component');
@@ -79,6 +105,8 @@ export class Tools implements OnInit {
         await this.handlePayloadInfo(payloadId, signinToValidate);
       }
     });
+
+    this.loadFeeReserves();
 
     //console.log("check logged in account tools");
     //console.log(this.localStorage.get("xrplAccount"));

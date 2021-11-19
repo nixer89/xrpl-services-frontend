@@ -64,13 +64,40 @@ export class XrplTransactionsComponent implements OnInit {
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
     }
 
-    this.loadFeeReserves();
-
     this.dismissInfo = this.localStorage && this.localStorage.get("dismissInfo");
 
     this.route.queryParams.subscribe(async params => {
-      let payloadId = params.payloadId;
+
+      //remove payload from url and navigate again
+      if(params && params.payloadId) {
+        let state = {
+          payloadId: params.payloadId
+        }
+
+        let newParams = {};
+
+        for (var param in params) {
+          if (params.hasOwnProperty(param) && param != "payloadId") {
+            newParams[param] = params[param];
+          }
+        }
+
+
+        return this.router.navigate(
+          ['/'], 
+          { relativeTo: this.route, queryParams: newParams, state: state }
+        );
+      }
+
+      let payloadId = null;
+
+      if(this.router.getCurrentNavigation() && this.router.getCurrentNavigation().extras && this.router.getCurrentNavigation().extras.state && this.router.getCurrentNavigation().extras.state.payloadId) {
+        payloadId = this.router.getCurrentNavigation().extras.state.payloadId
+        //this.router.getCurrentNavigation().extras.state = null;
+      }
+
       let signinToValidate = params.signinToValidate;
+
       if(payloadId) {
         this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'xrpl_transactions_component');
         //check if transaction was successfull and redirect user to stats page right away:
@@ -131,6 +158,8 @@ export class XrplTransactionsComponent implements OnInit {
         this.loadAccountData(true);
       }
     });
+
+    this.loadFeeReserves();
 
     //this.xrplAccount="rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"; //bitstamp
     //this.xrplAccount="rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF";
