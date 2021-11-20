@@ -274,8 +274,11 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       if(currencyCode.length > 3) {
         while(currencyCode.length < 40)
           currencyCode+="0";
+
+        currencyCode = currencyCode.toUpperCase();
       }
-      payload.txjson.LimitAmount['currency'] = currencyCode.toUpperCase();
+
+      payload.txjson.LimitAmount['currency'] = currencyCode;
       payload.custom_meta.instruction += "\n- Token currency code: " + this.selectedCurrency.currencyCodeUTF8;
     }
 
@@ -448,6 +451,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     if(currencyCode.length > 3) {
       while(currencyCode.length < 40)
         currencyCode+="0";
+
+      currencyCode = currencyCode.toUpperCase();
     }
     payload.txjson.LimitAmount['currency'] = currencyCode;
     payload.custom_meta.instruction += "\n- Token currency code: " + humanReadableCode;
@@ -503,6 +508,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     if(currencyCode.length > 3) {
       while(currencyCode.length < 40)
         currencyCode+="0";
+
+      currencyCode = currencyCode.toUpperCase();
     }
     payload.txjson.LimitAmount['currency'] = currencyCode;
     payload.custom_meta.instruction += "\n- Token currency code: " + humenReadableCode;
