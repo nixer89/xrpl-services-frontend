@@ -5,7 +5,6 @@ import * as util from '../../utils/flagutils';
 import * as normalizer from 'src/app/utils/normalizers';
 import { AccountInfoChanged, TrustLine } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from "@angular/material/table";
 
 @Component({
@@ -30,10 +29,6 @@ export class TrustLineList implements OnInit, OnDestroy {
     @Output()
     enableRippling: EventEmitter<TrustLine> = new EventEmitter();
 
-    @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-
-    pageSize:number = 50;
-
     datasource:MatTableDataSource<TrustLine> = null;
 
     trustLines:TrustLine[] = [];
@@ -45,6 +40,7 @@ export class TrustLineList implements OnInit, OnDestroy {
     trustlineClicked:boolean = false;
 
     account_Info:any = null;
+    defaultRippleSet = null;
 
     private trustLineAccountChangedSubscription: Subscription;
 
@@ -52,16 +48,18 @@ export class TrustLineList implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.trustLineAccountChangedSubscription = this.xrplAccountInfoChanged.subscribe(async account => {
-            //console.log("trustline account changed received: " + xrplAccount);
-            //console.log("test mode: " + this.testMode);
+            console.log("trustline account changed received: " + account);
+            console.log("test mode: " + this.testMode);
             this.account_Info = account.info;
+            this.defaultRippleSet = util.isDefaultRippleEnabled(this.account_Info.Flags);
+            console.log("defaultRippleSet: " + this.defaultRippleSet);
             this.testMode = account.mode;
             
-            if(this.account_Info && this.account_Info.Account && (!this.originalAccount || this.originalAccount != this.account_Info.Account)) {
+            if(this.account_Info && this.account_Info.Account) {
                 this.originalAccount = this.account_Info.Account;
                 await this.loadTrustLineList(this.account_Info.Account);
-            } else
-                this.trustLines = [];
+                this.loading = false;
+            }
 
             console.log("finished all")
         });
@@ -87,7 +85,7 @@ export class TrustLineList implements OnInit, OnDestroy {
               command: "account_lines",
               account: xrplAccount,
               ledger_index: "validated",
-              limit: 100
+              limit: 1000
             }
 
             let message:any = await this.xrplWebSocket.getWebsocketMessage("trustlineList", account_lines_request, this.testMode);
@@ -97,15 +95,25 @@ export class TrustLineList implements OnInit, OnDestroy {
                 marker = message.result.marker;
                 ledger_hash = message.result.ledger_hash;
 
-                if(this.trustLines && this.trustLines.length > 0)
+                if(this.trustLines && this.trustLines.length > 0) {
+                    this.trustLines = this.trustLines.filter(trustline => trustline.limit === "0" && trustline.limit_peer === "0" &&
+                        (
+                            (this.defaultRippleSet && trustline.no_ripple) ||
+                            (!this.defaultRippleSet && !trustline.no_ripple)
+                        ));
                     this.trustLines = this.trustLines.sort((lineA, lineB) => lineA.currency.localeCompare(lineB.currency));
+                }
             
                 //if data 0 (no available trustlines) -> show message "no trustlines available"
                 if(this.trustLines && this.trustLines.length == 0)
-                    this.trustLines = null;
+                    this.trustLines = [];
+                else if(this.trustLines && this.trustLines.length > 5) {
+                    marker = null;
+                }
 
                 
                 while(marker != null) {
+                    console.log("trustline length: " + this.trustLines.length);
                     let account_lines_request:any = {
                         command: "account_lines",
                         account: xrplAccount,
@@ -122,12 +130,29 @@ export class TrustLineList implements OnInit, OnDestroy {
                         this.trustLines = this.trustLines.concat(message2.result.lines);
                         marker = message2.result.marker;
 
-                        if(typeof marker != 'string')
+                        console.log("sorting")
+                        if(this.trustLines && this.trustLines.length > 0) {
+                            this.trustLines = this.trustLines.filter(trustline => trustline.limit === "0" &&
+                                (
+                                    trustline.limit_peer === "0" ||
+                                    (this.defaultRippleSet && trustline.no_ripple) ||
+                                    (!this.defaultRippleSet && !trustline.no_ripple)
+                                ));
+
+                            this.trustLines = this.trustLines.sort((lineA, lineB) => lineA.currency.localeCompare(lineB.currency));
+                        }
+
+                        if(typeof marker != 'string' || this.trustLines.length > 5) {
+                            console.log("TRUSLTINES BIGGER 100")
+                            marker = null;
                             break;
+                        }
                     }
                 }
                 
 
+                this.trustLines = this.trustLines.slice(0, 5);
+                
                 console.log("sorting")
                 if(this.trustLines && this.trustLines.length > 0) {
                     this.trustLines = this.trustLines.sort((lineA, lineB) => lineA.currency.localeCompare(lineB.currency));
@@ -139,12 +164,6 @@ export class TrustLineList implements OnInit, OnDestroy {
                 console.log("sorting finished")
 
                 this.datasource = new MatTableDataSource(this.trustLines);
-                this.datasource.paginator = this.paginator;
-
-                if (this.datasource.paginator) {
-                    this.datasource.paginator.firstPage();
-                }
-
                 this.loading = false;
                 console.log("datasource set")
                 console.log("account trust lines: " + JSON.stringify(this.trustLines.length));

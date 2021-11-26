@@ -463,10 +463,11 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     //console.log("deleteTrustLine: " + this.issuedCurrencyInput);
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'deleteTrustLine', 'trust_set_component');
 
+    let flags = this.issuerHasDefaultRipple ? this.TRUST_SET_FLAG_CLEAR_NO_RIPPLE : this.TRUST_SET_FLAG_SET_NO_RIPPLE
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
         TransactionType: "TrustSet",
-        Flags: this.TRUST_SET_FLAG_SET_NO_RIPPLE
+        Flags: flags
       }
     }
 
