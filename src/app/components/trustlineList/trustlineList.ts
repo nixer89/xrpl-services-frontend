@@ -50,8 +50,11 @@ export class TrustLineList implements OnInit, OnDestroy {
         this.trustLineAccountChangedSubscription = this.xrplAccountInfoChanged.subscribe(async account => {
             console.log("trustline account changed received: " + account);
             console.log("test mode: " + this.testMode);
+
             this.account_Info = account.info;
-            this.defaultRippleSet = util.isDefaultRippleEnabled(this.account_Info.Flags);
+            if(this.account_Info)
+                this.defaultRippleSet = util.isDefaultRippleEnabled(this.account_Info.Flags);
+
             console.log("defaultRippleSet: " + this.defaultRippleSet);
             this.testMode = account.mode;
             
