@@ -29,7 +29,6 @@
     "@angular/platform-browser": "^12.2.13",
     "@angular/platform-browser-dynamic": "^12.2.13",
     "@angular/router": "^12.2.13",
-    "@angular/service-worker": "^12.2.13",
     "@ctrl/ngx-codemirror": "^4.1.1",
     "angular-2-local-storage": "^3.0.2",
     "buffer": "^6.0.3",

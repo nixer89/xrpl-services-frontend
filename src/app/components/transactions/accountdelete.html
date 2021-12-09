@@ -58,7 +58,7 @@
     <div *ngIf="checkBoxElevatedFees">
       <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
         <mat-form-field>
-          <input matInput name="iAgreeInput" ngStyle.xs="font-size: 0.8em;" placeholder="Please confirm by writing 'I understand the above message'" [(ngModel)]="iAgreeInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
+          <input matInput name="iAgreeInput" ngStyle.xs="font-size: 0.8em;" placeholder="Confirm by writing 'I understand the above message'" [(ngModel)]="iAgreeInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
         </mat-form-field>
       </form>
     </div>
