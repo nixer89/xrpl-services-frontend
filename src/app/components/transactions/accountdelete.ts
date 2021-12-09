@@ -51,6 +51,10 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   accountReserve:number = 10000000;
   ownerReserve:number = 2000000;
 
+  checkBoxElevatedFees:boolean = false
+  iAgreeInput:string = null;
+  iAgreeInputValid:boolean = false;
+
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(async accountData => {
       //console.log("account info changed received: " + JSON.stringify(accountData.info));
@@ -96,6 +100,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         command: "account_objects",
         ledger_index: "validated",
         account: this.originalAccountInfo.Account,
+        deletion_blockers_only: true,
         limit: 201
       }
 
@@ -109,7 +114,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
     //console.log("websocket message: " + JSON.stringify(message));
     if(message.status && message.type && message.type === 'response') {
       if(message.status === 'success' && message.result && message.result.account_objects && message.result.account === this.originalAccountInfo.Account) {
-        accountObjects = accountObjects.concat(message.result.account_objects);
+        accountObjects = message.result.account_objects;
         //console.log("accountObjects length: " + accountObjects.length);
 
         //check sequence number
@@ -124,23 +129,8 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
           this.preconditionsFullFilled = false;
           this.errorMsg = "Your account owns too many objects and cannot be deleted."
           this.loadingPreconditions = false;
-        } else if(message.result.marker) {
-          let marker_command:any = {
-            command: "account_objects",
-            ledger_index: message.result.ledger_index,
-            account: this.originalAccountInfo.Account,
-            limit: 400,
-            marker: message.result.marker
-          };
-
-          let message_marker:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", marker_command, this.isTestMode);
-
-          await this.handleWebSocketMessagePreconditions(message_marker, accountObjects);
         } else {
-          //we are finished, check objects:
-          let filteredObject:any[] = accountObjects.filter(object => object.LedgerEntryType === "Escrow" || object.LedgerEntryType === "PayChannel" || object.LedgerEntryType === "RippleState" || object.LedgerEntryType === "Check")
-
-          if(filteredObject && filteredObject.length > 0) {
+          if(accountObjects && accountObjects.length > 0) {
             //console.log("forbidden object detected");
             // we have one of the "forbidden" objects still attached to our account. Preconditions are not met.
             this.preconditionsFullFilled = false;
@@ -172,7 +162,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
           }
 
           this.loadingPreconditions = false;
-        }
+        } 
       } else {
         this.preconditionsFullFilled = false;
         this.loadingPreconditions = false;
@@ -231,6 +221,8 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         payload.txjson.DestinationTag = parseInt(this.destinationTagInput.trim());
       }
 
+      payload.txjson.Fee = "4000000";
+
       payload.custom_meta = {}
       payload.custom_meta.instruction = "Delete your XRPL Account\n\n - please sign with the account you want to delete!";
     }
@@ -239,6 +231,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   }
 
   async checkChanges() {   
+    this.iAgreeInputValid = this.iAgreeInput && this.iAgreeInput.trim() === "I understand the above message"
     this.validDestinationAddress = this.destinationAccountInput && this.destinationAccountInput.trim().length > 0 && isValidXRPAddress(this.destinationAccountInput.trim());
 
     if(this.lastKnownDestinationAccount != this.destinationAccountInput.trim()) {
@@ -259,8 +252,11 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   clearInputs() {
     this.destinationAccountInput = this.destinationTagInput = null;
     this.validTag = this.validDestinationAddress = false;
-    this.preconditionsFullFilled= this.loadingDestinationAccount = this.loadingPreconditions = this.checkBoxHint = false;
+    this.loadingDestinationAccount = this.loadingPreconditions = this.checkBoxHint = false;
+    this.preconditionsFullFilled = true;
     this.errorMsg = this.lastKnownDestinationAccount = null;
+    this.iAgreeInputValid = this.checkBoxElevatedFees = false;
+    this.iAgreeInput = null;
   }
 
   getAccountBalance(): number {
@@ -275,7 +271,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   getTransferBalance(): number {
     if(this.originalAccountInfo && this.originalAccountInfo.Balance) {
       let balance:number = Number(this.originalAccountInfo.Balance);
-      return (balance-this.ownerReserve)/1000000;
+      return (balance-this.ownerReserve-2000000)/1000000;
     } else {
       return 0;
     }
