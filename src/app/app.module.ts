@@ -87,6 +87,7 @@ import { environment } from '../environments/environment';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { HighlightSearchPipe } from './utils/searchHighlight';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [
@@ -160,6 +161,7 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     MatDatepickerModule,
     MatMomentDateModule,
     //Special
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
     LocalStorageModule.forRoot({ prefix: 'XummCommunity', storageType: 'localStorage', notifyOptions: {setItem: true, removeItem: false} }),
   ],
   providers: [
