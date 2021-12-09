@@ -187,7 +187,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             payload: {
                 txjson: {
                     TransactionType: "Payment",
-                    Memos : [{Memo: {MemoType: Buffer.from("[https://xumm.community]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for Auto Release of Escrow! Owner:" + escrow.Account + " Sequence: " + escrow.sequence, 'utf8').toString('hex').toUpperCase()}}]
+                    Memos : [{Memo: {MemoType: Buffer.from("[https://xrpl.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for Auto Release of Escrow! Owner:" + escrow.Account + " Sequence: " + escrow.sequence, 'utf8').toString('hex').toUpperCase()}}]
                 },
                 custom_meta: {
                     instruction: "SIGN WITH ESCROW OWNER ACCOUNT!!!\n\nEnable Auto Release for Escrow!\n\nEscrow-Owner: " + escrow.Account + "\nSequence: " + escrow.sequence + "\nFinishAfter: " + new Date(normalizer.rippleEpocheTimeToUTC(escrow.FinishAfter)).toLocaleString() + "\n" + (this.isTestMode ? "\nMake sure you are connected to Testnet!" : ""),

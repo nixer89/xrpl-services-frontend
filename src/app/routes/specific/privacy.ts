@@ -12,7 +12,7 @@ export class PrivacyComponent implements OnInit {
   constructor(private titleService: Title, private googleAnalytics: GoogleAnalyticsService) {}
 
   ngOnInit() {
-    this.titleService.setTitle("Xumm Community Privacy");
+    this.titleService.setTitle("XRPL Services Privacy");
     this.googleAnalytics.analyticsEventEmitter('privacy_opened', 'privacy', 'privacy_component');
   }
 }

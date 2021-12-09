@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "xumm-community": {
+    "xrpl-services": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/xumm-community",
+            "outputPath": "dist/xrpl-services",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -80,18 +80,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "xumm-community:build"
+            "browserTarget": "xrpl-services:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "xumm-community:build:production"
+              "browserTarget": "xrpl-services:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "xumm-community:build"
+            "browserTarget": "xrpl-services:build"
           }
         },
         "test": {
@@ -132,16 +132,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "xumm-community:serve"
+            "devServerTarget": "xrpl-services:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "xumm-community:serve:production"
+              "devServerTarget": "xrpl-services:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "xumm-community"
+  "defaultProject": "xrpl-services"
 }

@@ -20,7 +20,7 @@ export class TopbarComponent implements OnInit {
 
   isDarkTheme: boolean;
 
-  title: string = "Xumm Community";
+  title: string = "XRPL Services";
   tw: TypeWriter
 
   loadingBackend:boolean = true;
@@ -39,7 +39,7 @@ export class TopbarComponent implements OnInit {
     this.isDarkTheme = this.localStorage.get("darkMode");
     this.setOverlayClass();
 
-    this.tw = new TypeWriter(["Xumm Community", "created by nixerFFM", "Xumm Community"], t => {
+    this.tw = new TypeWriter(["XRP Ledger Services", "created by nixerFFM", "XRP Ledger Services"], t => {
       this.title = t;
     })
 
@@ -70,7 +70,7 @@ export class TopbarComponent implements OnInit {
           TransactionType: "Payment"
       },
       custom_meta: {
-        instruction: "You are about to donate to xumm.community,\na project by @nixerFFM and not affiliated with XRPLLabs,\nthe creator of the XUMM wallet.\n\nThank you for your donation!",
+        instruction: "You are about to donate to xrpl.services,\na project by @nixerFFM and not affiliated with XRPLLabs,\nthe creator of the XUMM wallet.\n\nThank you for your donation!",
         blob: {
           isDonation: true
         }

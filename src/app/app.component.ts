@@ -10,7 +10,7 @@ declare let gtag: Function;
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'Xumm Community';
+  title = 'XRPL Services';
   darkMode:boolean;
 
   constructor(private router: Router, private localStorage: LocalStorageService) {
@@ -28,16 +28,16 @@ export class AppComponent implements OnInit {
   }
 
   getPageTitle(page_path:string): string {
-    let title = "Xumm Community";
+    let title = "XRP Ledger Services";
 
     switch(page_path) {
       case '': case '/': title = "XRPL Transactions"; break;
       case '/easy-iou': title = "Easy-IOU"; break;
       case '/tokens': title = "XRPL Tokens"; break;
       case '/tools': title = "XRPL Tools"; break;
-      case '/terms': title = "Xumm Community Terms"; break;
-      case '/privacy': title = "Xumm Community Privacy"; break;
-      default: title = "Xumm Community"; break;
+      case '/terms': title = "XRPL Services Terms"; break;
+      case '/privacy': title = "XRPL Services Privacy"; break;
+      default: title = "XRPL Services"; break;
     }
 
     return title;

@@ -75,7 +75,7 @@
         </form>
         <div *ngIf="(recipientToIssuerTrustLine && getMaxIssuerTokens() == 0) || (numberOfTokens && validNumberOfTokens && notEnoughLimit)" fxLayout="column" fxLayoutGap="0.3em">
           <label>You can share the following link with the recipient to update his trustline with the limit of tokens you want to issue:</label>
-          <a href="https://xumm.community?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}" target="_blank">https://xumm.community?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}</a>
+          <a href="https://xrpl.services?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}" target="_blank">https://xrpl.services?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}</a>
         </div>
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
           <button mat-raised-button color="primary" (click)="issueToken()" [disabled]="!validAddress || !validIssuer || !validCurrencyCode || !validNumberOfTokens || notEnoughLimit">

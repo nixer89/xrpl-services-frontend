@@ -12,7 +12,7 @@ export class TermsComponent implements OnInit {
   constructor(private titleService: Title, private googleAnalytics: GoogleAnalyticsService) {}
 
   ngOnInit() {
-    this.titleService.setTitle("Xumm Community Terms");
+    this.titleService.setTitle("XRPL Services Terms");
     this.googleAnalytics.analyticsEventEmitter('terms_opened', 'terms', 'terms_component');
   }
 }
