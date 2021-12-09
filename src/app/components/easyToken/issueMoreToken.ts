@@ -99,7 +99,7 @@ export class IssueMoreToken implements OnInit {
       if(payloadId) {
         this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'issue_more_token', 'issue_more_token_component');
         this.mep.expanded = true;
-        //check if transaction was successfull and redirect user to stats page right away:
+        //check if transaction was successful and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
         //console.log(JSON.stringify(payloadInfo));
         if(signinToValidate) {
@@ -144,7 +144,7 @@ export class IssueMoreToken implements OnInit {
     if(info && info.success && info.account && isValidXRPAddress(info.account)) {
       //("valid issuer");
       this.snackBar.dismiss();
-      this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 3000, horizontalPosition: 'center', verticalPosition: 'top'});
+      this.snackBar.open("Login successful. Loading account data...", null, {panelClass: 'snackbar-success', duration: 3000, horizontalPosition: 'center', verticalPosition: 'top'});
       this.issuerAccount = info.account;
       this.validIssuer = true;
       this.loadingIssuerAccount = false;
@@ -152,7 +152,7 @@ export class IssueMoreToken implements OnInit {
       this.issuerAccount = null;
       this.validIssuer = false;
       this.loadingIssuerAccount = false;
-      this.snackBar.open("Login not successfull. Please try again", null, {panelClass: 'snackbar-failed', duration: 3000, horizontalPosition: 'center', verticalPosition: 'top'});
+      this.snackBar.open("Login not successful. Please try again", null, {panelClass: 'snackbar-failed', duration: 3000, horizontalPosition: 'center', verticalPosition: 'top'});
     }
 
     this.issuerAccountChangedSubject.next({account: this.issuerAccount, mode: this.isTestMode});
@@ -161,11 +161,11 @@ export class IssueMoreToken implements OnInit {
   handleTransactionInfo(info: TransactionValidation) {
     this.snackBar.dismiss();
     if(info && info.success) {
-      this.snackBar.open("Your transaction was successfull on " + (info.testnet ? 'test net.' : 'main net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+      this.snackBar.open("Your transaction was successful on " + (info.testnet ? 'test net.' : 'main net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
       this.reset();
       this.googleAnalytics.analyticsEventEmitter('issued_more_token', 'issue_more_token', 'issue_more_token_component');
     } else {
-      this.snackBar.open("Your transaction was not successfull. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
+      this.snackBar.open("Your transaction was not successful. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
     }
 
     this.reset();

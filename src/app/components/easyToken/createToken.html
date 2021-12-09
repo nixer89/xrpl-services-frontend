@@ -146,8 +146,8 @@
               &nbsp;<label class="loading">Sign in with the account you have paid within the last 24h.</label>
             </div>
             
-            <mat-hint *ngIf="paymentNotSuccessfull" style="padding-top: 0.5em;">You payment was not successfull on the XRP Ledger {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
-            <mat-hint *ngIf="paymentNotSuccessfull">Please try again or use "Sign In with XUMM" if you think the payment was successfull.</mat-hint>
+            <mat-hint *ngIf="paymentNotSuccessfull" style="padding-top: 0.5em;">You payment was not successful on the XRP Ledger {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
+            <mat-hint *ngIf="paymentNotSuccessfull">Please try again or use "Sign In with XUMM" if you think the payment was successful.</mat-hint>
             <mat-hint *ngIf="paymentNotFound" style="padding-top: 0.5em;">No valid payment found for account {{getIssuer()}} withing the last 24h.</mat-hint>
             <mat-hint *ngIf="paymentNotFound">Please make a 5 XRP payment or login with a different account.</mat-hint>
 

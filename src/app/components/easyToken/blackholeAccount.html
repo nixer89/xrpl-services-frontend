@@ -169,7 +169,7 @@
               <label>Payment received!</label>
             </mat-card>
             
-            <mat-hint *ngIf="paymentInitiated && paymentNotSuccessfull" style="padding-top: 0.5em;">Your payment was not successfull on the XRP Ledger {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
+            <mat-hint *ngIf="paymentInitiated && paymentNotSuccessfull" style="padding-top: 0.5em;">Your payment was not successful on the XRP Ledger {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
           </div>
           <div *ngIf="loadingIssuerAccount" fxLayout="row" fxLayoutGap="0.3em">
             <label>Loading account data... </label>

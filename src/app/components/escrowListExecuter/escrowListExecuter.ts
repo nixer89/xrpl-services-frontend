@@ -207,7 +207,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
     
           if(info && info.success && info.account && info.account == escrow.Account && (info.testnet == escrow.testnet || (!info.testnet && escrow.testnet))) {
             //handle success
-            this.snackBar.open("Transaction successfull! You have enabled the auto release feature for your escrow!", null, {panelClass: 'snackbar-success', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
+            this.snackBar.open("Transaction successful! You have enabled the auto release feature for your escrow!", null, {panelClass: 'snackbar-success', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
              
             this.googleAnalytics.analyticsEventEmitter('pay_for_escrow_release', 'escrow_executer', 'escrow_executer_component');
           } else if( info && info.testnet && info.testnet != escrow.testnet) {

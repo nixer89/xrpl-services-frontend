@@ -100,7 +100,7 @@ export class XrplTransactionsComponent implements OnInit {
 
       if(payloadId) {
         this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'xrpl_transactions_component');
-        //check if transaction was successfull and redirect user to stats page right away:
+        //check if transaction was successful and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
         //console.log(JSON.stringify(payloadInfo));
         if(signinToValidate) {
@@ -108,11 +108,11 @@ export class XrplTransactionsComponent implements OnInit {
 
             if(signInCheck.success) {
               this.snackBar.dismiss();
-              this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+              this.snackBar.open("Login successful. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
               await this.handleTransactionInfo(signInCheck);
             } else {
               this.snackBar.dismiss();
-              this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+              this.snackBar.open("Login not successful. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
             }    
         } else {
 
@@ -124,9 +124,9 @@ export class XrplTransactionsComponent implements OnInit {
 
           this.snackBar.dismiss();
           if(transactionResult && transactionResult.success) {
-            this.snackBar.open("Your transaction was successfull on " + (transactionResult.testnet ? 'test net.' : 'main net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+            this.snackBar.open("Your transaction was successful on " + (transactionResult.testnet ? 'test net.' : 'main net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
           } else {
-            this.snackBar.open("Your transaction was not successfull. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
+            this.snackBar.open("Your transaction was not successful. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
           }
         }
       }

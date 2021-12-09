@@ -98,7 +98,7 @@ export class Tools implements OnInit {
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
         this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'tools_component');
-        //check if transaction was successfull and redirect user to stats page right away:
+        //check if transaction was successful and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
         //console.log(JSON.stringify(payloadInfo));
 
@@ -166,7 +166,7 @@ export class Tools implements OnInit {
 
           if(trxInfo && trxInfo.success && trxInfo.account && trxInfo.account == escrow.account && trxInfo.testnet == escrow.testnet) {
             //handle success
-            this.snackBar.open("Transaction successfull! You have enabled the auto release feature for your escrow!", null, {panelClass: 'snackbar-success', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
+            this.snackBar.open("Transaction successful! You have enabled the auto release feature for your escrow!", null, {panelClass: 'snackbar-success', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
             
             this.googleAnalytics.analyticsEventEmitter('pay_for_escrow_release', 'escrow_executer', 'escrow_executer_component');
           } else if( trxInfo && trxInfo.testnet && trxInfo.testnet != escrow.testnet) {
@@ -188,19 +188,19 @@ export class Tools implements OnInit {
 
         this.snackBar.dismiss();
         if(signInCheck.success) {
-          this.snackBar.open("Login successfull. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+          this.snackBar.open("Login successful. Loading account data...", null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
           await this.handleTransactionInfo(signInCheck);
         } else {
-          this.snackBar.open("Login not successfull. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+          this.snackBar.open("Login not successful. Cannot load account data. Please try again!", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
         }    
       } else {
         let transactionResult:TransactionValidation = await this.xummApi.validateTransaction(payloadId);
 
         this.snackBar.dismiss();
         if(transactionResult && transactionResult.success) {
-          this.snackBar.open("Your transaction was successfull on " + (transactionResult.testnet ? 'testnet.' : 'mainnet.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
+          this.snackBar.open("Your transaction was successful on " + (transactionResult.testnet ? 'testnet.' : 'mainnet.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
         } else {
-          this.snackBar.open("Your transaction was not successfull. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
+          this.snackBar.open("Your transaction was not successful. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
         }
 
         await this.handleTransactionInfo(transactionResult);
