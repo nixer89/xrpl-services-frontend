@@ -162,7 +162,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     MatMomentDateModule,
     //Special
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
-    LocalStorageModule.forRoot({ prefix: 'XummCommunity', storageType: 'localStorage', notifyOptions: {setItem: true, removeItem: false} }),
+    LocalStorageModule.forRoot({ prefix: 'XrplServices', storageType: 'localStorage', notifyOptions: {setItem: true, removeItem: false} }),
   ],
   providers: [
     AppService,

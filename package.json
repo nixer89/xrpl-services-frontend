@@ -1,6 +1,6 @@
 {
   "name": "xrpl-services",
-  "version": "3.3.4",
+  "version": "4.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",

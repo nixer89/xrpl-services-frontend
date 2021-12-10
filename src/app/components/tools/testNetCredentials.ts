@@ -42,13 +42,13 @@ export class TestNetCredentialsComponent {
         this.qrCode = await qrcode.toDataURL(this.newAccount.account.secret);
 
       if(!this.newAccount || !this.qrCode)
-        this.error = "Something went wrong. Please try again later! If the error persists, please report via twitter @XummCommunity!"
+        this.error = "Something went wrong. Please try again later! If the error persists, please report via twitter @XrplServices!"
       
     } catch(err) {
       console.log(err);
       this.newAccount = null;
       this.qrCode = null;
-      this.error = "Could not load test net credentials. Please try again later! If the error persists, please report via twitter @XummCommunity!";
+      this.error = "Could not load test net credentials. Please try again later! If the error persists, please report via twitter @XrplServices!";
     }
 
     this.loading = false;
