@@ -8,11 +8,11 @@ export class XummService {
     constructor(private app: AppService) {}
 
     isTestMode = false;
-    xummBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://api.xrpl.services';
+    xrplServicesBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://api.xrpl.services';
 
     async ping(): Promise<boolean> {
         try {
-            let ping:any = await this.app.getText(this.xummBackendURL+"/");
+            let ping:any = await this.app.getText(this.xrplServicesBackendURL+"/");
             //console.log(JSON.stringify(ping));
             return "I am alive!" === ping;
         } catch(err) {
@@ -26,7 +26,7 @@ export class XummService {
     async submitPayload(payload:GenericBackendPostRequest): Promise<XummTypes.XummPostPayloadResponse> {
         try {
             console.log("submitting payload: " + JSON.stringify(payload));
-            return this.app.post(this.xummBackendURL+"/api/v1/platform/payload", payload);
+            return this.app.post(this.xrplServicesBackendURL+"/api/v1/platform/payload", payload);
         } catch(err) {
             //console.log("error: ");
             console.log(JSON.stringify(err))
@@ -36,7 +36,7 @@ export class XummService {
 
     async getPayloadInfo(payloadId:string): Promise<XummTypes.XummGetPayloadResponse> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/platform/payload/"+payloadId);
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/platform/payload/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
@@ -45,7 +45,7 @@ export class XummService {
 
     async deletePayload(payloadId:string): Promise<XummTypes.XummDeletePayloadResponse> {
         try {
-            return this.app.delete(this.xummBackendURL+"/api/v1/platform/payload/"+payloadId);
+            return this.app.delete(this.xrplServicesBackendURL+"/api/v1/platform/payload/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
@@ -54,7 +54,7 @@ export class XummService {
 
     async validateTransaction(payloadId:string): Promise<TransactionValidation> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/xrpl/validatetx/"+payloadId);
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/xrpl/validatetx/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }
@@ -63,7 +63,7 @@ export class XummService {
     
     async checkPayment(payloadId:string): Promise<TransactionValidation> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/payment/"+payloadId);
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/check/payment/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }
@@ -72,7 +72,7 @@ export class XummService {
 
     async checkTimedPayment(payloadId:string): Promise<TransactionValidation> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/"+payloadId);
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/check/timed/payment/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }
@@ -81,7 +81,7 @@ export class XummService {
 
     async checkTimedPaymentReferer(payloadId:string, referer?:string): Promise<TransactionValidation> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/timed/payment/referer/" + payloadId + (referer ? ("?referer="+referer) : ""));
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/check/timed/payment/referer/" + payloadId + (referer ? ("?referer="+referer) : ""));
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }
@@ -90,7 +90,7 @@ export class XummService {
 
     async checkSignIn(payloadId:string): Promise<TransactionValidation> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/signin/"+payloadId);
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/check/signin/"+payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }
@@ -99,7 +99,7 @@ export class XummService {
 
     async signInToValidateTimedPayment(payloadId:string, referer?:string): Promise<TransactionValidation> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/check/signinToValidatePayment/" + payloadId + (referer ? ("?referer="+referer) :""));
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/check/signinToValidatePayment/" + payloadId + (referer ? ("?referer="+referer) :""));
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }
@@ -108,7 +108,7 @@ export class XummService {
 
     async getStoredEscrowList(account:string, testmode: boolean): Promise<any> {
         try {
-            return this.app.post(this.xummBackendURL+"/api/v1/escrows", {account: account, testnet: testmode});
+            return this.app.post(this.xrplServicesBackendURL+"/api/v1/escrows", {account: account, testnet: testmode});
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }
@@ -117,7 +117,7 @@ export class XummService {
 
     async validateEscrowPayment(payloadId:string): Promise<TransactionValidation> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/escrow/validatepayment/" + payloadId);
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/escrow/validatepayment/" + payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }
@@ -126,7 +126,7 @@ export class XummService {
 
     async validateEscrowSignInToDelete(payloadId:string): Promise<TransactionValidation> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/escrow/signinToDeleteEscrow/" + payloadId);
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/escrow/signinToDeleteEscrow/" + payloadId);
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }
@@ -136,9 +136,9 @@ export class XummService {
     async getTransactionStatistics(origin? :string): Promise<any> {
         try {
             if(!origin)
-                return this.app.get(this.xummBackendURL+"/api/v1/statistics/transactions");
+                return this.app.get(this.xrplServicesBackendURL+"/api/v1/statistics/transactions");
             else 
-                return this.app.get(this.xummBackendURL+"/api/v1/statistics/transactions?origin="+origin);
+                return this.app.get(this.xrplServicesBackendURL+"/api/v1/statistics/transactions?origin="+origin);
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
@@ -147,7 +147,7 @@ export class XummService {
 
     async getEscrowNextRelease(): Promise<number> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/statistics/escrows/nextRelease");
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/statistics/escrows/nextRelease");
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
@@ -156,7 +156,7 @@ export class XummService {
 
     async getEscrowLastRelease(): Promise<number> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/statistics/escrows/lastRelease");
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/statistics/escrows/lastRelease");
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
@@ -165,7 +165,7 @@ export class XummService {
 
     async getEscrowCurrentCount(): Promise<number> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/statistics/escrows/currentCount");
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/statistics/escrows/currentCount");
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
@@ -174,7 +174,7 @@ export class XummService {
 
     async getHottestToken1D(): Promise<number> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/trustlines/hot/d");
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/trustlines/hot/d");
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
@@ -183,7 +183,7 @@ export class XummService {
 
     async getHottestToken1W(): Promise<number> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/trustlines/hot/w");
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/trustlines/hot/w");
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
@@ -192,7 +192,7 @@ export class XummService {
 
     async getHottestToken1M(): Promise<number> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/trustlines/hot/m");
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/trustlines/hot/m");
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
@@ -201,7 +201,7 @@ export class XummService {
 
     async getFixAmounts(): Promise<number> {
         try {
-            return this.app.get(this.xummBackendURL+"/api/v1/payment/amounts");
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/payment/amounts");
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;
