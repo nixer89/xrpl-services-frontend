@@ -83,11 +83,9 @@ import { XRPLWebsocket } from './services/xrplWebSocket';
 
 //special
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { environment } from '../environments/environment';
 import { LocalStorageModule } from 'angular-2-local-storage';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { HighlightSearchPipe } from './utils/searchHighlight';
-import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [
@@ -161,7 +159,6 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     MatDatepickerModule,
     MatMomentDateModule,
     //Special
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production, registrationStrategy: 'registerImmediately' }),
     LocalStorageModule.forRoot({ prefix: 'XrplServices', storageType: 'localStorage', notifyOptions: {setItem: true, removeItem: false} }),
   ],
   providers: [
