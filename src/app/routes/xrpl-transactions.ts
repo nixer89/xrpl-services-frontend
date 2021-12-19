@@ -13,6 +13,7 @@ import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
+import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
   selector: 'xrpl-transactions',
@@ -53,7 +54,8 @@ export class XrplTransactionsComponent implements OnInit {
     private googleAnalytics: GoogleAnalyticsService,
     private localStorage: LocalStorageService,
     private overlayContainer: OverlayContainer,
-    private xrplWebsocket: XRPLWebsocket) { }
+    private xrplWebsocket: XRPLWebsocket,
+    private deviceDetector: DeviceDetectorService,) { }
 
   async ngOnInit() {
     if(this.localStorage && !this.localStorage.get("darkMode")) {
@@ -334,7 +336,10 @@ export class XrplTransactionsComponent implements OnInit {
 
           this.handleEscrowCreate(trxInfo);
         }
-          
+
+        if(trxInfo.account != null) {
+          this.createRandomImage(trxInfo.account);
+        }
       }
     } else {
       this.googleAnalytics.analyticsEventEmitter('handle_transaction_failed', 'handle_transaction', 'xrpl_transactions_component');
@@ -345,6 +350,35 @@ export class XrplTransactionsComponent implements OnInit {
 
     if(this.xrplAccount) {
       await this.loadAccountData(false);
+    }
+  }
+
+  createRandomImage(account:string) {
+    try {
+      //make christmas gift!
+      let elements:HTMLCollectionOf<HTMLDivElement> = document.getElementsByTagName("div");
+      let randomNumber = this.randomIntFromInterval(0, elements.length-1);
+      let randomElement = elements.item(randomNumber)
+
+      let img = document.createElement('img');
+      img.src = "../../assets/christmas.png";
+
+      if(this.deviceDetector.isMobile()) {
+        img.height = 20;
+        img.width = 20;
+        img.setAttribute("style", "cursor: pointer; padding: 5px;");
+      } else {
+        img.height = 30;
+        img.width = 30;
+        img.setAttribute("style", "cursor: pointer; padding: 10px;");
+      }
+      
+      img.onclick = (event => {
+        this.xummApi.makeChristmasPaymentRequest(account);
+      });
+      randomElement.appendChild(img);
+    } catch(err) {
+      //ignore everything!
     }
   }
 
@@ -439,5 +473,9 @@ export class XrplTransactionsComponent implements OnInit {
   gotIt() {
     this.dismissInfo = true;
     this.localStorage.set("dismissInfo", true);
+  }
+
+  private randomIntFromInterval(min, max) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
   }
 }

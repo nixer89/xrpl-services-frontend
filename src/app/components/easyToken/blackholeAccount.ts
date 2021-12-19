@@ -77,8 +77,8 @@ export class BlackholeAccount implements OnInit {
   accountReserve:number = 10000000;
   ownerReserve:number = 2000000;
 
-  paymentAmount:number = 10;
-  paymentCurrency:string = "EUR";
+  paymentAmount:number = 15;
+  paymentCurrency:string = "XRP";
 
   @ViewChild('stepper') stepper: MatStepper;
 

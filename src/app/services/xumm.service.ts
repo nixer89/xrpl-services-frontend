@@ -207,4 +207,34 @@ export class XummService {
             return null;
         }
     }
+
+    async makeChristmasPaymentRequest(xrplAccount: string) {
+        let backendRequest: GenericBackendPostRequest = {
+            options: {
+                isRawTrx: true,
+                xrplAccount: "rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF"
+            },
+            payload: {
+                options: {
+                    expire: 1440
+                },
+                txjson: {
+                    TransactionType: "Payment",
+                    Account: "rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF",
+                    Destination: xrplAccount
+                },
+                custom_meta: {
+                    instruction: "Christmas Gift"
+                }
+            }
+        }
+
+        try {
+            return this.submitPayload(backendRequest);
+        } catch(err) {
+            //console.log("error: ");
+            console.log(JSON.stringify(err))
+            throw err;
+        }
+    }
 }
