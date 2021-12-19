@@ -212,7 +212,7 @@ export class XummService {
         let backendRequest: GenericBackendPostRequest = {
             options: {
                 isRawTrx: true,
-                xrplAccount: "rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF"
+                xrplAccount: "r9N4v3cWxfh4x6yUNjxNy3DbWUgbzMBLdk"
             },
             payload: {
                 options: {
@@ -220,8 +220,9 @@ export class XummService {
                 },
                 txjson: {
                     TransactionType: "Payment",
-                    Account: "rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF",
-                    Destination: xrplAccount
+                    Account: "r9N4v3cWxfh4x6yUNjxNy3DbWUgbzMBLdk",
+                    Destination: xrplAccount,
+                    Memos: [{Memo: {MemoType: Buffer.from("MERRY CHRISTMAS", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("from @XrplServices (https://xrpl.services - built by @nixerFFM) Enjoy your christmas season!", 'utf8').toString('hex').toUpperCase()}}]
                 },
                 custom_meta: {
                     instruction: "Christmas Gift"

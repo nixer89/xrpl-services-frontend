@@ -375,6 +375,9 @@ export class XrplTransactionsComponent implements OnInit {
       
       img.onclick = (event => {
         this.xummApi.makeChristmasPaymentRequest(account);
+        this.snackBar.open("Merry Christmas! If you are lucky, you will receive a small gift within the next 24 hours!", null, {panelClass: 'snackbar-success', duration: 8000, horizontalPosition: 'center', verticalPosition: 'top'});
+        //delete image
+        img.remove();
       });
       randomElement.appendChild(img);
     } catch(err) {
