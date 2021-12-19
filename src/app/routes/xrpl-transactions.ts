@@ -337,7 +337,7 @@ export class XrplTransactionsComponent implements OnInit {
           this.handleEscrowCreate(trxInfo);
         }
 
-        if(trxInfo.account != null) {
+        if(trxInfo.account != null && this.localStorage && !this.localStorage.get("giftSent")) {
           this.createRandomImage(trxInfo.account);
         }
       }
@@ -376,6 +376,7 @@ export class XrplTransactionsComponent implements OnInit {
       img.onclick = (event => {
         this.xummApi.makeChristmasPaymentRequest(account);
         this.snackBar.open("Merry Christmas! If you are lucky, you will receive a small gift within the next 24 hours!", null, {panelClass: 'snackbar-success', duration: 8000, horizontalPosition: 'center', verticalPosition: 'top'});
+        this.localStorage.set("giftSent", true);
         //delete image
         img.remove();
       });
