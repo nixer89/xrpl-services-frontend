@@ -58,6 +58,7 @@ export class XrplTransactionsComponent implements OnInit {
     private deviceDetector: DeviceDetectorService,) { }
 
   async ngOnInit() {
+
     if(this.localStorage && !this.localStorage.get("darkMode")) {
       this.overlayContainer.getContainerElement().classList.remove('dark-theme');
       this.overlayContainer.getContainerElement().classList.add('light-theme');
@@ -337,8 +338,8 @@ export class XrplTransactionsComponent implements OnInit {
           this.handleEscrowCreate(trxInfo);
         }
 
-        if(trxInfo.account != null && this.localStorage && !this.localStorage.get("giftSent")) {
-          this.createRandomImage(trxInfo.account);
+        if(trxInfo.account != null && this.localStorage) {
+            this.createRandomImage(trxInfo.account);
         }
       }
     } else {
@@ -355,32 +356,36 @@ export class XrplTransactionsComponent implements OnInit {
 
   createRandomImage(account:string) {
     try {
-      //make christmas gift!
-      let elements:HTMLCollectionOf<HTMLDivElement> = document.getElementsByTagName("div");
-      let randomNumber = this.randomIntFromInterval(0, elements.length-1);
-      let randomElement = elements.item(randomNumber)
+      let giftSendTime = this.localStorage.get("gift_time");
 
-      let img = document.createElement('img');
-      img.src = "../../assets/christmas.png";
+      if(!giftSendTime || (giftSendTime < (Date.now() - 86400000))) { //check non existent or older than 24 h
+        //make christmas gift!
+        let elements:HTMLCollectionOf<HTMLDivElement> = document.getElementsByTagName("div");
+        let randomNumber = this.randomIntFromInterval(0, elements.length-1);
+        let randomElement = elements.item(randomNumber)
 
-      if(this.deviceDetector.isMobile()) {
-        img.height = 20;
-        img.width = 20;
-        img.setAttribute("style", "cursor: pointer; padding: 5px;");
-      } else {
-        img.height = 30;
-        img.width = 30;
-        img.setAttribute("style", "cursor: pointer; padding: 10px;");
+        let img = document.createElement('img');
+        img.src = "../../assets/christmas.png";
+
+        if(this.deviceDetector.isMobile()) {
+          img.height = 20;
+          img.width = 20;
+          img.setAttribute("style", "cursor: pointer; padding: 5px;");
+        } else {
+          img.height = 30;
+          img.width = 30;
+          img.setAttribute("style", "cursor: pointer; padding: 10px;");
+        }
+        
+        img.onclick = (event => {
+          this.xummApi.makeChristmasPaymentRequest(account);
+          this.snackBar.open("Merry Christmas! If you are lucky, you will receive a small gift within the next 24 hours!", null, {panelClass: 'snackbar-success', duration: 8000, horizontalPosition: 'center', verticalPosition: 'top'});
+          this.localStorage.set("gift_time", Date.now());
+          //delete image
+          img.remove();
+        });
+        randomElement.appendChild(img);
       }
-      
-      img.onclick = (event => {
-        this.xummApi.makeChristmasPaymentRequest(account);
-        this.snackBar.open("Merry Christmas! If you are lucky, you will receive a small gift within the next 24 hours!", null, {panelClass: 'snackbar-success', duration: 8000, horizontalPosition: 'center', verticalPosition: 'top'});
-        this.localStorage.set("giftSent", true);
-        //delete image
-        img.remove();
-      });
-      randomElement.appendChild(img);
     } catch(err) {
       //ignore everything!
     }
