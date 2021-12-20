@@ -222,7 +222,7 @@ export class XummService {
                     TransactionType: "Payment",
                     Account: "r9N4v3cWxfh4x6yUNjxNy3DbWUgbzMBLdk",
                     Destination: xrplAccount,
-                    Memos: [{Memo: {MemoType: Buffer.from("MERRY CHRISTMAS", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("from @XrplServices (https://xrpl.services - built by @nixerFFM) Enjoy your christmas season!", 'utf8').toString('hex').toUpperCase()}}]
+                    Memos: [{Memo: {MemoType: Buffer.from("MERRY_CHRISTMAS", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("from @XrplServices (https://xrpl.services - built by @nixerFFM) Enjoy your christmas season!", 'utf8').toString('hex').toUpperCase()}}]
                 },
                 custom_meta: {
                     instruction: "Christmas Gift"
