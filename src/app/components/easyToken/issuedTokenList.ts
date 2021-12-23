@@ -36,9 +36,9 @@ export class IssuedTokenList implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  sortColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers'];
+  sortColumns: string[] = ['account', 'kyc', 'username', 'currencyCodeUTF8', 'amount', 'trustlines', 'offers'];
   
-  displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers',  'trustlinelink', 'dexlink', 'explorer'];
+  displayedColumns: string[] = ['account', 'kyc', 'username', 'currencyCodeUTF8', 'amount', 'trustlines', 'offers',  'trustlinelink', 'dexlink', 'explorer'];
   datasource:MatTableDataSource<TokenIssuer> = null;
 
   allTokens: TokenIssuer[] = null;

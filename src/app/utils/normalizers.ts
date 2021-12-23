@@ -128,8 +128,11 @@ export function normalizeCurrencyCodeXummImpl(currencyCode: string, maxLength = 
     if (currencyCode.match(/^[A-F0-9]{40}$/)) {
         let decoded = '';
 
+        //check for demurrage
+        if(currencyCode.startsWith('01'))
+            decoded = convertDemurrageToUTF8(currencyCode);
         // check for XLS15d
-        if (currencyCode.startsWith('02')) {
+        else if (currencyCode.startsWith('02')) {
             try {
                 const binary = HexEncoding.toBinary(currencyCode);
                 decoded = binary.slice(8).toString('utf-8');
