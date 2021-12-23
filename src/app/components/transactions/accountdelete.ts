@@ -51,10 +51,6 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   accountReserve:number = 10000000;
   ownerReserve:number = 2000000;
 
-  checkBoxElevatedFees:boolean = false
-  iAgreeInput:string = null;
-  iAgreeInputValid:boolean = false;
-
   ngOnInit() {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(async accountData => {
       //console.log("account info changed received: " + JSON.stringify(accountData.info));
@@ -221,8 +217,6 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         payload.txjson.DestinationTag = parseInt(this.destinationTagInput.trim());
       }
 
-      payload.txjson.Fee = "4000000";
-
       payload.custom_meta = {}
       payload.custom_meta.instruction = "Delete your XRPL Account\n\n - please sign with the account you want to delete!";
     }
@@ -231,7 +225,6 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   }
 
   async checkChanges() {   
-    this.iAgreeInputValid = this.iAgreeInput && this.iAgreeInput.trim() === "I understand the above message"
     this.validDestinationAddress = this.destinationAccountInput && this.destinationAccountInput.trim().length > 0 && isValidXRPAddress(this.destinationAccountInput.trim());
 
     if(this.lastKnownDestinationAccount != this.destinationAccountInput.trim()) {
@@ -255,8 +248,6 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
     this.loadingDestinationAccount = this.loadingPreconditions = this.checkBoxHint = false;
     this.preconditionsFullFilled = true;
     this.errorMsg = this.lastKnownDestinationAccount = null;
-    this.iAgreeInputValid = this.checkBoxElevatedFees = false;
-    this.iAgreeInput = null;
   }
 
   getAccountBalance(): number {
@@ -271,7 +262,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   getTransferBalance(): number {
     if(this.originalAccountInfo && this.originalAccountInfo.Balance) {
       let balance:number = Number(this.originalAccountInfo.Balance);
-      return (balance-this.ownerReserve-2000000)/1000000;
+      return (balance-this.ownerReserve)/1000000;
     } else {
       return 0;
     }

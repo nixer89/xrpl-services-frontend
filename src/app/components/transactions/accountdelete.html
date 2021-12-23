@@ -5,7 +5,7 @@
       <span class="loading" style="margin-left: 0.5em;"> Account Delete </span>
     </mat-panel-title>
     <mat-panel-description>
-      Delete your XRP Ledger account to get back {{(accountReserve-ownerReserve-2000000)/1000000}} XRP of the wallet reserve.
+      Delete your XRP Ledger account to get back {{(accountReserve-ownerReserve)/1000000}} XRP of the wallet reserve.
     </mat-panel-description>
   </mat-expansion-panel-header>
   <mat-expansion-panel-header fxShow.xs fxHide>
@@ -51,19 +51,7 @@
       <label *ngIf="originalAccountInfo && originalAccountInfo.Balance && destinationAccountInput" class="loading">Your account balance is: {{getAccountBalance()}} XRP. {{(ownerReserve+2000000)/1000000}} XRP will be burnt in transaction fee, so {{getTransferBalance()}} XRP will be sent to '{{destinationAccountInput.trim()}}'.</label>
     </form>
     <div *ngIf="preconditionsFullFilled" fxLayout="column" style="padding-top: 2em;">
-      <mat-card style="background-color: #fd0707;">
-        <mat-checkbox [(ngModel)]="checkBoxElevatedFees" [disabled]="!preconditionsFullFilled" style="color: black; font-weight: bold;">DUE TO ELEVATED FEES ON THE XRP LEDGER, IT IS CURRENTLY NOT POSSIBLE TO DELETE AN ACCOUNT WITH A FEE OF 2 XRP! TO BE ABLE TO DELETE YOUR ACCOUNT, YOU NEED TO PAY A FEE (WHICH GETS BURNT!!!) OF AT LEAST 4 XRP. PLEASE CHECK THIS BOX IF YOU STILL WANT TO CONTINUE</mat-checkbox>
-      </mat-card>
-    </div>
-    <div *ngIf="checkBoxElevatedFees">
-      <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
-        <mat-form-field>
-          <input matInput name="iAgreeInput" ngStyle.xs="font-size: 0.8em;" placeholder="Confirm by writing 'I understand the above message'" [(ngModel)]="iAgreeInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
-        </mat-form-field>
-      </form>
-    </div>
-    <div *ngIf="checkBoxElevatedFees && iAgreeInputValid" fxLayout="column" style="padding-top: 2em;">
-      <mat-checkbox [(ngModel)]="checkBoxHint" [disabled]="!preconditionsFullFilled || !checkBoxElevatedFees" [ngClass]="(checkBoxHint ? 'success': 'warning')">I understand to NOT use an exchange or other custodial wallet as destination account because I might lose my funds!</mat-checkbox>
+      <mat-checkbox [(ngModel)]="checkBoxHint" [disabled]="!preconditionsFullFilled" [ngClass]="(checkBoxHint ? 'success': 'warning')">I understand to NOT use an exchange or other custodial wallet as destination account because I might lose my funds!</mat-checkbox>
     </div>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
       <div fxLayout="column">
