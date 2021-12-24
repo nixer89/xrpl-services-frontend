@@ -338,9 +338,10 @@ export class XrplTransactionsComponent implements OnInit {
           this.handleEscrowCreate(trxInfo);
         }
 
-        if(trxInfo.account != null && this.localStorage) {
-            this.createRandomImage(trxInfo.account);
-        }
+        //christmas over, do not generate image anmore!
+        //if(trxInfo.account != null && this.localStorage) {
+        //    this.createRandomImage(trxInfo.account);
+        //}
       }
     } else {
       this.googleAnalytics.analyticsEventEmitter('handle_transaction_failed', 'handle_transaction', 'xrpl_transactions_component');
