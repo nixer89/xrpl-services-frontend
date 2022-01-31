@@ -357,6 +357,7 @@ export class BlackholeAccount implements OnInit {
       },
       payload: {
         txjson: {
+          Account: this.getIssuer(),
           TransactionType: "AccountSet",
           SetFlag: this.ACCOUNT_FLAG_DISABLE_INCOMING_XRP
         },
@@ -392,6 +393,7 @@ export class BlackholeAccount implements OnInit {
       },
       payload: {
         txjson: {
+          Account: this.getIssuer(),
           TransactionType: "SetRegularKey",
           RegularKey: "rrrrrrrrrrrrrrrrrrrrBZbvji"
         },
@@ -426,6 +428,7 @@ export class BlackholeAccount implements OnInit {
       },
       payload: {
         txjson: {
+          Account: this.getIssuer(),
           TransactionType: "AccountSet",
           SetFlag: this.ACCOUNT_FLAG_DISABLE_MASTER_KEY
         },
@@ -462,6 +465,7 @@ export class BlackholeAccount implements OnInit {
       },
       payload: {
         txjson: {
+          Account: this.getIssuer(),
           TransactionType: "SignerListSet",
           SignerQuorum: 0
         },

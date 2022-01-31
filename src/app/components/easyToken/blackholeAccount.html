@@ -14,10 +14,10 @@
   </mat-expansion-panel-header>
 
   <mat-card *ngIf="!isDektop()" fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
-    <label class="warning">This function is not available on mobile devices.</label>
-    <label class="warning">Please visit this page from a desktop browser.</label>
+    <label>To use this function on a mobile device, please open the XUMM 'Account Blackhole' xApp via the following link:</label><br/>
+    <a href="https://xumm.app/detect/xapp:nixer.blackhole">XUMM 'Account Blackhole' xApp</a>
     <br/><br/>
-    <label class="loading">Trust me. Don't even try on mobile. It is not working :)</label>
+    <label>Alternatively, open this website from a desktop browser.</label>
   </mat-card>
 
   <mat-card *ngIf="isDektop()" fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
@@ -28,10 +28,10 @@
               <label>To black hole an account means to lose ALL ACCESS to it. You won't be able to recover this access. In fact, NO ONE CAN !</label>
               <label>We will need to execute some transactions in a specific order.</label><br/><br/>
 
-              <label class="warning">We will charge you the XRP equivalent of {{paymentAmount}} {{paymentCurrency}} for using this service.</label>
+              <label class="warning">We will charge you {{paymentAmount}} {{paymentCurrency}} for using this service.</label>
               <label>The payment is a ONE TIME PAYMENT. So if you pay and then close the website, you would need to pay again!</label><br/><br/>
 
-              <label class="loading">Please make sure to not have any remaining funds (XRP or other tokens) in your account! (except the XRP equivalent of {{paymentAmount}} {{paymentCurrency}} and self issued tokens!)</label><br/><br/>
+              <label class="loading">Please make sure to not have any remaining funds (XRP or other tokens) in your account! (except the {{paymentAmount}} {{paymentCurrency}} and self issued tokens!)</label><br/><br/>
               <label>Click 'Next' and follow the instructions if you are ready and you know what your are doing!</label>
               <div style="padding-top: 0.5em;">
                   <button mat-raised-button color="primary" (click)="moveNext()">Next</button>
