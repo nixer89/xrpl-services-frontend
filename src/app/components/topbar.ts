@@ -72,7 +72,8 @@ export class TopbarComponent implements OnInit {
       custom_meta: {
         instruction: "You are about to donate to xrpl.services,\na project by @nixerFFM and not affiliated with XRPLLabs,\nthe creator of the XUMM wallet.\n\nThank you for your donation!",
         blob: {
-          isDonation: true
+          isDonation: true,
+          purpose: "freiwillige Spende"
         }
       }
     }

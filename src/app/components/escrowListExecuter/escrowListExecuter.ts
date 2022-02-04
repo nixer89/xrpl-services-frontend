@@ -191,7 +191,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
                 },
                 custom_meta: {
                     instruction: "SIGN WITH ESCROW OWNER ACCOUNT!!!\n\nEnable Auto Release for Escrow!\n\nEscrow-Owner: " + escrow.Account + "\nSequence: " + escrow.sequence + "\nFinishAfter: " + new Date(normalizer.rippleEpocheTimeToUTC(escrow.FinishAfter)).toLocaleString() + "\n" + (this.isTestMode ? "\nMake sure you are connected to Testnet!" : ""),
-                    blob: {account: escrow.Account, sequence: escrow.sequence, finishafter: normalizer.rippleEpocheTimeToUTC(escrow.FinishAfter), testnet: this.isTestMode}
+                    blob: {account: escrow.Account, sequence: escrow.sequence, finishafter: normalizer.rippleEpocheTimeToUTC(escrow.FinishAfter), testnet: this.isTestMode, purpose: "Escrow Finish Service"}
                 },
             }
         }
