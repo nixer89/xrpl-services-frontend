@@ -92,6 +92,25 @@ export interface TokenIssuer {
     created?: any
 }
 
+export interface NftIssuer {
+    account: string,
+    currencyCode: string,
+    currencyCodeUTF8: string,
+    amount: string,
+    shownAmount: string,
+    trustlines: string,
+    offers: string,
+    verified: boolean,
+    kyc?: boolean,
+    username?: string,
+    resolvedBy?: string
+    twitter?: string,
+    domain?: string,
+    isHot?: boolean,
+    newTrustlines?: number,
+    created?: any
+}
+
 export interface IssuerVerification {
     resolvedBy: string,
     account: string,

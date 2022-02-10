@@ -34,6 +34,9 @@
           <button mat-button [routerLink]="['/tokens']" matTooltip="Issue your own Token!">
             <i class="material-icons topbar-menu-icon">attach_money</i> XRPL Tokens
           </button>
+          <button mat-button [routerLink]="['/nfts']" matTooltip="View NFTs on the XRPL!">
+            <i class="material-icons topbar-menu-icon">token</i> XRPL NFTs
+          </button>
           <button mat-button [routerLink]="['/tools']" matTooltip="Tools">
             <i class="material-icons topbar-menu-icon">build</i> XRPL Tools
           </button>
@@ -86,6 +89,10 @@
           <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tokens']" matTooltip="Issue your own Token!">
             <mat-icon class="material-icons">attach_money</mat-icon>
             <span>XRPL Tokens</span>
+          </button>
+          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/nfts']" matTooltip="View all XRPL NFTs!">
+            <mat-icon class="material-icons">token</mat-icon>
+            <span>XRPL NFTs</span>
           </button>
           <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tools']" matTooltip="Tools">
             <mat-icon class="material-icons">build</mat-icon>

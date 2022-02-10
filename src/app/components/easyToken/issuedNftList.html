@@ -3,25 +3,25 @@
   <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">list</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> List of all Tokens on the XRP Ledger Mainnet </span>
+      <span class="loading" style="margin-left: 0.5em;"> List of all NFTs on the XRP Ledger Mainnet </span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
   <mat-expansion-panel-header fxShow.xs fxHide>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">list</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;">List of XRPL Mainnet tokens</span>
+      <span class="loading" style="margin-left: 0.5em;">List of XRPL NFTs</span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
   <div fxLayout="column" fxLayoutGap="0.5em">
     <mat-card fxLayout="column" fxLayoutGap="0.5em">
       <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.5em">
-        <label class="warning">Loading XRP Ledger tokens ...&nbsp;</label>
+        <label class="warning">Loading XRP Ledger NFTs ...&nbsp;</label>
         <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
       </div>
       <div *ngIf="!loading && datasource && datasource.data" fxLayout="column" fxLayoutGap="0.5em">
-        <label><b>The below token table is based on XRP Ledger:</b></label>
+        <label><b>The below NFT table is based on XRP Ledger:</b></label>
         <table style="display: block;">
           <tr>
             <td><label>Ledger Index:&nbsp;</label></td>
@@ -43,11 +43,11 @@
             <td><label>Additional stats:</label></td>
           </tr>
           <tr>
-            <td><label>Unique accounts issuing tokens:&nbsp;</label></td>
+            <td><label>Unique accounts issuing NFTs:&nbsp;</label></td>
             <td><label class="loading">{{issuingAccounts}}</label></td>
           </tr>
           <tr>
-            <td><label>Issued tokens:&nbsp;</label></td>
+            <td><label>Issued NFTs:&nbsp;</label></td>
             <td><label class="loading">{{numberOfIssuedTokens}}</label></td>
           </tr>
         </table>
@@ -141,7 +141,7 @@
         </ng-container>
 
         <ng-container matColumnDef="currency">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> NFT Currency Code </mat-header-cell>
             <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
                 <span fxShow fxHide.xs fxLayout="row">
                   <label [innerHTML]="row.currencyCodeUTF8 | highlightSearch: filterText"></label>
@@ -154,7 +154,7 @@
                   </div>
                 </span>
                 <span fxShow.xs fxHide fxLayout="row">
-                  <b>Token Currency Code:</b>&nbsp;
+                  <b>NFT Currency Code:</b>&nbsp;
                   <label [innerHTML]="row.currencyCodeUTF8 | highlightSearch: filterText"></label>
                   <div *ngIf="row.isHot">
                     &nbsp;<i #tooltip="matTooltip"
@@ -169,14 +169,14 @@
         </ng-container>
 
         <ng-container matColumnDef="amount">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Total issued value of this token </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Total Issued Amount </mat-header-cell>
             <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
                 <span fxShow fxHide.xs >
-                  <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
+                  <label [innerHTML]="row.shownAmount | highlightSearch: filterText"></label>
                 </span>
                 <span fxShow.xs fxHide >
                   <b>Total issued value:</b>&nbsp;
-                  <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
+                  <label [innerHTML]="row.shownAmount | highlightSearch: filterText"></label>
                 </span>
             </mat-cell>
             <mat-footer-cell *matFooterCellDef><b>{{issuedTokensTotal}}</b></mat-footer-cell>

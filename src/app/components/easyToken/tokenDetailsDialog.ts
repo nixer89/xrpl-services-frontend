@@ -29,6 +29,8 @@ export class TokenDetailsDialog implements OnInit {
     halfStars: number[] = [];
     emptyStars: number[] = [1,2,3,4,5];
 
+    convertedAmount: number = null;
+
     constructor(
         private app: AppService,
         private xrplWebSocket: XRPLWebsocket,
@@ -51,6 +53,17 @@ export class TokenDetailsDialog implements OnInit {
         }        
 
         window.scrollTo(0,0);
+
+        if(Number(this.tokenIssuer.amount) > 1000000000000000e-85) {
+            this.convertedAmount = Number(this.tokenIssuer.amount);
+        } else {
+            let converted = normalizer.XRPLValueToNFT(Number(this.tokenIssuer.amount));
+
+            if(converted && typeof converted === 'number')
+                this.convertedAmount = converted;
+            else
+                this.convertedAmount = Number(this.tokenIssuer.amount);
+        }
 
         try {
 

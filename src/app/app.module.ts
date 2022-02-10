@@ -13,6 +13,7 @@ import { XrplTransactionsComponent } from './routes/xrpl-transactions';
 import { Tools } from './routes/tools';
 import { GenericBackendDefinition } from './routes/generic-backend';
 import { EasyToken } from './routes/easyToken';
+import { NftRoute } from './routes/nftRoute';
 import { TopbarComponent } from './components/topbar';
 import { FooterComponent } from './components/footer';
 import { XummSignDialogComponent } from './components/xummSignRequestDialog';
@@ -26,6 +27,7 @@ import { TrustLineListIssuing } from './components/trustlineList/trustlineListIs
 import { CreateToken } from './components/easyToken/createToken';
 import { IssueMoreToken } from './components/easyToken/issueMoreToken';
 import { IssuedTokenList } from './components/easyToken/issuedTokenList';
+import { IssuedNftList } from './components/easyToken/issuedNftList';
 import { TokenDetailsDialog } from './components/easyToken/tokenDetailsDialog';
 import { BlackholeAccount } from './components/easyToken/blackholeAccount';
 
@@ -96,6 +98,7 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     Tools,
     GenericBackendDefinition,
     EasyToken,
+    NftRoute,
     TopbarComponent,
     FooterComponent,
     XummSignDialogComponent,
@@ -125,7 +128,8 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     MultiSignFlowComponent,
     HighlightSearchPipe,
     Statistics,
-    TokenDetailsDialog
+    TokenDetailsDialog,
+    IssuedNftList
   ],
   imports: [
     BrowserModule,

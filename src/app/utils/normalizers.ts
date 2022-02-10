@@ -187,3 +187,27 @@ const HexEncoding = {
         return hex;
     },
 };
+
+/**
+ * Convert XRPL value to NFT value
+ * @param value number
+ * @returns number in NFT value or false if XRPL value is not NFT
+ */
+ export const XRPLValueToNFT = (value: number): number | boolean => {
+
+    try {
+        const data = String(Number(value)).split(/e/i);
+        let shift = 81 - (Number(data[1])*-1);
+        let firstDigits = data[0].split('.');
+
+        let first = Number(firstDigits[0] + (firstDigits[1] ? firstDigits[1].substring(0,shift) : ""));
+
+        let newNumber = Number(first + (firstDigits[1] ? "." + firstDigits[1].substring(shift) : ""));
+
+        return Math.round(newNumber);
+    } catch(err) {
+        console.log(JSON.stringify(err));
+        return false;
+    }
+    
+};

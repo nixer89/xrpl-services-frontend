@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AppService } from '../../services/app.service';
-import { IssuerVerification, Token, TokenIssuer } from '../../utils/types'
+import { IssuerVerification, Token, NftIssuer } from '../../utils/types'
 import * as normalizer from 'src/app/utils/normalizers';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -13,9 +13,9 @@ import { TokenDetailsDialog } from './tokenDetailsDialog';
 import { XummService } from 'src/app/services/xumm.service';
 
 @Component({
-  selector: 'issuedTokenList',
-  templateUrl: './issuedTokenList.html',
-  styleUrls: ['./issuedTokenList.css'],
+  selector: 'issuedNftList',
+  templateUrl: './issuedNftList.html',
+  styleUrls: ['./issuedNftList.css'],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({height: '0px', minHeight: '0'})),
@@ -24,7 +24,7 @@ import { XummService } from 'src/app/services/xumm.service';
     ]),
   ]
 })
-export class IssuedTokenList implements OnInit {
+export class IssuedNftList implements OnInit {
 
   constructor(
     private app: AppService,
@@ -39,10 +39,10 @@ export class IssuedTokenList implements OnInit {
   sortColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers'];
   
   displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers',  'trustlinelink', 'dexlink', 'explorer'];
-  datasource:MatTableDataSource<TokenIssuer> = null;
+  datasource:MatTableDataSource<NftIssuer> = null;
 
-  allTokens: TokenIssuer[] = null;
-  kycTokensOnly: TokenIssuer[] = null;
+  allTokens: NftIssuer[] = null;
+  kycTokensOnly: NftIssuer[] = null;
 
   showKycOnly:boolean = false;
 
@@ -70,7 +70,7 @@ export class IssuedTokenList implements OnInit {
   hotToken1W:any[];
   hotToken1M:any[];
 
-  errorMessage:string = "Could not load XRP Ledger tokens. Please try again later!";
+  errorMessage:string = "Could not load XRP Ledger NFTs. Please try again later!";
 
   async ngOnInit() {
     this.pageSize = this.deviceDetector.isMobile() ? 5 : this.pageSize;
@@ -130,12 +130,12 @@ export class IssuedTokenList implements OnInit {
           return data[sortHeaderId];
         };
 
-        this.datasource.filterPredicate = (data: TokenIssuer, filter: string) => {
+        this.datasource.filterPredicate = (data: NftIssuer, filter: string) => {
           if(filter)
             filter = filter.trim().toLowerCase()
 
           let matches:boolean =  data.account && data.account.toLowerCase().includes(filter)
-                  || data.amount && data.amount.toString().toLowerCase().includes(filter)
+                  || data.shownAmount && data.shownAmount.toString().toLowerCase().includes(filter)
                     || data.currencyCodeUTF8 && data.currencyCodeUTF8.toLowerCase().includes(filter)
                       || data.trustlines && data.trustlines.toString().toLowerCase().includes(filter)
                         || (data.username && data.username.toLowerCase().includes(filter))
@@ -161,11 +161,11 @@ export class IssuedTokenList implements OnInit {
     //console.log("Hottest token 1M: " + JSON.stringify(this.hotToken1M));
   }
 
-  async loadLedgerData(): Promise<TokenIssuer[]> {
+  async loadLedgerData(): Promise<NftIssuer[]> {
 
-    let tokenIssuers:TokenIssuer[] = [];
+    let tokenIssuers:NftIssuer[] = [];
     try {
-      let issuedTokensResponse:any = await this.app.get('https://api.xrpldata.com/api/v1/tokens');
+      let issuedTokensResponse:any = await this.app.get('https://api.xrpldata.com/api/v1/nfts');
 
       this.ledgerIndex = issuedTokensResponse.ledger_index;
       this.ledgerHash = issuedTokensResponse.ledger_hash;
@@ -196,11 +196,16 @@ export class IssuedTokenList implements OnInit {
 
             issuedCurrencies.forEach(issuedCurrency => {
 
+              let normalizedAmount = normalizer.XRPLValueToNFT(Number(issuedCurrency.amount));
+
+              let nftValueToShow:number = (normalizedAmount && typeof normalizedAmount === 'number') ? normalizedAmount : 0;
+
               tokenIssuers.push({
                   account: account,
                   currencyCode: issuedCurrency.currency,
                   currencyCodeUTF8: normalizer.normalizeCurrencyCodeXummImpl(issuedCurrency.currency),
                   amount: issuedCurrency.amount,
+                  shownAmount: nftValueToShow+"",
                   trustlines: issuedCurrency.trustlines,
                   offers: issuedCurrency.offers,
                   username: username,
@@ -215,7 +220,7 @@ export class IssuedTokenList implements OnInit {
               this.uniqueFilteredAccount.set(account, 1);
               this.accountNameTotal += username ? 1 : 0;
               this.currencyCodeTotal += issuedCurrency.currency ? 1 : 0;
-              this.issuedTokensTotal += issuedCurrency.amount ? Number(issuedCurrency.amount) : 0;
+              this.issuedTokensTotal += nftValueToShow;
               this.dexOffersTotal += issuedCurrency.offers ? parseInt(issuedCurrency.offers) : 0;
               this.numberOfTrustlinesTotal += issuedCurrency.trustlines ? parseInt(issuedCurrency.trustlines) : 0;
               this.kycAccountsTotal += data.kyc ? 1 : 0;
@@ -261,7 +266,7 @@ export class IssuedTokenList implements OnInit {
           this.uniqueFilteredAccount.set(data.account, 1);
           this.accountNameTotal += data.username ? 1 : 0;
           this.currencyCodeTotal += data.currencyCode ? 1 : 0;
-          this.issuedTokensTotal += data.amount ? Number(data.amount) : 0;
+          this.issuedTokensTotal += data.shownAmount ? Number(data.shownAmount) : 0;
           this.dexOffersTotal += data.offers ? parseInt(data.offers) : 0;
           this.numberOfTrustlinesTotal += data.trustlines ? parseInt(data.trustlines) : 0;
       });
@@ -291,14 +296,11 @@ export class IssuedTokenList implements OnInit {
     return "https://xumm.app/detect/xapp:xumm.dex?issuer="+issuer+"&currency="+currency;
   }
 
-  getTrustlineQueryParams(tokenIssuer:TokenIssuer): any {
-    if(tokenIssuer.account === "rHADAXwGgVtqjgTdN6g2YQoqiKSKZRANXG")
-      console.log(JSON.stringify(tokenIssuer));
-
+  getTrustlineQueryParams(tokenIssuer:NftIssuer): any {
     return { issuer: tokenIssuer.account , currency: tokenIssuer.currencyCode , limit: tokenIssuer.amount};
   }
 
-  openDetailsDialog(tokenIssuer:TokenIssuer): void {
+  openDetailsDialog(tokenIssuer:NftIssuer): void {
     this.matDialog.open(TokenDetailsDialog, {
       width: 'auto',
       height: 'auto;',

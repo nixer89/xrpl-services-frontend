@@ -9,8 +9,6 @@ import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AppService } from "../services/app.service";
-import { timeStamp } from "console";
-import { ThisReceiver } from "@angular/compiler";
 
 @Component({
     selector: "genericPayloadQRDialog",
