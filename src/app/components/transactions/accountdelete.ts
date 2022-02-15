@@ -118,7 +118,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         //console.log("sequence check: " + this.preconditionsFullFilled)
 
         if(!this.preconditionsFullFilled)
-          this.errorMsg = "You need to wait " + (this.originalAccountInfo.Sequence+256-message.result.ledger_index) + " more validated ledgers to delete your account."
+          this.errorMsg = "You need to wait " + (this.originalAccountInfo.Sequence+256-message.result.ledger_index) + " more validated ledgers to delete your account. That is around " + ((this.originalAccountInfo.Sequence+256-message.result.ledger_index)*4 / 60) + " more minutes.";
 
         if(accountObjects.length > 1000) {
           //console.log("too many objects");

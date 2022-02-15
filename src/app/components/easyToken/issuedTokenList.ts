@@ -36,9 +36,9 @@ export class IssuedTokenList implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  sortColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers'];
+  sortColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers'];
   
-  displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'offers',  'trustlinelink', 'dexlink', 'explorer'];
+  displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers',  'trustlinelink', 'dexlink', 'explorer'];
   datasource:MatTableDataSource<TokenIssuer> = null;
 
   allTokens: TokenIssuer[] = null;
@@ -61,6 +61,7 @@ export class IssuedTokenList implements OnInit {
   currencyCodeTotal: number = 0;
   issuedTokensTotal: number = 0;
   numberOfTrustlinesTotal: number = 0;
+  numberOfHoldersTotal: number = 0;
   dexOffersTotal: number = 0;
   kycAccountsTotal: number = 0;
   uniqueFilteredAccount: Map<String, Number> = new Map<String, Number>();
@@ -138,8 +139,9 @@ export class IssuedTokenList implements OnInit {
                   || data.amount && data.amount.toString().toLowerCase().includes(filter)
                     || data.currencyCodeUTF8 && data.currencyCodeUTF8.toLowerCase().includes(filter)
                       || data.trustlines && data.trustlines.toString().toLowerCase().includes(filter)
-                        || (data.username && data.username.toLowerCase().includes(filter))
-                          || (data.currencyCode && data.currencyCode.includes(filter) && filter.length == 40 && normalizer.isHex(filter));
+                        || data.holders && data.holders.toString().toLowerCase().includes(filter)
+                          || (data.username && data.username.toLowerCase().includes(filter))
+                            || (data.currencyCode && data.currencyCode.includes(filter) && filter.length == 40 && normalizer.isHex(filter));
           
           return matches;
         };
@@ -202,6 +204,7 @@ export class IssuedTokenList implements OnInit {
                   currencyCodeUTF8: normalizer.normalizeCurrencyCodeXummImpl(issuedCurrency.currency),
                   amount: issuedCurrency.amount,
                   trustlines: issuedCurrency.trustlines,
+                  holders: issuedCurrency.holders,
                   offers: issuedCurrency.offers,
                   username: username,
                   resolvedBy: resolvedBy,
@@ -216,8 +219,9 @@ export class IssuedTokenList implements OnInit {
               this.accountNameTotal += username ? 1 : 0;
               this.currencyCodeTotal += issuedCurrency.currency ? 1 : 0;
               this.issuedTokensTotal += issuedCurrency.amount ? Number(issuedCurrency.amount) : 0;
-              this.dexOffersTotal += issuedCurrency.offers ? parseInt(issuedCurrency.offers) : 0;
-              this.numberOfTrustlinesTotal += issuedCurrency.trustlines ? parseInt(issuedCurrency.trustlines) : 0;
+              this.dexOffersTotal += issuedCurrency.offers ? issuedCurrency.offers : 0;
+              this.numberOfTrustlinesTotal += issuedCurrency.trustlines ? issuedCurrency.trustlines : 0;
+              this.numberOfHoldersTotal += issuedCurrency.holders ? issuedCurrency.holders : 0;
               this.kycAccountsTotal += data.kyc ? 1 : 0;
             });
         }
@@ -255,6 +259,7 @@ export class IssuedTokenList implements OnInit {
       this.issuedTokensTotal = 0;
       this.currencyCodeTotal = 0;
       this.numberOfTrustlinesTotal = 0;
+      this.numberOfHoldersTotal = 0;
       this.previousFilter = null;
       //count everything!
       this.datasource.filteredData.forEach(data => {
@@ -262,8 +267,9 @@ export class IssuedTokenList implements OnInit {
           this.accountNameTotal += data.username ? 1 : 0;
           this.currencyCodeTotal += data.currencyCode ? 1 : 0;
           this.issuedTokensTotal += data.amount ? Number(data.amount) : 0;
-          this.dexOffersTotal += data.offers ? parseInt(data.offers) : 0;
-          this.numberOfTrustlinesTotal += data.trustlines ? parseInt(data.trustlines) : 0;
+          this.dexOffersTotal += data.offers ? data.offers : 0;
+          this.numberOfTrustlinesTotal += data.trustlines ? data.trustlines : 0;
+          this.numberOfHoldersTotal += data.holders ? data.holders : 0;
       });
 
       if (this.datasource.paginator) {

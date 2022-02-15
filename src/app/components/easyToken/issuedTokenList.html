@@ -169,13 +169,13 @@
         </ng-container>
 
         <ng-container matColumnDef="amount">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Total issued value of this token </mat-header-cell>
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Total Supply </mat-header-cell>
             <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
                 <span fxShow fxHide.xs >
                   <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
                 </span>
                 <span fxShow.xs fxHide >
-                  <b>Total issued value:</b>&nbsp;
+                  <b>Total Supply:</b>&nbsp;
                   <label [innerHTML]="row.amount | highlightSearch: filterText"></label>
                 </span>
             </mat-cell>
@@ -194,6 +194,20 @@
               </span>
           </mat-cell>
           <mat-footer-cell *matFooterCellDef><b>{{numberOfTrustlinesTotal}}</b></mat-footer-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="holders">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Number of Holders </mat-header-cell>
+          <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
+              <span fxShow fxHide.xs fxLayout="column">
+                <label [innerHTML]="row.holders | highlightSearch: filterText"></label>
+              </span>
+              <span fxShow.xs fxHide fxLayout="row">
+                <b>Number of Holders:</b>&nbsp;
+                <label [innerHTML]="row.holders | highlightSearch: filterText"></label>
+              </span>
+          </mat-cell>
+          <mat-footer-cell *matFooterCellDef><b>{{numberOfHoldersTotal}}</b></mat-footer-cell>
         </ng-container>
 
         <ng-container matColumnDef="offers">

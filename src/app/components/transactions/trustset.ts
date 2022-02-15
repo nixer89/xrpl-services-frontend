@@ -472,7 +472,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       currencyCodeUTF8: normalizer.normalizeCurrencyCodeXummImpl(token.currency)
     }
 
-    this.limitInput = token.amount;
+    this.limitInput = token.amount+"";
 
     //console.log("onIssuedCurrencyFound: " + this.issuedCurrencyInput);
 

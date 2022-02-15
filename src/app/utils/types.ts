@@ -50,10 +50,11 @@ export interface XrplAccountChanged {
 
 export interface Token {
     currency: string,
-    amount: string,
-    trustlines?: string,
-    offers?: string,
-    created?: string
+    amount: number,
+    trustlines?: number,
+    holders?: number,
+    offers?: number,
+    created?: any
 }
 
 export interface TrustLine {
@@ -78,9 +79,10 @@ export interface TokenIssuer {
     account: string,
     currencyCode: string,
     currencyCodeUTF8: string,
-    amount: string,
-    trustlines: string,
-    offers: string,
+    amount: number,
+    trustlines: number,
+    holders: number,
+    offers: number,
     verified: boolean,
     kyc?: boolean,
     username?: string,
@@ -96,10 +98,11 @@ export interface NftIssuer {
     account: string,
     currencyCode: string,
     currencyCodeUTF8: string,
-    amount: string,
-    shownAmount: string,
-    trustlines: string,
-    offers: string,
+    amount: number,
+    shownAmount: number,
+    trustlines: number,
+    holders: number,
+    offers: number,
     verified: boolean,
     kyc?: boolean,
     username?: string,
