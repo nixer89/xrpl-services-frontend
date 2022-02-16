@@ -3,6 +3,7 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import { AppService } from '../../services/app.service';
 import { IssuerVerification, Token, NftIssuer } from '../../utils/types'
 import * as normalizer from 'src/app/utils/normalizers';
+import * as utils from 'src/app/utils/utils';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -252,6 +253,10 @@ export class IssuedNftList implements OnInit {
     return parseFloat(number);
   }
 
+  formattedAmount(amount: number): string {
+    return utils.numberWithCommas(amount);
+  }
+
   applyFilter(event: Event) {
     if(this.datasource && this.datasource.data) {
       this.filterText = (event.target as HTMLInputElement).value;
@@ -271,7 +276,7 @@ export class IssuedNftList implements OnInit {
           this.uniqueFilteredAccount.set(data.account, 1);
           this.accountNameTotal += data.username ? 1 : 0;
           this.currencyCodeTotal += data.currencyCode ? 1 : 0;
-          this.issuedTokensTotal += data.shownAmount ? Number(data.shownAmount) : 0;
+          this.issuedTokensTotal += data.shownAmount ? data.shownAmount : 0;
           this.dexOffersTotal += data.offers ? data.offers : 0;
           this.numberOfTrustlinesTotal += data.trustlines ? data.trustlines : 0;
           this.numberOfHoldersTotal += data.holders ? data.holders : 0;

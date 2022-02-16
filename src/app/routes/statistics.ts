@@ -14,11 +14,13 @@ export class Statistics implements OnInit {
   statisticsEscrow:any[] = [];
   statisticsToken:any[] = [];
   statisticsNFT:any[] = [];
+  statisticsTokenTrasher:any[] = [];
   
   totalTransactionsWeb:number = 0
   totalTransactionsEscrow:number = 0
   totalTransactionsToken:number = 0
   totalTransactionsNFT:number = 0;
+  totalTransactionsTokenTrasher:number = 0;
 
   escrowNextRelease:Date;
   escrowLastRelease:Date;
@@ -37,6 +39,7 @@ export class Statistics implements OnInit {
     promises.push(this.xummApi.getEscrowLastRelease());
     promises.push(this.xummApi.getEscrowCurrentCount());
     promises.push(this.xummApi.getTransactionStatistics("https://nftcreate-xapp.xrpl.services"));
+    promises.push(this.xummApi.getTransactionStatistics("https://tokentrasher-xapp.xrpl.services"));
 
 
     let results = await Promise.all(promises);
@@ -48,11 +51,13 @@ export class Statistics implements OnInit {
     this.escrowLastRelease = results[4] != null ? new Date(results[4]) : null;
     this.escrowCurrentCount = results[5];
     let statsNFT = results[6];
+    let statsTrasher = results[7];
 
     this.calculateStats(statsWeb, this.statisticsWeb, this.totalTransactionsWeb);
     this.calculateStats(statsEscrow, this.statisticsEscrow, this.totalTransactionsEscrow);
     this.calculateStats(statsToken, this.statisticsToken, this.totalTransactionsToken);
     this.calculateStats(statsNFT, this.statisticsNFT, this.totalTransactionsNFT);
+    this.calculateStats(statsTrasher, this.statisticsTokenTrasher, this.totalTransactionsTokenTrasher);
 
     this.loading = false;
   }

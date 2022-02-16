@@ -58,6 +58,114 @@
         <mat-expansion-panel [expanded]="false">
             <mat-expansion-panel-header>
             <mat-panel-title>
+                <label>Token Trasher xApp</label>
+            </mat-panel-title>
+            <mat-panel-description>
+                Statistics xApp 'Token Trasher'
+            </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <mat-card fxFlex fxLayout="column" fxLayoutGap="1em" class="margin-5">
+                <label class="loading">The table below shows transactions executed through the xApp 'Token Trasher' since February 15th 2022.</label>
+                
+                <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.3em">
+                    <label>Loading statistics ... </label>
+                    <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+                </div>
+
+                <div *ngIf="!loading && statisticsTokenTrasher && statisticsTokenTrasher.length > 0">
+                    <mat-table [dataSource]="statisticsTokenTrasher" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="transactiontype">
+                            <mat-header-cell *matHeaderCellDef> Transaction Type </mat-header-cell>
+                            <mat-cell *matCellDef="let transaction">
+                                <span fxLayout="row">
+                                    <label fxShow.xs fxHide><b>Transaction Type:</b>&nbsp;</label>
+                                    <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.name}}</label>
+                                    <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.name}}</b></label>
+                                </span>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="number">
+                            <mat-header-cell *matHeaderCellDef > Number of Trx </mat-header-cell>
+                            <mat-cell *matCellDef="let transaction">
+                                <span fxLayout="row">
+                                    <label fxShow.xs fxHide><b>Number of Trx:</b>&nbsp;</label>
+                                    <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.number}}</label>
+                                    <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.number}}</b></label>
+                                </span>
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+                    </mat-table>
+                </div>
+                <div *ngIf="!loading && (!statisticsTokenTrasher || statisticsTokenTrasher.length <= 0)">
+                    <label class="warning">Could not load statistics! Please try again later.</label>
+                </div>
+            </mat-card>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="false">
+            <mat-expansion-panel-header>
+            <mat-panel-title>
+                <label>Token Creator xApp</label>
+            </mat-panel-title>
+            <mat-panel-description>
+                Statistics xApp 'Token creator'
+            </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <mat-card fxFlex fxLayout="column" fxLayoutGap="1em" class="margin-5">
+                <label class="loading">The table below shows transactions executed through the xApp 'Token creator' since April 21st 2021.</label>
+                
+                <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.3em">
+                    <label>Loading statistics ... </label>
+                    <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+                </div>
+
+                <div *ngIf="!loading && statisticsToken && statisticsToken.length > 0">
+                    <mat-table [dataSource]="statisticsToken" class="mat-elevation-z8">
+
+                        <ng-container matColumnDef="transactiontype">
+                            <mat-header-cell *matHeaderCellDef> Transaction Type </mat-header-cell>
+                            <mat-cell *matCellDef="let transaction">
+                                <span fxLayout="row">
+                                    <label fxShow.xs fxHide><b>Transaction Type:</b>&nbsp;</label>
+                                    <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.name}}</label>
+                                    <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.name}}</b></label>
+                                </span>
+                            </mat-cell>
+                        </ng-container>
+
+                        <ng-container matColumnDef="number">
+                            <mat-header-cell *matHeaderCellDef > Number of Trx </mat-header-cell>
+                            <mat-cell *matCellDef="let transaction">
+                                <span fxLayout="row">
+                                    <label fxShow.xs fxHide><b>Number of Trx:</b>&nbsp;</label>
+                                    <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.number}}</label>
+                                    <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.number}}</b></label>
+                                </span>
+                            </mat-cell>
+                        </ng-container>
+
+                        <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+                        <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+                    </mat-table>
+                </div>
+                <div *ngIf="!loading && (!statisticsToken || statisticsToken.length <= 0)">
+                    <label class="warning">Could not load statistics! Please try again later.</label>
+                </div>
+            </mat-card>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="false">
+            <mat-expansion-panel-header>
+            <mat-panel-title>
                 <label>Escrow Creator xApp</label>
             </mat-panel-title>
             <mat-panel-description>
@@ -121,60 +229,6 @@
                     </mat-table>
                 </div>
                 <div *ngIf="!loading && (!statisticsEscrow || statisticsEscrow.length <= 0)">
-                    <label class="warning">Could not load statistics! Please try again later.</label>
-                </div>
-            </mat-card>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel [expanded]="false">
-            <mat-expansion-panel-header>
-            <mat-panel-title>
-                <label>Token Creator xApp</label>
-            </mat-panel-title>
-            <mat-panel-description>
-                Statistics xApp 'Token creator'
-            </mat-panel-description>
-            </mat-expansion-panel-header>
-
-            <mat-card fxFlex fxLayout="column" fxLayoutGap="1em" class="margin-5">
-                <label class="loading">The table below shows transactions executed through the xApp 'Token creator' since April 21st 2021.</label>
-                
-                <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.3em">
-                    <label>Loading statistics ... </label>
-                    <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
-                </div>
-
-                <div *ngIf="!loading && statisticsToken && statisticsToken.length > 0">
-                    <mat-table [dataSource]="statisticsToken" class="mat-elevation-z8">
-
-                        <ng-container matColumnDef="transactiontype">
-                            <mat-header-cell *matHeaderCellDef> Transaction Type </mat-header-cell>
-                            <mat-cell *matCellDef="let transaction">
-                                <span fxLayout="row">
-                                    <label fxShow.xs fxHide><b>Transaction Type:</b>&nbsp;</label>
-                                    <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.name}}</label>
-                                    <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.name}}</b></label>
-                                </span>
-                            </mat-cell>
-                        </ng-container>
-
-                        <ng-container matColumnDef="number">
-                            <mat-header-cell *matHeaderCellDef > Number of Trx </mat-header-cell>
-                            <mat-cell *matCellDef="let transaction">
-                                <span fxLayout="row">
-                                    <label fxShow.xs fxHide><b>Number of Trx:</b>&nbsp;</label>
-                                    <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.number}}</label>
-                                    <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.number}}</b></label>
-                                </span>
-                            </mat-cell>
-                        </ng-container>
-
-                        <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-                        <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
-
-                    </mat-table>
-                </div>
-                <div *ngIf="!loading && (!statisticsToken || statisticsToken.length <= 0)">
                     <label class="warning">Could not load statistics! Please try again later.</label>
                 </div>
             </mat-card>
