@@ -3,7 +3,6 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import { AppService } from '../../services/app.service';
 import { IssuerVerification, Token, TokenIssuer } from '../../utils/types'
 import * as normalizer from 'src/app/utils/normalizers';
-import * as utils from 'src/app/utils/utils';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
