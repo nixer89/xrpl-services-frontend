@@ -68,7 +68,7 @@
     </mat-form-field>
 
     <div fxLayout="row" style="padding-bottom: 0.5em;">
-      <mat-checkbox [disabled]="loading" [(ngModel)]="showKycOnly" class="loading" (change)="switchTokenList()">Show KYC'd issuers only</mat-checkbox>
+      <mat-checkbox [disabled]="loading" [(ngModel)]="showKycOnly" class="loading" (change)="switchTokenList()">Show XUMM KYC'd issuers only</mat-checkbox>
     </div>
 
     <!--div fxHide fxShow.xs fxLayout="row" fxLayoutGap="0.3em" style="padding-bottom: 1em">
@@ -101,7 +101,7 @@
         </ng-container>
 
         <ng-container matColumnDef="kyc">
-          <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer KYC </mat-header-cell>
+          <mat-header-cell *matHeaderCellDef mat-sort-header> XUMM KYC </mat-header-cell>
           <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
               <span fxShow fxHide.xs fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="0.3em">
                 <div *ngIf="row.kyc" fxLayout="row" fxLayoutAlign="center center">
@@ -111,7 +111,7 @@
                 </div>
               </span>
               <span fxShow.xs fxHide fxLayout="row" fxLayoutAlign="center start">
-                <b>KYC:</b>&nbsp;
+                <b>XUMM KYC:</b>&nbsp;
                 <div *ngIf="row.kyc">
                   <i class="material-icons" style="color: green; font-size: 1.2em;">
                     check_circle

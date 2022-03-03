@@ -13,14 +13,14 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <mat-card *ngIf="!isDektop()" fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
-    <label>To use this function on a mobile device, please open the XUMM 'Account Blackhole' xApp via the following link:</label><br/>
-    <a href="https://xumm.app/detect/xapp:nixer.blackhole">XUMM 'Account Blackhole' xApp</a>
+  <mat-card fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
+    <label>This functionality is now a XUMM xApp.</label>
+    <label>Please click the link below to open the Token creator xApp:</label>
     <br/><br/>
-    <label>Alternatively, open this website from a desktop browser.</label>
+    <label><a href="https://xumm.app/detect/xapp:nixer.blackhole" rel="noreferrer" target="_blank">'Blackhole Account' xApp</a></label>
   </mat-card>
 
-  <mat-card *ngIf="isDektop()" fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
+  <!--mat-card *ngIf="isDektop()" fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
     <mat-vertical-stepper linear #stepper>
       <mat-step completed="false" editable="false">
           <mat-card fxLayout="column" fxLayoutGap="0.5em">
@@ -256,5 +256,5 @@
         </mat-card>
       </mat-step>
     </mat-vertical-stepper>
-  </mat-card>
+  </mat-card-->
 </mat-expansion-panel>

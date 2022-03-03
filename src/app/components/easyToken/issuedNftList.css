@@ -26,6 +26,7 @@ td {
     padding: 7px 5px;
     border-radius: 7px;
     background-color: #22A9BC !important;
+    color: white !important;
 } 
 
 .mat-chip-xrpscan {
@@ -34,9 +35,8 @@ td {
     padding: 7px 5px;
     border-radius: 7px;
     background-color: #3279B6 !important;
+    color: white !important;
 }
-
-
 
 @media (min-width:600px) {
 
@@ -240,22 +240,6 @@ td {
 }
 
 @media (max-width:599px) {
-
-    .mat-chip-bithomp {
-        font-size: 8px !important;
-        min-height: 10px;
-        padding: 5px 5px;
-        border-radius: 5px;
-        background-color: #22A9BC !important;
-    } 
-    
-    .mat-chip-xrpscan {
-        font-size: 8px !important;
-        min-height: 10px;
-        padding: 5px 5px;
-        border-radius: 5px;
-        background-color: #3279B6 !important;
-    } 
 
     .mat-card {
         font-size: 12px;

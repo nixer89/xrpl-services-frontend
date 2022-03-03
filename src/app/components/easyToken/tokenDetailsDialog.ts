@@ -65,6 +65,8 @@ export class TokenDetailsDialog implements OnInit {
                 this.convertedAmount = Number(this.tokenIssuer.amount);
         }
 
+        console.log("created: " + JSON.stringify(this.tokenIssuer.created));
+
         try {
 
             //load issuer data
@@ -161,7 +163,7 @@ export class TokenDetailsDialog implements OnInit {
     }
 
     getTokenCreation(): string {
-        if(this.tokenIssuer && this.tokenIssuer.created && this.tokenIssuer.created.date)
+        if(this.tokenIssuer && this.tokenIssuer.created && this.tokenIssuer.created.date && this.tokenIssuer.created.date != 'Unknown')
             return new Date(this.tokenIssuer.created.date).toLocaleString();
         else
             return "-";

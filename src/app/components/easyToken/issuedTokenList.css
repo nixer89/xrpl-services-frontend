@@ -26,6 +26,7 @@ td {
     padding: 7px 5px;
     border-radius: 7px;
     background-color: #22A9BC !important;
+    color: white !important;
 } 
 
 .mat-chip-xrpscan {
@@ -34,6 +35,7 @@ td {
     padding: 7px 5px;
     border-radius: 7px;
     background-color: #3279B6 !important;
+    color: white !important;
 }
 
 
