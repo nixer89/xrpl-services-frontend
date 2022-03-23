@@ -122,18 +122,23 @@ export class IssuedTokenList implements OnInit {
         this.datasource.sort = this.sort;
 
         this.datasource.sortingDataAccessor = (data: any, sortHeaderId: string): string => {
+
+          if(sortHeaderId === 'currency')
+                return data['currencyCodeUTF8'] && data['currencyCodeUTF8'].toLocaleLowerCase();
+
           if (typeof data[sortHeaderId] === 'string') {
             if(!data[sortHeaderId] || data[sortHeaderId].trim().length == 0) {
               if(this.sort.direction === 'asc')
                 return "zzzzzzzzzzzzzzzzzzzzzzzzz"
               else
                 return "0000000000000000000000000"
+            } else {
+              return data[sortHeaderId] && data[sortHeaderId].toLocaleLowerCase();
             }
-            else
-              return data[sortHeaderId].toLocaleLowerCase();
+              
+          } else {          
+            return data[sortHeaderId];
           }
-        
-          return data[sortHeaderId];
         };
 
         this.datasource.filterPredicate = (data: TokenIssuer, filter: string) => {
