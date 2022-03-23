@@ -36,15 +36,17 @@ export class IssuedTokenList implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  sortColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers'];
+  sortColumns: string[] = ['account', 'kyc', 'selfassessment', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers'];
   
-  displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers',  'trustlinelink', 'dexlink', 'explorer'];
+  displayedColumns: string[] = ['account', 'kyc', 'selfassessment', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers',  'trustlinelink', 'dexlink', 'explorer'];
   datasource:MatTableDataSource<TokenIssuer> = null;
 
   allTokens: TokenIssuer[] = null;
   kycTokensOnly: TokenIssuer[] = null;
+  selfAssessmentOnly: TokenIssuer[] = null;
 
   showKycOnly:boolean = false;
+  showSelfAssessmentOnly:boolean = false;
 
   loading:boolean = false;
 
@@ -64,6 +66,7 @@ export class IssuedTokenList implements OnInit {
   numberOfHoldersTotal: number = 0;
   dexOffersTotal: number = 0;
   kycAccountsTotal: number = 0;
+  selfAssessmentsTotal: number = 0;
   uniqueFilteredAccount: Map<String, Number> = new Map<String, Number>();
   previousFilter: string;
 
@@ -80,7 +83,7 @@ export class IssuedTokenList implements OnInit {
     try {
       let promises:any[] = [];
       promises.push(this.loadLedgerData());
-      promises.push(this.xummBackend.getHottestToken1D());
+      //promises.push(this.xummBackend.getHottestToken1D());
       //promises.push(this.xummBackend.getHottestToken1W());
       //promises.push(this.xummBackend.getHottestToken1M());
 
@@ -88,7 +91,7 @@ export class IssuedTokenList implements OnInit {
 
       this.allTokens = results[0];
       
-      this.hotToken1D = results[1];
+      //this.hotToken1D = results[1];
       //console.log(JSON.stringify(this.hotToken1D));
       //this.hotToken1W = results[2];
       //this.hotToken1M = results[3];
@@ -103,6 +106,7 @@ export class IssuedTokenList implements OnInit {
 
       if(this.allTokens != null) {
 
+        /**
         for(let i = 0; i < 10; i++) {
           this.allTokens.find(issuer => {
             if(this.hotToken1D && this.hotToken1D.length >= 10 && this.hotToken1D[i]['_id'].issuer === issuer.account && this.hotToken1D[i]['_id'].currency === normalizer.getCurrencyCodeForXRPL(issuer.currencyCode)) {
@@ -112,6 +116,7 @@ export class IssuedTokenList implements OnInit {
             }
           })
         }
+         */
 
         this.datasource.paginator = this.paginator;
         this.datasource.sort = this.sort;
@@ -153,6 +158,7 @@ export class IssuedTokenList implements OnInit {
         this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
 
         this.kycTokensOnly = this.allTokens.filter(token => token.kyc);
+        this.selfAssessmentOnly = this.allTokens.filter(token => token && token.self_assessment && token.self_assessment.self_assessment && token.self_assessment.information)
       }
     }
 
@@ -212,7 +218,8 @@ export class IssuedTokenList implements OnInit {
                   domain: domain,
                   twitter: twitter,
                   kyc: data.kyc,
-                  created: issuedCurrency.created
+                  created: issuedCurrency.created,
+                  self_assessment: issuedCurrency.self_assessment
                 });
 
               this.uniqueFilteredAccount.set(account, 1);
@@ -223,6 +230,7 @@ export class IssuedTokenList implements OnInit {
               this.numberOfTrustlinesTotal += issuedCurrency.trustlines ? issuedCurrency.trustlines : 0;
               this.numberOfHoldersTotal += issuedCurrency.holders ? issuedCurrency.holders : 0;
               this.kycAccountsTotal += data.kyc ? 1 : 0;
+              this.selfAssessmentsTotal += issuedCurrency.self_assessment ? 1 : 0;
             });
         }
       }
@@ -314,10 +322,20 @@ export class IssuedTokenList implements OnInit {
 
   switchTokenList() {
     if(this.datasource && this.datasource.data) {
-      if(this.showKycOnly)
-        this.datasource.data = this.kycTokensOnly
-      else
+      if(this.showKycOnly && !this.showSelfAssessmentOnly) {
+        this.datasource.data = this.kycTokensOnly;
+      } else if(this.showSelfAssessmentOnly && !this.showKycOnly) {
+        this.datasource.data = this.selfAssessmentOnly;
+      } else if(this.showKycOnly && this.showSelfAssessmentOnly) {
+        let combined = [].concat(this.selfAssessmentOnly);
+
+        combined = combined.filter(token => token.kyc);
+
+        this.datasource.data = combined;
+        
+      } else {
         this.datasource.data = this.allTokens;
+      }
     }
   }
 }

@@ -54,7 +54,8 @@ export interface Token {
     trustlines?: number,
     holders?: number,
     offers?: number,
-    created?: any
+    created?: any,
+    self_assessment?: any
 }
 
 export interface TrustLine {
@@ -91,7 +92,8 @@ export interface TokenIssuer {
     domain?: string,
     isHot?: boolean,
     newTrustlines?: number,
-    created?: any
+    created?: any,
+    self_assessment?: any
 }
 
 export interface NftIssuer {
