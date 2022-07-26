@@ -32,7 +32,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   private accountInfoChangedSubscription: Subscription;
   private accountObjectsChangedSubscription: Subscription;
   originalAccountInfo:any;
-  originalAccountObjects:any;
+  signerList:any;
 
   private transactionSuccessfullSubscription: Subscription;
 
@@ -59,7 +59,11 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
 
     this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(accountObjects => {
       //console.log("account objects changed received")
-      this.originalAccountObjects = accountObjects.object;
+      if(accountObjects && accountObjects.objects) {
+        this.signerList = accountObjects.objects.filter(object => object.LedgerEntryType === "SignerList")[0];
+      } else {
+        this.signerList = null;
+      }
     });
 
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
@@ -98,7 +102,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   }
 
   hasAlternativeSigningMethod() {
-    return (this.originalAccountInfo && !flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags)) || (this.originalAccountObjects && (this.originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType === "SignerList" && this.originalAccountObjects[0].SignerEntries.length > 0));
+    return (this.originalAccountInfo && !flagsutil.isMasterKeyDisabled(this.originalAccountInfo.Flags)) || (this.signerList && this.signerList.SignerEntries && this.signerList.SignerEntries.length > 0);
   }
 
   clearInputs() {

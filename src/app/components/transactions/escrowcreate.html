@@ -22,7 +22,7 @@
     <label>Sequester XRP until the escrow process either finishes or is canceled.</label>
     <label>Every Escrow adds {{ownerReserve/1000000}} XRP to your account reserve. Those {{ownerReserve/1000000}} XRP are inaccessible as long as the Escrow exists. When the Escrow is finished or cancelled, the {{ownerReserve/1000000}} XRP are returned to your available balance.</label>
     <div style="margin-bottom: 1em;" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
-      <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()"></escrowList>
+      <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" [escrowsChanged]="escrowsChanged.asObservable()"></escrowList>
     </div>
     <label style="color: crimson;padding-top: 1em;"><b>Be careful. You could lock away your funds for years!</b><br/></label>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">

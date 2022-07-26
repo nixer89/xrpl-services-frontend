@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
@@ -23,7 +23,7 @@ export class XrplTransactionsComponent implements OnInit {
   
   xrplAccount:string = null;
   xrplAccount_Info:any = null;
-  xrplAccount_Objects: any = null;
+  xrplAccount_Objects:any[] = null;
 
   lastTrxLinkBithomp:string;
   lastTrxLinkXrplOrg:string;
@@ -55,7 +55,8 @@ export class XrplTransactionsComponent implements OnInit {
     private localStorage: LocalStorageService,
     private overlayContainer: OverlayContainer,
     private xrplWebsocket: XRPLWebsocket,
-    private deviceDetector: DeviceDetectorService,) { }
+    private deviceDetector: DeviceDetectorService,
+    private ngZone: NgZone) { }
 
   async ngOnInit() {
 
@@ -169,7 +170,7 @@ export class XrplTransactionsComponent implements OnInit {
     
     //this.xrplAccount="rpPVUDK8xSYejBHA1431nKDaaM8wnKt3Rc";
     
-    //this.xrplAccount="rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B";
+    //this.xrplAccount="r4LxkCUXYTCUgwquN3BnsUxFacoVLjGFyF";
     //this.isTestMode = true;
     //await this.loadAccountData(false);
   }
@@ -197,76 +198,104 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   async loadAccountData(isInit?: boolean) {
-    if(this.xrplAccount) {
-      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'xrpl_transactions_component');
-      this.cannotConnectToNode = false;
-      this.loadingData = true;
+    this.ngZone.runOutsideAngular(async () => {
+    
+      if(this.xrplAccount) {
+        this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'xrpl_transactions_component');
+        this.cannotConnectToNode = false;
+        this.loadingData = true;
 
-      this.localStorage.set("xrplAccount", this.xrplAccount);
-      this.localStorage.set("testMode", this.isTestMode);
+        this.localStorage.set("xrplAccount", this.xrplAccount);
+        this.localStorage.set("testMode", this.isTestMode);
 
-      let account_info_request:any = {
-        command: "account_info",
-        account: this.xrplAccount,
-        "strict": true,
-      }
-
-      let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage("xrpl-transactions", account_info_request, this.isTestMode)
-      //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
-
-      if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
-        if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
-          this.xrplAccount_Info = message_acc_info.result.account_data;
-          if(this.xrplAccount_Info.urlgravatar)
-            this.xrplAccount_Info.urlgravatar = this.xrplAccount_Info.urlgravatar.replace('http','https');
-          //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
-          this.emitAccountInfoChanged();
-        } else {
-          this.xrplAccount_Info = message_acc_info;
-          this.emitAccountInfoChanged();
-        }
-      } else {
-        this.xrplAccount_Info = null;
-        this.emitAccountInfoChanged();
-      }
-
-      this.cannotConnectToNode = message_acc_info && message_acc_info.error && message_acc_info.message === 'No node connection possible';
-
-      if(!this.cannotConnectToNode) {
-
-        let account_objects_request:any = {
-          command: "account_objects",
+        let account_info_request:any = {
+          command: "account_info",
           account: this.xrplAccount,
-          type: "signer_list",
+          "strict": true,
         }
 
-        let message_acc_objects:any = await this.xrplWebsocket.getWebsocketMessage("xrpl-transactions", account_objects_request, this.isTestMode);
-        //console.log("xrpl-transactions account objects:: " + JSON.stringify(message_acc_objects));
+        let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage("xrpl-transactions", account_info_request, this.isTestMode)
+        //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
 
-        if(message_acc_objects && message_acc_objects.status && message_acc_objects.type && message_acc_objects.type === 'response') {
-          if(message_acc_objects.status === 'success' && message_acc_objects.result && message_acc_objects.result.account_objects) {
-            this.xrplAccount_Objects = message_acc_objects.result.account_objects;
-            //console.log("xrplAccount_Objects: " + JSON.stringify(this.xrplAccount_Objects));
-            this.emitAccountObjectsChanged();
+        if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
+          if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
+            this.xrplAccount_Info = message_acc_info.result.account_data;
+            if(this.xrplAccount_Info.urlgravatar)
+              this.xrplAccount_Info.urlgravatar = this.xrplAccount_Info.urlgravatar.replace('http','https');
+            //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
+            this.emitAccountInfoChanged();
           } else {
-            this.xrplAccount_Objects = message_acc_objects;
-            this.emitAccountObjectsChanged();
+            this.xrplAccount_Info = message_acc_info;
+            this.emitAccountInfoChanged();
           }
         } else {
-          this.xrplAccount_Objects = null;
-          this.emitAccountObjectsChanged();
+          this.xrplAccount_Info = null;
+          this.emitAccountInfoChanged();
         }
 
-        if(isInit && this.snackBar)
-          this.snackBar.dismiss();
+        this.cannotConnectToNode = message_acc_info && message_acc_info.error && message_acc_info.message === 'No node connection possible';
 
+        if(!this.cannotConnectToNode) {
+
+          this.xrplAccount_Objects = null;
+
+          let account_objects_request:any = {
+            command: "account_objects",
+            account: this.xrplAccount,
+            ledger_index: "validated",
+            limit: 200
+          }
+    
+          let accountObjects:any = await this.xrplWebsocket.getWebsocketMessage("account-objects", account_objects_request, this.isTestMode);
+
+          //load more escrows
+          if(accountObjects?.result?.account_objects) {
+
+              this.xrplAccount_Objects = accountObjects.result.account_objects;
+      
+              let marker = accountObjects.result.marker;
+      
+              //console.log("marker: " + marker);
+              //console.log("LEDGER_INDEX : " + accountLines.result.ledger_index);
+    
+      
+              while(marker) {
+                  //console.log("marker: " + marker);
+                  account_objects_request.marker = marker;
+                  account_objects_request.ledger_index = accountObjects.result.ledger_index;
+    
+                  //await this.xrplWebSocket.getWebsocketMessage("token-trasher", server_info, this.isTestMode);
+      
+                  accountObjects = await this.xrplWebsocket.getWebsocketMessage("account-objects", account_objects_request, this.isTestMode);
+
+                  //console.log(JSON.stringify(accountObjects));
+      
+                  marker = accountObjects?.result?.marker;
+      
+                  if(accountObjects?.result?.account_objects) {
+                      this.xrplAccount_Objects = this.xrplAccount_Objects.concat(accountObjects.result.account_objects)
+                      account_objects_request.marker = marker;
+                  } else {
+                      marker = null;
+                  }
+              }
+          }
+
+          this.emitAccountObjectsChanged();
+
+          if(isInit && this.snackBar)
+            this.snackBar.dismiss();
+
+        }
+
+        this.loadingData = false;
+      } else {
+        this.emitAccountInfoChanged();
       }
-
-      this.loadingData = false;
-    } else {
-      this.emitAccountInfoChanged();
-    }
+    });
   }
+
+  
 
   openSignInDialog(): void {
     const dialogRef = this.matDialog.open(XummSignDialogComponent, {
@@ -429,7 +458,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   emitAccountObjectsChanged() {
     //console.log("emit account objects changed");
-    this.accountObjectsChanged.next({object: this.xrplAccount_Objects, mode: this.isTestMode});
+    this.accountObjectsChanged.next({objects: this.xrplAccount_Objects, mode: this.isTestMode});
   }
 
   async onPayloadReceived(xummPayload:XummTypes.XummPostPayloadBodyJson) {

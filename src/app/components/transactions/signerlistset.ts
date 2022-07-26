@@ -46,7 +46,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   private accountInfoChangedSubscription: Subscription;
   private accountObjectsChangedSubscription: Subscription;
   originalAccountInfo:any;
-  originalAccountObjects:any;
+  signerListObject:any;
 
   signerList:SignerEntry[] = [];
   //[{SignerEntry: {Account: 'rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF', SignerWeight: 1}, valid: true}, {SignerEntry: {Account: 'rwCNdWiEAzbMwMvJr6Kn6tzABy9zHNeSTL', SignerWeight:1}, valid: true}];
@@ -74,15 +74,24 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
     this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(accountObjects => {
       //console.log("account objects changed received: " + JSON.stringify(accountObjects))
       this.clearInputs();
-      this.originalAccountObjects = accountObjects.object;
 
-      if(this.originalAccountObjects && this.originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType==="SignerList") {
-        this.signerList = this.originalAccountObjects[0].SignerEntries;
-        this.signerList.forEach(signerEntry => {
-          signerEntry.SignerEntry.SignerWeight = signerEntry.SignerEntry.SignerWeight+"";
-          signerEntry.valid = true;
-        });
-        this.signerQuorumInput = this.originalAccountObjects[0].SignerQuorum+"";
+      if(accountObjects && accountObjects.objects) {
+        this.signerListObject = accountObjects.objects.filter(object => object.LedgerEntryType === "SignerList")[0];
+
+        //console.log("signerListObject: " + JSON.stringify(this.signerListObject));
+
+        if(this.signerListObject) {
+          this.signerList = this.signerListObject.SignerEntries;
+          this.signerList.forEach(signerEntry => {
+            signerEntry.SignerEntry.SignerWeight = signerEntry.SignerEntry.SignerWeight+"";
+            signerEntry.valid = true;
+          });
+          this.signerQuorumInput = this.signerListObject.SignerQuorum+"";
+          this.checkChanges();
+        }
+      } else {
+        this.signerListObject = null;
+        this.signerList = [];
         this.checkChanges();
       }
     });
@@ -253,7 +262,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   clearInputs() {
-    this.originalAccountObjects = null;
+    this.signerListObject = null;
     this.signerQuorumInput = null;
     this.signerList = [];
     this.validSignerList = false;

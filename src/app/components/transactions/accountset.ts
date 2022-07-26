@@ -55,7 +55,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   private accountInfoChangedSubscription: Subscription;
   private accountObjectsChangedSubscription: Subscription;
   originalAccountInfo:any;
-  originalAccountObjects:any;
+  signerList:any;
 
   domainChangeDetected:boolean = false;
   emailChangeDetected:boolean = false;
@@ -86,8 +86,12 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
     this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(accountObjects => {
       //console.log("account objects changed received")
-      this.originalAccountObjects = accountObjects.object;
-      this.reloadData()
+      if(accountObjects && accountObjects.objects) {
+        this.signerList = accountObjects.objects.filter(object => object.LedgerEntryType === "SignerList")[0];
+        this.reloadData()
+      } else {
+        this.signerList = [];
+      }
     });
 
     this.initializePayload();    
@@ -310,8 +314,6 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   }
 
   hasAlternativeSigningMethod() {
-    //console.log("this.originalAccountInfo: " + JSON.stringify(this.originalAccountInfo));
-    //console.log("this.originalAccountObjects: " + JSON.stringify(this.originalAccountObjects));
-    return (this.originalAccountInfo && this.originalAccountInfo.RegularKey) || (this.originalAccountObjects && (this.originalAccountObjects[0] && this.originalAccountObjects[0].LedgerEntryType === "SignerList" && this.originalAccountObjects[0].SignerEntries.length > 0));
+    return (this.originalAccountInfo && this.originalAccountInfo.RegularKey) || (this.signerList && this.signerList.SignerEntries && this.signerList.SignerEntries.length > 0);
   }
 }

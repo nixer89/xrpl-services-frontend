@@ -2,7 +2,7 @@ import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } 
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { AccountInfoChanged, XrplAccountChanged } from 'src/app/utils/types';
+import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
 import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
@@ -15,6 +15,9 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
+
+  @Input()
+  accountObjectsChanged: Observable<AccountObjectsChanged>;
 
   @Input()
   transactionSuccessfull: Observable<void>;
@@ -34,9 +37,13 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   originalAccountInfo:any;
   isTestMode:boolean = false;
 
+  allAccountEscrows:any[];
+
   private accountInfoChangedSubscription: Subscription;
+  private accountObjectsChangedSubscription: Subscription;
   private transactionSuccessfullSubscription: Subscription;
   escrowAccountChanged: Subject<XrplAccountChanged> = new Subject<XrplAccountChanged>();
+  escrowsChanged: Subject<AccountObjectsChanged> = new Subject<AccountObjectsChanged>();
 
   showEscrowSequenceSelectedStyle:boolean = false;
   escrowSequenceSelected:boolean = false;
@@ -73,6 +80,17 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
       
     });
 
+    this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(accountObjects => {
+      //console.log("account objects changed received")
+      if(accountObjects && accountObjects.objects) {
+        this.allAccountEscrows = accountObjects.objects.filter(object => object.LedgerEntryType === "Escrow");
+        this.escrowsChanged.next({objects: this.allAccountEscrows, mode: accountObjects.mode});
+      } else {
+        this.allAccountEscrows = null;
+        this.escrowsChanged.next({objects: null, mode: accountObjects.mode});
+      }
+    });
+
     this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
       this.clearInputs();
     });
@@ -81,6 +99,9 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if(this.accountInfoChangedSubscription)
       this.accountInfoChangedSubscription.unsubscribe();
+
+    if(this.accountObjectsChangedSubscription)
+      this.accountObjectsChangedSubscription.unsubscribe();
 
     if(this.transactionSuccessfullSubscription)
       this.transactionSuccessfullSubscription.unsubscribe();

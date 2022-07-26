@@ -2,7 +2,7 @@ import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, A
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { AccountInfoChanged, XrplAccountChanged, Token, TrustLine, XrplCurrency } from 'src/app/utils/types';
+import { AccountInfoChanged, XrplAccountChanged, Token, SimpleTrustLine, XrplCurrency, AccountObjectsChanged } from 'src/app/utils/types';
 import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
@@ -31,6 +31,9 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   accountInfoChanged: Observable<AccountInfoChanged>;
 
   @Input()
+  accountObjectsChanged: Observable<AccountObjectsChanged>;
+
+  @Input()
   transactionSuccessfull: Observable<any>;
   
   @Output()
@@ -52,9 +55,11 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   testMode:boolean = false;
 
   private accountInfoChangedSubscription: Subscription;
+  private accountObjectsChangedSubscription: Subscription;
   private transactionSuccessfullSubscription: Subscription;
   issuerAccountChangedSubject: Subject<XrplAccountChanged> = new Subject<XrplAccountChanged>();
   xrplAccountInfoChangedSubject: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
+  trustlinesChangedSubject: Subject<AccountObjectsChanged> = new Subject<AccountObjectsChanged>();
 
   showIssuedCurrencySelectedStyle:boolean = false;
   issuedCurrencySelected:boolean = false;
@@ -88,6 +93,16 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       setTimeout(() => {
         this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
       },500);
+    });
+
+    this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(accountObjects => {
+      //console.log("account objects changed received")
+      if(accountObjects && accountObjects.objects) {
+        let allTrustlines = accountObjects.objects.filter(object => object.LedgerEntryType === "RippleState");
+        this.trustlinesChangedSubject.next({objects: allTrustlines, mode: accountObjects.mode});
+      } else {
+        this.trustlinesChangedSubject.next({objects: null, mode: accountObjects.mode});
+      }
     });
 
     //this.transactionSuccessfullSubscription = this.transactionSuccessfull.subscribe(() => {
@@ -133,6 +148,9 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy() {
     if(this.accountInfoChangedSubscription)
       this.accountInfoChangedSubscription.unsubscribe();
+
+    if(this.accountObjectsChangedSubscription)
+      this.accountObjectsChangedSubscription.unsubscribe();
 
     if(this.transactionSuccessfullSubscription)
       this.transactionSuccessfullSubscription.unsubscribe();
@@ -414,19 +432,19 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.issuerAccountChangedSubject.next({account: null, mode: this.testMode});
   }
 
-  async onTrustLineEdit(trustline:TrustLine) {
+  async onTrustLineEdit(trustline:SimpleTrustLine) {
     this.isEditMode = true;
     this.issuerAccountInput = trustline.account;
     this.selectedCurrency = {
-      currencyCode: normalizer.getCurrencyCodeForXRPL(trustline.currency),
-      currencyCodeUTF8: normalizer.normalizeCurrencyCodeXummImpl(trustline.currency)
+      currencyCode: trustline.currency,
+      currencyCodeUTF8: trustline.currencyN
     }
     this.limitInput = trustline.limit;
     //console.log("onTrustLineEdit: " + this.issuedCurrencyInput);
     await this.checkChanges();
   }
 
-  onDisableRippling(trustline:TrustLine) {
+  onDisableRippling(trustline:SimpleTrustLine) {
     //console.log("onDisableRippling");
     //console.log("onDisableRippling: " + this.issuedCurrencyInput);
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'onDisableRippling', 'trust_set_component');
@@ -447,7 +465,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
 
     let currencyCode = trustline.currency;
-    let humanReadableCode = normalizer.normalizeCurrencyCodeXummImpl(trustline.currency);
+    let humanReadableCode = trustline.currencyN;
     if(currencyCode.length > 3) {
       while(currencyCode.length < 40)
         currencyCode+="0";
@@ -484,7 +502,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     setTimeout(() => this.showIssuedCurrencySelectedStyle = false, 1000);
   }
 
-  deleteTrustLine(trustline: TrustLine) {
+  deleteTrustLine(trustline: SimpleTrustLine) {
     //console.log("deleteTrustLine: " + this.issuedCurrencyInput);
     this.googleAnalytics.analyticsEventEmitter('trust_set', 'deleteTrustLine', 'trust_set_component');
 
@@ -504,7 +522,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     payload.custom_meta.instruction += "- Counterparty: " + trustline.account;
 
     let currencyCode = trustline.currency;
-    let humenReadableCode = normalizer.normalizeCurrencyCodeXummImpl(trustline.currency);
+    let humenReadableCode = trustline.currencyN;
     if(currencyCode.length > 3) {
       while(currencyCode.length < 40)
         currencyCode+="0";

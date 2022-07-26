@@ -1,11 +1,21 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import * as util from '../../utils/flagutils';
 import * as normalizer from 'src/app/utils/normalizers';
-import { AccountInfoChanged, TrustLine } from 'src/app/utils/types';
-import { XRPLWebsocket } from '../../services/xrplWebSocket';
-import { normalize } from 'path';
+import { AccountInfoChanged, AccountObjectsChanged, RippleState, SimpleTrustLine } from 'src/app/utils/types';
+import { MatPaginator } from "@angular/material/paginator";
+import { MatTableDataSource } from "@angular/material/table";
+
+//RippleState Flags
+const lsfLowReserve = 0x10000;
+const lsfHighReserve = 0x20000;
+
+const lsfLowFreeze = 0x400000;
+const lsfHighFreeze = 0x800000;
+
+const lsfLowNoRipple = 0x100000;
+const lsfHighNoRipple = 0x200000;
 
 @Component({
     selector: "trustlineList",
@@ -17,16 +27,23 @@ export class TrustLineList implements OnInit, OnDestroy {
     @Input()
     xrplAccountInfoChanged: Observable<AccountInfoChanged>;
 
-    @Output()
-    trustLineEdit: EventEmitter<TrustLine> = new EventEmitter();
+    @Input()
+    accountObjectsChanged: Observable<AccountObjectsChanged>;
 
     @Output()
-    trustLineDelete: EventEmitter<TrustLine> = new EventEmitter();
+    trustLineEdit: EventEmitter<SimpleTrustLine> = new EventEmitter();
 
     @Output()
-    disableRippling: EventEmitter<TrustLine> = new EventEmitter();
+    trustLineDelete: EventEmitter<SimpleTrustLine> = new EventEmitter();
+
+    @Output()
+    disableRippling: EventEmitter<SimpleTrustLine> = new EventEmitter();
+
+    @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+
+    existingAccountLines:RippleState[] = [];
     
-    trustLines:TrustLine[] = [];
+    trustLines:SimpleTrustLine[] = [];
     displayedColumns: string[] = ['currency', 'account','balance', 'limit', 'limit_peer', 'no_ripple', 'actions'];
     loading:boolean = false;
     testMode:boolean = false;
@@ -35,9 +52,12 @@ export class TrustLineList implements OnInit, OnDestroy {
 
     account_Info:any = null;
 
-    private trustLineAccountChangedSubscription: Subscription;
+    datasource:MatTableDataSource<SimpleTrustLine> = null;
 
-    constructor(private xrplWebSocket: XRPLWebsocket, private googleAnalytics: GoogleAnalyticsService) {}
+    private trustLineAccountChangedSubscription: Subscription;
+    private accountObjectsChangedSubscription: Subscription;
+
+    constructor(private googleAnalytics: GoogleAnalyticsService) {}
 
     ngOnInit() {
         this.trustLineAccountChangedSubscription = this.xrplAccountInfoChanged.subscribe(account => {
@@ -45,63 +65,108 @@ export class TrustLineList implements OnInit, OnDestroy {
             //console.log("test mode: " + this.testMode);
             this.account_Info = account.info;
             this.testMode = account.mode;
+        });
+
+        this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(trustlineObjects => {
+
+            this.loading = true;
+            if(trustlineObjects && trustlineObjects.objects) {
+
+                this.testMode = trustlineObjects.mode;
+
+                this.convertToSimpleTrustline(trustlineObjects.objects);            
             
-            if(this.account_Info && this.account_Info.Account) {
-                this.loadTrustLineList(this.account_Info.Account);
-            } else
+                //if data 0 (no available trustlines) -> show message "no trustlines available"
+                if(this.trustLines && this.trustLines.length == 0)
+                    this.trustLines = null;
+                    
+                this.datasource = new MatTableDataSource(this.trustLines);
+
+                if(this.trustLines && this.trustLines.length > 0)
+                    this.datasource.paginator = this.paginator
+
+                //console.log("account trust lines: " + JSON.stringify(this.trustLines));
+                this.loading = false;
+            } else {
                 this.trustLines = [];
+                this.datasource = new MatTableDataSource(this.trustLines);
+            }
+
+            this.loading = false;
         });
     }
 
     ngOnDestroy() {
         if(this.trustLineAccountChangedSubscription)
           this.trustLineAccountChangedSubscription.unsubscribe();
+
+        if(this.accountObjectsChangedSubscription)
+          this.accountObjectsChangedSubscription.unsubscribe();
     }
 
-    async loadTrustLineList(xrplAccount: string) {
-        this.googleAnalytics.analyticsEventEmitter('load_trustline_list', 'trustline_list', 'trustline_list_component');
+    convertToSimpleTrustline(existingAccountLines:any[]) {
+    
+        let newSimpleTrustlines:SimpleTrustLine[] = []
+    
+        if(existingAccountLines) {
+            for(let i = 0; i < existingAccountLines.length; i++) {
+            if(existingAccountLines[i] && this.countsTowardsReserve(existingAccountLines[i])) {
+                let balance = Number(existingAccountLines[i].Balance.value);
 
-        //console.log("load trustlines");
+                let lowIsIssuer = existingAccountLines[i].HighLimit.issuer === this.account_Info.Account
+        
+                let issuer:string = lowIsIssuer ? existingAccountLines[i].LowLimit.issuer : existingAccountLines[i].HighLimit.issuer;
+                let currency = existingAccountLines[i].Balance.currency;
+                let currencyShow = normalizer.normalizeCurrencyCodeXummImpl(currency);
+                let noRipple = this.hasNoRipple(existingAccountLines[i]);
 
-        if(xrplAccount) {
-            this.loading = true;
+                let limit:string = lowIsIssuer ? existingAccountLines[i].HighLimit.value : existingAccountLines[i].LowLimit.value
 
-            let account_lines_request:any = {
-              command: "account_lines",
-              account: xrplAccount,
-              ledger_index: "validated",
+                let limitPeer:string = lowIsIssuer ? existingAccountLines[i].LowLimit.value : existingAccountLines[i].HighLimit.value
+        
+                if(balance < 0)
+                    balance = balance * -1;
+        
+                let balanceShow = normalizer.normalizeBalance(balance);
+                let isFrozen = this.isFrozen(existingAccountLines[i]);
+        
+                newSimpleTrustlines.push({account: issuer, currency: currency, currencyN: currencyShow, balance: balance, balanceN: balanceShow, isFrozen: isFrozen, limit: limit, limit_peer: limitPeer, no_ripple: noRipple});
             }
-
-            let message:any = await this.xrplWebSocket.getWebsocketMessage("trustlineList", account_lines_request, this.testMode);
-
-            if(message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.lines) {
-                this.trustLines = message.result.lines;
-
-                if(this.trustLines && this.trustLines.length > 0)
-                    this.trustLines = this.trustLines.sort((lineA, lineB) => lineA.currency.localeCompare(lineB.currency));
-            
-                //if data 0 (no available trustlines) -> show message "no trustlines available"
-                if(this.trustLines && this.trustLines.length == 0)
-                    this.trustLines = null;
-                    
-                
-                //console.log("account trust lines: " + JSON.stringify(this.trustLines));
-                this.loading = false;
-            } else {                
-              this.trustLines = null;
-              this.loading = false;
+            }
+        
+            if(newSimpleTrustlines?.length > 0) {
+                newSimpleTrustlines = newSimpleTrustlines.sort((a,b) => {
+                    return a.currencyN.localeCompare(b.currencyN);
+                });
             }
         }
+    
+        this.trustLines = newSimpleTrustlines;
     }
 
-    editTrustline(trustLine: TrustLine) {
+    countsTowardsReserve(line: RippleState): boolean {
+        const reserveFlag = this.account_Info && line.HighLimit.issuer === this.account_Info.Account ? lsfHighReserve : lsfLowReserve;
+        return line.Flags && (line.Flags & reserveFlag) == reserveFlag;
+    }
+
+    isFrozen(line: RippleState): boolean {
+        const freezeFlag = line.HighLimit.issuer === this.account_Info.Account ? lsfLowFreeze : lsfHighFreeze;
+        return line.Flags && (line.Flags & freezeFlag) == freezeFlag;
+    }
+
+    hasNoRipple(line: RippleState): boolean {
+        const noRippleFlag = line.HighLimit.issuer === this.account_Info.Account ? lsfHighNoRipple : lsfLowNoRipple;
+        return line.Flags && (line.Flags & noRippleFlag) == noRippleFlag;
+    }
+
+    editTrustline(trustLine: SimpleTrustLine) {
         this.googleAnalytics.analyticsEventEmitter('trustline_edit', 'trustline_list', 'trustline_list_component');
         //console.log("trustline selected: " + JSON.stringify(trustline));
         this.trustLineEdit.emit(trustLine);
     }
 
-    deleteTrustLine(trustLine: TrustLine) {
-        if(trustLine.balance === "0") {
+    deleteTrustLine(trustLine: SimpleTrustLine) {
+        if(trustLine.balance === 0) {
             this.googleAnalytics.analyticsEventEmitter('trustline_delete', 'trustline_list', 'trustline_list_component');
             //console.log("trustline selected: " + JSON.stringify(trustline));
             this.trustLineDelete.emit(trustLine);
@@ -112,7 +177,7 @@ export class TrustLineList implements OnInit, OnDestroy {
         return this.account_Info && util.isDefaultRippleEnabled(this.account_Info.Flags);
     }
 
-    setNoRippleFlag(trustLine: TrustLine) {
+    setNoRippleFlag(trustLine: SimpleTrustLine) {
         if(!trustLine.no_ripple) {
             this.googleAnalytics.analyticsEventEmitter('setNoRippleFlag', 'trustline_list', 'trustline_list_component');
             //console.log("trustline selected: " + JSON.stringify(trustline));
@@ -122,9 +187,5 @@ export class TrustLineList implements OnInit, OnDestroy {
 
     stringToFloat(number: string): number {
         return parseFloat(number);
-    }
-
-    getCurrencyCode(currency: string): string {
-        return normalizer.normalizeCurrencyCodeXummImpl(currency);
     }
 }

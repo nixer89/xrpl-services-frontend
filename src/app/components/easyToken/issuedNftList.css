@@ -38,7 +38,7 @@ td {
     color: white !important;
 }
 
-@media (min-width:600px) {
+@media (min-width:959px) {
 
     .mat-column-account {
         word-wrap: break-word !important;
@@ -239,7 +239,7 @@ td {
     }
 }
 
-@media (max-width:599px) {
+@media (max-width:959px) {
 
     .mat-card {
         font-size: 12px;

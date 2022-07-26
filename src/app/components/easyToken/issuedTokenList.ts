@@ -306,8 +306,12 @@ export class IssuedTokenList implements OnInit {
     return "https://xrpscan.com/account/"+account;
   }
 
-  getDexLink(issuer:string, currency:string) {
+  getXummDexLink(issuer:string, currency:string) {
     return "https://xumm.app/detect/xapp:xumm.dex?issuer="+issuer+"&currency="+currency;
+  }
+
+  getSologenicDexLink(issuer:string, currency:string) {
+    return "https://sologenic.org/trade?network=mainnet&market="+currency+"%2B"+issuer+"%2FXRP";
   }
 
   getTrustlineQueryParams(tokenIssuer:TokenIssuer): any {

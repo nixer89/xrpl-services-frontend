@@ -211,3 +211,30 @@ const HexEncoding = {
     }
     
 };
+
+/**
+ * Convert XRPL value to NFT value
+ * @param value number
+ * @returns number in NFT value or false if XRPL value is not NFT
+ */
+ export const normalizeBalance = (value: number): number => {
+
+    try {
+        if(value > 1000000000000000e-85)
+            return value;
+
+        const data = String(Number(value)).split(/e/i);
+        let shift = 81 - (Number(data[1])*-1);
+        let firstDigits = data[0].split('.');
+
+        let first = Number(firstDigits[0] + (firstDigits[1] ? firstDigits[1].substring(0,shift) : ""));
+
+        let newNumber = Number(first + (firstDigits[1] ? "." + firstDigits[1].substring(shift) : ""));
+
+        return Math.round(newNumber);
+    } catch(err) {
+        console.log(JSON.stringify(err));
+        return value;
+    }
+    
+};

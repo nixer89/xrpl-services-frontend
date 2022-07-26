@@ -94,7 +94,7 @@ export class GenericPayloadQRDialog implements OnInit {
                     this.showKyc = true;
                     let issuer:string = this.genericPayload.payload.txjson.LimitAmount['issuer'];
     
-                    let kycResponse = await this.app.get("https://xumm.app/api/v1/platform/kyc-status/"+issuer)
+                    let kycResponse = await this.app.get("https://xumm.app/api/v1/platform/kyc-status/"+issuer+"?include_globalid=true")
     
                     //console.log(JSON.stringify(kycResponse));
     

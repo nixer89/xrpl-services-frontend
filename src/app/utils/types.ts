@@ -39,7 +39,7 @@ export interface AccountInfoChanged {
 }
 
 export interface AccountObjectsChanged {
-    object: any,
+    objects: any[],
     mode: boolean
 }
 
@@ -130,4 +130,41 @@ export interface IssuerVerification {
 export interface XrplCurrency {
     currencyCode:string,
     currencyCodeUTF8:string
+}
+
+export interface RippleState {
+    Balance: {
+        currency: string,
+        issuer: string,
+        value: string
+    },
+    Flags: number,
+    HighLimit: {
+        currency: string,
+        issuer: string,
+        value: string
+    },
+    HighNode: string,
+    LedgerEntryType: string,
+    LowLimit: {
+        currency: string,
+        issuer: string,
+        value: string
+    },
+    LowNode: string,
+    PreviousTxnID: string,
+    PreviousTxnLgrSeq: number,
+    index: string
+}
+
+export interface SimpleTrustLine {
+    account:string,
+    balance: number,
+    currency: string,
+    limit: string,
+    limit_peer: string,
+    no_ripple: boolean,
+    isFrozen: boolean,
+    currencyN: string,
+    balanceN?: number
 }
