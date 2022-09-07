@@ -43,8 +43,11 @@
           <!--button mat-button [routerLink]="['/generic-backend']" matTooltip="XRPL Services Generic Backend">
             <i class="material-icons topbar-menu-icon">device_hub</i> Generic Backend
           </button-->
-          <button mat-button [routerLink]="['/statistics']" matTooltip="XRPL Services Statistics">
-            <i class="material-icons topbar-menu-icon">query_stats</i> Statistics
+          <button mat-button [routerLink]="['/xrpl-statistics']" matTooltip="XRP Ledger Stats">
+            <i class="material-icons topbar-menu-icon">analytics</i> XRPL Stats
+          </button>
+          <button mat-button [routerLink]="['/statistics']" matTooltip="XRPL Services Website Statistics">
+            <i class="material-icons topbar-menu-icon">query_stats</i> Website Statistics
           </button>
         </div>
 
@@ -82,19 +85,19 @@
           <i class="material-icons topbar-menu-icon">menu</i>
         </button>
         <mat-menu #appMenu="matMenu" yPosition="below" xPosition="after" fxLayout="column">
-          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['']" matTooltip="XRPL Transactions">
+          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['']">
             <mat-icon class="material-icons">mobile_friendly</mat-icon>
             <span>XRPL Transactions</span>
           </button>
-          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tokens']" matTooltip="Issue your own Token!">
+          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tokens']">
             <mat-icon class="material-icons">attach_money</mat-icon>
             <span>XRPL Tokens</span>
           </button>
-          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/nfts']" matTooltip="View all XRPL NFTs!">
+          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/nfts']">
             <mat-icon class="material-icons">token</mat-icon>
             <span>XRPL NFTs</span>
           </button>
-          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tools']" matTooltip="Tools">
+          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tools']">
             <mat-icon class="material-icons">build</mat-icon>
             <span>XRPL Tools</span>
           </button>
@@ -102,9 +105,13 @@
             <mat-icon class="material-icons">device_hub</mat-icon>
             <span>Generic Backend</span>
           </button-->
-          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/statistics']" matTooltip="XRPL Services Statistics">
+          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/xrpl-statistics']">
+            <mat-icon class="material-icons">analytics</mat-icon>
+            <span>XRPL Statistics</span>
+          </button>
+          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/statistics']">
             <mat-icon class="material-icons">query_stats</mat-icon>
-            <span>Statistics</span>
+            <span>Website Statistics</span>
           </button>
         </mat-menu>
   

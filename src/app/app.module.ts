@@ -50,6 +50,7 @@ import { MultiSignFlowComponent } from './components/tools/multiSignFlow';
 
 //Statistics
 import { Statistics } from './routes/statistics';
+import { XrplStatistics } from './routes/xrpl-statistics';
 
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -128,6 +129,7 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     MultiSignFlowComponent,
     HighlightSearchPipe,
     Statistics,
+    XrplStatistics,
     TokenDetailsDialog,
     IssuedNftList
   ],

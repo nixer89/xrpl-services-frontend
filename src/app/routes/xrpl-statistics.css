@@ -1,0 +1,10 @@
+.stats-component {
+    width: 350px;
+    margin: 10px;
+    background-color: var(--background-color);
+}
+
+.mat-card > :last-child:not(.mat-card-footer) {
+    margin: 10px;
+}
+
