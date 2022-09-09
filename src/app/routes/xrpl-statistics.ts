@@ -29,6 +29,8 @@ export class XrplStatistics implements OnInit {
   feesettingsStats:any = null;
   amendmentsStats:any = null;
 
+  totalNumberOfObjects: number = 0;
+
 
   async ngOnInit() {
     this.loading = true;
@@ -46,19 +48,17 @@ export class XrplStatistics implements OnInit {
           sizeType: xrplStatistics.sizeType
         }
 
-        let totalNumberOfObjects: number = 0;
+        this.totalNumberOfObjects = 0;
 
         let ledger_data = xrplStatistics.ledger_data;
 
         if(ledger_data) {
 
-          for (var xrplObject in ledger_data) {
-            if (ledger_data.hasOwnProperty(xrplObject)) {
-              totalNumberOfObjects += xrplObject['count'];
+          for (let xrplObject in ledger_data) {
+            if (ledger_data[xrplObject].hasOwnProperty('count')) {
+              this.totalNumberOfObjects = this.totalNumberOfObjects + ledger_data[xrplObject]['count'];
             }
           }
-
-          this.generalStats['all_objects_count'] = totalNumberOfObjects;
 
           this.ripplestateStats = ledger_data.ripplestate;
           this.accountrootStats = ledger_data.accountroot;

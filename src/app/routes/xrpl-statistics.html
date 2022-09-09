@@ -33,6 +33,11 @@
                 <label class="right-label-stats">{{numberWithCommas(roundNumber(generalStats.ledger_size / 1000 / 1024, 100))}} MB</label>
             </div>
             <div fxLayout="row">
+                <label>Total # of Object:</label>
+                <span style="flex: 1 1 auto;"></span>
+          <label class="right-label-stats">{{totalNumberOfObjects}}</label>
+            </div>
+            <div fxLayout="row">
                 <label>Total XRP:</label>
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{numberWithCommas(roundNumber((accountrootStats.special_data.BalanceValueTotal + escrowStats.special_data.AmountValueTotal) / 1000000,1))}} XRP</label>
@@ -47,6 +52,11 @@
                 <label>Count:</label>
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{numberWithCommas(accountrootStats.count)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(accountrootStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
             </div>
             <div fxLayout="row">
                 <label>Total size:</label>
@@ -141,6 +151,11 @@
                 <label class="right-label-stats">{{numberWithCommas(ripplestateStats.count)}}</label>
             </div>
             <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(ripplestateStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
+            </div>
+            <div fxLayout="row">
                 <label>Total size:</label>
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{numberWithCommas(roundNumber(ripplestateStats.size / 1000 / 1024, 10))}} MB</label>
@@ -165,6 +180,11 @@
                 <label>Count:</label>
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{numberWithCommas(escrowStats.count)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(escrowStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
             </div>
             <div fxLayout="row">
                 <label>Total size:</label>
@@ -206,6 +226,11 @@
                 <label>Count:</label>
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{numberWithCommas(offerStats.count)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(offerStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
             </div>
             <div fxLayout="row">
                 <label>Total size:</label>
@@ -253,6 +278,11 @@
                 <label class="right-label-stats">{{numberWithCommas(signerlistStats.count)}}</label>
             </div>
             <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(signerlistStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
+            </div>
+            <div fxLayout="row">
                 <label>Total size:</label>
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{numberWithCommas(roundNumber(signerlistStats.size / 1000 / 1024, 10))}} MB</label>
@@ -280,6 +310,11 @@
                 <label class="right-label-stats">{{numberWithCommas(paychannelStats.count)}}</label>
             </div>
             <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(paychannelStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
+            </div>
+            <div fxLayout="row">
                 <label>Total size:</label>
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{numberWithCommas(roundNumber(paychannelStats.size / 1000 / 1024, 10))}} MB</label>
@@ -298,38 +333,6 @@
     </mat-card>
 
     <mat-card class="stats-component">
-        <h3>Directory Nodes</h3>
-
-        <div fxLayout="column" fxLayoutGap="0.3em">
-            <div fxLayout="row">
-                <label>Count:</label>
-                <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(directorynodeStats.count)}}</label>
-            </div>
-            <div fxLayout="row">
-                <label>Total size:</label>
-                <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(roundNumber(directorynodeStats.size / 1000 / 1024, 10))}} MB</label>
-            </div>
-            <div fxLayout="row">
-                <label>% of total Ledger size:</label>
-                <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{roundNumber(directorynodeStats.percentage, 100)}} %</label>
-            </div>
-            <div fxLayout="row">
-                <label>Owner Directories:</label>
-                <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(directorynodeStats.property_count.Owner)}}</label>
-            </div>
-            <div fxLayout="row">
-                <label>Offer Directories:</label>
-                <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(directorynodeStats.property_count.ExchangeRate)}}</label>
-            </div>
-        </div>
-    </mat-card>
-
-    <mat-card class="stats-component">
         <h3>Tickets</h3>
 
         <div fxLayout="column" fxLayoutGap="0.3em">
@@ -337,6 +340,11 @@
                 <label>Count:</label>
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{numberWithCommas(ticketStats.count)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(ticketStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
             </div>
             <div fxLayout="row">
                 <label>Total size:</label>
@@ -359,6 +367,11 @@
                 <label>Count:</label>
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{numberWithCommas(checkStats.count)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(checkStats.count * 100 / totalNumberOfObjects, 10000)}} %</label>
             </div>
             <div fxLayout="row">
                 <label>Total size:</label>
@@ -388,6 +401,11 @@
                 <label class="right-label-stats">{{numberWithCommas(depositpreauthStats.count)}}</label>
             </div>
             <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(depositpreauthStats.count * 100 / totalNumberOfObjects, 10000)}} %</label>
+            </div>
+            <div fxLayout="row">
                 <label>Total size:</label>
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{numberWithCommas(roundNumber(depositpreauthStats.size / 1000 / 1024, 1000))}} MB</label>
@@ -396,6 +414,124 @@
                 <label>% of total Ledger size:</label>
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{roundNumber(depositpreauthStats.percentage, 1000000)}} %</label>
+            </div>
+        </div>
+    </mat-card>
+
+    <mat-card class="stats-component">
+        <h3>Directory Nodes</h3>
+
+        <div fxLayout="column" fxLayoutGap="0.3em">
+            <div fxLayout="row">
+                <label>Count:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(directorynodeStats.count)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(directorynodeStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
+            </div>
+            <div fxLayout="row">
+                <label>Total size:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(roundNumber(directorynodeStats.size / 1000 / 1024, 10))}} MB</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Ledger size:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(directorynodeStats.percentage, 100)}} %</label>
+            </div>
+            <div fxLayout="row">
+                <label>Owner Directories:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(directorynodeStats.property_count.Owner)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>Offer Directories:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(directorynodeStats.property_count.ExchangeRate)}}</label>
+            </div>
+        </div>
+    </mat-card>
+
+    <mat-card class="stats-component">
+        <h3>Ledger Hashes Objects</h3>
+
+        <div fxLayout="column" fxLayoutGap="0.3em">
+            <div fxLayout="row">
+                <label>Count:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(ledgerhashesStats.count)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(ledgerhashesStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
+            </div>
+            <div fxLayout="row">
+                <label>Total size:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(roundNumber(ledgerhashesStats.size / 1000 / 1024, 10))}} MB</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Ledger size:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(ledgerhashesStats.percentage, 100)}} %</label>
+            </div>
+        </div>
+    </mat-card>
+
+    <mat-card class="stats-component">
+        <h3>Fee Settings Objects</h3>
+
+        <div fxLayout="column" fxLayoutGap="0.3em">
+            <div fxLayout="row">
+                <label>Count:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(feesettingsStats.count)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(feesettingsStats.count * 100 / totalNumberOfObjects, 100000)}} %</label>
+            </div>
+            <div fxLayout="row">
+                <label>Total size:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(feesettingsStats.size)}} Bytes</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Ledger size:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(feesettingsStats.percentage, 1000000)}} %</label>
+            </div>
+        </div>
+    </mat-card>
+
+    <mat-card class="stats-component">
+        <h3>Amendment Objects</h3>
+
+        <div fxLayout="column" fxLayoutGap="0.3em">
+            <div fxLayout="row">
+                <label>Count:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(amendmentsStats.count)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(amendmentsStats.count * 100 / totalNumberOfObjects, 100000)}} %</label>
+            </div>
+            <div fxLayout="row">
+                <label>Total size:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(amendmentsStats.size)}} Bytes</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Ledger size:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(amendmentsStats.percentage, 100000)}} %</label>
             </div>
         </div>
     </mat-card>
