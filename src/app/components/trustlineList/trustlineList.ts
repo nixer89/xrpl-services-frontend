@@ -65,6 +65,10 @@ export class TrustLineList implements OnInit, OnDestroy {
             //console.log("test mode: " + this.testMode);
             this.account_Info = account.info;
             this.testMode = account.mode;
+
+            if(this.account_Info && this.account_Info.Account) {
+                this.loading = true;
+            }
         });
 
         this.accountObjectsChangedSubscription = this.accountObjectsChanged.subscribe(trustlineObjects => {

@@ -198,7 +198,6 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   async loadAccountData(isInit?: boolean) {
-    this.ngZone.runOutsideAngular(async () => {
     
       if(this.xrplAccount) {
         this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'xrpl_transactions_component');
@@ -292,7 +291,6 @@ export class XrplTransactionsComponent implements OnInit {
       } else {
         this.emitAccountInfoChanged();
       }
-    });
   }
 
   
