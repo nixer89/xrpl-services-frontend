@@ -47,6 +47,7 @@ import { RawTransactionsComponent } from './components/tools/rawTransactions';
 import { TestNetCredentialsComponent } from './components/tools/testNetCredentials';
 import { TransactionSchedulerComponent } from './components/tools/transactionScheduler';
 import { MultiSignFlowComponent } from './components/tools/multiSignFlow';
+import { UnlCheckerComponent } from './components/tools/unlChecker';
 
 //Statistics
 import { Statistics } from './routes/statistics';
@@ -131,7 +132,8 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     Statistics,
     XrplStatistics,
     TokenDetailsDialog,
-    IssuedNftList
+    IssuedNftList,
+    UnlCheckerComponent
   ],
   imports: [
     BrowserModule,

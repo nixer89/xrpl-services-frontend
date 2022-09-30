@@ -35,7 +35,8 @@
               "xrpl-tagged-address-codec",
               "md5",
               "copy-to-clipboard",
-              "qrcode"
+              "qrcode",
+              "stream-browserify"
             ],
             "vendorChunk": true,
             "extractLicenses": false,

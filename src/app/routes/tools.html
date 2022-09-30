@@ -70,5 +70,6 @@
         <transactionScheduler [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></transactionScheduler>
         <norippleCheck [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></norippleCheck>
         <rawTransactions [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></rawTransactions>
+        <unlChecker></unlChecker>
     </mat-accordion>
 </mat-card>

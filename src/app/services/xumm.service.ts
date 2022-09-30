@@ -208,6 +208,15 @@ export class XummService {
         }
     }
 
+    async getUnlData(unlUrl:string): Promise<any> {
+        try {
+            return this.app.post(this.xrplServicesBackendURL+"/api/tools/unlchecker", {url: unlUrl});
+        } catch(err) {
+            console.log(JSON.stringify(err))
+            return null;
+        }
+    }
+
     async makeChristmasPaymentRequest(xrplAccount: string) {
         let backendRequest: GenericBackendPostRequest = {
             options: {
