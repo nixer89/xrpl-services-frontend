@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
-import { AppService } from '../../services/app.service';
+import { UtilService } from 'src/app/services/util.service';
 import { XummService } from '../../services/xumm.service';
+import { rippleEpocheTimeToUTC } from '../../utils/normalizers';
 
 const elliptic = require('elliptic');
 const ed25519 = new elliptic.eddsa('ed25519')
@@ -39,10 +40,17 @@ export class UnlCheckerComponent {
       this.errors = [];
       this.unlData = null;
 
+      if(!this.unlUrl.startsWith("http")) {
+        this.unlUrl = "https://"+this.unlUrl;
+      }
+      
       let result = await this.getUnlData(this.unlUrl)
-      console.log(JSON.stringify(result));
+      //console.log(JSON.stringify(result));
 
       this.unlData = result.vl;
+
+      //console.log("unldata:")
+      //console.log(this.unlData);
 
       for(let nodePub in result) {
         if(result.hasOwnProperty(nodePub) && nodePub != "vl") {
@@ -105,7 +113,7 @@ export class UnlCheckerComponent {
         let domain_size = buf[upto++]
         man['Domain'] = buf.slice(upto, upto + domain_size).toString('utf-8')
         upto += domain_size
-        console.log("DOMAIN: " + man['Domain']);
+        //console.log("DOMAIN: " + man['Domain']);
     }
 
     // master signature
@@ -127,7 +135,7 @@ export class UnlCheckerComponent {
   private async getUnlData(url): Promise<any> {
     let json = await this.xummApi.getUnlData(url);
 
-    console.log(JSON.stringify(json));
+    //console.log(JSON.stringify(json));
 
     try
     {
@@ -161,7 +169,14 @@ export class UnlCheckerComponent {
             "Payload signature in mantifest failed verification")
         blob = JSON.parse(blob)
 
+        //console.log("BLOB:")
+        //console.log(blob);
+
         this.assert(blob.validators !== undefined, "validators missing from blob")
+
+        json.validator_count = blob.validators.length;
+        json.sequence = blob.sequence;
+        json.expiration = blob.expiration;
 
         // parse manifests inside blob (actual validator list)
         let unl:any = {}
@@ -202,5 +217,13 @@ export class UnlCheckerComponent {
           console.log("Invalid manifest: " + (m ? m : ""));
           this.errors.push("Invalid manifest: " + (m ? m : ""))
       }
+  }
+
+  public getUnlExpiration(expiration: number): string {
+    console.log("expiration: " + expiration);
+    let timeInMs:number = rippleEpocheTimeToUTC(expiration);
+    console.log("timeInMs: " + timeInMs);
+
+    return new Date(timeInMs).toLocaleString();
   }
 }

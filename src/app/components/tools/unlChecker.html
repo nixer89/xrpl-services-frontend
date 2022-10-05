@@ -2,10 +2,10 @@
   <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">playlist_add_check</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> UNL Signature Checker </span>
+      <span class="loading" style="margin-left: 0.5em;"> UNL Checker </span>
     </mat-panel-title>
     <mat-panel-description>
-      Checks if an UNL has valid Signatures
+      Checks and parses an UNL
     </mat-panel-description>
   </mat-expansion-panel-header>
   <mat-expansion-panel-header fxShow.xs fxHide>
@@ -13,7 +13,7 @@
       <label class="loading">UNL Checker</label>
     </mat-panel-title>
     <mat-panel-description>
-      Checks UNL Signatures
+      Checks and parses an UNL
     </mat-panel-description>
   </mat-expansion-panel-header>
 
@@ -58,6 +58,18 @@
     <div fxLayout="row" fxLayoutGap="0.3em">
       <label class="loading">Version:</label>
       <label class="break-words">{{unlData.version}}</label>
+    </div>
+    <div fxLayout="row" fxLayoutGap="0.3em">
+      <label class="loading">Sequence:</label>
+      <label class="break-words">{{unlData.sequence}}</label>
+    </div>
+    <div fxLayout="row" fxLayoutGap="0.3em">
+      <label class="loading">Expiration:</label>
+      <label class="break-words">{{getUnlExpiration(unlData.expiration)}}</label>
+    </div>
+    <div fxLayout="row" fxLayoutGap="0.3em">
+      <label class="loading">Number of Validators:</label>
+      <label class="break-words">{{unlData.validator_count}}</label>
     </div>
     <div fxLayout="column" fxLayoutGap="0.5em">
       <h3>Validators:</h3>
