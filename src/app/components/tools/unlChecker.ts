@@ -22,7 +22,7 @@ export class UnlCheckerComponent {
   constructor(private xummApi:XummService) { }
 
   @ViewChild('inpxrplaccount') inpxrplaccount;
-  unlUrl: string = "https://vlamm.devnet.rippletest.net/";
+  unlUrl: string;
 
   errors:string[] = [];
   validatorNodes:any[] = [];
