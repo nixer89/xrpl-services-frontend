@@ -1,10 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
-import { UtilService } from 'src/app/services/util.service';
 import { XummService } from '../../services/xumm.service';
 import { rippleEpocheTimeToUTC } from '../../utils/normalizers';
+import { createHash } from 'crypto';
 
 const elliptic = require('elliptic');
 const ed25519 = new elliptic.eddsa('ed25519')
+const secp256k1 = new elliptic.ec('secp256k1')
 
 const codec =
 {
@@ -21,7 +22,7 @@ export class UnlCheckerComponent {
   constructor(private xummApi:XummService) { }
 
   @ViewChild('inpxrplaccount') inpxrplaccount;
-  unlUrl: string;
+  unlUrl: string = "https://vlamm.devnet.rippletest.net/";
 
   errors:string[] = [];
   validatorNodes:any[] = [];
@@ -135,8 +136,6 @@ export class UnlCheckerComponent {
   private async getUnlData(url): Promise<any> {
     let json = await this.xummApi.getUnlData(url);
 
-    //console.log(JSON.stringify(json));
-
     try
     {
         // initial json validation
@@ -158,41 +157,78 @@ export class UnlCheckerComponent {
         let blob:any = Buffer.from(json.blob, 'base64')
 
         // parse manifest
-        const manifest = this.parseManifest(Buffer.from(json.manifest, 'base64'))
+        const manifest = this.parseManifest(Buffer.from(json.manifest, 'base64'));
 
         // verify manifest signature and payload signature
-        const master_key = ed25519.keyFromPublic(this.master_public_key.slice(2), 'hex')
-        this.assert(master_key.verify(manifest.without_signing_fields, manifest.MasterSignature),
-            "Master signature in master manifest does not match vl key")
-        let signing_key = ed25519.keyFromPublic(manifest.SigningPubKey.slice(2), 'hex')
-        this.assert(signing_key.verify(blob.toString('hex'), json.signature),
-            "Payload signature in mantifest failed verification")
-        blob = JSON.parse(blob)
+        let master_key;
+        
+        if(manifest.PublicKey.toUpperCase().startsWith('ED')) {
+          master_key = ed25519.keyFromPublic(manifest.PublicKey.slice(2), 'hex');
+          this.assert(master_key.verify(manifest.without_signing_fields, manifest.MasterSignature),"Master signature in master manifest does not match vl key")
+         } else {
+          master_key = secp256k1.keyFromPublic(manifest.PublicKey, 'hex');
+          this.assert(master_key.verify(manifest.without_signing_fields, manifest.MasterSignature),"Master signature in master manifest does not match vl key")
+         }
+      
+        let signing_key = null;
+        
+        if(manifest.SigningPubKey.toUpperCase().startsWith('ED')) {
+          signing_key = ed25519.keyFromPublic(manifest.SigningPubKey.slice(2), 'hex')
+          this.assert(signing_key.verify(blob.toString('hex'), json.signature), "Payload signature in mantifest failed verification")
+        } else { 
+          signing_key = secp256k1.keyFromPublic(manifest.SigningPubKey, 'hex');
+          //sha512 half the blob!
+          //https://xrpl.org/cryptographic-keys.html#key-derivation
+          let sha512Blob = createHash('sha512').update(blob);  
+          let sha512HalfBuffer = sha512Blob.digest().slice(0,32);
 
-        //console.log("BLOB:")
-        //console.log(blob);
+          this.assert(signing_key.verify(sha512HalfBuffer, json.signature), "Payload signature in mantifest failed verification")
+        }
+
+        blob = JSON.parse(blob)
 
         this.assert(blob.validators !== undefined, "validators missing from blob")
 
         json.validator_count = blob.validators.length;
         json.sequence = blob.sequence;
-        json.expiration = blob.expiration;
+        json.expiration = this.getUnlExpiration(blob.expiration);
+        json.expiration_days_left = this.getUnlExpirationDaysLeft(blob.expiration);
+        json.signing_pub_key = manifest.SigningPubKey.toUpperCase();
+        json.master_key = manifest.PublicKey.toUpperCase()
+        json.master_signature = manifest.MasterSignature.toUpperCase();
 
         // parse manifests inside blob (actual validator list)
         let unl:any = {}
         for (let idx in blob.validators)
         {
+            //console.log((blob.validators[idx]));
             this.assert(blob.validators[idx].manifest !== undefined, "validators list in blob contains invalid entry (missing manifest)")
             this.assert(blob.validators[idx].validation_public_key !== undefined, "validators list in blob contains invalid entry (missing validation public key)")
             
             let parsedManifest = this.parseManifest(Buffer.from(blob.validators[idx].manifest, 'base64'))
 
             // verify signature
-            signing_key = ed25519.keyFromPublic(blob.validators[idx].validation_public_key.slice(2), 'hex')
+            let signing_key;
 
-            this.assert(signing_key.verify(parsedManifest.without_signing_fields, parsedManifest.MasterSignature), "Validation manifest " + idx + " signature verification failed")
+            let publicKey = blob.validators[idx].validation_public_key;
 
-            blob.validators[idx].validation_public_key =Buffer.from(blob.validators[idx].validation_public_key, 'hex')
+            if (publicKey.slice(0, 1) === 'n') {
+              const publicKeyBuffer = codec.address.decodeNodePublic(publicKey);
+              publicKey = publicKeyBuffer.toString("hex").toUpperCase();
+            }
+            
+            if(publicKey.toUpperCase().startsWith('ED')) {
+              //console.log("ed25519");
+              signing_key = ed25519.keyFromPublic(publicKey.slice(2), 'hex');
+              this.assert(signing_key.verify(parsedManifest.without_signing_fields, parsedManifest.MasterSignature), "Validation manifest " + idx + " signature verification failed");
+            } else {
+              //console.log("secp256k1");
+              signing_key = secp256k1.keyFromPublic(publicKey, 'hex');
+              const computedHash = createHash("sha512").update(parsedManifest.without_signing_fields).digest().toString("hex").slice(0, 32);
+              this.assert(signing_key.verify(computedHash, parsedManifest.MasterSignature), "Validation manifest " + idx + " signature verification failed");
+            } 
+
+            blob.validators[idx].validation_public_key = Buffer.from(blob.validators[idx].validation_public_key, 'hex')
             
             let nodepub = codec.address.encodeNodePublic(Buffer.from(parsedManifest.SigningPubKey, 'hex'))
             unl[nodepub] =
@@ -219,11 +255,14 @@ export class UnlCheckerComponent {
       }
   }
 
-  public getUnlExpiration(expiration: number): string {
-    console.log("expiration: " + expiration);
+  private getUnlExpiration(expiration: number): string {
     let timeInMs:number = rippleEpocheTimeToUTC(expiration);
-    console.log("timeInMs: " + timeInMs);
-
     return new Date(timeInMs).toLocaleString();
+  }
+
+  private getUnlExpirationDaysLeft(expiration:number): number {
+    let timeInMs:number = rippleEpocheTimeToUTC(expiration);
+    let diffTime = timeInMs - Date.now();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }
 }

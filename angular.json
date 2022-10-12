@@ -36,7 +36,8 @@
               "md5",
               "copy-to-clipboard",
               "qrcode",
-              "stream-browserify"
+              "stream-browserify",
+              "crypto-browserify"
             ],
             "vendorChunk": true,
             "extractLicenses": false,

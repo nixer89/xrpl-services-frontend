@@ -42,14 +42,24 @@
   </mat-card>
 
   <mat-card *ngIf="validatorNodes && validatorNodes.length > 0" fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.xs="0.3em" style="margin-top: 1em;">
-    <label class="success">UNL checked successfully and signature is valid!</label>
+    <div *ngIf="!errors || errors.length == 0">
+      <label class="success">UNL checked successfully and all signature are valid!</label>
+    </div>
     <div fxLayout="row" fxLayoutGap="0.3em">
       <label class="loading">Master Public Key:</label>
-      <label class="break-words">{{unlData.public_key}}</label>
+      <label class="break-words">{{unlData.master_key}}</label>
+    </div>
+    <div fxLayout="row" fxLayoutGap="0.3em">
+      <label class="loading">Master Signature:</label>
+      <label class="break-words">{{unlData.master_signature}}</label>
     </div>
     <div fxLayout="row" fxLayoutGap="0.3em">
       <label class="loading">Manifest:</label>
       <label class="break-words">{{unlData.manifest}}</label>
+    </div>
+    <div fxLayout="row" fxLayoutGap="0.3em">
+      <label class="loading">SigningPubKey:</label>
+      <label class="break-words">{{unlData.signing_pub_key}}</label>
     </div>
     <div fxLayout="row" fxLayoutGap="0.3em">
       <label class="loading">Signature:</label>
@@ -65,7 +75,10 @@
     </div>
     <div fxLayout="row" fxLayoutGap="0.3em">
       <label class="loading">Expiration:</label>
-      <label class="break-words">{{getUnlExpiration(unlData.expiration)}}</label>
+      <label class="break-words">{{unlData.expiration}}</label>
+      <label *ngIf="unlData.expiration_days_left > 30" class="success">({{unlData.expiration_days_left}} Days left)</label>
+      <label *ngIf="unlData.expiration_days_left >=0 && unlData.expiration_days_left <= 30" class="loading"><b>({{unlData.expiration_days_left}} Days left)</b></label>
+      <label *ngIf="unlData.expiration_days_left < 0" class="warning"><b>(Expired {{unlData.expiration_days_left*-1}} Day ago!)</b></label>
     </div>
     <div fxLayout="row" fxLayoutGap="0.3em">
       <label class="loading">Number of Validators:</label>
