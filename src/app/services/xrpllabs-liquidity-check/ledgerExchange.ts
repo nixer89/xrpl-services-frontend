@@ -59,7 +59,7 @@ export class LedgerExchange {
                 amount,
             },
             options: this.boundaryOptions,
-            method: xrplClient.send,
+            method: null,
         };
     };
 

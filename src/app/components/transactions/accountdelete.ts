@@ -34,7 +34,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
 
   private transactionSuccessfullSubscription: Subscription;
 
-  isTestMode:boolean = false;
+  nodeUrl:string;
 
   destinationAccountExists:boolean = false;
   validDestinationAddress:boolean = false;
@@ -57,7 +57,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
       this.originalAccountInfo = accountData.info;
       this.accountReserve = accountData.accountReserve;
       this.ownerReserve = accountData.ownerReserve;
-      this.isTestMode = accountData.mode;
+      this.nodeUrl = accountData.nodeUrl;
       
       if(this.originalAccountInfo && this.originalAccountInfo.Account) {
         await this.checkPreconditions();
@@ -100,7 +100,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         limit: 201
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", account_objects_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", account_objects_request, this.nodeUrl);
 
       await this.handleWebSocketMessagePreconditions(message, accountObjects);
     }
@@ -180,7 +180,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
         "strict": true,
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", account_info_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage("accountdelete", account_info_request, this.nodeUrl);
 
       //console.log("check destination account: " + JSON.stringify(message));
 

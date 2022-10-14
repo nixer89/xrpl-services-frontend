@@ -46,7 +46,7 @@ export class TrustLineList implements OnInit, OnDestroy {
     trustLines:SimpleTrustLine[] = [];
     displayedColumns: string[] = ['currency', 'account','balance', 'limit', 'limit_peer', 'no_ripple', 'actions'];
     loading:boolean = false;
-    testMode:boolean = false;
+    nodeUrl:string;
     originalTestModeValue:boolean = false;
     trustlineClicked:boolean = false;
 
@@ -64,7 +64,7 @@ export class TrustLineList implements OnInit, OnDestroy {
             //console.log("trustline account changed received: " + xrplAccount);
             //console.log("test mode: " + this.testMode);
             this.account_Info = account.info;
-            this.testMode = account.mode;
+            this.nodeUrl = account.nodeUrl;
 
             if(this.account_Info && this.account_Info.Account) {
                 this.loading = true;
@@ -76,7 +76,7 @@ export class TrustLineList implements OnInit, OnDestroy {
             this.loading = true;
             if(trustlineObjects && trustlineObjects.objects) {
 
-                this.testMode = trustlineObjects.mode;
+                this.nodeUrl = trustlineObjects.nodeUrl;
 
                 this.convertToSimpleTrustline(trustlineObjects.objects);            
             

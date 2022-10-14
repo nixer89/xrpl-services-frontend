@@ -23,7 +23,7 @@ export class TrustLineListIssuing implements OnInit, OnDestroy {
     trustLines:TrustLine[] = [];
     displayedColumns: string[] = ['currency', 'account','balance', 'limit', 'info'];
     loading:boolean = false;
-    testMode:boolean = false;
+    nodeUrl:string;
     originalTestModeValue:boolean = false;
 
     issuerAccount:string = null;
@@ -41,7 +41,7 @@ export class TrustLineListIssuing implements OnInit, OnDestroy {
             //console.log("recipientAccountChanged " + JSON.stringify(recipientAccountInfo));
             //console.log("test mode: " + recipientAccountInfo.mode);
             this.recipientAccount = recipientAccountInfo.account;
-            this.testMode = recipientAccountInfo.mode;
+            this.nodeUrl = recipientAccountInfo.nodeUrl;
             
             if(this.recipientAccount && this.issuerAccount)
                 this.loadTrustLineList(this.recipientAccount);
@@ -53,7 +53,7 @@ export class TrustLineListIssuing implements OnInit, OnDestroy {
             //console.log("issuerAccountChanged: " + JSON.stringify(isserAccountInfo));
             //console.log("test mode: " + isserAccountInfo.mode);
             this.issuerAccount = isserAccountInfo.account;
-            this.testMode = isserAccountInfo.mode;
+            this.nodeUrl = isserAccountInfo.nodeUrl;
             
             if(this.recipientAccount && this.issuerAccount)
                 this.loadTrustLineList(this.recipientAccount);
@@ -85,7 +85,7 @@ export class TrustLineListIssuing implements OnInit, OnDestroy {
               peer: this.issuerAccount
             }
 
-            let message:any = await this.xrplWebSocket.getWebsocketMessage("trustlineListIssuing", account_lines_request, this.testMode);
+            let message:any = await this.xrplWebSocket.getWebsocketMessage("trustlineListIssuing", account_lines_request, this.nodeUrl);
       
             if(message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.lines) {
                 this.trustLines = message.result.lines;

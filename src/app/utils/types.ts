@@ -35,17 +35,17 @@ export interface AccountInfoChanged {
     info: any,
     accountReserve: number,
     ownerReserve: number,
-    mode: boolean
+    nodeUrl: string
 }
 
 export interface AccountObjectsChanged {
     objects: any[],
-    mode: boolean
+    nodeUrl: string
 }
 
 export interface XrplAccountChanged {
     account: string,
-    mode: boolean
+    nodeUrl: string
 }
 
 export interface Token {

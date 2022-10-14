@@ -35,8 +35,6 @@ export class XrplTransactionsComponent implements OnInit {
   accountObjectsChanged: Subject<AccountObjectsChanged> = new Subject<AccountObjectsChanged>();
   transactionSuccessfull: Subject<any> = new Subject<any>();
 
-  isTestMode:boolean = false;
-
   loadingData:boolean = false;
   cannotConnectToNode:boolean = false;
 
@@ -44,6 +42,16 @@ export class XrplTransactionsComponent implements OnInit {
 
   accountReserve:number = 10000000;
   ownerReserve:number = 2000000;
+
+  availableNetworks:any[] = [
+    {value:"wss://s.altnet.rippletest.net:51233", viewValue: "Testnet"},
+    {value:"wss://s.devnet.rippletest.net:51233", viewValue: "Devnet"},
+    {value:"wss://s.altnet.rippletest.net:51233", viewValue: "Hooks v2 Testnet"},
+    {value:"wss://xls20-sandbox.rippletest.net:51233", viewValue: "XLS20 Devnet"},
+    {value: "custom", viewValue: "Custom"}
+  ];
+
+  selectedNode:string = "wss://s.altnet.rippletest.net:51233";
 
   constructor(
     private matDialog: MatDialog,
@@ -55,8 +63,7 @@ export class XrplTransactionsComponent implements OnInit {
     private localStorage: LocalStorageService,
     private overlayContainer: OverlayContainer,
     private xrplWebsocket: XRPLWebsocket,
-    private deviceDetector: DeviceDetectorService,
-    private ngZone: NgZone) { }
+    private deviceDetector: DeviceDetectorService) { }
 
   async ngOnInit() {
 
@@ -135,19 +142,6 @@ export class XrplTransactionsComponent implements OnInit {
         }
       }
 
-      if(params.issuer && params.currency && params.limit) {
-        if(params && ((params.testmode && params.testmode.toLowerCase() === 'true') || (params.testnet && params.testnet.toLowerCase() === 'true') || (params.test && params.test.toLowerCase() === 'true'))) {
-          if(!this.isTestMode) {
-            this.isTestMode = true;
-            this.networkChanged();
-          }
-        } else {
-          if(this.isTestMode) {
-            this.isTestMode = false;
-            this.networkChanged();
-          }
-        }
-      }
 
       //console.log("check logged in account xrpl");
       //console.log(this.localStorage.get("xrplAccount"));
@@ -156,8 +150,8 @@ export class XrplTransactionsComponent implements OnInit {
       if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
         this.xrplAccount = this.localStorage.get("xrplAccount");
         
-        if(this.localStorage.keys().includes("testMode"))
-          this.isTestMode = this.localStorage.get("testMode");
+        if(this.localStorage.keys().includes("nodeUrl"))
+          this.selectedNode = this.localStorage.get("nodeUrl");
           
         this.loadAccountData(true);
       }
@@ -168,7 +162,7 @@ export class XrplTransactionsComponent implements OnInit {
     //this.xrplAccount="rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"; //bitstamp
     //this.xrplAccount="rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF";
     
-    //this.xrplAccount="rpPVUDK8xSYejBHA1431nKDaaM8wnKt3Rc";
+    //this.xrplAccount="rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ";
     
     //this.xrplAccount="r4LxkCUXYTCUgwquN3BnsUxFacoVLjGFyF";
     //this.isTestMode = true;
@@ -187,7 +181,7 @@ export class XrplTransactionsComponent implements OnInit {
       ledger_index: "validated"
     }
 
-    let feeSetting:any = await this.xrplWebsocket.getWebsocketMessage("fee-settings", fee_request, this.isTestMode);
+    let feeSetting:any = await this.xrplWebsocket.getWebsocketMessage("fee-settings", fee_request, this.selectedNode);
     this.accountReserve = feeSetting?.result?.node["ReserveBase"];
     this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
 
@@ -205,7 +199,7 @@ export class XrplTransactionsComponent implements OnInit {
         this.loadingData = true;
 
         this.localStorage.set("xrplAccount", this.xrplAccount);
-        this.localStorage.set("testMode", this.isTestMode);
+        this.localStorage.set("nodeUrl", this.selectedNode);
 
         let account_info_request:any = {
           command: "account_info",
@@ -213,7 +207,7 @@ export class XrplTransactionsComponent implements OnInit {
           "strict": true,
         }
 
-        let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage("xrpl-transactions", account_info_request, this.isTestMode)
+        let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage("xrpl-transactions", account_info_request, this.selectedNode)
         //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
 
         if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
@@ -245,7 +239,7 @@ export class XrplTransactionsComponent implements OnInit {
             limit: 200
           }
     
-          let accountObjects:any = await this.xrplWebsocket.getWebsocketMessage("account-objects", account_objects_request, this.isTestMode);
+          let accountObjects:any = await this.xrplWebsocket.getWebsocketMessage("account-objects", account_objects_request, this.selectedNode);
 
           //load more escrows
           if(accountObjects?.result?.account_objects) {
@@ -265,7 +259,7 @@ export class XrplTransactionsComponent implements OnInit {
     
                   //await this.xrplWebSocket.getWebsocketMessage("token-trasher", server_info, this.isTestMode);
       
-                  accountObjects = await this.xrplWebsocket.getWebsocketMessage("account-objects", account_objects_request, this.isTestMode);
+                  accountObjects = await this.xrplWebsocket.getWebsocketMessage("account-objects", account_objects_request, this.selectedNode);
 
                   //console.log(JSON.stringify(accountObjects));
       
@@ -345,9 +339,9 @@ export class XrplTransactionsComponent implements OnInit {
     if(trxInfo) {
       this.googleAnalytics.analyticsEventEmitter('handle_transaction_success', 'handle_transaction', 'xrpl_transactions_component');
       if(trxInfo.success && trxInfo.testnet != null)
-        this.isTestMode = trxInfo.testnet;
 
       if(trxInfo.txid) {
+        /**
         if(trxInfo.testnet) {
           this.lastTrxLinkBithomp = "https://test.bithomp.com/explorer/"+trxInfo.txid;
           this.lastTrxLinkXrplOrg = "https://testnet.xrpl.org/transactions/"+trxInfo.txid;
@@ -359,10 +353,12 @@ export class XrplTransactionsComponent implements OnInit {
           this.lastTrxLinkXrplorer = "https://xrplorer.com/transaction/"+trxInfo.txid;
         }
 
+         */
+
         if(trxInfo.success) {
           this.transactionSuccessfull.next();
 
-          this.handleEscrowCreate(trxInfo);
+          //this.handleEscrowCreate(trxInfo);
         }
 
         //christmas over, do not generate image anmore!
@@ -451,16 +447,21 @@ export class XrplTransactionsComponent implements OnInit {
 
   emitAccountInfoChanged() {
     //console.log("emit account info changed");
-    this.accountInfoChanged.next({info: this.xrplAccount_Info, mode: this.isTestMode, accountReserve: this.accountReserve, ownerReserve: this.ownerReserve});
+    this.accountInfoChanged.next({info: this.xrplAccount_Info, nodeUrl: this.selectedNode, accountReserve: this.accountReserve, ownerReserve: this.ownerReserve});
   }
 
   emitAccountObjectsChanged() {
     //console.log("emit account objects changed");
-    this.accountObjectsChanged.next({objects: this.xrplAccount_Objects, mode: this.isTestMode});
+    this.accountObjectsChanged.next({objects: this.xrplAccount_Objects, nodeUrl: this.selectedNode});
   }
 
   async onPayloadReceived(xummPayload:XummTypes.XummPostPayloadBodyJson) {
     //console.log("received payload: " + JSON.stringify(payload));
+
+    xummPayload.custom_meta.blob = {
+      custom_node: this.selectedNode
+    }
+
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
         xrplAccount: this.xrplAccount ? this.xrplAccount : null

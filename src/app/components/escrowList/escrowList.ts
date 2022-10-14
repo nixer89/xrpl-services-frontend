@@ -34,7 +34,7 @@ export class EscrowList implements OnInit, OnDestroy {
     escrowData:any[] = [];
     displayedColumns: string[] = ['destination', 'amount', 'finishafter', 'cancelafter', 'condition'];
     loading:boolean = false;
-    testMode:boolean = false;
+    nodeUrl:string;
     escrowClicked:boolean = false;
 
     uniqueIdentifier:string = Math.random() +"";
@@ -53,7 +53,7 @@ export class EscrowList implements OnInit, OnDestroy {
             //console.log("escrow account changed received: " + xrplAccount);
             //console.log("test mode: " + this.testMode);
             if(accountData) {
-                this.testMode = accountData.mode;
+                this.nodeUrl = accountData.nodeUrl;
             }
 
             if(accountData && accountData.account) {
@@ -69,7 +69,7 @@ export class EscrowList implements OnInit, OnDestroy {
 
             if(escrowObjects && escrowObjects.objects) {
                 //console.log("length: " + escrowObjects.objects.length + " | " + this.isCancel + " | " + this.isFinish);
-                this.testMode = escrowObjects.mode;
+                this.nodeUrl = escrowObjects.nodeUrl;
 
                 //no escrows delivered. set empty list
                 if(!escrowObjects.objects)
@@ -152,7 +152,7 @@ export class EscrowList implements OnInit, OnDestroy {
                 transaction: escrow.PreviousTxnID,
             }
 
-            let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowList"+this.uniqueIdentifier, txInfo, this.testMode);
+            let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowList"+this.uniqueIdentifier, txInfo, this.nodeUrl);
 
             this.handleWebsocketMessage(message);
             this.googleAnalytics.analyticsEventEmitter('escrow_list_selected', 'escrow_list', 'escrow_list_component');

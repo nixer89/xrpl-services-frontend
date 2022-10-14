@@ -4,11 +4,7 @@ import { Injectable, Optional, SkipSelf } from '@angular/core';
 @Injectable()
 export class XRPLWebsocket {
     
-    originalTestModeValue:boolean = false;
-    mainNodes:string[] = ['wss://xrplcluster.com', 'wss://s2.ripple.com'];
-    testNodes:string[] = ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net'];
-    mainFirst:boolean = true;
-    testFirst:boolean = true;
+    originalNodeUrl:string = "";
     errorsToSwitch:string[] = ["amendmentBlocked", "failedToForward", "invalid_API_version", "noClosed", "noCurrent", "noNetwork", "tooBusy"]
 
     websocketMap:Map<string, any> = new Map();
@@ -20,9 +16,9 @@ export class XRPLWebsocket {
         }
     }
 
-    async getWebsocketMessage(componentname:string, command:any, newTestMode:boolean, retry?:boolean): Promise<any> {
+    async getWebsocketMessage(componentname:string, command:any, nodeUrl:string, retry?:boolean): Promise<any> {
 
-        if(this.websocketMap.get(componentname) && this.websocketMap.get(componentname).mode != newTestMode) {
+        if(this.websocketMap.get(componentname) && this.websocketMap.get(componentname).nodeUrl != nodeUrl) {
             //console.log("test mode changed")
             this.websocketMap.get(componentname).socket.unsubscribe();
             this.websocketMap.get(componentname).socket.complete();
@@ -33,11 +29,11 @@ export class XRPLWebsocket {
 
         if(!this.websocketMap.get(componentname) || this.websocketMap.get(componentname).socket.closed) {
 
-            this.originalTestModeValue = newTestMode;
-            console.log("connecting websocket with testmode: " + this.originalTestModeValue);
-            let newWebsocket = webSocket(this.originalTestModeValue ? (this.testFirst ? this.testNodes[0] : this.testNodes[1]) : (this.mainFirst ? this.mainNodes[0] : this.mainNodes[1]));
+            this.originalNodeUrl = nodeUrl;
+            console.log("connecting to websocket: " + this.originalNodeUrl);
+            let newWebsocket = webSocket(this.originalNodeUrl);
 
-            this.websocketMap.set(componentname, {socket: newWebsocket, mode: newTestMode, isBusy: false});
+            this.websocketMap.set(componentname, {socket: newWebsocket, nodeUrl: nodeUrl, isBusy: false});
 
             //console.log("websockets: " + this.websocketMap.size);
         }
@@ -73,35 +69,7 @@ export class XRPLWebsocket {
     }
 
     async connectToSecondWS(componentname:string, command:any): Promise<any> {
-        if(this.originalTestModeValue)
-            this.testFirst = !this.testFirst;
-        else
-            this.mainFirst = !this.mainFirst;
-
-        return this.getWebsocketMessage(componentname, command, this.originalTestModeValue, true);
-    }
-
-    async send(command:any): Promise<any> {
-        //console.log("offers command: " + JSON.stringify(command));
-
-        let newWebsocket:WebSocketSubject<any> = webSocket('wss://xrplcluster.com');
-
-        return new Promise((resolve, reject) => {
-            newWebsocket.asObservable().subscribe(async message => {
-                //console.log(JSON.stringify(message));
-                
-                if(message && message.error) {
-                    reject("error");    
-                } else {
-                    resolve(message.result);
-                }               
-            }, async error => {
-                reject("error");
-            });
-
-            //console.log("setting up command: " + JSON.stringify(command))
-            newWebsocket.next(command);
-        }); 
+        return this.getWebsocketMessage(componentname, command, this.originalNodeUrl, true);
     }
 }
 

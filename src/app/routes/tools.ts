@@ -32,8 +32,6 @@ export class Tools implements OnInit {
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
   transactionSuccessfull: Subject<any> = new Subject<any>();
 
-  isTestMode:boolean = false;
-
   loadingData:boolean = false;
   cannotConnectToNode:boolean = false;
 
@@ -41,6 +39,16 @@ export class Tools implements OnInit {
 
   accountReserve:number = 10000000;
   ownerReserve:number = 2000000;
+
+  availableNetworks:any[] = [
+    {value:"wss://s.altnet.rippletest.net:51233", viewValue: "Testnet"},
+    {value:"wss://s.devnet.rippletest.net:51233", viewValue: "Devnet"},
+    {value:"wss://s.altnet.rippletest.net:51233", viewValue: "Hooks v2 Testnet"},
+    {value:"wss://xls20-sandbox.rippletest.net:51233", viewValue: "XLS20 Devnet"},
+    {value: "custom", viewValue: "Custom"}
+  ];
+
+  selectedNode:string = "wss://s.altnet.rippletest.net:51233";
 
   constructor(
     private matDialog: MatDialog,
@@ -115,8 +123,8 @@ export class Tools implements OnInit {
     if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
       this.xrplAccount = this.localStorage.get("xrplAccount");
 
-      if(this.localStorage.keys().includes("testMode") && this.localStorage.get("testMode") != null)
-        this.isTestMode = this.localStorage.get("testMode");
+      if(this.localStorage.keys().includes("nodeUrl") && this.localStorage.get("nodeUrl") != null)
+        this.selectedNode = this.localStorage.get("nodeUrl");
 
       await this.loadAccountData(true);
     }
@@ -228,7 +236,7 @@ export class Tools implements OnInit {
       ledger_index: "validated"
     }
 
-    let feeSetting:any = await this.xrplWebSocket.getWebsocketMessage("fee-settings", fee_request, this.isTestMode);
+    let feeSetting:any = await this.xrplWebSocket.getWebsocketMessage("fee-settings", fee_request, this.selectedNode);
     this.accountReserve = feeSetting?.result?.node["ReserveBase"];
     this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
 
@@ -243,7 +251,7 @@ export class Tools implements OnInit {
       this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'tools_component');
 
       this.localStorage.set("xrplAccount", this.xrplAccount);
-      this.localStorage.set("testMode", this.isTestMode);
+      this.localStorage.set("nodeUrl", this.selectedNode);
 
       this.cannotConnectToNode = false;
       this.loadingData = true;
@@ -254,7 +262,7 @@ export class Tools implements OnInit {
         "strict": true,
       }
 
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("tools", account_info_request, this.isTestMode);
+      let message:any = await this.xrplWebSocket.getWebsocketMessage("tools", account_info_request, this.selectedNode);
       //console.log("tools account info: " + JSON.stringify(message));
 
       if(message.status && message.type && message.type === 'response') {
@@ -340,9 +348,10 @@ export class Tools implements OnInit {
       this.googleAnalytics.analyticsEventEmitter('handle_transaction_success', 'handle_transaction', 'tools_component');
 
       if(trxInfo.testnet != null)
-        this.isTestMode = trxInfo.testnet;
 
+      
       if(trxInfo.txid) {
+        /**
         if(trxInfo.testnet) {
           this.lastTrxLinkBithomp = "https://test.bithomp.com/explorer/"+trxInfo.txid;
           this.lastTrxLinkXrplOrg = "https://testnet.xrpl.org/transactions/"+trxInfo.txid;
@@ -353,6 +362,8 @@ export class Tools implements OnInit {
           this.lastTrxLinkXrp1ntel = "https://xrp1ntel.com/tx/"+trxInfo.txid;
           this.lastTrxLinkXrplorer = "https://xrplorer.com/transaction/"+trxInfo.txid;
         }
+
+         */
 
         if(trxInfo.success)
           this.transactionSuccessfull.next();
@@ -372,7 +383,7 @@ export class Tools implements OnInit {
 
   emitAccountInfoChanged() {
     //console.log("emit account info changed");
-    this.accountInfoChanged.next({info: this.xrplAccount_Info, accountReserve: this.accountReserve, ownerReserve: this.ownerReserve, mode: this.isTestMode});
+    this.accountInfoChanged.next({info: this.xrplAccount_Info, accountReserve: this.accountReserve, ownerReserve: this.ownerReserve, nodeUrl: this.selectedNode});
   }
 
   async onPayloadReceived(genericBackendRequest: GenericBackendPostRequest) {

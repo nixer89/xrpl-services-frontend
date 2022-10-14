@@ -11,25 +11,15 @@ import { TermsComponent } from './routes/specific/terms';
 import { PrivacyComponent } from './routes/specific/privacy'
 import { XrplTransactionsComponent } from './routes/xrpl-transactions';
 import { Tools } from './routes/tools';
-import { GenericBackendDefinition } from './routes/generic-backend';
-import { EasyToken } from './routes/easyToken';
-import { NftRoute } from './routes/nftRoute';
 import { TopbarComponent } from './components/topbar';
 import { FooterComponent } from './components/footer';
 import { XummSignDialogComponent } from './components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from './components/genericPayloadQRDialog';
 import { GenericDialogComponent } from './components/genericDialog';
 import { EscrowList } from './components/escrowList/escrowList';
-import { EscrowListExecuter } from './components/escrowListExecuter/escrowListExecuter';
 import { TokenList } from './components/tokenList/tokenList';
 import { TrustLineList } from './components/trustlineList/trustlineList';
 import { TrustLineListIssuing } from './components/trustlineList/trustlineListIssuing';
-import { CreateToken } from './components/easyToken/createToken';
-import { IssueMoreToken } from './components/easyToken/issueMoreToken';
-import { IssuedTokenList } from './components/easyToken/issuedTokenList';
-import { IssuedNftList } from './components/easyToken/issuedNftList';
-import { TokenDetailsDialog } from './components/easyToken/tokenDetailsDialog';
-import { BlackholeAccount } from './components/easyToken/blackholeAccount';
 
 //XRPL transactions
 import { AccountSetComponent } from './components/transactions/accountset';
@@ -42,16 +32,11 @@ import { TrustSetComponent } from './components/transactions/trustset';
 import { AccountDeleteComponent } from './components/transactions/accountdelete';
 
 //Tools
-import { NoRippleCheckComponent } from './components/tools/norippleCheck';
 import { RawTransactionsComponent } from './components/tools/rawTransactions';
 import { TestNetCredentialsComponent } from './components/tools/testNetCredentials';
-import { TransactionSchedulerComponent } from './components/tools/transactionScheduler';
-import { MultiSignFlowComponent } from './components/tools/multiSignFlow';
-import { UnlCheckerComponent } from './components/tools/unlChecker';
 
 //Statistics
 import { Statistics } from './routes/statistics';
-import { XrplStatistics } from './routes/xrpl-statistics';
 
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -98,22 +83,15 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     PrivacyComponent,
     XrplTransactionsComponent,
     Tools,
-    GenericBackendDefinition,
-    EasyToken,
-    NftRoute,
     TopbarComponent,
     FooterComponent,
     XummSignDialogComponent,
     GenericPayloadQRDialog,
     GenericDialogComponent,
     EscrowList,
-    EscrowListExecuter,
     TokenList,
     TrustLineList,
     TrustLineListIssuing,
-    CreateToken,
-    IssueMoreToken,
-    IssuedTokenList,
     AccountSetComponent,
     EscrowCreateComponent,
     EscrowFinishComponent,
@@ -121,19 +99,11 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     SetRegularKeyComponent,
     SignerListSetComponent,
     TrustSetComponent,
-    NoRippleCheckComponent,
-    TransactionSchedulerComponent,
-    BlackholeAccount,
     AccountDeleteComponent,
     RawTransactionsComponent,
     TestNetCredentialsComponent,
-    MultiSignFlowComponent,
     HighlightSearchPipe,
     Statistics,
-    XrplStatistics,
-    TokenDetailsDialog,
-    IssuedNftList,
-    UnlCheckerComponent
   ],
   imports: [
     BrowserModule,

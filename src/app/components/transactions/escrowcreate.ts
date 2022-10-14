@@ -91,7 +91,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       this.ownerReserve = accountData.ownerReserve;
 
       if(this.originalAccountInfo && this.originalAccountInfo.Account && isValidXRPAddress(this.originalAccountInfo.Account)) {
-        this.escrowAccountChanged.next({account: this.originalAccountInfo.Account, mode: accountData.mode});
+        this.escrowAccountChanged.next({account: this.originalAccountInfo.Account, nodeUrl: accountData.nodeUrl});
       }
 
     });
@@ -100,10 +100,10 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       //console.log("account objects changed received")
       if(accountObjects && accountObjects.objects) {
         this.allAccountEscrows = accountObjects.objects.filter(object => object.LedgerEntryType === "Escrow");
-        this.escrowsChanged.next({objects: this.allAccountEscrows, mode: accountObjects.mode});
+        this.escrowsChanged.next({objects: this.allAccountEscrows, nodeUrl: accountObjects.nodeUrl});
       } else {
         this.allAccountEscrows = null;
-        this.escrowsChanged.next({objects: null, mode: accountObjects.mode});
+        this.escrowsChanged.next({objects: null, nodeUrl: accountObjects.nodeUrl});
       }
     });
 

@@ -38,7 +38,7 @@
         <input #inpdestinationaccount matInput name="destinationaccount" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address where remaining XRP should be sent to" [(ngModel)]="destinationAccountInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
         <mat-hint *ngIf="destinationAccountInput && !validDestinationAddress">Not a valid XRPL address</mat-hint>
         <mat-hint *ngIf="originalAccountInfo && destinationAccountInput && destinationAccountInput == originalAccountInfo.Account">You cannot set the Destination address to the logged in address.</mat-hint>
-        <mat-hint *ngIf="destinationAccountInput && validDestinationAddress && !destinationAccountExists && !loadingDestinationAccount">This account does not exist on the XRP Ledger {{isTestMode? 'TEST' : 'MAIN'}} net. You need to activate it first with {{accountReserve}} XRP.</mat-hint>
+        <mat-hint *ngIf="destinationAccountInput && validDestinationAddress && !destinationAccountExists && !loadingDestinationAccount">This account does not exist on the XRP Ledger Node: {{nodeUrl}} . You need to activate it first with {{accountReserve}} XRP.</mat-hint>
       </mat-form-field>
       <div *ngIf="loadingDestinationAccount" fxLayout="row" fxLayoutGap="0.3em">
         <label>Loading destination account...</label>

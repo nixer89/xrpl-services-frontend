@@ -8,7 +8,7 @@ export class XummService {
     constructor(private app: AppService) {}
 
     isTestMode = false;
-    xrplServicesBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://api.xrpl.services';
+    xrplServicesBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://custom-api.xrpl.services';
 
     async ping(): Promise<boolean> {
         try {

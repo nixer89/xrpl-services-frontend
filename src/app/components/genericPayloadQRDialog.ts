@@ -216,10 +216,7 @@ export class GenericPayloadQRDialog implements OnInit {
                 if(message.signed) {
                     //get xrpl account
                     let txInfo:TransactionValidation;
-                    if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment' && this.genericPayload.payload.custom_meta && this.genericPayload.payload.custom_meta.blob
-                        && this.genericPayload.payload.custom_meta.blob.account && this.genericPayload.payload.custom_meta.blob.sequence && this.genericPayload.payload.custom_meta.blob.finishafter) {
-                        txInfo = await this.xummApi.validateEscrowPayment(message.payload_uuidv4);
-                    } else if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment' && !this.genericPayload.options.issuing && !this.genericPayload.payload.custom_meta?.blob?.isDonation) {
+                    if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment' && !this.genericPayload.options.issuing && !this.genericPayload.payload.custom_meta?.blob?.isDonation) {
                         txInfo = await this.xummApi.checkTimedPaymentReferer(message.payload_uuidv4, this.genericPayload.options.referer);
                     } else {
                         txInfo = await this.xummApi.validateTransaction(message.payload_uuidv4);

@@ -35,7 +35,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   passwordInput: string;
 
   originalAccountInfo:any;
-  isTestMode:boolean = false;
+  nodeUrl:string;
 
   allAccountEscrows:any[];
 
@@ -66,7 +66,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
       this.originalAccountInfo = accountData.info;
-      this.isTestMode = accountData.mode;
+      this.nodeUrl = accountData.nodeUrl;
 
       this.clearInputs();
       
@@ -84,10 +84,10 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
       //console.log("account objects changed received")
       if(accountObjects && accountObjects.objects) {
         this.allAccountEscrows = accountObjects.objects.filter(object => object.LedgerEntryType === "Escrow");
-        this.escrowsChanged.next({objects: this.allAccountEscrows, mode: accountObjects.mode});
+        this.escrowsChanged.next({objects: this.allAccountEscrows, nodeUrl: accountObjects.nodeUrl});
       } else {
         this.allAccountEscrows = null;
-        this.escrowsChanged.next({objects: null, mode: accountObjects.mode});
+        this.escrowsChanged.next({objects: null, nodeUrl: accountObjects.nodeUrl});
       }
     });
 
@@ -178,12 +178,12 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     if(this.validAddress && (this.escrowOwnerInput.trim() != this.lastKnownAddress)) {
       this.lastKnownAddress = this.escrowOwnerInput.trim();
       //console.log("emitting escrowAccountChanged event");
-      this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.isTestMode});
+      this.escrowAccountChanged.next({account: this.lastKnownAddress, nodeUrl: this.nodeUrl});
     } else if(!this.validAddress) {
       this.lastKnownAddress = null;
-      this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.isTestMode});
+      this.escrowAccountChanged.next({account: this.lastKnownAddress, nodeUrl: this.nodeUrl});
     } else {
-      this.escrowAccountChanged.next({account: this.lastKnownAddress, mode: this.isTestMode});
+      this.escrowAccountChanged.next({account: this.lastKnownAddress, nodeUrl: this.nodeUrl});
     }
   }
 
@@ -193,7 +193,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     if(!this.validSequence && this.lastKnownSequence && this.validAddress) {
       //sequence change
       //console.log("send sequence changed");
-      this.escrowAccountChanged.next({account: this.escrowOwnerInput.trim(), mode: this.isTestMode});
+      this.escrowAccountChanged.next({account: this.escrowOwnerInput.trim(), nodeUrl: this.nodeUrl});
     }
 
   }
@@ -223,7 +223,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     this.isValidEscrowFinish = this.validAddress = this.validSequence = this.escrowOwnerChangedAutomatically = this.validCondition = false;
     this.lastKnownAddress = null;
     
-    this.escrowAccountChanged.next({account: null, mode: this.isTestMode});
+    this.escrowAccountChanged.next({account: null, nodeUrl: this.nodeUrl});
   }
 
   onEscrowSequenceFound(escrowInfo:any) {

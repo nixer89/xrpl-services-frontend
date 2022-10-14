@@ -52,7 +52,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   maxFifthteenDigits:boolean = false;
 
   originalAccountInfo:any;
-  testMode:boolean = false;
+  nodeUrl:string;
 
   private accountInfoChangedSubscription: Subscription;
   private accountObjectsChangedSubscription: Subscription;
@@ -84,14 +84,14 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(async accountData => {
       //console.log("account info changed received: " + JSON.stringify(accountData));
       this.originalAccountInfo = accountData.info;
-      this.testMode = accountData.mode;
+      this.nodeUrl = accountData.nodeUrl;
 
       await this.checkChanges(true);
 
       this.xrplAccountInfoChangedSubject.next(accountData);
       
       setTimeout(() => {
-        this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
+        this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, nodeUrl: this.nodeUrl});
       },500);
     });
 
@@ -99,9 +99,9 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       //console.log("account objects changed received")
       if(accountObjects && accountObjects.objects) {
         let allTrustlines = accountObjects.objects.filter(object => object.LedgerEntryType === "RippleState");
-        this.trustlinesChangedSubject.next({objects: allTrustlines, mode: accountObjects.mode});
+        this.trustlinesChangedSubject.next({objects: allTrustlines, nodeUrl: accountObjects.nodeUrl});
       } else {
-        this.trustlinesChangedSubject.next({objects: null, mode: accountObjects.mode});
+        this.trustlinesChangedSubject.next({objects: null, nodeUrl: accountObjects.nodeUrl});
       }
     });
 
@@ -123,11 +123,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
        //console.log("subscribe set: " + JSON.stringify(this.selectedCurrency));
         this.limitInput = params.limit;
 
-        if(params && ((params.testmode && params.testmode.toLowerCase() === 'true') || (params.testnet && params.testnet.toLowerCase() === 'true') || (params.test && params.test.toLowerCase() === 'true'))) {
-          this.testMode = true;
-        }
-
-        //console.log("testmode: " + this.testMode);
+        //console.log("testnodeUrl: " + this.nodeUrl);
 
         await this.issuerAccountChanged(true);
 
@@ -172,7 +168,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         "strict": true,
       }
 
-      let message_acc_info:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline", account_info_request, this.testMode);
+      let message_acc_info:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline", account_info_request, this.nodeUrl);
       //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
       //this.infoLabel = JSON.stringify(message_acc_info);
       if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
@@ -201,7 +197,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       this.allFieldsSet = true;
 
       try {
-        if(!this.testMode) {
+        if(!this.nodeUrl) {
           let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+this.issuerAccountInput+"/obligations?origin=https://xrpl.services")
               
           let currencyToCheck = this.selectedCurrency.currencyCode;
@@ -224,7 +220,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
             ledger_index: "validated",
           }
 
-          let message:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline-gateway", gateway_balances_request, this.testMode);
+          let message:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline-gateway", gateway_balances_request, this.nodeUrl);
 
           console.log("gateway message: " + JSON.stringify(message));
           if(message && message.status && message.status === 'success' && message.type && message.type === 'response' && message.result && message.result.obligations) {
@@ -325,13 +321,13 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
         this.lastKnownAddress = this.issuerAccountInput.trim();
         //console.log("emitting issuerAccountChanged event");
         if(!isDirectLink) {
-          this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
+          this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, nodeUrl: this.nodeUrl});
         }
       } else if(!this.validAddress) {
         this.lastKnownAddress = null;
         this.issuerHasDefaultRipple = false;
         if(!isDirectLink) {
-          this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, mode: this.testMode});
+          this.issuerAccountChangedSubject.next({account: this.lastKnownAddress, nodeUrl: this.nodeUrl});
         }
       }
     }
@@ -343,7 +339,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     if(!this.validCurrency && this.lastKnownCurrency && this.validAddress) {
       //currency changed
       //console.log("send currency changed");
-      this.issuerAccountChangedSubject.next({account: this.issuerAccountInput.trim(), mode: this.testMode});
+      this.issuerAccountChangedSubject.next({account: this.issuerAccountInput.trim(), nodeUrl: this.nodeUrl});
     }
 
     //console.log("currencyChanged: " + this.issuedCurrencyInput);
@@ -429,7 +425,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     this.lastKnownAddress = null;
     this.isEditMode = false;
     
-    this.issuerAccountChangedSubject.next({account: null, mode: this.testMode});
+    this.issuerAccountChangedSubject.next({account: null, nodeUrl: this.nodeUrl});
   }
 
   async onTrustLineEdit(trustline:SimpleTrustLine) {
