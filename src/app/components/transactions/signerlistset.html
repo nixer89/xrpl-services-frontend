@@ -28,12 +28,12 @@
       </mat-form-field>
     </form>
     <mat-card fxLayout="column" fxLayoutGap="0.5em" ngStyle.xs="padding: 8px;">
-      <h4>Signer List (maximum of 8 XRPL addresses)</h4>
+      <h4>Signer List (maximum of 32 XRPL addresses)</h4>
       <mat-hint style="color: grey !important">Please make sure that the XRPL account this Signer List will be submitted to is not in the list below. Otherwise your transaction will fail.</mat-hint>
       <label>Current overall signer list weight: {{overallSignerWeights}}</label>
       <mat-accordion fxLayout="column" fxLayoutGap="0.5em">
-        <mat-expansion-panel *ngFor="let signer of signerList; index as i;" fxLayout="column" [ngClass]="(i%2==0 ? 'expansion-panel-light': 'expansion-panel-darker')">
-          <mat-expansion-panel-header [ngClass]="(i%2==0 ? 'expansion-panel-light': 'expansion-panel-darker')">
+        <mat-expansion-panel *ngFor="let signer of signerList; index as i;" fxLayout="column" [ngClass]="(i%2==0 ? 'expansion-panel-light': 'theme-background')">
+          <mat-expansion-panel-header [ngClass]="(i%2==0 ? 'expansion-panel-light': 'theme-background')">
             <mat-panel-title ngStyle.xs="font-size: 0.8em;" *ngIf="signer.SignerEntry.Account">
               <div *ngIf="signer.valid" fxLayout="row" fxLayout.xs="column">
                 {{i+1}}.&nbsp;{{signer.SignerEntry.Account}}&nbsp;|&nbsp;Weight:{{signer.SignerEntry.SignerWeight}}
@@ -66,7 +66,7 @@
         </mat-expansion-panel>
       </mat-accordion>
       <div>
-        <button *ngIf="signerList && signerList.length < 8" mat-raised-button color="primary" matTooltip="Add a new Signer" (click)="addSigner()">
+        <button *ngIf="signerList && signerList.length < 32" mat-raised-button color="primary" matTooltip="Add a new Signer" (click)="addSigner()">
           <mat-icon>playlist_add</mat-icon> Add Signer
         </button>
       </div>
