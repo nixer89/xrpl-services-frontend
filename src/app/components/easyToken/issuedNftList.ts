@@ -254,7 +254,7 @@ export class IssuedNftList implements OnInit {
 
   applyFilter(event: Event) {
     if(this.datasource && this.datasource.data) {
-      this.filterText = (event.target as HTMLInputElement).value;
+      this.filterText = event ? (event.target as HTMLInputElement).value : "";
       this.datasource.filter = this.filterText.toLowerCase();
 
       //count totals
@@ -326,6 +326,8 @@ export class IssuedNftList implements OnInit {
         this.datasource.data = this.kycTokensOnly
       else
         this.datasource.data = this.allTokens;
+
+      this.applyFilter(null);
     }
   }
 }
