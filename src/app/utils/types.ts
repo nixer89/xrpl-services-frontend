@@ -8,7 +8,8 @@ export interface GenericBackendPostRequestOptions {
     xrplAccount?: string,
     signinToValidate?: boolean,
     issuing?: boolean,
-    isRawTrx?: boolean
+    isRawTrx?: boolean,
+    submit?: boolean
 }
 
 export interface GenericBackendPostRequest {
@@ -28,14 +29,16 @@ export interface TransactionValidation {
     redirect?: boolean,
     account?: string,
     payloadId?: string,
-    originalPayload?: XummTypes.XummGetPayloadResponse
+    originalPayload?: XummTypes.XummGetPayloadResponse,
+    xummNodeUrl?: string
 }
 
 export interface AccountInfoChanged {
     info: any,
     accountReserve: number,
     ownerReserve: number,
-    nodeUrl: string
+    nodeUrl: string,
+    xummNodeUrl: string
 }
 
 export interface AccountObjectsChanged {

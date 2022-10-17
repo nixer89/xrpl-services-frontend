@@ -44,6 +44,9 @@ export class GenericPayloadQRDialog implements OnInit {
 
     tokenWarningAccepted:boolean = false;
 
+    selectedNodeUrl: string = null;
+    xummNodeUrl: string = null;
+
     constructor(
         private xummApi: XummService,
         private app: AppService,
@@ -124,6 +127,8 @@ export class GenericPayloadQRDialog implements OnInit {
             this.genericPayload.options = {};
 
         this.genericPayload.options.web = this.deviceDetector.isDesktop();
+
+        this.genericPayload.payload.options.submit = this.genericPayload.options.submit;
 
         if(!this.genericPayload.options.referer) {
             let refererURL:string;

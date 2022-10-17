@@ -17,7 +17,7 @@
             </div>
             <div style="padding-top: 0.5em;" class="floatcenter">
                 <div *ngIf="!xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
-                    <label class="loading">Login to load your account data, use cool features and to receive XUMM push notifications.</label>
+                    <label class="loading">Please sign in so we can check some things and to access the options.</label>
                 </div>
                 <div *ngIf="xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
                     <label fxHide.xs>Logged in with:</label>
@@ -25,6 +25,14 @@
                     <label fxHide.xs>Balance:</label>
                     <label class="loading" ngStyle.xs="font-size: 0.8em;">{{getAccountBalance()}} XRP.</label>
                     <label class="warning" ngStyle.xs="font-size: 0.8em;">(Available: {{getAvailableBalance()}} XRP.)</label>
+                    <label>&nbsp;</label>
+                </div>
+                <div>
+                    <label>&nbsp;</label>
+                </div>
+                <div *ngIf="xrplAccount" fxLayout="column" fxLayoutGap="0.5em">
+                    <label class="warning">Your XUMM app is connected to: {{xummNodeUrl}}</label>
+                    <label class="success" *ngIf="xummNodeUrl != selectedNode"><b>But transactions will be submitted to: {{selectedNode}}</b></label>
                 </div>
                 <label class="warning" ngStyle.xs="font-size: 0.8em;" *ngIf="!loadingData && xrplAccount && xrplAccount_Info && xrplAccount_Info.error">This account was not found on the XRP Ledger Node {{selectedNode}}.</label>
                 <div fxLayout="row" fxLayoutAlign="center center" *ngIf="loadingData">
@@ -41,7 +49,7 @@
                 <label class="loading">XRPL Network Selector</label>
                 <mat-select [(ngModel)]="selectedNode" (selectionChange)="networkChanged()">
                     <mat-option *ngFor="let network of availableNetworks" [value]="network.value">
-                        {{network.viewValue}}
+                        {{network.viewValue}} - {{network.value}}
                     </mat-option>
                 </mat-select>
             </div>
@@ -52,7 +60,7 @@
             <label class="loading">XRPL Network Selector</label>
             <mat-select [(ngModel)]="selectedNode" (selectionChange)="networkChanged()">
                 <mat-option *ngFor="let network of availableNetworks" [value]="network.value">
-                    {{network.viewValue}}
+                    {{network.viewValue}} - {{network.value}}
                 </mat-option>
             </mat-select>
         </div>
@@ -65,7 +73,7 @@
         <span *ngIf="lastTrxLinkXrp1ntel"><a  [href]="lastTrxLinkXrp1ntel" target="_blank;" rel="noreferrer">xrp1ntel</a> | </span>
         <span *ngIf="lastTrxLinkXrplorer"><a  [href]="lastTrxLinkXrplorer" target="_blank;" rel="noreferrer">xrplorer</a></span>
     </div>
-    <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+    <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;" *ngIf="xummNodeUrl">
         <!--testNetCredentials></testNetCredentials-->
         <!--transactionScheduler [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></transactionScheduler-->
         <!--norippleCheck [accountInfoChanged]="accountInfoChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></norippleCheck-->

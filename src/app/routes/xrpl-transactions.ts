@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
@@ -20,6 +20,9 @@ import { DeviceDetectorService } from 'ngx-device-detector';
   templateUrl: './xrpl-transactions.html',
 })
 export class XrplTransactionsComponent implements OnInit {
+
+  @ViewChild('inpdomain') inpcustomnode;
+  customNodeInput: string = "";
   
   xrplAccount:string = null;
   xrplAccount_Info:any = null;
@@ -43,15 +46,19 @@ export class XrplTransactionsComponent implements OnInit {
   accountReserve:number = 10000000;
   ownerReserve:number = 2000000;
 
+  xummNodeUrl:string = null;
+  validCustomNodeUrl:boolean = false;
+
   availableNetworks:any[] = [
     {value:"wss://s.altnet.rippletest.net:51233", viewValue: "Testnet"},
     {value:"wss://s.devnet.rippletest.net:51233", viewValue: "Devnet"},
-    {value:"wss://s.altnet.rippletest.net:51233", viewValue: "Hooks v2 Testnet"},
+    {value:"wss://hooks-testnet-v2.xrpl-labs.com", viewValue: "Hooks v2 Testnet"},
     {value:"wss://xls20-sandbox.rippletest.net:51233", viewValue: "XLS20 Devnet"},
     {value: "custom", viewValue: "Custom"}
   ];
 
   selectedNode:string = "wss://s.altnet.rippletest.net:51233";
+  selectedNodeUrl: string = "wss://s.altnet.rippletest.net:51233";
 
   constructor(
     private matDialog: MatDialog,
@@ -151,7 +158,10 @@ export class XrplTransactionsComponent implements OnInit {
         this.xrplAccount = this.localStorage.get("xrplAccount");
         
         if(this.localStorage.keys().includes("nodeUrl"))
-          this.selectedNode = this.localStorage.get("nodeUrl");
+          this.selectedNodeUrl = this.localStorage.get("nodeUrl");
+
+        if(this.localStorage.keys().includes("xummNodeUrl"))
+          this.xummNodeUrl = this.localStorage.get("xummNodeUrl");
           
         this.loadAccountData(true);
       }
@@ -160,18 +170,33 @@ export class XrplTransactionsComponent implements OnInit {
     this.loadFeeReserves();
 
     //this.xrplAccount="rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"; //bitstamp
-    //this.xrplAccount="rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF";
+    this.xrplAccount="rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF";
     
     //this.xrplAccount="rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ";
     
     //this.xrplAccount="r4LxkCUXYTCUgwquN3BnsUxFacoVLjGFyF";
     //this.isTestMode = true;
-    //await this.loadAccountData(false);
+    this.xummNodeUrl = "wss://s.altnet.rippletest.net:51233"
+    await this.loadAccountData(false);
   }
 
   networkChanged() {
-    this.loadFeeReserves()
-    this.loadAccountData(false);
+    if(this.selectedNode != 'custom')
+      this.selectedNodeUrl = this.selectedNode;
+    else if(this.customNodeInput != null && this.customNodeInput.length > 0)
+      this.selectedNodeUrl = this.customNodeInput.trim();
+    else
+      this.selectedNodeUrl = null;
+
+    if(this.selectedNodeUrl != null) {
+      this.loadFeeReserves()
+      this.loadAccountData(false);
+    }
+  }
+
+  checkUrlChange() {
+    this.validCustomNodeUrl = this.customNodeInput && ( this.customNodeInput.trim().startsWith("ws://") || this.customNodeInput.trim().startsWith("wss://"));
+    this.networkChanged();
   }
 
   async loadFeeReserves() {
@@ -181,7 +206,7 @@ export class XrplTransactionsComponent implements OnInit {
       ledger_index: "validated"
     }
 
-    let feeSetting:any = await this.xrplWebsocket.getWebsocketMessage("fee-settings", fee_request, this.selectedNode);
+    let feeSetting:any = await this.xrplWebsocket.getWebsocketMessage("fee-settings", fee_request, this.selectedNodeUrl);
     this.accountReserve = feeSetting?.result?.node["ReserveBase"];
     this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
 
@@ -199,7 +224,8 @@ export class XrplTransactionsComponent implements OnInit {
         this.loadingData = true;
 
         this.localStorage.set("xrplAccount", this.xrplAccount);
-        this.localStorage.set("nodeUrl", this.selectedNode);
+        this.localStorage.set("nodeUrl", this.selectedNodeUrl);
+        this.localStorage.set("xummNodeUrl", this.xummNodeUrl);
 
         let account_info_request:any = {
           command: "account_info",
@@ -207,7 +233,7 @@ export class XrplTransactionsComponent implements OnInit {
           "strict": true,
         }
 
-        let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage("xrpl-transactions", account_info_request, this.selectedNode)
+        let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage("xrpl-transactions", account_info_request, this.selectedNodeUrl)
         //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
 
         if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
@@ -239,7 +265,7 @@ export class XrplTransactionsComponent implements OnInit {
             limit: 200
           }
     
-          let accountObjects:any = await this.xrplWebsocket.getWebsocketMessage("account-objects", account_objects_request, this.selectedNode);
+          let accountObjects:any = await this.xrplWebsocket.getWebsocketMessage("account-objects", account_objects_request, this.selectedNodeUrl);
 
           //load more escrows
           if(accountObjects?.result?.account_objects) {
@@ -259,7 +285,7 @@ export class XrplTransactionsComponent implements OnInit {
     
                   //await this.xrplWebSocket.getWebsocketMessage("token-trasher", server_info, this.isTestMode);
       
-                  accountObjects = await this.xrplWebsocket.getWebsocketMessage("account-objects", account_objects_request, this.selectedNode);
+                  accountObjects = await this.xrplWebsocket.getWebsocketMessage("account-objects", account_objects_request, this.selectedNodeUrl);
 
                   //console.log(JSON.stringify(accountObjects));
       
@@ -334,6 +360,7 @@ export class XrplTransactionsComponent implements OnInit {
     if(trxInfo && trxInfo.account && (!trxInfo.originalPayload || (trxInfo.originalPayload && trxInfo.originalPayload.custom_meta && trxInfo.originalPayload.custom_meta.blob && !trxInfo.originalPayload.custom_meta.blob.noSignIn))) {
       this.loadingData = true;
       this.xrplAccount = trxInfo.account;
+      this.xummNodeUrl = trxInfo.xummNodeUrl;
     }
 
     if(trxInfo) {
@@ -447,24 +474,25 @@ export class XrplTransactionsComponent implements OnInit {
 
   emitAccountInfoChanged() {
     //console.log("emit account info changed");
-    this.accountInfoChanged.next({info: this.xrplAccount_Info, nodeUrl: this.selectedNode, accountReserve: this.accountReserve, ownerReserve: this.ownerReserve});
+    this.accountInfoChanged.next({info: this.xrplAccount_Info, nodeUrl: this.selectedNodeUrl, accountReserve: this.accountReserve, ownerReserve: this.ownerReserve, xummNodeUrl: this.xummNodeUrl});
   }
 
   emitAccountObjectsChanged() {
     //console.log("emit account objects changed");
-    this.accountObjectsChanged.next({objects: this.xrplAccount_Objects, nodeUrl: this.selectedNode});
+    this.accountObjectsChanged.next({objects: this.xrplAccount_Objects, nodeUrl: this.selectedNodeUrl});
   }
 
   async onPayloadReceived(xummPayload:XummTypes.XummPostPayloadBodyJson) {
     //console.log("received payload: " + JSON.stringify(payload));
 
     xummPayload.custom_meta.blob = {
-      custom_node: this.selectedNode
+      custom_node: this.selectedNodeUrl
     }
 
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
-        xrplAccount: this.xrplAccount ? this.xrplAccount : null
+        xrplAccount: this.xrplAccount ? this.xrplAccount : null,
+        submit: this.xummNodeUrl === this.selectedNodeUrl
       },
       payload: xummPayload
     }
@@ -501,8 +529,9 @@ export class XrplTransactionsComponent implements OnInit {
   logoutAccount() {
     this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'xrpl_transactions_component');
     this.xrplAccount = this.xrplAccount_Info = this.xrplAccount_Objects = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = this.lastTrxLinkXrplorer = null;
+    this.xummNodeUrl = null;
     this.localStorage.remove("xrplAccount");
-    this.localStorage.remove("testMode");
+    this.localStorage.remove("xummNodeUrl");
     this.emitAccountInfoChanged();
     this.emitAccountObjectsChanged();
     this.router.navigate(['/'])

@@ -40,6 +40,8 @@ export class Tools implements OnInit {
   accountReserve:number = 10000000;
   ownerReserve:number = 2000000;
 
+  xummNodeUrl:string = null;
+
   availableNetworks:any[] = [
     {value:"wss://s.altnet.rippletest.net:51233", viewValue: "Testnet"},
     {value:"wss://s.devnet.rippletest.net:51233", viewValue: "Devnet"},
@@ -125,6 +127,9 @@ export class Tools implements OnInit {
 
       if(this.localStorage.keys().includes("nodeUrl") && this.localStorage.get("nodeUrl") != null)
         this.selectedNode = this.localStorage.get("nodeUrl");
+
+      if(this.localStorage.keys().includes("xummNodeUrl") && this.localStorage.get("xummNodeUrl") != null)
+        this.xummNodeUrl = this.localStorage.get("xummNodeUrl");
 
       await this.loadAccountData(true);
     }
@@ -252,6 +257,7 @@ export class Tools implements OnInit {
 
       this.localStorage.set("xrplAccount", this.xrplAccount);
       this.localStorage.set("nodeUrl", this.selectedNode);
+      this.localStorage.set("xummNodeUrl", this.xummNodeUrl);
 
       this.cannotConnectToNode = false;
       this.loadingData = true;
@@ -342,6 +348,7 @@ export class Tools implements OnInit {
     if(trxInfo && trxInfo.account) {
       this.loadingData = true;
       this.xrplAccount = trxInfo.account;
+      this.xummNodeUrl = trxInfo.xummNodeUrl;
     }
 
     if(trxInfo) {
@@ -383,7 +390,7 @@ export class Tools implements OnInit {
 
   emitAccountInfoChanged() {
     //console.log("emit account info changed");
-    this.accountInfoChanged.next({info: this.xrplAccount_Info, accountReserve: this.accountReserve, ownerReserve: this.ownerReserve, nodeUrl: this.selectedNode});
+    this.accountInfoChanged.next({info: this.xrplAccount_Info, accountReserve: this.accountReserve, ownerReserve: this.ownerReserve, nodeUrl: this.selectedNode, xummNodeUrl: this.xummNodeUrl});
   }
 
   async onPayloadReceived(genericBackendRequest: GenericBackendPostRequest) {
@@ -420,8 +427,9 @@ export class Tools implements OnInit {
   logoutAccount() {
     this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'tools_component');
     this.xrplAccount = this.xrplAccount_Info = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = this.lastTrxLinkXrplorer = null;
+    this.xummNodeUrl = null;
     this.localStorage.remove("xrplAccount");
-    this.localStorage.remove("testMode");
+    this.localStorage.remove("xummNodeUrl");
     this.emitAccountInfoChanged();
     this.router.navigate(['/tools'])
   }
