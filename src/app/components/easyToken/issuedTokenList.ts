@@ -262,7 +262,7 @@ export class IssuedTokenList implements OnInit {
 
   applyFilter(event: Event) {
     if(this.datasource && this.datasource.data) {
-      this.filterText = (event.target as HTMLInputElement).value;
+      this.filterText = event ? (event.target as HTMLInputElement).value : "";
       this.datasource.filter = this.filterText.toLowerCase();
 
       //count totals
@@ -273,6 +273,9 @@ export class IssuedTokenList implements OnInit {
       this.currencyCodeTotal = 0;
       this.numberOfTrustlinesTotal = 0;
       this.numberOfHoldersTotal = 0;
+      this.kycAccountsTotal = 0;
+      this.selfAssessmentsTotal = 0;
+
       this.previousFilter = null;
       //count everything!
       this.datasource.filteredData.forEach(data => {
@@ -283,6 +286,8 @@ export class IssuedTokenList implements OnInit {
           this.dexOffersTotal += data.offers ? data.offers : 0;
           this.numberOfTrustlinesTotal += data.trustlines ? data.trustlines : 0;
           this.numberOfHoldersTotal += data.holders ? data.holders : 0;
+          this.kycAccountsTotal += data.kyc ? 1 : 0;
+          this.selfAssessmentsTotal += data.self_assessment ? 1 : 0;
       });
 
       if (this.datasource.paginator) {
@@ -345,6 +350,8 @@ export class IssuedTokenList implements OnInit {
       } else {
         this.datasource.data = this.allTokens;
       }
+
+      this.applyFilter(null);
     }
   }
 }

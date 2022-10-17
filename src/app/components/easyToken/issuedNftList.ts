@@ -265,6 +265,7 @@ export class IssuedNftList implements OnInit {
       this.currencyCodeTotal = 0;
       this.numberOfTrustlinesTotal = 0;
       this.numberOfHoldersTotal = 0;
+      this.kycAccountsTotal = 0;
       this.previousFilter = null;
       //count everything!
       this.datasource.filteredData.forEach(data => {
@@ -275,6 +276,7 @@ export class IssuedNftList implements OnInit {
           this.dexOffersTotal += data.offers ? data.offers : 0;
           this.numberOfTrustlinesTotal += data.trustlines ? data.trustlines : 0;
           this.numberOfHoldersTotal += data.holders ? data.holders : 0;
+          this.kycAccountsTotal += data.kyc ? 1 : 0;
       });
 
       if (this.datasource.paginator) {
