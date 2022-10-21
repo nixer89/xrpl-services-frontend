@@ -158,34 +158,56 @@ export class UnlCheckerComponent {
 
         // parse manifest
         const manifest = this.parseManifest(Buffer.from(json.manifest, 'base64'));
+        //console.log(JSON.stringify(manifest));
 
         // verify manifest signature and payload signature
         let master_key;
+
+        try {
         
-        if(manifest.PublicKey.toUpperCase().startsWith('ED')) {
-          master_key = ed25519.keyFromPublic(manifest.PublicKey.slice(2), 'hex');
-          this.assert(master_key.verify(manifest.without_signing_fields, manifest.MasterSignature),"Master signature in master manifest does not match vl key")
-         } else {
-          master_key = secp256k1.keyFromPublic(manifest.PublicKey, 'hex');
-          this.assert(master_key.verify(manifest.without_signing_fields, manifest.MasterSignature),"Master signature in master manifest does not match vl key")
-         }
+          if(manifest.PublicKey.toUpperCase().startsWith('ED')) {
+            //console.log("master key ED");
+            master_key = ed25519.keyFromPublic(manifest.PublicKey.slice(2), 'hex');
+            this.assert(master_key.verify(manifest.without_signing_fields, manifest.MasterSignature),"Master signature in master manifest does not match vl key")
+          } else {
+            //console.log("master key sec");
+            master_key = secp256k1.keyFromPublic(manifest.PublicKey, 'hex');
+            this.assert(master_key.verify(manifest.without_signing_fields, manifest.MasterSignature),"Master signature in master manifest does not match vl key")
+          }
+        } catch(err) {
+          this.errors.push("UNL MasterKey can not verify MasterSignature of manifest.");
+          this.errors.push("UNL MasterKey: " + master_key);
+          this.errors.push("UNL MasterSignature: " + manifest.MasterSignature);
+        }
       
         let signing_key = null;
-        
-        if(manifest.SigningPubKey.toUpperCase().startsWith('ED')) {
-          signing_key = ed25519.keyFromPublic(manifest.SigningPubKey.slice(2), 'hex')
-          this.assert(signing_key.verify(blob.toString('hex'), json.signature), "Payload signature in mantifest failed verification")
-        } else { 
-          signing_key = secp256k1.keyFromPublic(manifest.SigningPubKey, 'hex');
-          //sha512 half the blob!
-          //https://xrpl.org/cryptographic-keys.html#key-derivation
-          let sha512Blob = createHash('sha512').update(blob);  
-          let sha512HalfBuffer = sha512Blob.digest().slice(0,32);
 
-          this.assert(signing_key.verify(sha512HalfBuffer, json.signature), "Payload signature in mantifest failed verification")
+        try {
+        
+          if(manifest.SigningPubKey.toUpperCase().startsWith('ED')) {
+            //console.log("signing key ED");
+            signing_key = ed25519.keyFromPublic(manifest.SigningPubKey.slice(2), 'hex')
+
+            this.assert(signing_key.verify(blob.toString('hex'), json.signature), "Payload signature in mantifest failed verification")
+          } else {
+            //console.log("signing key sec");
+            signing_key = secp256k1.keyFromPublic(manifest.SigningPubKey, 'hex');
+            //sha512 half the blob!
+            //https://xrpl.org/cryptographic-keys.html#key-derivation
+            let sha512Blob = createHash('sha512').update(blob);  
+            let sha512HalfBuffer = sha512Blob.digest().toString("hex").slice(0,32);
+
+            this.assert(signing_key.verify(sha512HalfBuffer, json.signature), "Payload signature in mantifest failed verification")
+          }
+        } catch(err) {
+          this.errors.push("UNL SigningPubKey can not verify signature of blob.");
+          this.errors.push("UNL SigningPubKey: " + manifest.SigningPubKey);
+          this.errors.push("UNL Signature: " + json.signature);
         }
 
         blob = JSON.parse(blob)
+
+        //console.log(JSON.stringify(blob));
 
         this.assert(blob.validators !== undefined, "validators missing from blob")
 
@@ -216,17 +238,26 @@ export class UnlCheckerComponent {
               const publicKeyBuffer = codec.address.decodeNodePublic(publicKey);
               publicKey = publicKeyBuffer.toString("hex").toUpperCase();
             }
+
+            try {
             
-            if(publicKey.toUpperCase().startsWith('ED')) {
-              //console.log("ed25519");
-              signing_key = ed25519.keyFromPublic(publicKey.slice(2), 'hex');
-              this.assert(signing_key.verify(parsedManifest.without_signing_fields, parsedManifest.MasterSignature), "Validation manifest " + idx + " signature verification failed");
-            } else {
-              //console.log("secp256k1");
-              signing_key = secp256k1.keyFromPublic(publicKey, 'hex');
-              const computedHash = createHash("sha512").update(parsedManifest.without_signing_fields).digest().toString("hex").slice(0, 32);
-              this.assert(signing_key.verify(computedHash, parsedManifest.MasterSignature), "Validation manifest " + idx + " signature verification failed");
-            } 
+              if(publicKey.toUpperCase().startsWith('ED')) {
+                //console.log("VALIDATOR KEY ED")
+                //console.log("ed25519");
+                signing_key = ed25519.keyFromPublic(publicKey.slice(2), 'hex');
+                this.assert(signing_key.verify(parsedManifest.without_signing_fields, parsedManifest.MasterSignature), "Validation manifest " + idx + " signature verification failed");
+              } else {
+                //console.log("secp256k1");
+                //console.log("VALIDATOR KEY SEC")
+                signing_key = secp256k1.keyFromPublic(publicKey, 'hex');
+                const computedHash = createHash("sha512").update(parsedManifest.without_signing_fields).digest().toString("hex").slice(0, 32);
+                this.assert(signing_key.verify(computedHash, parsedManifest.MasterSignature), "Validation manifest " + idx + " signature verification failed");
+              }
+            } catch(err) {
+              this.errors.push("Validator Public Key does not match signature format of the manifest.");
+              this.errors.push("Validator Public Key: " + publicKey);
+              this.errors.push("Validator Signature: " + parsedManifest.MasterSignature);
+            }
 
             blob.validators[idx].validation_public_key = Buffer.from(blob.validators[idx].validation_public_key, 'hex')
             

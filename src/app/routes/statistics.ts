@@ -110,6 +110,11 @@ export class Statistics implements OnInit {
       case "signerlistset":         return "Set Signer List";
       case "ticketcreate":          return "Create Ticket";
       case "trustset":              return "TrustSet";
+      case "nftokenacceptoffer":    return "NFToken Accept Offer";
+      case "nftokenburn":           return "NFToken Burn";
+      case "nftokencanceloffer":    return "NFToken Cancel Offer";
+      case "nftokencreateoffer":    return "NFToken Create Offer";
+      case "nftokenmint":           return "NFToken Mint";
       default:                      return deliveredName;
     }
   }
