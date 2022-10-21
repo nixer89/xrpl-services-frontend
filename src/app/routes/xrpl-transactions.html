@@ -39,7 +39,7 @@
                 <div>
                     <label>&nbsp;</label>
                 </div>
-                <mat-card class="theme-background" *ngIf="xrplAccount" fxLayout="column" fxLayoutGap="0.5em">
+                <mat-card class="theme-background" *ngIf="xrplAccount && xummNodeUrl != selectedNodeUrl && xrplAccount_Info && !cannotConnectToNode" fxLayout="column" fxLayoutGap="0.5em">
                     <label class="warning">Your XUMM app is connected to: {{xummNodeUrl}}</label>
                     <label class="success" *ngIf="xummNodeUrl != selectedNodeUrl"><b>But transactions will be submitted to: {{selectedNodeUrl}}</b></label>
                 </mat-card>
@@ -48,18 +48,23 @@
         <mat-card class="theme-background" fxShow fxHide.xs >
             <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1em">
                 <label class="loading">XRPL Network Selector</label>
-                <mat-select [(ngModel)]="selectedNode" (selectionChange)="networkChanged()">
+                <mat-select [(ngModel)]="selectedNode" (selectionChange)="networkChanged()" [disabled]="loadingData">
                     <mat-option *ngFor="let network of availableNetworks" [value]="network.value">
                         {{network.viewValue}} - {{network.value}}
                     </mat-option>
                 </mat-select>
-                <div *ngIf="selectedNode === 'custom'">
+                <div *ngIf="selectedNode === 'custom'" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="0.3em">
                     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-bottom: 1em;padding-top: 1em;">
                         <mat-form-field>
-                          <input #inpcustomnode matInput type="url" name="customnode" matInput placeholder="Custom Node" [(ngModel)]="customNodeInput" (ngModelChange)="checkUrlChange()">
-                          <mat-hint *ngIf="validCustomNodeUrl">Not a valid node url. Has to start with 'ws' or 'wss'</mat-hint>
+                          <input #inpcustomnode matInput type="url" name="customnode" matInput placeholder="Custom Node" [(ngModel)]="customNodeInput" (ngModelChange)="checkUrlChange()" [disabled]="loadingData">
+                          <mat-hint *ngIf="customNodeInput && customNodeInput.length > 4 && !validCustomNodeUrl">Not a valid node url. Has to start with 'ws' or 'wss'</mat-hint>
                         </mat-form-field>
                     </form>
+                    <div>
+                        <button mat-raised-button color="primary" matTooltip="Connect" matTooltipPosition="below" (click)="connectCustomNetwork()" [disabled]="!validCustomNodeUrl || loadingData">
+                            Connect
+                        </button>
+                    </div>
                 </div>
             </div>
         </mat-card>

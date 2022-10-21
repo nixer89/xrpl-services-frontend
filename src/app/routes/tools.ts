@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
@@ -19,6 +19,9 @@ import { isValidXRPAddress } from '../utils/utils';
   templateUrl: './tools.html',
 })
 export class Tools implements OnInit {
+
+  @ViewChild('inpdomain') inpcustomnode;
+  customNodeInput: string = "";
   
   xrplAccount:string = null;
   xrplAccount_Info:any = null;
@@ -51,6 +54,7 @@ export class Tools implements OnInit {
   ];
 
   selectedNode:string = "wss://s.altnet.rippletest.net:51233";
+  selectedNodeUrl: string = "wss://s.altnet.rippletest.net:51233";
 
   constructor(
     private matDialog: MatDialog,
@@ -126,7 +130,12 @@ export class Tools implements OnInit {
       this.xrplAccount = this.localStorage.get("xrplAccount");
 
       if(this.localStorage.keys().includes("nodeUrl") && this.localStorage.get("nodeUrl") != null)
-        this.selectedNode = this.localStorage.get("nodeUrl");
+        this.selectedNodeUrl = this.localStorage.get("nodeUrl");
+
+      if(this.availableNetworks.includes(this.selectedNodeUrl))
+        this.selectedNode = this.selectedNodeUrl;
+      else
+        this.selectedNode = "custom";
 
       if(this.localStorage.keys().includes("xummNodeUrl") && this.localStorage.get("xummNodeUrl") != null)
         this.xummNodeUrl = this.localStorage.get("xummNodeUrl");
@@ -229,76 +238,99 @@ export class Tools implements OnInit {
     }
   }
 
-  networkChanged() {
-    this.loadFeeReserves();
-    this.loadAccountData(false);
+  async networkChanged() {
+    if(this.selectedNode != 'custom')
+      this.selectedNodeUrl = this.selectedNode;
+    else if(this.customNodeInput != null && this.customNodeInput.length > 0)
+      this.selectedNodeUrl = this.customNodeInput.trim();
+    else
+      this.selectedNodeUrl = null;
+
+    if(this.selectedNodeUrl != null) {
+      try {
+        await this.loadFeeReserves()
+        await this.loadAccountData(false);
+      } catch(err) {
+        console.log("can not connect to node: " + this.selectedNodeUrl);
+      }
+    }
   }
 
   async loadFeeReserves() {
-    let fee_request:any = {
-      command: "ledger_entry",
-      index: "4BC50C9B0D8515D3EAAE1E74B29A95804346C491EE1A95BF25E4AAB854A6A651",
-      ledger_index: "validated"
+    try {
+      let fee_request:any = {
+        command: "ledger_entry",
+        index: "4BC50C9B0D8515D3EAAE1E74B29A95804346C491EE1A95BF25E4AAB854A6A651",
+        ledger_index: "validated"
+      }
+
+      let feeSetting:any = await this.xrplWebSocket.getWebsocketMessage("fee-settings", fee_request, this.selectedNode);
+      this.accountReserve = feeSetting?.result?.node["ReserveBase"];
+      this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
+
+      //console.log("resolved accountReserve: " + this.accountReserve);
+      //console.log("resolved ownerReserve: " + this.ownerReserve);
+
+      this.emitAccountInfoChanged();
+    } catch(err) {
+      this.loadingData = false;
+      throw "Can not connect to node!";
     }
-
-    let feeSetting:any = await this.xrplWebSocket.getWebsocketMessage("fee-settings", fee_request, this.selectedNode);
-    this.accountReserve = feeSetting?.result?.node["ReserveBase"];
-    this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
-
-    //console.log("resolved accountReserve: " + this.accountReserve);
-    //console.log("resolved ownerReserve: " + this.ownerReserve);
-
-    this.emitAccountInfoChanged();
   }
 
   async loadAccountData(isInit?: boolean) {
-    if(this.xrplAccount) {
-      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'tools_component');
+    try {
+      if(this.xrplAccount) {
+        this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'tools_component');
 
-      this.localStorage.set("xrplAccount", this.xrplAccount);
-      this.localStorage.set("nodeUrl", this.selectedNode);
-      this.localStorage.set("xummNodeUrl", this.xummNodeUrl);
+        this.localStorage.set("xrplAccount", this.xrplAccount);
+        this.localStorage.set("nodeUrl", this.selectedNode);
+        this.localStorage.set("xummNodeUrl", this.xummNodeUrl);
 
-      this.cannotConnectToNode = false;
-      this.loadingData = true;
+        this.cannotConnectToNode = false;
+        this.loadingData = true;
 
-      let account_info_request:any = {
-        command: "account_info",
-        account: this.xrplAccount,
-        "strict": true,
-      }
-
-      let message:any = await this.xrplWebSocket.getWebsocketMessage("tools", account_info_request, this.selectedNode);
-      //console.log("tools account info: " + JSON.stringify(message));
-
-      if(message.status && message.type && message.type === 'response') {
-        if(message.status === 'success') {
-          if(message.result && message.result.account_data) {
-            this.xrplAccount_Info = message.result.account_data;
-            //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
-            this.emitAccountInfoChanged();
-          }
-        } else {
-          if(message.request.command === 'account_info') {
-            this.xrplAccount_Info = message;
-            this.emitAccountInfoChanged();
-          }
+        let account_info_request:any = {
+          command: "account_info",
+          account: this.xrplAccount,
+          "strict": true,
         }
 
+        let message:any = await this.xrplWebSocket.getWebsocketMessage("tools", account_info_request, this.selectedNode);
+        //console.log("tools account info: " + JSON.stringify(message));
+
+        if(message.status && message.type && message.type === 'response') {
+          if(message.status === 'success') {
+            if(message.result && message.result.account_data) {
+              this.xrplAccount_Info = message.result.account_data;
+              //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
+              this.emitAccountInfoChanged();
+            }
+          } else {
+            if(message.request.command === 'account_info') {
+              this.xrplAccount_Info = message;
+              this.emitAccountInfoChanged();
+            }
+          }
+
+        } else {
+          this.xrplAccount_Info = null;
+          this.emitAccountInfoChanged();
+        }
+
+        this.cannotConnectToNode = message && message.error && message.message === 'No node connection possible';
+
+        if(isInit && this.snackBar)
+          this.snackBar.dismiss();
+
+        this.loadingData = false;
+
       } else {
-        this.xrplAccount_Info = null;
         this.emitAccountInfoChanged();
       }
-
-      this.cannotConnectToNode = message && message.error && message.message === 'No node connection possible';
-
-      if(isInit && this.snackBar)
-        this.snackBar.dismiss();
-
+    } catch(err) {
       this.loadingData = false;
-
-    } else {
-      this.emitAccountInfoChanged();
+      throw "Can not connect to node!";
     }
   }
 
@@ -416,14 +448,19 @@ export class Tools implements OnInit {
   getAvailableBalance(): number {
     if(this.xrplAccount_Info && this.xrplAccount_Info.Balance) {
       let balance:number = Number(this.xrplAccount_Info.Balance);
-      balance = balance - this.accountReserve; //deduct acc reserve
+      balance = balance - (this.accountReserve); //deduct acc reserve
       balance = balance - (this.xrplAccount_Info.OwnerCount * this.ownerReserve); //deduct owner count
-      return balance/1000000;
+      balance = balance/1000000;
+
+      if(balance >= 0.000001)
+        return balance;
+      else
+        return 0;
+        
     } else {
       return 0;
     }
   }
-
   logoutAccount() {
     this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'tools_component');
     this.xrplAccount = this.xrplAccount_Info = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = this.lastTrxLinkXrplorer = null;

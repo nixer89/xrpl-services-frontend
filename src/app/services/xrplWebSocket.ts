@@ -1,5 +1,6 @@
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { Injectable, Optional, SkipSelf } from '@angular/core';
+import { url } from 'inspector';
 
 @Injectable()
 export class XRPLWebsocket {
@@ -17,43 +18,65 @@ export class XRPLWebsocket {
     }
 
     async getWebsocketMessage(componentname:string, command:any, nodeUrl:string, retry?:boolean): Promise<any> {
+        try {
 
-        if(this.websocketMap.get(componentname) && this.websocketMap.get(componentname).nodeUrl != nodeUrl) {
-            //console.log("test mode changed")
-            this.websocketMap.get(componentname).socket.unsubscribe();
-            this.websocketMap.get(componentname).socket.complete();
-            this.websocketMap.delete(componentname)
+            if(nodeUrl) {
 
-            //console.log("websockets: " + this.websocketMap.size);
+                if(this.websocketMap.has(componentname) && this.websocketMap.get(componentname).nodeUrl != nodeUrl) {
+                    //console.log("test mode changed")
+                    this.websocketMap.get(componentname).socket.unsubscribe();
+                    this.websocketMap.get(componentname).socket.complete();
+                    this.websocketMap.delete(componentname)
+
+                    //console.log("websockets: " + this.websocketMap.size);
+                }
+
+                if(!this.websocketMap.has(componentname) || !this.websocketMap.get(componentname).socket || this.websocketMap.get(componentname).socket.closed) {
+
+                    this.originalNodeUrl = nodeUrl;
+                    console.log("connecting to websocket: " + this.originalNodeUrl);
+                    try {
+                        let newWebsocket:WebSocketSubject<any>;
+                        try {
+                            newWebsocket = webSocket(nodeUrl);
+                        } catch(err) {
+                            newWebsocket = null;
+                        }
+
+                        if(newWebsocket && !newWebsocket.closed)
+                            this.websocketMap.set(componentname, {socket: newWebsocket, nodeUrl: nodeUrl, isBusy: false});
+                        else
+                            throw "Can not connect websocket!";
+                    } catch(err) {
+                        throw "Can not connect to node!";
+                    }
+                    //console.log("websockets: " + this.websocketMap.size);
+                }
+
+                return new Promise((resolve, reject) => {
+                    if(this.websocketMap.has(componentname)) {
+                        this.websocketMap.get(componentname).socket.asObservable().subscribe(async message => {
+                            //console.log(JSON.stringify(message));
+                            
+                            if(message && message.error && this.errorsToSwitch.includes(message.error)) {
+                                resolve(await this.cleanupAndChangeNode(componentname, command, retry));    
+                            } else {
+                                resolve(message);
+                            }               
+                        }, async error => {
+                            resolve(await this.cleanupAndChangeNode(componentname, command, retry));
+                        });
+
+                        //console.log("setting up command: " + JSON.stringify(command))
+                        this.websocketMap.get(componentname).lastUsed = Date.now();
+                        this.websocketMap.get(componentname).socket.next(command);
+                    }
+                });
+            }
+        } catch(err) {
+            console.log(err);
+            throw "PROBLEM!";
         }
-
-        if(!this.websocketMap.get(componentname) || this.websocketMap.get(componentname).socket.closed) {
-
-            this.originalNodeUrl = nodeUrl;
-            console.log("connecting to websocket: " + this.originalNodeUrl);
-            let newWebsocket = webSocket(this.originalNodeUrl);
-
-            this.websocketMap.set(componentname, {socket: newWebsocket, nodeUrl: nodeUrl, isBusy: false});
-
-            //console.log("websockets: " + this.websocketMap.size);
-        }
-
-        return new Promise((resolve, reject) => {
-            this.websocketMap.get(componentname).socket.asObservable().subscribe(async message => {
-                //console.log(JSON.stringify(message));
-                
-                if(message && message.error && this.errorsToSwitch.includes(message.error)) {
-                    resolve(await this.cleanupAndChangeNode(componentname, command, retry));    
-                } else {
-                    resolve(message);
-                }               
-            }, async error => {
-                resolve(await this.cleanupAndChangeNode(componentname, command, retry));
-            });
-
-            //console.log("setting up command: " + JSON.stringify(command))
-            this.websocketMap.get(componentname).socket.next(command);
-        });        
     }
 
     async cleanupAndChangeNode(componentname: string, command: any, retry: boolean): Promise<any> {
@@ -70,6 +93,15 @@ export class XRPLWebsocket {
 
     async connectToSecondWS(componentname:string, command:any): Promise<any> {
         return this.getWebsocketMessage(componentname, command, this.originalNodeUrl, true);
+    }
+
+    cleanupOldWebsockets() {
+        this.websocketMap.forEach((value, key, map) => {
+            if(this.websocketMap.has(key) && (Date.now() - 300000 - this.websocketMap.get(key).lastUsed > 0)) {
+                this.websocketMap.get(key).socket.complete();
+                this.websocketMap.delete(key)
+            }
+        })
     }
 }
 

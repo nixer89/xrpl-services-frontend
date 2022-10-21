@@ -74,6 +74,8 @@ export class XrplTransactionsComponent implements OnInit {
 
   async ngOnInit() {
 
+    this.loadingData = true;
+
     if(this.localStorage && !this.localStorage.get("darkMode")) {
       this.overlayContainer.getContainerElement().classList.remove('dark-theme');
       this.overlayContainer.getContainerElement().classList.add('light-theme');
@@ -160,6 +162,11 @@ export class XrplTransactionsComponent implements OnInit {
         if(this.localStorage.keys().includes("nodeUrl"))
           this.selectedNodeUrl = this.localStorage.get("nodeUrl");
 
+        if(this.availableNetworks.includes(this.selectedNodeUrl))
+          this.selectedNode = this.selectedNodeUrl;
+        else
+          this.selectedNode = "custom";
+          
         if(this.localStorage.keys().includes("xummNodeUrl"))
           this.xummNodeUrl = this.localStorage.get("xummNodeUrl");
           
@@ -178,25 +185,39 @@ export class XrplTransactionsComponent implements OnInit {
     //this.isTestMode = true;
     this.xummNodeUrl = "wss://s.altnet.rippletest.net:51233"
     await this.loadAccountData(false);
+
+    this.loadingData = false;
   }
 
-  networkChanged() {
-    if(this.selectedNode != 'custom')
+  async networkChanged() {
+    if(this.selectedNode != 'custom') {
       this.selectedNodeUrl = this.selectedNode;
-    else if(this.customNodeInput != null && this.customNodeInput.length > 0)
+
+      if(this.selectedNodeUrl != null) {
+        this.loadingData = true;
+        await this.loadFeeReserves()
+        await this.loadAccountData(false);
+        this.loadingData = false;
+      }
+
+    } else if(this.customNodeInput != null && this.customNodeInput.length > 0)
       this.selectedNodeUrl = this.customNodeInput.trim();
     else
       this.selectedNodeUrl = null;
-
-    if(this.selectedNodeUrl != null) {
-      this.loadFeeReserves()
-      this.loadAccountData(false);
-    }
   }
 
   checkUrlChange() {
     this.validCustomNodeUrl = this.customNodeInput && ( this.customNodeInput.trim().startsWith("ws://") || this.customNodeInput.trim().startsWith("wss://"));
     this.networkChanged();
+  }
+
+  async connectCustomNetwork() {
+    if(this.selectedNode == 'custom' && this.validCustomNodeUrl) {
+        this.loadingData = true;
+        await this.loadFeeReserves()
+        await this.loadAccountData(false);
+        this.loadingData = false;
+    }
   }
 
   async loadFeeReserves() {
@@ -221,7 +242,6 @@ export class XrplTransactionsComponent implements OnInit {
       if(this.xrplAccount) {
         this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'xrpl_transactions_component');
         this.cannotConnectToNode = false;
-        this.loadingData = true;
 
         this.localStorage.set("xrplAccount", this.xrplAccount);
         this.localStorage.set("nodeUrl", this.selectedNodeUrl);
@@ -305,15 +325,11 @@ export class XrplTransactionsComponent implements OnInit {
           if(isInit && this.snackBar)
             this.snackBar.dismiss();
 
-        }
-
-        this.loadingData = false;
+        }        
       } else {
         this.emitAccountInfoChanged();
       }
   }
-
-  
 
   openSignInDialog(): void {
     const dialogRef = this.matDialog.open(XummSignDialogComponent, {
@@ -335,6 +351,8 @@ export class XrplTransactionsComponent implements OnInit {
       if(this.xrplAccount) {
         this.loadAccountData(false);
       }
+
+      this.loadingData = false;
     });
   }
 
@@ -403,6 +421,8 @@ export class XrplTransactionsComponent implements OnInit {
     if(this.xrplAccount) {
       await this.loadAccountData(false);
     }
+
+    this.loadingData = false;
   }
 
   createRandomImage(account:string) {
