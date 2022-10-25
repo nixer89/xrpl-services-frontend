@@ -55,8 +55,7 @@ export class XrplTransactionsComponent implements OnInit {
     private localStorage: LocalStorageService,
     private overlayContainer: OverlayContainer,
     private xrplWebsocket: XRPLWebsocket,
-    private deviceDetector: DeviceDetectorService,
-    private ngZone: NgZone) { }
+    private deviceDetector: DeviceDetectorService) { }
 
   async ngOnInit() {
 
