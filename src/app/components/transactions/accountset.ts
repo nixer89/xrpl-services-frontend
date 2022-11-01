@@ -55,6 +55,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   private accountInfoChangedSubscription: Subscription;
   private accountObjectsChangedSubscription: Subscription;
   originalAccountInfo:any;
+  nodeUrl:string;
   signerList:any;
 
   domainChangeDetected:boolean = false;
@@ -81,6 +82,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received: " + JSON.stringify(accountData));
       this.originalAccountInfo = accountData.info;
+      this.nodeUrl = accountData.nodeUrl;
       this.reloadData()
     });
 

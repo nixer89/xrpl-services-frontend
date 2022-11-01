@@ -46,6 +46,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   private accountInfoChangedSubscription: Subscription;
   private accountObjectsChangedSubscription: Subscription;
   originalAccountInfo:any;
+  nodeUrl: string;
   signerListObject:any;
 
   signerList:SignerEntry[] = [];
@@ -99,6 +100,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received: " + JSON.stringify(accountData))
       this.originalAccountInfo = accountData.info;
+      this.nodeUrl = accountData.nodeUrl;
     });
   }
 

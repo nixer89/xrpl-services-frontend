@@ -45,6 +45,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   passwordInput: string;
 
   originalAccountInfo:any;
+  nodeUrl:string;
 
   allAccountEscrows:any[];
 
@@ -89,9 +90,10 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
 
       this.accountReserve = accountData.accountReserve;
       this.ownerReserve = accountData.ownerReserve;
+      this.nodeUrl = accountData.nodeUrl;
 
       if(this.originalAccountInfo && this.originalAccountInfo.Account && isValidXRPAddress(this.originalAccountInfo.Account)) {
-        this.escrowAccountChanged.next({account: this.originalAccountInfo.Account, nodeUrl: accountData.nodeUrl});
+        this.escrowAccountChanged.next({account: this.originalAccountInfo.Account, nodeUrl: this.nodeUrl});
       }
 
     });

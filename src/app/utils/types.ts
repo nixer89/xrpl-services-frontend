@@ -9,7 +9,8 @@ export interface GenericBackendPostRequestOptions {
     signinToValidate?: boolean,
     issuing?: boolean,
     isRawTrx?: boolean,
-    submit?: boolean
+    submit?: boolean,
+    submitUrl?: string
 }
 
 export interface GenericBackendPostRequest {

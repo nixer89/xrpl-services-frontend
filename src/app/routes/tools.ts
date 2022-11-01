@@ -26,11 +26,7 @@ export class Tools implements OnInit {
   xrplAccount:string = null;
   xrplAccount_Info:any = null;
 
-  lastTrxLinkBithomp:string;
-  lastTrxLinkXrplOrg:string;
-  lastTrxLinkXrpScan:string;
-  lastTrxLinkXrp1ntel:string;
-  lastTrxLinkXrplorer:string;
+  lasTrxLink:string;
 
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
   transactionSuccessfull: Subject<any> = new Subject<any>();
@@ -44,17 +40,18 @@ export class Tools implements OnInit {
   ownerReserve:number = 2000000;
 
   xummNodeUrl:string = null;
+  validCustomNodeUrl:boolean = false;
+  nodesAreSame:boolean = false;
 
   availableNetworks:any[] = [
-    {value:"wss://s.altnet.rippletest.net:51233", viewValue: "Testnet"},
+    {value:"wss://hooks-testnet-v2.xrpl-labs.com", viewValue: "Hooks v2 Testnet"},
     {value:"wss://s.devnet.rippletest.net:51233", viewValue: "Devnet"},
-    {value:"wss://s.altnet.rippletest.net:51233", viewValue: "Hooks v2 Testnet"},
     {value:"wss://xls20-sandbox.rippletest.net:51233", viewValue: "XLS20 Devnet"},
     {value: "custom", viewValue: "Custom"}
   ];
 
-  selectedNode:string = "wss://s.altnet.rippletest.net:51233";
-  selectedNodeUrl: string = "wss://s.altnet.rippletest.net:51233";
+  selectedNode:string = "wss://hooks-testnet-v2.xrpl-labs.com";
+  selectedNodeUrl: string = "wss://hooks-testnet-v2.xrpl-labs.com";
 
   constructor(
     private matDialog: MatDialog,
@@ -139,6 +136,10 @@ export class Tools implements OnInit {
 
       if(this.localStorage.keys().includes("xummNodeUrl") && this.localStorage.get("xummNodeUrl") != null)
         this.xummNodeUrl = this.localStorage.get("xummNodeUrl");
+
+      if(this.selectedNodeUrl && this.xummNodeUrl) {
+        this.nodesAreSame = await this.areSameNodes(this.selectedNodeUrl, this.xummNodeUrl);
+      }
 
       await this.loadAccountData(true);
     }
@@ -239,20 +240,33 @@ export class Tools implements OnInit {
   }
 
   async networkChanged() {
-    if(this.selectedNode != 'custom')
+    if(this.selectedNode != 'custom') {
       this.selectedNodeUrl = this.selectedNode;
-    else if(this.customNodeInput != null && this.customNodeInput.length > 0)
+
+      if(this.selectedNodeUrl != null) {
+        this.loadingData = true;
+        await this.loadFeeReserves()
+        await this.loadAccountData(false);
+        this.loadingData = false;
+      }
+
+    } else if(this.customNodeInput != null && this.customNodeInput.length > 0)
       this.selectedNodeUrl = this.customNodeInput.trim();
     else
       this.selectedNodeUrl = null;
+  }
 
-    if(this.selectedNodeUrl != null) {
-      try {
+  checkUrlChange() {
+    this.validCustomNodeUrl = this.customNodeInput && ( this.customNodeInput.trim().startsWith("ws://") || this.customNodeInput.trim().startsWith("wss://"));
+    this.networkChanged();
+  }
+
+  async connectCustomNetwork() {
+    if(this.selectedNode == 'custom' && this.validCustomNodeUrl) {
+        this.loadingData = true;
         await this.loadFeeReserves()
         await this.loadAccountData(false);
-      } catch(err) {
-        console.log("can not connect to node: " + this.selectedNodeUrl);
-      }
+        this.loadingData = false;
     }
   }
 
@@ -318,6 +332,8 @@ export class Tools implements OnInit {
           this.emitAccountInfoChanged();
         }
 
+        console.log(this.xrplAccount_Info);
+
         this.cannotConnectToNode = message && message.error && message.message === 'No node connection possible';
 
         if(isInit && this.snackBar)
@@ -341,7 +357,7 @@ export class Tools implements OnInit {
       data: {xrplAccount: null}
     });
 
-    dialogRef.afterClosed().subscribe((info:TransactionValidation) => {
+    dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
       //console.log('The dialog was closed');
       //console.log(info);
       if(info && info.redirect) {
@@ -349,6 +365,9 @@ export class Tools implements OnInit {
       } else if(info && info.account) {
         this.loadingData = true;
         this.xrplAccount = info.account;
+
+        this.xummNodeUrl = !info.xummNodeUrl.startsWith("ws") ? "wss://"+info.xummNodeUrl : info.xummNodeUrl;
+        this.nodesAreSame = await this.areSameNodes(this.selectedNodeUrl, this.xummNodeUrl);
       }
 
       if(this.xrplAccount) {
@@ -390,29 +409,19 @@ export class Tools implements OnInit {
 
       
       if(trxInfo.txid) {
-        /**
-        if(trxInfo.testnet) {
-          this.lastTrxLinkBithomp = "https://test.bithomp.com/explorer/"+trxInfo.txid;
-          this.lastTrxLinkXrplOrg = "https://testnet.xrpl.org/transactions/"+trxInfo.txid;
-        } else {
-          this.lastTrxLinkBithomp = "https://bithomp.com/explorer/"+trxInfo.txid;
-          this.lastTrxLinkXrplOrg = "https://livenet.xrpl.org/transactions/"+trxInfo.txid;
-          this.lastTrxLinkXrpScan = "https://xrpscan.com/tx/"+trxInfo.txid;
-          this.lastTrxLinkXrp1ntel = "https://xrp1ntel.com/tx/"+trxInfo.txid;
-          this.lastTrxLinkXrplorer = "https://xrplorer.com/transaction/"+trxInfo.txid;
-        }
+        
+        let shortNodeUrl = this.selectedNodeUrl;
+        shortNodeUrl = shortNodeUrl.replace('wss://','');
+        shortNodeUrl = shortNodeUrl.replace('ws://','');
 
-         */
+        this.lasTrxLink = "https://sidechain.xrpl.org/"+shortNodeUrl+"/transactions/"+trxInfo.txid;
 
         if(trxInfo.success)
           this.transactionSuccessfull.next();
       }
     } else {
       this.googleAnalytics.analyticsEventEmitter('handle_transaction_failed', 'handle_transaction', 'tools_component');
-      this.lastTrxLinkBithomp = null;
-      this.lastTrxLinkXrplOrg = null;
-      this.lastTrxLinkXrpScan = null;
-      this.lastTrxLinkXrplorer = null;
+      this.lasTrxLink = null;
     }
 
     if(this.xrplAccount) {
@@ -428,10 +437,17 @@ export class Tools implements OnInit {
   async onPayloadReceived(genericBackendRequest: GenericBackendPostRequest) {
     //console.log("received payload: " + JSON.stringify(payload));
 
+    if(!this.nodesAreSame) {
+      //not same nodes, we have to set some things here!
+      genericBackendRequest.payload.txjson.Sequence = this.xrplAccount_Info.Sequence;
+    }
+
     if(!genericBackendRequest.options)
       genericBackendRequest.options = {};
       
     genericBackendRequest.options.xrplAccount = this.xrplAccount ? this.xrplAccount : null
+    genericBackendRequest.options.submit = this.xummNodeUrl === this.selectedNodeUrl,
+    genericBackendRequest.options.submitUrl = this.selectedNodeUrl
 
     this.openGenericDialog(genericBackendRequest);
   }
@@ -463,7 +479,7 @@ export class Tools implements OnInit {
   }
   logoutAccount() {
     this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'tools_component');
-    this.xrplAccount = this.xrplAccount_Info = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = this.lastTrxLinkXrplorer = null;
+    this.xrplAccount = this.xrplAccount_Info = this.lasTrxLink = null;
     this.xummNodeUrl = null;
     this.localStorage.remove("xrplAccount");
     this.localStorage.remove("xummNodeUrl");
@@ -474,6 +490,62 @@ export class Tools implements OnInit {
   gotIt() {
     this.dismissInfo = true;
     this.localStorage.set("dismissInfo", true);
+  }
+
+  async areSameNodes(nodeUrl1: string, nodeUrl2: string) {
+    console.log("Checking:")
+    console.log(nodeUrl1);
+    console.log(nodeUrl2);
+
+    if(nodeUrl1 === nodeUrl2)
+      return true;
+
+    if(!nodeUrl1 || !nodeUrl2)
+      return false;
+
+    if(!nodeUrl1.startsWith("ws") || !nodeUrl2.startsWith("ws"))
+      return false;
+
+    //get server info node 1
+
+    let nodePubKey1:string;
+    let nodePubKey2:string;
+
+    try {
+      let server_info_request = {
+        command: "server_info"
+      }
+
+      let serverResponse1 = await this.xrplWebSocket.getWebsocketMessage("server-info-1", server_info_request, nodeUrl1)
+      console.log("serverResponse1: " + JSON.stringify(serverResponse1));
+
+      nodePubKey1 = serverResponse1?.result?.info?.pubkey_node;
+
+    } catch(err) {
+      console.log(JSON.stringify(err));
+      return false;
+    }
+
+    try {
+      let server_info_request_2 = {
+        command: "server_info"
+      }
+
+      let serverResponse2 = await this.xrplWebSocket.getWebsocketMessage("server-info-1", server_info_request_2, nodeUrl2)
+      console.log("serverResponse2: " + JSON.stringify(serverResponse2));
+
+      nodePubKey2 = serverResponse2?.result?.info?.pubkey_node;
+      
+    } catch(err) {
+      console.log(JSON.stringify(err));
+      return false;
+    }
+
+    console.log("comparing nodes:")
+    console.log(nodePubKey1);
+    console.log(nodePubKey2);
+
+    return nodePubKey1 && nodePubKey2 && nodePubKey1 === nodePubKey2;
   }
 
 }

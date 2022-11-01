@@ -1,4 +1,4 @@
-<mat-expansion-panel [disabled]="originalAccountInfo && originalAccountInfo.error">
+<mat-expansion-panel [disabled]="!originalAccountInfo || originalAccountInfo.error || !nodeUrl">
   <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">playlist_add_check</mat-icon> </span>

@@ -39,9 +39,9 @@
                 <div>
                     <label>&nbsp;</label>
                 </div>
-                <mat-card class="theme-background" *ngIf="xrplAccount && xummNodeUrl != selectedNodeUrl && xrplAccount_Info && !cannotConnectToNode" fxLayout="column" fxLayoutGap="0.5em">
-                    <label class="warning">Your XUMM app is connected to: {{xummNodeUrl}}</label>
-                    <label class="success" *ngIf="xummNodeUrl != selectedNodeUrl"><b>But transactions will be submitted to: {{selectedNodeUrl}}</b></label>
+                <mat-card class="theme-background" *ngIf="xrplAccount && !nodesAreSame && xrplAccount_Info && !cannotConnectToNode" fxLayout="column" fxLayoutGap="0.5em">
+                    <label class="success">Your XUMM app is connected to: {{xummNodeUrl}}</label>
+                    <label class="warning">But transactions will be submitted to: <b>{{selectedNodeUrl}}</b></label>
                 </mat-card>
             </div>
         </div>
@@ -72,22 +72,31 @@
     <mat-card fxShow.xs fxHide class="theme-background floatcenter" style="font-size: 0.8em;">
         <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="1em">
             <label class="loading">XRPL Network Selector</label>
-            <mat-select [(ngModel)]="selectedNode" (selectionChange)="networkChanged()">
+            <mat-select [(ngModel)]="selectedNode" (selectionChange)="networkChanged()" [disabled]="loadingData">
                 <mat-option *ngFor="let network of availableNetworks" [value]="network.value">
                     {{network.viewValue}} - {{network.value}}
                 </mat-option>
             </mat-select>
+            <div *ngIf="selectedNode === 'custom'" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="0.3em">
+                <form fxLayout="column" fxLayoutGap="0.5em" style="padding-bottom: 1em;padding-top: 1em;">
+                    <mat-form-field>
+                      <input #inpcustomnode matInput type="url" name="customnode" matInput placeholder="Custom Node" [(ngModel)]="customNodeInput" (ngModelChange)="checkUrlChange()" [disabled]="loadingData">
+                      <mat-hint *ngIf="customNodeInput && customNodeInput.length > 4 && !validCustomNodeUrl">Not a valid node url. Has to start with 'ws' or 'wss'</mat-hint>
+                    </mat-form-field>
+                </form>
+                <div>
+                    <button mat-raised-button color="primary" matTooltip="Connect" matTooltipPosition="below" (click)="connectCustomNetwork()" [disabled]="!validCustomNodeUrl || loadingData">
+                        Connect
+                    </button>
+                </div>
+            </div>
         </div>
     </mat-card>
-    <div *ngIf="lastTrxLinkBithomp || lastTrxLinkXrplOrg || lastTrxLinkXrpScan || lastTrxLinkXrp1ntel || lastTrxLinkXrplorer" style="padding-top: 1em;">
-        View your transaction on the XRP Ledger: <br fxHide fxShow.xs>
-        <span *ngIf="lastTrxLinkBithomp"><a [href]="lastTrxLinkBithomp" target="_blank;" rel="noreferrer">bithomp</a> | </span>
-        <span *ngIf="lastTrxLinkXrplOrg"><a  [href]="lastTrxLinkXrplOrg" target="_blank;" rel="noreferrer">xrpl.org</a></span>
-        <span *ngIf="lastTrxLinkXrpScan"> | <a  [href]="lastTrxLinkXrpScan" target="_blank;" rel="noreferrer">xrpscan</a> | </span>
-        <span *ngIf="lastTrxLinkXrp1ntel"><a  [href]="lastTrxLinkXrp1ntel" target="_blank;" rel="noreferrer">xrp1ntel</a> | </span>
-        <span *ngIf="lastTrxLinkXrplorer"><a  [href]="lastTrxLinkXrplorer" target="_blank;" rel="noreferrer">xrplorer</a></span>
+    <div *ngIf="lasTrxLink" style="padding-top: 1em;">
+        View your transaction on the Ledger: <br fxHide fxShow.xs>
+        <span><a [href]="lasTrxLink" target="_blank;" rel="noreferrer">xrpl.org Explorer</a></span>
     </div>
-    <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;" *ngIf="xummNodeUrl">
+    <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
         <accountset [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" (onPayload)="onPayloadReceived($event)"></accountset>
         <escrowcreate [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowcreate>
         <escrowfinish [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowfinish>

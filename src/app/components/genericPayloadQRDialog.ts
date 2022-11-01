@@ -46,6 +46,7 @@ export class GenericPayloadQRDialog implements OnInit {
 
     selectedNodeUrl: string = null;
     xummNodeUrl: string = null;
+    waitingForSubmission:boolean = false;
 
     constructor(
         private xummApi: XummService,
@@ -153,6 +154,22 @@ export class GenericPayloadQRDialog implements OnInit {
             this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xrpl.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(this.memoInput.trim(), 'utf8').toString('hex').toUpperCase()}}];
         }
 
+        if(!this.genericPayload.payload.options.submit && this.genericPayload.options.submitUrl) {
+            if(!this.genericPayload.payload.custom_meta.blob) {
+                this.genericPayload.payload.custom_meta.blob = {
+                    custom_node: this.genericPayload.options.submitUrl
+                }
+            } else {
+                this.genericPayload.payload.custom_meta.blob['custom_node'] = this.genericPayload.options.submitUrl;
+            }
+
+            if(!this.genericPayload?.payload?.custom_meta?.instruction) {
+                this.genericPayload.payload.custom_meta.instruction = "- SUBMITTING TO:\n" + this.genericPayload.options.submitUrl;
+            } else {
+                this.genericPayload.payload.custom_meta.instruction += "\n\n- SUBMITTING TO:\n" + this.genericPayload.options.submitUrl;
+            }
+        }
+
         //set account and force it
         if(this.genericPayload.options.xrplAccount) {
             this.genericPayload.payload.txjson.Account = this.genericPayload.options.xrplAccount;
@@ -219,15 +236,18 @@ export class GenericPayloadQRDialog implements OnInit {
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
                 if(message.signed) {
-                    //get xrpl account
-                    let txInfo:TransactionValidation;
-                    if(this.genericPayload.payload.txjson.TransactionType.toLowerCase() === 'payment' && !this.genericPayload.options.issuing && !this.genericPayload.payload.custom_meta?.blob?.isDonation) {
-                        txInfo = await this.xummApi.checkTimedPaymentReferer(message.payload_uuidv4, this.genericPayload.options.referer);
-                    } else {
-                        txInfo = await this.xummApi.validateTransaction(message.payload_uuidv4);
+                    if(!this.genericPayload.options.submit) {
+                        //wait for submission!
+                        console.log("waiting for submitting transaction!")
+                        this.waitingForSubmission = true;
+                        await this.waitForSubmission(6000);
+                        console.log("DONE waiting for submitting transaction!")
                     }
+                    //get xrpl account
+                    let txInfo:TransactionValidation = await this.xummApi.validateTransaction(message.payload_uuidv4);
                     
-                    //console.log("txInfo: " + JSON.stringify(txInfo));
+                    console.log("txInfo: " + JSON.stringify(txInfo));
+                    this.waitingForSubmission = false;
                     this.waitingForPayment = false;
 
                     this.transactionInfo = txInfo;
@@ -252,6 +272,7 @@ export class GenericPayloadQRDialog implements OnInit {
             } else if(message.expired || message.expires_in_seconds <= 0) {
                 this.showError = true;
                 this.waitingForPayment = false;
+                this.waitingForSubmission = false;
                 this.requestExpired = true;
                 this.websocket.unsubscribe();
                 this.websocket.complete();
@@ -294,5 +315,11 @@ export class GenericPayloadQRDialog implements OnInit {
 
         this.websocket = null;
         this.dialogRef.close(null);
+    }
+
+    async waitForSubmission(ms) {
+        return new Promise((resolve) => {
+          setTimeout(resolve, ms);
+        });
     }
 }

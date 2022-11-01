@@ -1,4 +1,4 @@
-<mat-expansion-panel #mep>
+<mat-expansion-panel [disabled]="!originalAccountInfo || originalAccountInfo.error || !nodeUrl" #mep>
   <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">code</mat-icon> </span>

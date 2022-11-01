@@ -28,8 +28,13 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
 
   @ViewChild('mep', {static: true}) mep: MatExpansionPanel;
 
+  private accountInfoChangedSubscription: Subscription;
+  originalAccountInfo:any;
+
   isValidJson:boolean = false;
   errorMsg:string;
+
+  nodeUrl:string;
   
   private darkModeChangedSubscription: Subscription;
 
@@ -63,6 +68,12 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
+      //console.log("account info changed received: " + JSON.stringify(accountData));
+      this.originalAccountInfo = accountData.info;
+      this.nodeUrl = accountData.nodeUrl;
+    });
+
     this.loadingTemplates = true;
 
     this.transactionTemplates = await this.utilService.getTransactionTypes();
@@ -80,6 +91,9 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if(this.darkModeChangedSubscription != null)
       this.darkModeChangedSubscription.unsubscribe();
+    
+    if(this.accountInfoChangedSubscription)
+      this.accountInfoChangedSubscription.unsubscribe();
   }
 
   checkJson() {

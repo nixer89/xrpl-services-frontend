@@ -28,11 +28,7 @@ export class XrplTransactionsComponent implements OnInit {
   xrplAccount_Info:any = null;
   xrplAccount_Objects:any[] = null;
 
-  lastTrxLinkBithomp:string;
-  lastTrxLinkXrplOrg:string;
-  lastTrxLinkXrpScan:string;
-  lastTrxLinkXrp1ntel:string;
-  lastTrxLinkXrplorer:string;
+  lasTrxLink:string;
 
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
   accountObjectsChanged: Subject<AccountObjectsChanged> = new Subject<AccountObjectsChanged>();
@@ -48,17 +44,17 @@ export class XrplTransactionsComponent implements OnInit {
 
   xummNodeUrl:string = null;
   validCustomNodeUrl:boolean = false;
+  nodesAreSame:boolean = false;
 
   availableNetworks:any[] = [
-    {value:"wss://s.altnet.rippletest.net:51233", viewValue: "Testnet"},
-    {value:"wss://s.devnet.rippletest.net:51233", viewValue: "Devnet"},
     {value:"wss://hooks-testnet-v2.xrpl-labs.com", viewValue: "Hooks v2 Testnet"},
+    {value:"wss://s.devnet.rippletest.net:51233", viewValue: "Devnet"},
     {value:"wss://xls20-sandbox.rippletest.net:51233", viewValue: "XLS20 Devnet"},
     {value: "custom", viewValue: "Custom"}
   ];
 
-  selectedNode:string = "wss://s.altnet.rippletest.net:51233";
-  selectedNodeUrl: string = "wss://s.altnet.rippletest.net:51233";
+  selectedNode:string = "wss://hooks-testnet-v2.xrpl-labs.com";
+  selectedNodeUrl: string = "wss://hooks-testnet-v2.xrpl-labs.com";
 
   constructor(
     private matDialog: MatDialog,
@@ -169,6 +165,10 @@ export class XrplTransactionsComponent implements OnInit {
           
         if(this.localStorage.keys().includes("xummNodeUrl"))
           this.xummNodeUrl = this.localStorage.get("xummNodeUrl");
+
+        if(this.selectedNodeUrl && this.xummNodeUrl) {
+          this.nodesAreSame = await this.areSameNodes(this.selectedNodeUrl, this.xummNodeUrl);
+        }
           
         this.loadAccountData(true);
       }
@@ -177,14 +177,14 @@ export class XrplTransactionsComponent implements OnInit {
     this.loadFeeReserves();
 
     //this.xrplAccount="rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B"; //bitstamp
-    this.xrplAccount="rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF";
+    //this.xrplAccount="rnkxXCse4uoQpuAVDvQ81F6wudR4APbDaS";
     
     //this.xrplAccount="rwietsevLFg8XSmG3bEZzFein1g8RBqWDZ";
     
     //this.xrplAccount="r4LxkCUXYTCUgwquN3BnsUxFacoVLjGFyF";
     //this.isTestMode = true;
-    this.xummNodeUrl = "wss://s.altnet.rippletest.net:51233"
-    await this.loadAccountData(false);
+    //this.xummNodeUrl = "wss://s.altnet.rippletest.net:51233"
+    //await this.loadAccountData(false);
 
     this.loadingData = false;
   }
@@ -228,6 +228,9 @@ export class XrplTransactionsComponent implements OnInit {
     }
 
     let feeSetting:any = await this.xrplWebsocket.getWebsocketMessage("fee-settings", fee_request, this.selectedNodeUrl);
+
+    //console.log(JSON.stringify(feeSetting));
+    
     this.accountReserve = feeSetting?.result?.node["ReserveBase"];
     this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
 
@@ -235,6 +238,62 @@ export class XrplTransactionsComponent implements OnInit {
     //console.log("resolved ownerReserve: " + this.ownerReserve);
 
     this.emitAccountInfoChanged();
+  }
+
+  async areSameNodes(nodeUrl1: string, nodeUrl2: string) {
+    console.log("Checking:")
+    console.log(nodeUrl1);
+    console.log(nodeUrl2);
+
+    if(nodeUrl1 === nodeUrl2)
+      return true;
+
+    if(!nodeUrl1 || !nodeUrl2)
+      return false;
+
+    if(!nodeUrl1.startsWith("ws") || !nodeUrl2.startsWith("ws"))
+      return false;
+
+    //get server info node 1
+
+    let nodePubKey1:string;
+    let nodePubKey2:string;
+
+    try {
+      let server_info_request = {
+        command: "server_info"
+      }
+
+      let serverResponse1 = await this.xrplWebsocket.getWebsocketMessage("server-info-1", server_info_request, nodeUrl1)
+      console.log("serverResponse1: " + JSON.stringify(serverResponse1));
+
+      nodePubKey1 = serverResponse1?.result?.info?.pubkey_node;
+
+    } catch(err) {
+      console.log(JSON.stringify(err));
+      return false;
+    }
+
+    try {
+      let server_info_request_2 = {
+        command: "server_info"
+      }
+
+      let serverResponse2 = await this.xrplWebsocket.getWebsocketMessage("server-info-1", server_info_request_2, nodeUrl2)
+      console.log("serverResponse2: " + JSON.stringify(serverResponse2));
+
+      nodePubKey2 = serverResponse2?.result?.info?.pubkey_node;
+      
+    } catch(err) {
+      console.log(JSON.stringify(err));
+      return false;
+    }
+
+    console.log("comparing nodes:")
+    console.log(nodePubKey1);
+    console.log(nodePubKey2);
+
+    return nodePubKey1 && nodePubKey2 && nodePubKey1 === nodePubKey2;
   }
 
   async loadAccountData(isInit?: boolean) {
@@ -259,9 +318,10 @@ export class XrplTransactionsComponent implements OnInit {
         if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
           if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
             this.xrplAccount_Info = message_acc_info.result.account_data;
+
             if(this.xrplAccount_Info.urlgravatar)
               this.xrplAccount_Info.urlgravatar = this.xrplAccount_Info.urlgravatar.replace('http','https');
-            //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
+              
             this.emitAccountInfoChanged();
           } else {
             this.xrplAccount_Info = message_acc_info;
@@ -271,6 +331,8 @@ export class XrplTransactionsComponent implements OnInit {
           this.xrplAccount_Info = null;
           this.emitAccountInfoChanged();
         }
+
+        console.log(this.xrplAccount_Info);
 
         this.cannotConnectToNode = message_acc_info && message_acc_info.error && message_acc_info.message === 'No node connection possible';
 
@@ -338,7 +400,7 @@ export class XrplTransactionsComponent implements OnInit {
       data: {xrplAccount: null}
     });
 
-    dialogRef.afterClosed().subscribe((info:TransactionValidation) => {
+    dialogRef.afterClosed().subscribe(async (info:TransactionValidation) => {
       //console.log('The dialog was closed');
       //console.log(info);
       if(info && info.redirect) {
@@ -346,6 +408,9 @@ export class XrplTransactionsComponent implements OnInit {
       } else if(info && info.account) {
         this.loadingData = true;
         this.xrplAccount = info.account;
+        this.xummNodeUrl = !info.xummNodeUrl.startsWith("ws") ? "wss://"+info.xummNodeUrl : info.xummNodeUrl;
+
+        this.nodesAreSame = await this.areSameNodes(this.selectedNodeUrl, this.xummNodeUrl);
       }
 
       if(this.xrplAccount) {
@@ -378,7 +443,9 @@ export class XrplTransactionsComponent implements OnInit {
     if(trxInfo && trxInfo.account && (!trxInfo.originalPayload || (trxInfo.originalPayload && trxInfo.originalPayload.custom_meta && trxInfo.originalPayload.custom_meta.blob && !trxInfo.originalPayload.custom_meta.blob.noSignIn))) {
       this.loadingData = true;
       this.xrplAccount = trxInfo.account;
-      this.xummNodeUrl = trxInfo.xummNodeUrl;
+
+      if(trxInfo.xummNodeUrl)
+        this.xummNodeUrl = trxInfo.xummNodeUrl;
     }
 
     if(trxInfo) {
@@ -386,20 +453,13 @@ export class XrplTransactionsComponent implements OnInit {
       if(trxInfo.success && trxInfo.testnet != null)
 
       if(trxInfo.txid) {
-        /**
-        if(trxInfo.testnet) {
-          this.lastTrxLinkBithomp = "https://test.bithomp.com/explorer/"+trxInfo.txid;
-          this.lastTrxLinkXrplOrg = "https://testnet.xrpl.org/transactions/"+trxInfo.txid;
-        } else {
-          this.lastTrxLinkBithomp = "https://bithomp.com/explorer/"+trxInfo.txid;
-          this.lastTrxLinkXrplOrg = "https://livenet.xrpl.org/transactions/"+trxInfo.txid;
-          this.lastTrxLinkXrpScan = "https://xrpscan.com/tx/"+trxInfo.txid;
-          this.lastTrxLinkXrp1ntel = "https://xrp1ntel.com/tx/"+trxInfo.txid;
-          this.lastTrxLinkXrplorer = "https://xrplorer.com/transaction/"+trxInfo.txid;
-        }
 
-         */
+        let shortNodeUrl = this.selectedNodeUrl;
+        shortNodeUrl = shortNodeUrl.replace('wss://','');
+        shortNodeUrl = shortNodeUrl.replace('ws://','');
 
+        this.lasTrxLink = "https://sidechain.xrpl.org/"+shortNodeUrl+"/transactions/"+trxInfo.txid;
+        
         if(trxInfo.success) {
           this.transactionSuccessfull.next();
 
@@ -413,9 +473,7 @@ export class XrplTransactionsComponent implements OnInit {
       }
     } else {
       this.googleAnalytics.analyticsEventEmitter('handle_transaction_failed', 'handle_transaction', 'xrpl_transactions_component');
-      this.lastTrxLinkBithomp = null;
-      this.lastTrxLinkXrplOrg = null;
-      this.lastTrxLinkXrpScan = null;
+      this.lasTrxLink = null;
     }
 
     if(this.xrplAccount) {
@@ -462,36 +520,6 @@ export class XrplTransactionsComponent implements OnInit {
     }
   }
 
-  async handleEscrowCreate(trxInfo: TransactionValidation) {
-    if(trxInfo.originalPayload) {
-      let payload:XummTypes.XummGetPayloadResponse = trxInfo.originalPayload;
-      if(payload && payload.payload && payload.payload.request_json) {
-        let trx:XummTypes.XummJsonTransaction = payload.payload.request_json;
-        if(trx.TransactionType === "EscrowCreate" && trx.FinishAfter && !trx.Condition && (!trx.CancelAfter || (Number(trx.CancelAfter) - Number(trx.FinishAfter)) > 90*60)) {
-          //ask user to add escrow to auto execution
-          const dialogRef = this.matDialog.open(GenericDialogComponent, {
-            width: 'auto',
-            height: 'auto;',
-            data: {
-              line1: "Do you want to add your new Escrow to the automatic 'Escrow Releaser' service?",
-              line2: "That means you do not need to take care of releasing your Escrow once it's finished. We will do it for you!",
-              btnLeft: "Yes",
-              btnRight: "No"
-            }
-          });
-      
-          dialogRef.afterClosed().subscribe((result:any) => {
-            //console.log('The generic dialog was closed: ' + JSON.stringify(info));
-      
-            if(result) {
-              this.router.navigate(['/tools'], {queryParams:{"escrowReleaser":"open"}});
-            }
-          });
-        }
-      }
-    }
-  }
-
   emitAccountInfoChanged() {
     //console.log("emit account info changed");
     this.accountInfoChanged.next({info: this.xrplAccount_Info, nodeUrl: this.selectedNodeUrl, accountReserve: this.accountReserve, ownerReserve: this.ownerReserve, xummNodeUrl: this.xummNodeUrl});
@@ -505,14 +533,16 @@ export class XrplTransactionsComponent implements OnInit {
   async onPayloadReceived(xummPayload:XummTypes.XummPostPayloadBodyJson) {
     //console.log("received payload: " + JSON.stringify(payload));
 
-    xummPayload.custom_meta.blob = {
-      custom_node: this.selectedNodeUrl
+    if(!this.nodesAreSame) {
+      //not same nodes, we have to set some things here!
+      xummPayload.txjson.Sequence = this.xrplAccount_Info.Sequence;
     }
 
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
         xrplAccount: this.xrplAccount ? this.xrplAccount : null,
-        submit: this.xummNodeUrl === this.selectedNodeUrl
+        submit: this.xummNodeUrl === this.selectedNodeUrl,
+        submitUrl: this.selectedNodeUrl
       },
       payload: xummPayload
     }
@@ -548,7 +578,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   logoutAccount() {
     this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'xrpl_transactions_component');
-    this.xrplAccount = this.xrplAccount_Info = this.xrplAccount_Objects = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = this.lastTrxLinkXrplorer = null;
+    this.xrplAccount = this.xrplAccount_Info = this.xrplAccount_Objects = this.lasTrxLink = null;
     this.xummNodeUrl = null;
     this.localStorage.remove("xrplAccount");
     this.localStorage.remove("xummNodeUrl");

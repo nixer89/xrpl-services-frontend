@@ -19,7 +19,6 @@ export class XRPLWebsocket {
 
     async getWebsocketMessage(componentname:string, command:any, nodeUrl:string, retry?:boolean): Promise<any> {
         try {
-
             if(nodeUrl) {
 
                 if(this.websocketMap.has(componentname) && this.websocketMap.get(componentname).nodeUrl != nodeUrl) {
@@ -43,9 +42,10 @@ export class XRPLWebsocket {
                             newWebsocket = null;
                         }
 
-                        if(newWebsocket && !newWebsocket.closed)
+                        if(newWebsocket && !newWebsocket.closed) {
                             this.websocketMap.set(componentname, {socket: newWebsocket, nodeUrl: nodeUrl, isBusy: false});
-                        else
+                            console.log("websocket connected!");
+                        } else
                             throw "Can not connect websocket!";
                     } catch(err) {
                         throw "Can not connect to node!";
@@ -55,6 +55,7 @@ export class XRPLWebsocket {
 
                 return new Promise((resolve, reject) => {
                     if(this.websocketMap.has(componentname)) {
+                        //console.log(this.websocketMap.get(componentname));
                         this.websocketMap.get(componentname).socket.asObservable().subscribe(async message => {
                             //console.log(JSON.stringify(message));
                             
@@ -64,6 +65,7 @@ export class XRPLWebsocket {
                                 resolve(message);
                             }               
                         }, async error => {
+                            console.log(error);
                             resolve(await this.cleanupAndChangeNode(componentname, command, retry));
                         });
 

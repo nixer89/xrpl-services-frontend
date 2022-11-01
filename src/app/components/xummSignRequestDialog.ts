@@ -106,7 +106,7 @@ export class XummSignDialogComponent implements OnInit{
                 this.backendErrorMessage = "Sorry, there was an error contacting the backend. Please try again later!";
 
                 this.showError = true;
-                setTimeout(() => this.handleFailedSignIn(null), 3000);
+                setTimeout(() => this.handleSigninResult(null), 3000);
             }
         } catch (err) {            
             this.backendNotAvailable = true;
@@ -121,7 +121,7 @@ export class XummSignDialogComponent implements OnInit{
 
             this.showError = true;
             this.loading = false;
-            setTimeout(() => this.handleFailedSignIn(null), 10000);
+            setTimeout(() => this.handleSigninResult(null), 10000);
             return;
         }
 
@@ -150,15 +150,13 @@ export class XummSignDialogComponent implements OnInit{
             if(message.payload_uuidv4 && message.payload_uuidv4 === this.payloadUUID) {
                 
                 if(message.signed) {
-                    let transactionResult:TransactionValidation;
-                    if(!this.hasBlob)
-                        transactionResult = await this.xummApi.checkSignIn(message.payload_uuidv4);
-                    else
-                        transactionResult = await this.xummApi.validateEscrowSignInToDelete(message.payload_uuidv4);
+                    let transactionResult:TransactionValidation = await this.xummApi.checkSignIn(message.payload_uuidv4);
 
                     //console.log("sign result: " + JSON.stringify(transactionResult));
                     
                     this.waitingForPayment = false;
+
+                    console.log(transactionResult);
 
                     if(this.websocket) {
                         this.websocket.unsubscribe();
@@ -167,16 +165,16 @@ export class XummSignDialogComponent implements OnInit{
 
                     if(transactionResult && transactionResult.success) {
                         this.transactionSigned = true;
-                        
-                        setTimeout(() => this.handleSuccessfullSignIn(transactionResult.account, message.payload_uuidv4), 3000);
                     } else {
                         this.showError = true;
-                        setTimeout(() => this.handleFailedSignIn(transactionResult), 3000);
                     }
+
+                    setTimeout(() => this.handleSigninResult(transactionResult), 3000);
+
                 } else {
                     this.waitingForPayment = false;
                     this.showError = true;
-                    setTimeout(() => this.handleFailedSignIn(null), 3000);
+                    setTimeout(() => this.handleSigninResult(null), 3000);
                 }
 
             } else if(message.expired || message.expires_in_seconds <= 0) {
@@ -191,12 +189,8 @@ export class XummSignDialogComponent implements OnInit{
             }
         });
     }
-    
-    handleSuccessfullSignIn(xrplAccount: string, payloadId: string) {
-        this.dialogRef.close({ success: true, testnet: false, account: xrplAccount, payloadId: payloadId});
-    }
 
-    handleFailedSignIn(result: TransactionValidation) {
+    handleSigninResult(result: TransactionValidation) {
         this.websocket = null;
         this.dialogRef.close(result);
     }

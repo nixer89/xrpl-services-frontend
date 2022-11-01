@@ -32,6 +32,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   private accountInfoChangedSubscription: Subscription;
   private accountObjectsChangedSubscription: Subscription;
   originalAccountInfo:any;
+  nodeUrl:string;
   signerList:any;
 
   private transactionSuccessfullSubscription: Subscription;
@@ -48,6 +49,7 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
     this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
       //console.log("account info changed received")
       this.originalAccountInfo = accountData.info;
+      this.nodeUrl = accountData.nodeUrl;
 
       if(this.originalAccountInfo && this.originalAccountInfo.RegularKey) {
         this.regularKeyInput = this.originalAccountInfo.RegularKey;
