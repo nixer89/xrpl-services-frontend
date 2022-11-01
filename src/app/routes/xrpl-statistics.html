@@ -269,6 +269,79 @@
     </mat-card>
 
     <mat-card class="stats-component">
+        <h3>NFToken Offers</h3>
+        <div fxLayout="column" fxLayoutGap="0.3em">
+            <div fxLayout="row">
+                <label>Count:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(nftokenofferStats.count)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(nftokenofferStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
+            </div>
+            <div fxLayout="row">
+                <label>Total size:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(roundNumber(nftokenofferStats.size / 1000 / 1024, 10))}} MB</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Ledger size:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(nftokenofferStats.percentage, 100)}} %</label>
+            </div>
+            <div fxLayout="row">
+                <label>With Expiration Date:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(nftokenofferStats.property_count.Expiration)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>Buy Offers:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(nftokenofferStats.count - nftokenofferStats.flags.lsfSellNFToken)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>Sell Offers:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(nftokenofferStats.flags.lsfSellNFToken)}}</label>
+            </div>
+        </div>
+    </mat-card>
+
+    <mat-card class="stats-component">
+        <h3>NFToken Pages</h3>
+
+        <div fxLayout="column" fxLayoutGap="0.3em">
+            <div fxLayout="row">
+                <label>Count:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(nftokenpageStats.count)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Objects:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(nftokenpageStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
+            </div>
+            <div fxLayout="row">
+                <label>Total size:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(roundNumber(nftokenpageStats.size / 1000 / 1024, 10))}} MB</label>
+            </div>
+            <div fxLayout="row">
+                <label>% of total Ledger size:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{roundNumber(nftokenpageStats.percentage, 100)}} %</label>
+            </div>
+            <div fxLayout="row">
+                <label>Existing NFTs:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(nftokenpageStats.special_data.NftTotal)}}</label>
+            </div>
+        </div>
+    </mat-card>
+
+    <mat-card class="stats-component">
         <h3>Signer Lists</h3>
 
         <div fxLayout="column" fxLayoutGap="0.3em">
@@ -451,6 +524,11 @@
                 <label>Offer Directories:</label>
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{numberWithCommas(directorynodeStats.property_count.ExchangeRate)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>NFT Offer Directories:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(directorynodeStats.property_count.NFTokenID)}}</label>
             </div>
         </div>
     </mat-card>

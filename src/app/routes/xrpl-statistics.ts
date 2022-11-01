@@ -28,6 +28,8 @@ export class XrplStatistics implements OnInit {
   depositpreauthStats:any = null;
   feesettingsStats:any = null;
   amendmentsStats:any = null;
+  nftokenpageStats:any = null;
+  nftokenofferStats:any = null;
 
   totalNumberOfObjects: number = 0;
 
@@ -73,6 +75,8 @@ export class XrplStatistics implements OnInit {
           this.depositpreauthStats = ledger_data.depositpreauth;
           this.feesettingsStats = ledger_data.feesettings;
           this.amendmentsStats = ledger_data.amendments;
+          this.nftokenofferStats = ledger_data.nftokenoffer;
+          this.nftokenpageStats = ledger_data.nftokenpage;
         }
 
         this.tooManyRequests = false;
