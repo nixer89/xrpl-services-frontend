@@ -45,7 +45,16 @@ export class UnlCheckerComponent {
         this.unlUrl = "https://"+this.unlUrl;
       }
       
-      let result = await this.getUnlData(this.unlUrl)
+      let result;
+      try {
+        result = await this.getUnlData(this.unlUrl)
+      } catch(err) {
+        result = null;
+        this.errors.push("Error retrieving UNL data.");
+        this.errors.push("Please make sure that your provided url does host an UNL!");
+        this.loading = false;
+        return;
+      }
       //console.log(JSON.stringify(result));
 
       this.unlData = result.vl;

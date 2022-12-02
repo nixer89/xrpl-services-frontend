@@ -338,6 +338,16 @@
                 <span style="flex: 1 1 auto;"></span>
                 <label class="right-label-stats">{{numberWithCommas(nftokenpageStats.special_data.NftTotal)}}</label>
             </div>
+            <div fxLayout="row">
+                <label>Total Minted NFTs:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(accountrootStats.special_data.TotalMintedNFTs)}}</label>
+            </div>
+            <div fxLayout="row">
+                <label>Total Burned NFTs:</label>
+                <span style="flex: 1 1 auto;"></span>
+                <label class="right-label-stats">{{numberWithCommas(accountrootStats.special_data.TotalBurnedNFTs)}}</label>
+            </div>
         </div>
     </mat-card>
 
