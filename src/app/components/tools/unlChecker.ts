@@ -50,11 +50,10 @@ export class UnlCheckerComponent {
         result = await this.getUnlData(this.unlUrl)
       } catch(err) {
         result = null;
-        this.errors.push("Error retrieving UNL data.");
-        this.errors.push("Please make sure that your provided url does host an UNL!");
-        this.loading = false;
-        return;
       }
+
+      if(!result)
+        return;
       //console.log(JSON.stringify(result));
 
       this.unlData = result.vl;
@@ -143,7 +142,20 @@ export class UnlCheckerComponent {
   }
 
   private async getUnlData(url): Promise<any> {
-    let json = await this.xummApi.getUnlData(url);
+    let json = null;
+    try {
+      json = await this.xummApi.getUnlData(url);
+    } catch(err) {
+      console.log(err);
+      json = null;
+    }
+
+    if(!json) {
+      this.errors.push("Error retrieving UNL data.");
+      this.errors.push("Please make sure that your provided url does host an UNL!");
+      this.loading = false;
+      return null;
+    }
 
     try
     {
@@ -157,10 +169,9 @@ export class UnlCheckerComponent {
 
         // check key is recognised
         if (this.master_public_key != null)
-          this.assert(json.public_key.toUpperCase() == this.master_public_key.toUpperCase(),
-                "Provided VL key does not match")
+          this.assert(json.public_key.toUpperCase() == this.master_public_key.toUpperCase(), "Provided VL key does not match")
         else
-        this.master_public_key = json.public_key.toUpperCase()
+          this.master_public_key = json.public_key.toUpperCase()
 
         // parse blob
         let blob:any = Buffer.from(json.blob, 'base64')
@@ -173,6 +184,9 @@ export class UnlCheckerComponent {
         let master_key;
 
         try {
+
+          this.assert(manifest.PublicKey !== undefined, "Property 'PublicKey' missing from manifest with master key: " + this.master_public_key);
+          this.assert(manifest.MasterSignature !== undefined, "Property 'MasterSignature' missing from manifest with master key: " + this.master_public_key);
         
           if(manifest.PublicKey.toUpperCase().startsWith('ED')) {
             //console.log("master key ED");
@@ -193,11 +207,13 @@ export class UnlCheckerComponent {
 
         try {
         
+          this.assert(manifest.SigningPubKey !== undefined, "Property 'SigningPubKey' missing from manifest with master key: " + this.master_public_key);
+
           if(manifest.SigningPubKey.toUpperCase().startsWith('ED')) {
             //console.log("signing key ED");
             signing_key = ed25519.keyFromPublic(manifest.SigningPubKey.slice(2), 'hex')
 
-            this.assert(signing_key.verify(blob.toString('hex'), json.signature), "Payload signature in mantifest failed verification")
+            this.assert(signing_key.verify(blob.toString('hex'), json.signature), "Payload signature in mantifest failed verification with ED")
           } else {
             //console.log("signing key sec");
             signing_key = secp256k1.keyFromPublic(manifest.SigningPubKey, 'hex');
@@ -206,7 +222,7 @@ export class UnlCheckerComponent {
             let sha512Blob = createHash('sha512').update(blob);  
             let sha512HalfBuffer = sha512Blob.digest().toString("hex").slice(0,32);
 
-            this.assert(signing_key.verify(sha512HalfBuffer, json.signature), "Payload signature in mantifest failed verification")
+            this.assert(signing_key.verify(sha512HalfBuffer, json.signature), "Payload signature in mantifest failed verification with SECP256K1")
           }
         } catch(err) {
           this.errors.push("UNL SigningPubKey can not verify signature of blob.");
@@ -221,9 +237,15 @@ export class UnlCheckerComponent {
         this.assert(blob.validators !== undefined, "validators missing from blob")
 
         json.validator_count = blob.validators.length;
+
+        this.assert(blob.sequence !== undefined, "sequence missing from blob")
         json.sequence = blob.sequence;
+
+        this.assert(blob.expiration !== undefined, "expiration missing from blob")
         json.expiration = this.getUnlExpiration(blob.expiration);
+
         json.expiration_days_left = this.getUnlExpirationDaysLeft(blob.expiration);
+
         json.signing_pub_key = manifest.SigningPubKey.toUpperCase();
         json.master_key = manifest.PublicKey.toUpperCase()
         json.master_signature = manifest.MasterSignature.toUpperCase();
@@ -249,6 +271,8 @@ export class UnlCheckerComponent {
             }
 
             try {
+
+              this.assert(parsedManifest.MasterSignature !== undefined, "Property 'MasterSignature' missing in validator manifest for: " + blob.validators[idx].validation_public_key);
             
               if(publicKey.toUpperCase().startsWith('ED')) {
                 //console.log("VALIDATOR KEY ED")
@@ -268,8 +292,10 @@ export class UnlCheckerComponent {
               this.errors.push("Validator Signature: " + parsedManifest.MasterSignature);
             }
 
+            this.assert(parsedManifest.SigningPubKey !== undefined, "Property 'SigningPubKey' missing in validator manifest for: " + blob.validators[idx].validation_public_key);
+
             blob.validators[idx].validation_public_key = Buffer.from(blob.validators[idx].validation_public_key, 'hex')
-            
+
             let nodepub = codec.address.encodeNodePublic(Buffer.from(parsedManifest.SigningPubKey, 'hex'))
             unl[nodepub] =
             {
