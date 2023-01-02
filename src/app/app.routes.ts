@@ -9,6 +9,7 @@ import { EasyToken } from './routes/easyToken';
 import { NftRoute } from './routes/nftRoute';
 import { Statistics } from './routes/statistics';
 import { XrplStatistics } from './routes/xrpl-statistics';
+import { NftApiBackend } from './routes/nft-api-backend';
 
 export const routes: Routes = [
     {path: '', component: XrplTransactionsComponent},
@@ -18,6 +19,7 @@ export const routes: Routes = [
     //{path: 'generic-backend', component: GenericBackendDefinition},
     {path: 'statistics', component: Statistics},
     {path: 'xrpl-statistics', component: XrplStatistics},
+    {path: 'nft-api', component: NftApiBackend},
     {path: 'privacy', component: PrivacyComponent},
     {path: 'terms', component: TermsComponent},
     {path: 'easy-iou', redirectTo: 'tokens'},

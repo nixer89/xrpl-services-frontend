@@ -53,6 +53,9 @@ import { UnlCheckerComponent } from './components/tools/unlChecker';
 import { Statistics } from './routes/statistics';
 import { XrplStatistics } from './routes/xrpl-statistics';
 
+//NFT API
+import { NftApiBackend } from './routes/nft-api-backend';
+
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -133,7 +136,8 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     XrplStatistics,
     TokenDetailsDialog,
     IssuedNftList,
-    UnlCheckerComponent
+    UnlCheckerComponent,
+    NftApiBackend
   ],
   imports: [
     BrowserModule,

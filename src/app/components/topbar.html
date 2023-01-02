@@ -49,6 +49,9 @@
           <button mat-button [routerLink]="['/statistics']" matTooltip="XRPL Services Website Statistics">
             <i class="material-icons topbar-menu-icon">query_stats</i> Website Statistics
           </button>
+          <button mat-button [routerLink]="['/nft-api']" matTooltip="XRPL Services NFT API">
+            <i class="material-icons topbar-menu-icon">webhook</i> NFT API
+          </button>
         </div>
 
         <span style="flex: 1 1 auto;"></span>
@@ -112,6 +115,10 @@
           <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/statistics']">
             <mat-icon class="material-icons">query_stats</mat-icon>
             <span>Website Statistics</span>
+          </button>
+          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/nft-api']">
+            <mat-icon class="material-icons">webhook</mat-icon>
+            <span>NFT API</span>
           </button>
         </mat-menu>
   
