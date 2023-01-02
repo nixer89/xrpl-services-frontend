@@ -6,6 +6,7 @@ import * as flagsutil from '../../utils/flagutils';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { XummTypes } from 'xumm-sdk';
 import { AccountObjectsChanged, AccountInfoChanged } from 'src/app/utils/types';
+import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
   selector: 'accountset',
@@ -18,6 +19,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   private ACCOUNT_FLAG_DISABLE_MASTER_KEY:number = 4;
   private ACCOUNT_FLAG_DEFAULT_RIPPLE:number = 8;
   private ACCOUNT_FLAG_DEPOSIT_AUTH:number = 9;
+  private ACCOUNT_FLAG_AUTHORIZE_NFTOKEN_MINTER:number = 10;
   
 
   constructor(private googleAnalytics: GoogleAnalyticsService) { }
@@ -36,6 +38,9 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
   @ViewChild('inpemail') inpemail;
   emailInput: string = "";
+
+  @ViewChild('inpnftokenminter') inpnftokenminter;
+  nftokenMinterInput: string = "";
 
   @ViewChild('inprequiredesttag') inprequiredesttag;
   requireDestTagInput: boolean = false;
@@ -59,6 +64,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
   domainChangeDetected:boolean = false;
   emailChangeDetected:boolean = false;
+  nftokenminterChangeDetected:boolean = false;
   requireDestTagChangeDetected:boolean = false;
   disableMasterKeyChangeDetected:boolean = false;
   defaultRippleChangeDetected:boolean = false;
@@ -70,6 +76,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   validAccountSet:boolean = false;
   validDomain:boolean = false;
   validEmail:boolean = false;
+  validNftokenMinter:boolean = false;
 
   payload:XummTypes.XummPostPayloadBodyJson = {
     txjson: {
@@ -115,10 +122,13 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
   reloadData() {
     //console.log(JSON.stringify(this.originalAccountInfo));
-    if(this.originalAccountInfo)
+    if(this.originalAccountInfo) {
         this.domainInput = this.hexToString(this.originalAccountInfo.Domain)
-    else
+        this.nftokenMinterInput = this.originalAccountInfo.NFTokenMinter;
+    } else {
       this.domainInput = null;
+      this.nftokenMinterInput = null;
+    }
   
     this.emailInput = "";
 
@@ -136,7 +146,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
       this.depositAuthInput = false;
     }
 
-    this.requireDestTagChangeDetected = this.disableMasterKeyChangeDetected = this.defaultRippleChangeDetected = this.disallowXrpChangeDetected = this.deposithAuthChangeDetected = this.domainChangeDetected = this.emailChangeDetected = false;
+    this.requireDestTagChangeDetected = this.disableMasterKeyChangeDetected = this.defaultRippleChangeDetected = this.disallowXrpChangeDetected = this.deposithAuthChangeDetected = this.domainChangeDetected = this.emailChangeDetected = this.nftokenminterChangeDetected = false;
       
     this.checkChanges();
   }
@@ -175,6 +185,12 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     if(this.emailInput && this.validEmail && (!this.originalAccountInfo || md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash)) {
       this.payload.txjson.EmailHash = md5(this.emailInput.trim()).toUpperCase();
       this.payload.custom_meta.instruction += "- Set Email to '"+this.emailInput.trim()+"'\n"
+    }
+
+    if(this.nftokenMinterInput && this.validNftokenMinter && (!this.originalAccountInfo || this.nftokenMinterInput != this.originalAccountInfo.NFTokenMinter)) {
+      this.payload.txjson.NFTokenMinter = this.nftokenMinterInput;
+      this.payload.txjson.SetFlag = this.ACCOUNT_FLAG_AUTHORIZE_NFTOKEN_MINTER;
+      this.payload.custom_meta.instruction += "- Set NFTokenMinter to '" + this.nftokenMinterInput +"'\n\n- this authorizes " + this.nftokenMinterInput + ' to mint NFTs on your behalf!'
     }
 
     if(this.requireDestTagChangeDetected) {
@@ -236,7 +252,6 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   }
 
   deleteDomain() {
-    this.googleAnalytics.analyticsEventEmitter('delete_domain', 'sendToXumm', 'account_set_component');
     this.payload.txjson.Domain = '';
 
     this.payload.custom_meta = {};
@@ -252,11 +267,18 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   }
 
   deleteEmailHash() {
-    this.googleAnalytics.analyticsEventEmitter('delete_emailhash', 'sendToXumm', 'account_set_component');
-
     this.payload.txjson.EmailHash = "00000000000000000000000000000000";
     this.payload.custom_meta = {};
     this.payload.custom_meta.instruction = "Delete Email attached to the XRPL account";
+
+    this.onPayload.emit(this.payload);
+    this.initializePayload();
+  }
+
+  deleteNFTokenMinter() {
+    this.payload.txjson.ClearFlag = this.ACCOUNT_FLAG_AUTHORIZE_NFTOKEN_MINTER;
+    this.payload.custom_meta = {};
+    this.payload.custom_meta.instruction = "Delete the NFTokenMinter attached to the XRPL account";
 
     this.onPayload.emit(this.payload);
     this.initializePayload();
@@ -269,6 +291,9 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
     this.emailChangeDetected = this.emailInput != null && this.emailInput.trim().length > 0 && (!this.originalAccountInfo || (md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash));
     this.validEmail = !this.emailChangeDetected || emailValidator.validate(this.emailInput);
+
+    this.nftokenminterChangeDetected = this.nftokenMinterInput != null && this.nftokenMinterInput.trim().length > 0 && (!this.originalAccountInfo || (this.nftokenMinterInput.trim() != this.originalAccountInfo.NFTokenMinter));
+    this.validNftokenMinter = !this.nftokenminterChangeDetected || isValidXRPAddress(this.nftokenMinterInput);
 
     if((!this.originalAccountInfo || !this.originalAccountInfo.Flags || this.originalAccountInfo.Flags == 0) && this.requireDestTagInput)
       this.requireDestTagChangeDetected = true;
@@ -305,7 +330,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     else
       this.deposithAuthChangeDetected = false;
 
-    this.isValidAccountSet = this.validDomain && this.validEmail && (this.domainChangeDetected || this.emailChangeDetected || this.requireDestTagChangeDetected || this.disableMasterKeyChangeDetected || this.defaultRippleChangeDetected || this.disallowXrpChangeDetected || this.deposithAuthChangeDetected) && !(this.requireDestTagChangeDetected && this.disableMasterKeyChangeDetected) && !(this.requireDestTagChangeDetected && this.defaultRippleChangeDetected && this.disallowXrpChangeDetected) && !(this.disableMasterKeyChangeDetected && this.defaultRippleChangeDetected && this.disallowXrpChangeDetected);
+    this.isValidAccountSet = this.validDomain && this.validEmail && this.validNftokenMinter && (this.domainChangeDetected || this.emailChangeDetected || this.nftokenminterChangeDetected || this.requireDestTagChangeDetected || this.disableMasterKeyChangeDetected || this.defaultRippleChangeDetected || this.disallowXrpChangeDetected || this.deposithAuthChangeDetected) && !(this.requireDestTagChangeDetected && this.disableMasterKeyChangeDetected) && !(this.requireDestTagChangeDetected && this.defaultRippleChangeDetected && this.disallowXrpChangeDetected) && !(this.disableMasterKeyChangeDetected && this.defaultRippleChangeDetected && this.disallowXrpChangeDetected);
 
     //console.log("domainChangeDetected: " + this.domainChangeDetected);
     //console.log("validDomain: " + this.validDomain);

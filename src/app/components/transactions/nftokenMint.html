@@ -1,0 +1,53 @@
+<mat-expansion-panel [disabled]="originalAccountInfo && originalAccountInfo.error">
+  <mat-expansion-panel-header fxShow fxHide.xs>
+    <mat-panel-title>
+      <span> <mat-icon style="transform: scale(0.9);">send</mat-icon> </span>
+      <span class="loading" style="margin-left: 0.5em;"> NFToken Mint </span>
+    </mat-panel-title>
+    <mat-panel-description>
+      Mint a NFT on the XRP Ledger
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <mat-expansion-panel-header fxShow.xs fxHide>
+    <mat-panel-title>
+      <label class="loading">NFToken Mint</label>
+    </mat-panel-title>
+    <mat-panel-description>
+      Mint a NFT
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+
+  <div fxLayout="column" fxLayoutGap="0.3em">
+    <a href="https://xrpl.org/nftokenmint.html" target="_blank" rel="noreferrer">NFToken Mint Documentation</a><br/>
+    <label>Mint a NFT on the XRP Ledger.</label>
+    <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
+      <mat-form-field>
+        <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="xrplAccountChanged()">
+        <mat-hint *ngIf="escrowOwnerInput && !validAddress">Not a valid XRPL address</mat-hint>
+        <mat-hint *ngIf="escrowOwnerChangedAutomatically">Escrow Owner changed. Your inserted account was the destination address.</mat-hint>
+      </mat-form-field>
+      <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validSequence ? 'block':'none' }">
+        <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" [escrowsChanged]="escrowsChanged.asObservable()" (escrowSequenceFound)="onEscrowSequenceFound($event)" [isFinish]="true"></escrowList>
+      </div>
+      <mat-form-field [ngClass]="{'changed': showEscrowSequenceSelectedStyle}">
+        <input #inpescrowsequence matInput name="escrowsequence" min="0" matInput placeholder="Escrow Sequence Number" [(ngModel)]="escrowSequenceInput" (ngModelChange)="sequenceChanged()">
+        <mat-hint *ngIf="escrowSequenceInput && !validSequence">Not a valid Escrow Sequence</mat-hint>
+      </mat-form-field>
+      <mat-form-field *ngIf="showPassword">
+        <input #inppassword matInput name="password" [type]="hidePw ? 'password' : 'text'" matInput placeholder="Password which secures the Escrow {{!escrowSequenceSelected ? '(optional)' : ''}}" [(ngModel)]="passwordInput" (ngModelChange)="checkChanges()">
+        <mat-hint *ngIf="!escrowSequenceSelected" style="color: orangered;">Optional. The password you choose when creating the Escrow.</mat-hint>
+        <mat-hint *ngIf="escrowSequenceSelected" style="color: orangered;">The password you choose when creating the Escrow.</mat-hint>
+        <button mat-icon-button matSuffix (click)="hidePw = !hidePw" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePw">
+          <mat-icon>{{hidePw ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+    </form>
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em" style="padding-top: 2em;">
+      <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowFinish">
+        Send Escrow Finish to XUMM
+      </button>
+      <label *ngIf="!escrowOwnerInput || !validAddress">Please enter a valid XRPL address.</label>
+      <label *ngIf="validAddress && ( !escrowSequenceInput || !validSequence )">Please enter a valid Escrow Sequence.</label>
+    </div>
+  </div>
+</mat-expansion-panel>
