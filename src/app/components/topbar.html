@@ -18,8 +18,8 @@
           <div>
             <span fxLayout="row" fxLayoutAlign="center center">
               Support this project:&nbsp;
-              <button mat-button matTooltip="Make a Donation." matTooltipPosition="below" (click)="supportViaXumm()" style="padding:0px;">
-                <img src="../../assets/xummDonate.svg" style="width: 150px; height: 45px;" alt="Support via XUMM">
+              <button mat-button matTooltip="Send some Love!" matTooltipPosition="below" (click)="supportViaXumm()" style="padding:0px;">
+                <img src="../../assets/xummPay.svg" style="width: 150px; height: 45px;" alt="Support via XUMM">
               </button>
             </span>
           </div>
@@ -34,8 +34,8 @@
           <button mat-button [routerLink]="['/tokens']" matTooltip="Issue your own Token!">
             <i class="material-icons topbar-menu-icon">attach_money</i> XRPL Tokens
           </button>
-          <button mat-button [routerLink]="['/nfts']" matTooltip="View NFTs on the XRPL!">
-            <i class="material-icons topbar-menu-icon">token</i> XRPL NFTs
+          <button mat-button [routerLink]="['/xls-14d']" matTooltip="View NFTs on the XRPL!">
+            <i class="material-icons topbar-menu-icon">token</i> XLS-14D NFTs
           </button>
           <button mat-button [routerLink]="['/tools']" matTooltip="Tools">
             <i class="material-icons topbar-menu-icon">build</i> XRPL Tools
@@ -76,8 +76,8 @@
         <mat-toolbar-row>
           <span style="font-size: 0.8em;" fxLayoutAlign="center center">
             Support this project:&nbsp;
-            <button mat-button matTooltip="Make a Donation." matTooltipPosition="above" (click)="supportViaXumm()" style="padding:0px;">
-              <img src="../../assets/xummDonate.svg" style="width: 120px; height: 36px;" alt="Support via XUMM">
+            <button mat-button matTooltip="Send some Love!" matTooltipPosition="above" (click)="supportViaXumm()" style="padding:0px;">
+              <img src="../../assets/xummPay.svg" style="width: 120px; height: 36px;" alt="Support via XUMM">
             </button>
           </span>
         </mat-toolbar-row>
@@ -96,9 +96,9 @@
             <mat-icon class="material-icons">attach_money</mat-icon>
             <span>XRPL Tokens</span>
           </button>
-          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/nfts']">
+          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/xls-14d']">
             <mat-icon class="material-icons">token</mat-icon>
-            <span>XRPL NFTs</span>
+            <span>XLS-14D NFTs</span>
           </button>
           <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tools']">
             <mat-icon class="material-icons">build</mat-icon>

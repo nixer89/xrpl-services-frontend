@@ -14,7 +14,7 @@ import { NftApiBackend } from './routes/nft-api-backend';
 export const routes: Routes = [
     {path: '', component: XrplTransactionsComponent},
     {path: 'tokens', component: EasyToken},
-    {path: 'nfts', component: NftRoute},
+    {path: 'xls-14d', component: NftRoute},
     {path: 'tools', component: Tools},
     //{path: 'generic-backend', component: GenericBackendDefinition},
     {path: 'statistics', component: Statistics},
