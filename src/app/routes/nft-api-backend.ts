@@ -18,7 +18,8 @@ export class NftApiBackend {
     //setting up xumm payload and waiting for websocket
     let xummPayload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
-          TransactionType: "Payment"
+          TransactionType: "Payment",
+          Memos: [{Memo: {MemoType: Buffer.from("[https://xrpl.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for using NFT API: https://api.xrpldata.com/docs", 'utf8').toString('hex').toUpperCase()}}]
       },
       custom_meta: {
         instruction: "You are about to pay for the XRP Ledger Services NFT API.\nPlease make sure to set the correct XRP amount for your choosen Tier/Rate Limit!",
