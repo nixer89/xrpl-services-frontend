@@ -39,7 +39,6 @@
     "five-bells-condition": "^5.0.1",
     "md5": "^2.3.0",
     "moment": "^2.29.1",
-    "ngx-device-detector": "^2.1.1",
     "qrcode": "^1.4.4",
     "ripple-address-codec": "^4.2.4",
     "rippled-ws-client": "^1.6.5",
