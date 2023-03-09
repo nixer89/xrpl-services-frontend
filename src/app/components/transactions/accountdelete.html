@@ -48,7 +48,7 @@
         <input #inpdestinationtag matInput name="destinationtag" ngStyle.xs="font-size: 0.8em;" placeholder="Destination Tag for the XRPL address (optional)" [(ngModel)]="destinationTagInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
         <mat-hint *ngIf="destinationTagInput && !validTag">Not a valid Destination Tag. Only whole numbers between 0 and 4294967295 allowed!</mat-hint>
       </mat-form-field>
-      <label *ngIf="originalAccountInfo && originalAccountInfo.Balance && destinationAccountInput" class="loading">Your account balance is: {{getAccountBalance()}} XRP. {{(ownerReserve+2000000)/1000000}} XRP will be burnt in transaction fee, so {{getTransferBalance()}} XRP will be sent to '{{destinationAccountInput.trim()}}'.</label>
+      <label *ngIf="originalAccountInfo && originalAccountInfo.Balance && destinationAccountInput" class="loading">Your account balance is: {{getAccountBalance()}} XRP. {{(ownerReserve)/1000000}} XRP will be burnt in transaction fee, so {{getTransferBalance()}} XRP will be sent to '{{destinationAccountInput.trim()}}'.</label>
     </form>
     <div *ngIf="preconditionsFullFilled" fxLayout="column" style="padding-top: 2em;">
       <mat-checkbox [(ngModel)]="checkBoxHint" [disabled]="!preconditionsFullFilled" [ngClass]="(checkBoxHint ? 'success': 'warning')">I understand to NOT use an exchange or other custodial wallet as destination account because I might lose my funds!</mat-checkbox>
