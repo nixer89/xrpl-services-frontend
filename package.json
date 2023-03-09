@@ -22,7 +22,6 @@
     "@angular/common": "^14.2.12",
     "@angular/compiler": "^14.2.12",
     "@angular/core": "^14.2.12",
-    "@angular/flex-layout": "^13.0.0-beta.36",
     "@angular/forms": "^14.2.12",
     "@angular/material": "^13.1.0",
     "@angular/material-moment-adapter": "^13.1.0",
