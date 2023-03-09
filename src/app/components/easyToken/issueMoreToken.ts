@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
 import { XummService } from '../../services/xumm.service'
@@ -9,7 +9,7 @@ import * as normalizer from '../../utils/normalizers';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { isValidXRPAddress } from 'src/app/utils/utils';
 
 interface TrustLine {

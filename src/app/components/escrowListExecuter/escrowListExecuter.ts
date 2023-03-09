@@ -5,11 +5,11 @@ import { GenericBackendPostRequest, TransactionValidation, XrplAccountChanged } 
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import * as normalizer from '../../utils/normalizers';
 import { XummService } from '../../services/xumm.service';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { isValidXRPAddress } from "src/app/utils/utils";
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { MatExpansionPanel } from "@angular/material/expansion";
 
 @Component({

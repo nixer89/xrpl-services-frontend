@@ -4,8 +4,8 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import { AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import * as normalizer from '../../utils/normalizers';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from "@angular/material/table";
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
+import { MatLegacyTableDataSource as MatTableDataSource } from "@angular/material/legacy-table";
 
 @Component({
     selector: "escrowList",

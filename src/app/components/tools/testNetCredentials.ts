@@ -4,7 +4,7 @@ import * as qrcode from 'qrcode';
 import * as clipboard from 'copy-to-clipboard';
 import { MatStepper } from '@angular/material/stepper';
 import { GoogleAnalyticsService } from '../../services/google-analytics.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 
 @Component({
   selector: 'testNetCredentials',
