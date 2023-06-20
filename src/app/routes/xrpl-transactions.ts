@@ -180,15 +180,13 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   async loadFeeReserves() {
-    let fee_request:any = {
-      command: "ledger_entry",
-      index: "4BC50C9B0D8515D3EAAE1E74B29A95804346C491EE1A95BF25E4AAB854A6A651",
-      ledger_index: "validated"
+    let server_info:any = {
+      command: "server_info"
     }
 
-    let feeSetting:any = await this.xrplWebsocket.getWebsocketMessage("fee-settings", fee_request, this.isTestMode);
-    this.accountReserve = feeSetting?.result?.node["ReserveBase"];
-    this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
+    let serverInfo:any = await this.xrplWebsocket.getWebsocketMessage("fee-settings", server_info, this.isTestMode);
+    this.accountReserve = serverInfo?.result?.info?.validated_ledger?.reserve_base_xrp*1000000
+    this.ownerReserve = serverInfo?.result?.info?.validated_ledger?.reserve_inc_xrp*1000000
 
     //console.log("resolved accountReserve: " + this.accountReserve);
     //console.log("resolved ownerReserve: " + this.ownerReserve);
