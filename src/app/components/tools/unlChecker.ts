@@ -2,6 +2,10 @@ import { Component, ViewChild } from '@angular/core';
 import { XummService } from '../../services/xumm.service';
 import { rippleEpocheTimeToUTC } from '../../utils/normalizers';
 import { createHash } from 'crypto';
+import * as BN from 'bn.js';
+import * as hashjs from 'hash.js';
+
+import * as rippleKeypairs from "ripple-keypairs";
 
 const elliptic = require('elliptic');
 const ed25519 = new elliptic.eddsa('ed25519')
@@ -104,7 +108,7 @@ export class UnlCheckerComponent {
     // signing public key
     this.assert(buf[upto++] == 0x73, "Missing Signing Public Key")       // type 7 = VL, 3 = SigningPubKey
     this.assert(buf[upto++] == 33, "Missing Signing Public Key size")    // one byte size
-    man['SigningPubKey'] = buf.slice(upto, upto + 33).toString('hex')
+    man['SigningPubKey'] = buf.slice(upto, upto + 33).toString('hex').toUpperCase();
     upto += 33
 
     // signature
@@ -183,6 +187,8 @@ export class UnlCheckerComponent {
         // verify manifest signature and payload signature
         let master_key;
 
+        console.log(JSON.stringify(manifest));
+
         try {
 
           this.assert(manifest.PublicKey !== undefined, "Property 'PublicKey' missing from manifest with master key: " + this.master_public_key);
@@ -215,12 +221,26 @@ export class UnlCheckerComponent {
 
             this.assert(signing_key.verify(blob.toString('hex'), json.signature), "Payload signature in mantifest failed verification with ED")
           } else {
-            //console.log("signing key sec");
-            signing_key = secp256k1.keyFromPublic(manifest.SigningPubKey, 'hex');
+            console.log("signing key sec");
+            console.log(manifest.SigningPubKey);
+
+            signing_key = secp256k1.keyFromPublic(manifest.SigningPubKey.toString('hex'), 'hex');
+
+            console.log(signing_key);
             //sha512 half the blob!
             //https://xrpl.org/cryptographic-keys.html#key-derivation
-            let sha512Blob = createHash('sha512').update(blob);  
-            let sha512HalfBuffer = sha512Blob.digest().toString("hex").slice(0,32);
+            let sha512Blob = hashjs.sha512().update(blob);  
+            let sha512HalfBuffer = sha512Blob.digest().slice(0,32);
+
+            let result = signing_key.verify(sha512HalfBuffer, json.signature);
+
+            console.log("verify result:")
+            console.log(result);
+
+            let result2 = rippleKeypairs.verify(blob.toString("hex"), json.signature, manifest.SigningPubKey);
+
+            console.log("verify result2:")
+            console.log(result2);
 
             this.assert(signing_key.verify(sha512HalfBuffer, json.signature), "Payload signature in mantifest failed verification with SECP256K1")
           }
@@ -330,5 +350,10 @@ export class UnlCheckerComponent {
     let timeInMs:number = rippleEpocheTimeToUTC(expiration);
     let diffTime = timeInMs - Date.now();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  private hexToBytes(a): number[] {
+    this.assert(a.length % 2 == 0, "Byte length does not match.")
+    return new BN(a, 16).toArray(null, a.length / 2)
   }
 }

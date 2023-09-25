@@ -228,9 +228,17 @@ export class Tools implements OnInit {
       ledger_index: "validated"
     }
 
-    let feeSetting:any = await this.xrplWebSocket.getWebsocketMessage("fee-settings", fee_request, this.isTestMode);
-    this.accountReserve = feeSetting?.result?.node["ReserveBase"];
-    this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
+    let feeSettingResult:any = await this.xrplWebSocket.getWebsocketMessage("fee-settings", fee_request, this.isTestMode);
+
+    let feeSettingObject = feeSettingResult?.result?.node;
+
+    if('ReserveBase' in feeSettingObject) {
+      this.accountReserve = feeSettingObject.ReserveBase;
+      this.ownerReserve = feeSettingObject.ReserveIncrement;
+    } else {
+      this.accountReserve = Number(feeSettingObject.ReserveBaseDrops);
+      this.ownerReserve = Number(feeSettingObject.ReserveIncrementDrops);
+    }
 
     //console.log("resolved accountReserve: " + this.accountReserve);
     //console.log("resolved ownerReserve: " + this.ownerReserve);

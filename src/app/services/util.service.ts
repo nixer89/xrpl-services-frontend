@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 export class UtilService {
     constructor(private app: AppService) {}
 
-    async getTransactionTypes(): Promise<any> {
+    async getTransactionTypes(loggedInAccount?:string): Promise<any> {
         let dirList:any[] = await this.app.get('https://api.github.com/repos/xrplf/xrpl-dev-portal/contents/content/references/protocol-reference/transactions/transaction-types');
         let relevantFiles:any[] = dirList.filter(r => !r.name.includes('.ja.') && r.name.match(/^[a-zA-Z]+\.md$/))
 
@@ -32,7 +32,13 @@ export class UtilService {
                         .map(s => s.replace(/,[ \t\n\\t\\n]*}$/, '}'))
                         .map(s => {
                             try {
-                                return JSON.parse(s)
+                                let parsedTrx = JSON.parse(s);
+
+                                if(loggedInAccount && parsedTrx.Account) {
+                                    parsedTrx.Account = loggedInAccount;
+                                }
+
+                                return parsedTrx;
                             } catch (e) {
                                 return s
                             }

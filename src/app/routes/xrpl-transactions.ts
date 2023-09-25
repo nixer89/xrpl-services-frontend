@@ -186,9 +186,17 @@ export class XrplTransactionsComponent implements OnInit {
       ledger_index: "validated"
     }
 
-    let feeSetting:any = await this.xrplWebsocket.getWebsocketMessage("fee-settings", fee_request, this.isTestMode);
-    this.accountReserve = feeSetting?.result?.node["ReserveBase"];
-    this.ownerReserve = feeSetting?.result?.node["ReserveIncrement"];
+    let feeSettingResult:any = await this.xrplWebsocket.getWebsocketMessage("fee-settings", fee_request, this.isTestMode);
+
+    let feeSettingObject = feeSettingResult?.result?.node;
+
+    if('ReserveBase' in feeSettingObject) {
+      this.accountReserve = feeSettingObject.ReserveBase;
+      this.ownerReserve = feeSettingObject.ReserveIncrement;
+    } else {
+      this.accountReserve = Number(feeSettingObject.ReserveBaseDrops);
+      this.ownerReserve = Number(feeSettingObject.ReserveIncrementDrops);
+    }
 
     //console.log("resolved accountReserve: " + this.accountReserve);
     //console.log("resolved ownerReserve: " + this.ownerReserve);
@@ -383,7 +391,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   createRandomImage(account:string) {
     try {
-      let giftSendTime = this.localStorage.get("gift_time");
+      let giftSendTime:number = this.localStorage.get("gift_time");
 
       if(!giftSendTime || (giftSendTime < (Date.now() - 86400000))) { //check non existent or older than 24 h
         //make christmas gift!

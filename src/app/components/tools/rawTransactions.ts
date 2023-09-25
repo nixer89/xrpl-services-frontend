@@ -28,9 +28,11 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
 
   @ViewChild('mep', {static: true}) mep: MatExpansionPanel;
 
+  originalAccountInfo:any = null;
   isValidJson:boolean = false;
   errorMsg:string;
   
+  private accountInfoChangedSubscription: Subscription;
   private darkModeChangedSubscription: Subscription;
 
   editorOptions = {
@@ -52,6 +54,16 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
     else
       this.editorOptions.theme = "default";
 
+    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
+      //console.log("account info changed received: " + JSON.stringify(accountData));
+      if(accountData) {
+        this.originalAccountInfo = accountData.info;
+        this.loadTransactionTemplates();
+      } else {
+        this.originalAccountInfo = null;
+      }
+    });
+
     this.darkModeChangedSubscription = this.localStorage.setItems$.subscribe(value => {
       //console.log(JSON.stringify(value));
 
@@ -63,9 +75,13 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.loadTransactionTemplates();
+  }
+
+  async loadTransactionTemplates() {
     this.loadingTemplates = true;
 
-    this.transactionTemplates = await this.utilService.getTransactionTypes();
+    this.transactionTemplates = await this.utilService.getTransactionTypes(this.originalAccountInfo && this.originalAccountInfo.Account ? this.originalAccountInfo.Account : null);
 
     for(let i = 0; i < this.transactionTemplates.length; i++) {
       delete this.transactionTemplates[i].codeSamples[0].Sequence;
@@ -78,6 +94,9 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if(this.accountInfoChangedSubscription)
+      this.accountInfoChangedSubscription.unsubscribe();
+
     if(this.darkModeChangedSubscription != null)
       this.darkModeChangedSubscription.unsubscribe();
   }
@@ -101,9 +120,12 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
     this.googleAnalytics.analyticsEventEmitter('raw_transaction', 'sendToXumm', 'raw_transaction_component');
 
     let payload:XummTypes.XummPostPayloadBodyJson = {
-      txjson: JSON.parse(this.rawJsonTransaction)
+      txjson: JSON.parse(this.rawJsonTransaction),
+      options: {
+        
+      }
     }
-    this.onPayload.next({options: {isRawTrx: true} ,payload: payload});
+    this.onPayload.next({options: {isRawTrx: true}, payload: payload});
   }
 
   changeTemplate() {
