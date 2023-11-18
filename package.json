@@ -1,16 +1,12 @@
 {
-  "name": "xrpl-services",
+  "name": "xahau-services",
   "version": "4.9.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
     "build": "ng build --configuration production",
-    "upload": "ng build --configuration production & aws s3 --profile myevride rm s3://xrpl.services/ --recursive & aws s3 --profile myevride cp ./dist/xrpl-services s3://xrpl.services/ --recursive --include '*' --acl public-read --cache-control public,max-age=1800,no-transform",
+    "upload": "ng build --configuration production & aws s3 --profile myevride rm s3://xahau.services/ --recursive & aws s3 --profile myevride cp ./dist/xahau-services s3://xahau.services/ --recursive --include '*' --acl public-read --cache-control public,max-age=1800,no-transform",
     "invalidate": "aws cloudfront --profile myevride create-invalidation --distribution-id E1FM28C5G2ZK2P --paths /*",
-    "upload-dev": "ng build --configuration production & aws s3 --profile myevride rm s3://dev.xrpl.services/ --recursive & aws s3 --profile myevride cp ./dist/xrpl-services s3://dev.xrpl.services/ --recursive --include '*' --acl public-read --cache-control public,max-age=1800,no-transform",
-    "invalidate-dev": "aws cloudfront --profile myevride create-invalidation --distribution-id E6F3YVCFVB1QD --paths /*",
-    "upload-qa": "ng build --configuration production & aws s3 --profile myevride rm s3://qa.xrpl.services/ --recursive & aws s3 --profile myevride cp ./dist/xrpl-services s3://qa.xrpl.services/ --recursive --include '*' --acl public-read --cache-control public,max-age=1800,no-transform",
-    "invalidate-qa": "aws cloudfront --profile myevride create-invalidation --distribution-id EL85OZ2PCZH5H --paths /*",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

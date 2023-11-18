@@ -16,16 +16,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'xrpl-services'`, () => {
+  it(`should have as title 'xahau-services'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('xrpl-services');
+    expect(app.title).toEqual('xahau-services');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('xrpl-services app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('xahau-services app is running!');
   });
 });
