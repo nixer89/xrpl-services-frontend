@@ -73,6 +73,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   loadingIssuerData:boolean = false;
   issuerHasDefaultRipple:boolean = false;
   currencyExists:boolean = false;
+  ignoreWarning:boolean = false
 
   allFieldsSet:boolean = false;
 
@@ -176,8 +177,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
         if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
           let issuer_account_info = message_acc_info.result.account_data;
-
-          //console.log(JSON.stringify(issuer_account_info));
 
           this.issuerHasDefaultRipple = flagUtil.isDefaultRippleEnabled(issuer_account_info.Flags);
 

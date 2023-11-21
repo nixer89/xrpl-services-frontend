@@ -54,9 +54,14 @@
           <label class="warning" *ngIf="allFieldsSet && validAddress && !currencyExists">The above account does not issue the token "{{selectedCurrency.currencyCodeUTF8}}". We do not allow you to create this trust line. Please check your token currency code!</label>
           <label class="warning" *ngIf="allFieldsSet && validAddress && currencyExists && !issuerHasDefaultRipple">The issuer has the "DefaultRipple" flag not set. We do not allow you to set this trust line because you will not be able to transfer your tokens to others, and will possibly be unable to ever remove the TrustLine again. Please contact the token issuer to fix this problem!</label>
         </div>
+
+        <div *ngIf="allFieldsSet && validAddress && (!currencyExists || !issuerHasDefaultRipple)">
+          <label>&nbsp;</label>
+          <mat-checkbox [(ngModel)]="ignoreWarning" [ngClass]="(ignoreWarning ? 'success': 'warning')">I understand the above warning and accept the risk. I want to continue setting the Trustline and ignore all warnings and risks.</mat-checkbox>
+      </div>
         
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em">
-          <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidTrustSet || !issuerHasDefaultRipple || !currencyExists || loadingIssuerData">
+          <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="(!isValidTrustSet || !issuerHasDefaultRipple || !currencyExists || loadingIssuerData) && !ignoreWarning">
             Send Trust Set to Xaman
           </button>
           <button *ngIf="isEditMode" mat-raised-button color="secondary" (click)="cancelEdit()">
