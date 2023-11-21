@@ -9,17 +9,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged, AccountObjectsChanged } from '../utils/types';
 import { XummTypes } from 'xumm-sdk';
-import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
-  selector: 'xrpl-transactions',
-  templateUrl: './xrpl-transactions.html',
+  selector: 'xahau-transactions',
+  templateUrl: './xahau-transactions.html',
 })
-export class XrplTransactionsComponent implements OnInit {
+export class XahauTransactionsComponent implements OnInit {
   
   xrplAccount:string = null;
   xrplAccount_Info:any = null;
@@ -51,7 +50,6 @@ export class XrplTransactionsComponent implements OnInit {
     private route: ActivatedRoute,
     private xummApi: XummService,
     private snackBar: MatSnackBar,
-    private googleAnalytics: GoogleAnalyticsService,
     private localStorage: LocalStorageService,
     private overlayContainer: OverlayContainer,
     private xrplWebsocket: XRPLWebsocket,
@@ -102,7 +100,6 @@ export class XrplTransactionsComponent implements OnInit {
       let signinToValidate = params.signinToValidate;
 
       if(payloadId) {
-        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'xrpl_transactions_component');
         //check if transaction was successful and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
         //console.log(JSON.stringify(payloadInfo));
@@ -198,8 +195,8 @@ export class XrplTransactionsComponent implements OnInit {
       this.ownerReserve = Number(feeSettingObject.ReserveIncrementDrops);
     }
 
-    //console.log("resolved accountReserve: " + this.accountReserve);
-    //console.log("resolved ownerReserve: " + this.ownerReserve);
+    console.log("resolved accountReserve: " + this.accountReserve/1000000);
+    console.log("resolved ownerReserve: " + this.ownerReserve/1000000);
 
     this.emitAccountInfoChanged();
   }
@@ -207,7 +204,6 @@ export class XrplTransactionsComponent implements OnInit {
   async loadAccountData(isInit?: boolean) {
     
       if(this.xrplAccount) {
-        this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'xrpl_transactions_component');
         this.cannotConnectToNode = false;
         this.loadingData = true;
 
@@ -220,8 +216,8 @@ export class XrplTransactionsComponent implements OnInit {
           "strict": true,
         }
 
-        let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage("xrpl-transactions", account_info_request, this.isTestMode)
-        //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
+        let message_acc_info:any = await this.xrplWebsocket.getWebsocketMessage("xahau-transactions", account_info_request, this.isTestMode)
+        //console.log("xahau-transactions account info: " + JSON.stringify(message_acc_info));
 
         if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
           if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
@@ -350,7 +346,6 @@ export class XrplTransactionsComponent implements OnInit {
     }
 
     if(trxInfo) {
-      this.googleAnalytics.analyticsEventEmitter('handle_transaction_success', 'handle_transaction', 'xrpl_transactions_component');
       if(trxInfo.success && trxInfo.testnet != null)
         this.isTestMode = trxInfo.testnet;
 
@@ -378,7 +373,6 @@ export class XrplTransactionsComponent implements OnInit {
         //}
       }
     } else {
-      this.googleAnalytics.analyticsEventEmitter('handle_transaction_failed', 'handle_transaction', 'xrpl_transactions_component');
       this.lastTrxLinkBithomp = null;
       this.lastTrxLinkXrplOrg = null;
       this.lastTrxLinkXrpScan = null;
@@ -470,6 +464,7 @@ export class XrplTransactionsComponent implements OnInit {
     //console.log("received payload: " + JSON.stringify(payload));
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         xrplAccount: this.xrplAccount ? this.xrplAccount : null
       },
       payload: xummPayload
@@ -505,7 +500,6 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   logoutAccount() {
-    this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'xrpl_transactions_component');
     this.xrplAccount = this.xrplAccount_Info = this.xrplAccount_Objects = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = this.lastTrxLinkXrplorer = null;
     this.localStorage.remove("xrplAccount");
     this.localStorage.remove("testMode");

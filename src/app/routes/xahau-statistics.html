@@ -38,9 +38,9 @@
           <label class="right-label-stats">{{numberWithCommas(totalNumberOfObjects)}}</label>
             </div>
             <div fxLayout="row">
-                <label>Total XRP:</label>
+                <label>Total XAH:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(roundNumber((accountrootStats.special_data.BalanceValueTotal + escrowStats.special_data.AmountValueTotal) / 1000000,1))}} XRP</label>
+                <label class="right-label-stats">{{numberWithCommas(roundNumber((accountrootStats.special_data.BalanceValueTotal + (escrowStats ? escrowStats.special_data.AmountValueTotal : 0)) / 1000000,1))}} XAH</label>
             </div>
         </div>
     </mat-card>
@@ -105,39 +105,39 @@
                 <label class="right-label-stats">{{numberWithCommas(accountrootStats.count - accountrootStats.special_data.BalanceNotZero)}}</label>
             </div>
             <div fxLayout="row">
-                <label>Total XRP in Accounts:</label>
+                <label>Total XAH in Accounts:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(roundNumber((accountrootStats.special_data.BalanceValueTotal) / 1000000,1))}} XRP</label>
+                <label class="right-label-stats">{{numberWithCommas(roundNumber((accountrootStats.special_data.BalanceValueTotal) / 1000000,1))}} XAH</label>
             </div>
             <div fxLayout="row">
                 <label>Total Account Reserves:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(accountrootStats.count * 10)}} XRP</label>
+                <label class="right-label-stats">{{numberWithCommas(accountrootStats.count * 10)}} XAH</label>
             </div>
             <div fxLayout="row">
                 <label>Total Owner Reserves:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(accountrootStats.special_data.OwnerCountTotal * 2)}} XRP</label>
+                <label class="right-label-stats">{{numberWithCommas(accountrootStats.special_data.OwnerCountTotal * 2)}} XAH</label>
             </div>
             <div fxLayout="row">
                 <label>Require DestinationTag:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(accountrootStats.flags.lsfRequireDestTag)}}</label>
+                <label class="right-label-stats">{{numberWithCommas(accountrootStats.flags?.lsfRequireDestTag)}}</label>
             </div>
             <div fxLayout="row">
                 <label>Disabled Masterkey:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(accountrootStats.flags.lsfDisableMaster)}}</label>
+                <label class="right-label-stats">{{numberWithCommas(accountrootStats.flags?.lsfDisableMaster)}}</label>
             </div>
             <div fxLayout="row">
                 <label>Default Ripple:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(accountrootStats.flags.lsfDefaultRipple)}}</label>
+                <label class="right-label-stats">{{numberWithCommas(accountrootStats.flags?.lsfDefaultRipple)}}</label>
             </div>
             <div fxLayout="row">
                 <label>Global Freeze:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(accountrootStats.flags.lsfGlobalFreeze)}}</label>
+                <label class="right-label-stats">{{numberWithCommas(accountrootStats.flags?.lsfGlobalFreeze)}}</label>
             </div>
         </div>
     </mat-card>
@@ -197,9 +197,9 @@
                 <label class="right-label-stats">{{roundNumber(escrowStats.percentage, 100)}} %</label>
             </div>
             <div fxLayout="row">
-                <label>Total XRP in Escrow:</label>
+                <label>Total XAH in Escrow:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(roundNumber((escrowStats.special_data.AmountValueTotal) / 1000000,1))}} XRP</label>
+                <label class="right-label-stats">{{numberWithCommas(roundNumber((escrowStats.special_data.AmountValueTotal) / 1000000,1))}} XAH</label>
             </div>
             <div fxLayout="row">
                 <label>With Condition:</label>
@@ -250,17 +250,17 @@
             <div fxLayout="row">
                 <label>Sell Offers:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(offerStats.flags.lsfSell)}}</label>
+                <label class="right-label-stats">{{numberWithCommas(offerStats.flags?.lsfSell)}}</label>
             </div>
             <div fxLayout="row">
                 <label>Passive Offers:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(offerStats.flags.lsfPassive)}}</label>
+                <label class="right-label-stats">{{numberWithCommas(offerStats.flags?.lsfPassive)}}</label>
             </div>
             <div fxLayout="row">
-                <label>XRP offered on DEX:</label>
+                <label>XAH offered on DEX:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(roundNumber(offerStats.special_data.XrpTotal / 1000000,1))}} XRP</label>
+                <label class="right-label-stats">{{numberWithCommas(roundNumber(offerStats.special_data.XrpTotal / 1000000,1))}} XAH</label>
             </div>
             <div>
                 <label class="warning">(NOT ALL OFFERS ARE FUNDED!)</label>
@@ -269,75 +269,34 @@
     </mat-card>
 
     <mat-card class="stats-component">
-        <h3>NFToken Offers</h3>
-        <div fxLayout="column" fxLayoutGap="0.3em">
-            <div fxLayout="row">
-                <label>Count:</label>
-                <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(nftokenofferStats.count)}}</label>
-            </div>
-            <div fxLayout="row">
-                <label>% of total Objects:</label>
-                <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{roundNumber(nftokenofferStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
-            </div>
-            <div fxLayout="row">
-                <label>Total size:</label>
-                <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(roundNumber(nftokenofferStats.size / 1000 / 1024, 10))}} MB</label>
-            </div>
-            <div fxLayout="row">
-                <label>% of total Ledger size:</label>
-                <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{roundNumber(nftokenofferStats.percentage, 100)}} %</label>
-            </div>
-            <div fxLayout="row">
-                <label>With Expiration Date:</label>
-                <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(nftokenofferStats.property_count.Expiration)}}</label>
-            </div>
-            <div fxLayout="row">
-                <label>Buy Offers:</label>
-                <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(nftokenofferStats.count - nftokenofferStats.flags.lsfSellNFToken)}}</label>
-            </div>
-            <div fxLayout="row">
-                <label>Sell Offers:</label>
-                <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(nftokenofferStats.flags.lsfSellNFToken)}}</label>
-            </div>
-        </div>
-    </mat-card>
-
-    <mat-card class="stats-component">
-        <h3>NFToken Pages</h3>
+        <h3>URIToken</h3>
 
         <div fxLayout="column" fxLayoutGap="0.3em">
             <div fxLayout="row">
                 <label>Count:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(nftokenpageStats.count)}}</label>
+                <label class="right-label-stats">{{numberWithCommas(uritokenStats.count)}}</label>
             </div>
             <div fxLayout="row">
                 <label>% of total Objects:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{roundNumber(nftokenpageStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
+                <label class="right-label-stats">{{roundNumber(uritokenStats.count * 100 / totalNumberOfObjects, 100)}} %</label>
             </div>
             <div fxLayout="row">
                 <label>Total size:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(roundNumber(nftokenpageStats.size / 1000 / 1024, 10))}} MB</label>
+                <label class="right-label-stats">{{numberWithCommas(roundNumber(uritokenStats.size / 1000 / 1024, 10))}} MB</label>
             </div>
             <div fxLayout="row">
                 <label>% of total Ledger size:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{roundNumber(nftokenpageStats.percentage, 100)}} %</label>
+                <label class="right-label-stats">{{roundNumber(uritokenStats.percentage, 100)}} %</label>
             </div>
             <div fxLayout="row">
-                <label>Existing NFTs:</label>
+                <label>Unique Owners:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(nftokenpageStats.special_data.NftTotal)}}</label>
-            </div>
+                <label class="right-label-stats">{{numberWithCommas(uritokenStats.special_data.UniqueOwner)}}</label>
+            </div> 
         </div>
     </mat-card>
 
@@ -368,7 +327,7 @@
             <div fxLayout="row">
                 <label>OneOwnerCount Flag:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(signerlistStats.flags.lsfOneOwnerCount)}}</label>
+                <label class="right-label-stats">{{numberWithCommas(signerlistStats.flags?.lsfOneOwnerCount)}}</label>
             </div>
         </div>
     </mat-card>
@@ -400,7 +359,7 @@
             <div fxLayout="row">
                 <label>OneOwnerCount Flag:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(signerlistStats.flags.lsfOneOwnerCount)}}</label>
+                <label class="right-label-stats">{{numberWithCommas(signerlistStats.flags?.lsfOneOwnerCount)}}</label>
             </div>
         </div>
     </mat-card>
@@ -457,9 +416,9 @@
                 <label class="right-label-stats">{{roundNumber(checkStats.percentage, 100000)}} %</label>
             </div>
             <div fxLayout="row">
-                <label>SendMax Total in XRP:</label>
+                <label>SendMax Total in XAH:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(roundNumber(checkStats.special_data.SendMaxValueTotal / 1000000,1))}} XRP</label>
+                <label class="right-label-stats">{{numberWithCommas(roundNumber(checkStats.special_data.SendMaxValueTotal / 1000000,1))}} XAH</label>
             </div>
         </div>
     </mat-card>

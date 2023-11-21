@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AppService } from '../../services/app.service';
 import { IssuerVerification, Token, NftIssuer } from '../../utils/types'
 import * as normalizer from 'src/app/utils/normalizers';
@@ -30,8 +29,7 @@ export class IssuedNftList implements OnInit {
     private app: AppService,
     private xummBackend: XummService,
     private deviceDetector: DeviceDetectorService,
-    private matDialog: MatDialog,
-    private googleAnalytics: GoogleAnalyticsService) {}
+    private matDialog: MatDialog) {}
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -71,7 +69,7 @@ export class IssuedNftList implements OnInit {
   hotToken1W:any[];
   hotToken1M:any[];
 
-  errorMessage:string = "Could not load XRP Ledger NFTs. Please try again later!";
+  errorMessage:string = "Could not loadXahau Network NFTs. Please try again later!";
 
   async ngOnInit() {
     this.pageSize = this.deviceDetector.isMobile() ? 5 : this.pageSize;
@@ -150,8 +148,6 @@ export class IssuedNftList implements OnInit {
           this.numberOfIssuedTokens = this.datasource.data.length;
         }
 
-        this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
-
         this.kycTokensOnly = this.allTokens.filter(token => token.kyc);
       }
     }
@@ -167,7 +163,7 @@ export class IssuedNftList implements OnInit {
 
     let tokenIssuers:NftIssuer[] = [];
     try {
-      let issuedTokensResponse:any = await this.app.get('https://api.xrpldata.com/api/v1/nfts');
+      let issuedTokensResponse:any = await this.app.get('https://xahau-api.xrpldata.com/api/v1/nfts');
 
       this.ledgerIndex = issuedTokensResponse.ledger_index;
       this.ledgerHash = issuedTokensResponse.ledger_hash;

@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import { isValidXRPAddress } from 'src/app/utils/utils';
@@ -12,7 +11,7 @@ import { isValidXRPAddress } from 'src/app/utils/utils';
 })
 export class AccountDeleteComponent implements OnInit, OnDestroy {
 
-  constructor(private xrplWebSocket: XRPLWebsocket, private googleAnalytics: GoogleAnalyticsService) { }
+  constructor(private xrplWebSocket: XRPLWebsocket) { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -86,7 +85,6 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   async checkPreconditions(): Promise<void> {
     //console.log("check preconditions");
     if(this.originalAccountInfo && this.originalAccountInfo.Account) {
-      this.googleAnalytics.analyticsEventEmitter('check_delete_preconditions', 'account_delete', 'account_delete_component');
       this.loadingPreconditions = true;
       this.errorMsg = null;
 
@@ -171,7 +169,6 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
 
   async checkDestinationAccountExists(): Promise<void> {
     if(this.destinationAccountInput && this.validDestinationAddress) {
-      this.googleAnalytics.analyticsEventEmitter('check_destination_account', 'account_delete', 'account_delete_component');
       this.loadingDestinationAccount = true;
 
       let account_info_request:any = {
@@ -201,8 +198,6 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   }
 
   sendPayloadToXumm() {
-
-    this.googleAnalytics.analyticsEventEmitter('delete_account', 'sendToXumm', 'account_delete_component');
 
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {

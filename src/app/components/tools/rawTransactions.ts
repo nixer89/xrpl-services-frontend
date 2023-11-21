@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { GoogleAnalyticsService } from 'src/app/services/google-analytics.service';
 import { Observable, Subscription } from 'rxjs';
 import { AccountInfoChanged, GenericBackendPostRequest, TransactionTemplate } from 'src/app/utils/types';
 import { XummTypes } from 'xumm-sdk';
@@ -12,7 +11,7 @@ import { MatExpansionPanel } from '@angular/material/expansion';
   templateUrl: './rawTransactions.html'
 })
 export class RawTransactionsComponent implements OnInit, OnDestroy {
-  constructor(private utilService: UtilService, private localStorage: LocalStorageService, private googleAnalytics: GoogleAnalyticsService) { }
+  constructor(private utilService: UtilService, private localStorage: LocalStorageService) { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -29,6 +28,7 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
   @ViewChild('mep', {static: true}) mep: MatExpansionPanel;
 
   originalAccountInfo:any = null;
+  isTestMode:boolean = false;
   isValidJson:boolean = false;
   errorMsg:string;
   
@@ -58,6 +58,7 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
       //console.log("account info changed received: " + JSON.stringify(accountData));
       if(accountData) {
         this.originalAccountInfo = accountData.info;
+        this.isTestMode = accountData.mode;
         this.loadTransactionTemplates();
       } else {
         this.originalAccountInfo = null;
@@ -117,15 +118,13 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
   }
 
   sendToXumm() {
-    this.googleAnalytics.analyticsEventEmitter('raw_transaction', 'sendToXumm', 'raw_transaction_component');
-
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: JSON.parse(this.rawJsonTransaction),
       options: {
         
       }
     }
-    this.onPayload.next({options: {isRawTrx: true}, payload: payload});
+    this.onPayload.next({options: {testnet: this.isTestMode, isRawTrx: true}, payload: payload});
   }
 
   changeTemplate() {

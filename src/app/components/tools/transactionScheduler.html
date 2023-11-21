@@ -19,7 +19,7 @@
 
   <div fxLayout="column">
     <label class="warning" *ngIf="!originalAccountInfo || !originalAccountInfo.Account && !originalAccountInfo.account">Please use the above "Sign in with XUMM" button to load your escrows!</label>
-    <label class="warning" *ngIf="originalAccountInfo && originalAccountInfo.account">Account does not exist on the XRP Ledger {{isTestMode ? 'Testnet' : 'Mainnet'}}</label>
+    <label class="warning" *ngIf="originalAccountInfo && originalAccountInfo.account">Account does not exist on theXahau Network {{isTestMode ? 'Testnet' : 'Mainnet'}}</label>
   </div>
   
   <div style="margin-bottom: 1em;" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">

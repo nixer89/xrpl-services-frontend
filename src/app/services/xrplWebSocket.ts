@@ -5,8 +5,8 @@ import { Injectable, Optional, SkipSelf } from '@angular/core';
 export class XRPLWebsocket {
     
     originalTestModeValue:boolean = false;
-    mainNodes:string[] = ['wss://xrplcluster.com', 'wss://s2.ripple.com'];
-    testNodes:string[] = ['wss://testnet.xrpl-labs.com', 'wss://s.altnet.rippletest.net'];
+    mainNodes:string[] = ['wss://xahau.network'];
+    testNodes:string[] = ['wss://xahau-test.net'];
     mainFirst:boolean = true;
     testFirst:boolean = true;
     errorsToSwitch:string[] = ["amendmentBlocked", "failedToForward", "invalid_API_version", "noClosed", "noCurrent", "noNetwork", "tooBusy"]

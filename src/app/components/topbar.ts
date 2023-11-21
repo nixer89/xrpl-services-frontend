@@ -20,7 +20,7 @@ export class TopbarComponent implements OnInit {
 
   isDarkTheme: boolean;
 
-  title: string = "XRPL Services";
+  title: string = "Xahau Services";
   tw: TypeWriter
 
   loadingBackend:boolean = true;
@@ -39,7 +39,7 @@ export class TopbarComponent implements OnInit {
     this.isDarkTheme = this.localStorage.get("darkMode");
     this.setOverlayClass();
 
-    this.tw = new TypeWriter(["XRP Ledger Services", "created by nixerFFM", "XRP Ledger Services"], t => {
+    this.tw = new TypeWriter(["Xahau Services", "created by nixerFFM", "Xahau Services"], t => {
       this.title = t;
     })
 
@@ -70,10 +70,10 @@ export class TopbarComponent implements OnInit {
           TransactionType: "Payment"
       },
       custom_meta: {
-        instruction: "You are about to send some love to xrpl.services,\na project by @nixerFFM and not affiliated with XRPLLabs,\nthe creator of the XUMM wallet.\n\nThank you for your kindness, we appreciate you!!",
+        instruction: "You are about to send some love to xahau.services,\na project by @nixerFFM and not affiliated with XRPLLabs,\nthe creator of the XUMM wallet.\n\nThank you for your kindness, we appreciate you!!",
         blob: {
           isDonation: true,
-          purpose: "freiwillige Zahlung für xrpl.services Webseite"
+          purpose: "freiwillige Zahlung für xahau.services Webseite"
         }
       }
     }
@@ -85,6 +85,7 @@ export class TopbarComponent implements OnInit {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
         xrplAccount: this.localStorage.get("xrplAccount"),
+        testnet: false,
         referer: 'abcde'
       },
       payload: xummPayload

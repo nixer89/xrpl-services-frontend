@@ -8,7 +8,7 @@ export class XummService {
     constructor(private app: AppService) {}
 
     isTestMode = false;
-    xrplServicesBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://api.xrpl.services';
+    xrplServicesBackendURL = this.isTestMode ? 'http://localhost:4401' : 'https://api.xahau.services';
 
     async ping(): Promise<boolean> {
         try {
@@ -220,6 +220,7 @@ export class XummService {
     async makeChristmasPaymentRequest(xrplAccount: string) {
         let backendRequest: GenericBackendPostRequest = {
             options: {
+                testnet: false,
                 isRawTrx: true,
                 xrplAccount: "r9N4v3cWxfh4x6yUNjxNy3DbWUgbzMBLdk"
             },
@@ -231,7 +232,7 @@ export class XummService {
                     TransactionType: "Payment",
                     Account: "r9N4v3cWxfh4x6yUNjxNy3DbWUgbzMBLdk",
                     Destination: xrplAccount,
-                    Memos: [{Memo: {MemoType: Buffer.from("MERRY_CHRISTMAS", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("from @XrplServices (https://xrpl.services - built by @nixerFFM) Enjoy your christmas season!", 'utf8').toString('hex').toUpperCase()}}]
+                    Memos: [{Memo: {MemoType: Buffer.from("MERRY_CHRISTMAS", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("from @XahauServices (https://xahau.services - built by @nixerFFM) Enjoy your christmas season!", 'utf8').toString('hex').toUpperCase()}}]
                 },
                 custom_meta: {
                     instruction: "Christmas Gift"

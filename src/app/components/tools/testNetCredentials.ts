@@ -3,7 +3,6 @@ import { AppService } from '../../services/app.service';
 import * as qrcode from 'qrcode';
 import * as clipboard from 'copy-to-clipboard';
 import { MatStepper } from '@angular/material/stepper';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -13,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class TestNetCredentialsComponent {
 
-  constructor(private app: AppService, private snackBar: MatSnackBar, private googleAnalytics: GoogleAnalyticsService) {}
+  constructor(private app: AppService, private snackBar: MatSnackBar) {}
 
   loading:boolean = false;
   error:string = null;
@@ -42,18 +41,16 @@ export class TestNetCredentialsComponent {
         this.qrCode = await qrcode.toDataURL(this.newAccount.account.secret);
 
       if(!this.newAccount || !this.qrCode)
-        this.error = "Something went wrong. Please try again later! If the error persists, please report via twitter @XrplServices!"
+        this.error = "Something went wrong. Please try again later! If the error persists, please report via twitter @XahauServices!"
       
     } catch(err) {
       console.log(err);
       this.newAccount = null;
       this.qrCode = null;
-      this.error = "Could not load test net credentials. Please try again later! If the error persists, please report via twitter @XrplServices!";
+      this.error = "Could not load test net credentials. Please try again later! If the error persists, please report via twitter @XahauServices!";
     }
 
     this.loading = false;
-
-    this.googleAnalytics.analyticsEventEmitter('test_net_account_created', 'test_net', 'test_net_component');
   }
 
   copyFamilySeed() {

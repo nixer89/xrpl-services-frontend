@@ -5,7 +5,7 @@
       <span class="loading" style="margin-left: 0.5em;"> Raw JSON Transactions </span>
     </mat-panel-title>
     <mat-panel-description>
-      Create raw XRP Ledger transactions in JSON format and send it to your XUMM app!
+      Create rawXahau Network transactions in JSON format and send it to your XUMM app!
     </mat-panel-description>
   </mat-expansion-panel-header>
   <mat-expansion-panel-header fxShow.xs fxHide>
@@ -38,7 +38,7 @@
         </mat-select>
       </mat-form-field>
       <div *ngIf="selectedTemplate && selectedTemplate.requiresAmendment">
-        <label class="warning">This transaction type requires an amendment which is NOT yet enabled on the XRP Ledger! This transaction won't be possible.</label>
+        <label class="warning">This transaction type requires an amendment which is NOT yet enabled on theXahau Network! This transaction won't be possible.</label>
       </div>
       <div *ngIf="selectedTemplate && selectedTemplate.docLink">
         <a [href]="selectedTemplate.docLink" target="_blank" rel="noreferrer">{{selectedTemplate.transactionType}} documentation</a>

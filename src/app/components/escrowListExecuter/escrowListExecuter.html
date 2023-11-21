@@ -4,15 +4,15 @@
 </div>
 <label style="color: darkorange" *ngIf="!loading && !escrowData">The logged in account does not have any Escrows on the {{isTestMode ? 'Testnet' : 'Mainnet'}} which meet the auto release criterias. (FinishAfter time has to be set and no Condition/Password)</label>
 <mat-accordion *ngIf="!loading && escrowData && escrowData.length > 0" fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
-    <label class="loading">Welcome to the automatic Escrow release service ("Escrow Releaser") of the XrplServices!</label>
+    <label class="loading">Welcome to the automatic Escrow release service ("Escrow Releaser") of the XahauServices!</label>
     <label>After creating an Escrow, the funds you locked away are still in your account. If you set a "FinishAfter" time for your Escrow, the funds can NOT be released before that time.</label>
     <label>But releasing the Escrow (sending the funds to the destination account) does NOT happen automatically. Not even if you choose the account which created the escrow as destination for the escrow!</label>
     <label class="warning">You need to manually release the escrowed funds when the FinishAfter time has passed!</label>
     <br><br>
     <label class="loading">But that's when we come into play! We offer you a service to release your escrowed funds for you!</label>
-    <label>We will charge you a fee of 1 XRP per escrow to enable the auto release feature from XrplServices for your Escrow.</label>
+    <label>We will charge you a fee of 1 XAH per escrow to enable the auto release feature from XahauServices for your Escrow.</label>
     <label>The "Escrow Releaser" will release your Escrow within 1 hour after the "FinishAfter" time of your Escrow has passed.</label>
-    <mat-checkbox [(ngModel)]="checkBoxAcceptPayment" [ngClass]="(checkBoxAcceptPayment ? 'success': 'warning')">I understand the above text and I know I have to pay 1 XRP for each Escrow if I decide to enable the feature for one of my Escrows. I understand that the fee is not refundable if you choose to disable the auto release of your Escrow!</mat-checkbox>
+    <mat-checkbox [(ngModel)]="checkBoxAcceptPayment" [ngClass]="(checkBoxAcceptPayment ? 'success': 'warning')">I understand the above text and I know I have to pay 1 XAH for each Escrow if I decide to enable the feature for one of my Escrows. I understand that the fee is not refundable if you choose to disable the auto release of your Escrow!</mat-checkbox>
     <div *ngIf="checkBoxAcceptPayment">
         <br>
         <label>Below you will find a list of all Escrows which are eligable for auto release. (FinishAfter time has to be set and no Condition/Password).</label>
@@ -36,10 +36,10 @@
                 </ng-container>
 
                 <ng-container matColumnDef="amount">
-                    <mat-header-cell *matHeaderCellDef > Amount in XRP </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef > Amount in XAH </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
                         <span fxLayout="row">
-                            <label fxShow.xs fxHide><b>Amount in XRP:</b>&nbsp;</label>
+                            <label fxShow.xs fxHide><b>Amount in XAH:</b>&nbsp;</label>
                             <label>{{getAmountInXRP(escrow.Amount)}}</label>
                         </span>
                     </mat-cell>

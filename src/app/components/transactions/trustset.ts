@@ -1,7 +1,6 @@
 import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, XrplAccountChanged, Token, SimpleTrustLine, XrplCurrency, AccountObjectsChanged } from 'src/app/utils/types';
 import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute } from '@angular/router';
@@ -24,8 +23,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private xrplWebSocket: XRPLWebsocket,
               private app: AppService,
-              private route: ActivatedRoute,
-              private googleAnalytics: GoogleAnalyticsService) { }
+              private route: ActivatedRoute) { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -173,7 +171,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       }
 
       let message_acc_info:any = await this.xrplWebSocket.getWebsocketMessage("set-trustline", account_info_request, this.testMode);
-      //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
+      //console.log("xahau-transactions account info: " + JSON.stringify(message_acc_info));
       //this.infoLabel = JSON.stringify(message_acc_info);
       if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
         if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
@@ -202,7 +200,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
       try {
         if(!this.testMode) {
-          let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+this.issuerAccountInput+"/obligations?origin=https://xrpl.services")
+          let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+this.issuerAccountInput+"/obligations?origin=https://xahau.services")
               
           let currencyToCheck = this.selectedCurrency.currencyCode;
 
@@ -269,8 +267,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   sendPayloadToXumm(isDirectLink?: boolean) {
 
     //console.log("sendPayloadToXumm: " + this.issuedCurrencyInput);
-
-    this.googleAnalytics.analyticsEventEmitter('trust_set', 'sendToXumm', 'trust_set_component');
 
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
@@ -447,7 +443,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   onDisableRippling(trustline:SimpleTrustLine) {
     //console.log("onDisableRippling");
     //console.log("onDisableRippling: " + this.issuedCurrencyInput);
-    this.googleAnalytics.analyticsEventEmitter('trust_set', 'onDisableRippling', 'trust_set_component');
 
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
@@ -504,7 +499,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   deleteTrustLine(trustline: SimpleTrustLine) {
     //console.log("deleteTrustLine: " + this.issuedCurrencyInput);
-    this.googleAnalytics.analyticsEventEmitter('trust_set', 'deleteTrustLine', 'trust_set_component');
 
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {

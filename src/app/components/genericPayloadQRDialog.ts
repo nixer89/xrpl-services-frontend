@@ -5,7 +5,6 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
 import { XummTypes} from 'xumm-sdk'
-import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AppService } from "../services/app.service";
@@ -50,7 +49,6 @@ export class GenericPayloadQRDialog implements OnInit {
         private deviceDetector: DeviceDetectorService,
         public dialogRef: MatDialogRef<GenericPayloadQRDialog>,
         @Inject(MAT_DIALOG_DATA) public genericPayload: GenericBackendPostRequest,
-        private googleAnalytics: GoogleAnalyticsService,
         private localStorage: LocalStorageService,
         private overlayContainer: OverlayContainer) {
         }
@@ -79,7 +77,7 @@ export class GenericPayloadQRDialog implements OnInit {
                 this.showKyc = true;
                 let issuer:string = this.genericPayload.payload.txjson.LimitAmount['issuer'];
 
-                let kycResponse = await this.app.get("https://api.xrpldata.com/api/v1/kyc/"+issuer)
+                let kycResponse = await this.app.get("https://xahau-api.xrpldata.com/api/v1/kyc/"+issuer)
 
                 //console.log(JSON.stringify(kycResponse));
 
@@ -121,7 +119,9 @@ export class GenericPayloadQRDialog implements OnInit {
         this.genericPayload.payload.options.expire = 5;
 
         if(!this.genericPayload.options)
-            this.genericPayload.options = {};
+            this.genericPayload.options = {
+                testnet: false
+            };
 
         this.genericPayload.options.web = this.deviceDetector.isDesktop();
 
@@ -141,21 +141,20 @@ export class GenericPayloadQRDialog implements OnInit {
             let memoText = this.memoInput;
             
             if(!memoText || memoText.trim().length == 0)
-                memoText = "Sending Love to xrpl.services"
+                memoText = "Sending Love to xahau.services"
 
-            this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xrpl.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(memoText, 'utf8').toString('hex').toUpperCase()}}]
+            this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xahau.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(memoText, 'utf8').toString('hex').toUpperCase()}}]
         } else if(this.memoInput && this.memoInput.trim().length > 0 && !this.genericPayload.payload.txjson.Memos) {
-            this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xrpl.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(this.memoInput.trim(), 'utf8').toString('hex').toUpperCase()}}];
+            this.genericPayload.payload.txjson.Memos = [{Memo: {MemoType: Buffer.from("[https://xahau.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from(this.memoInput.trim(), 'utf8').toString('hex').toUpperCase()}}];
         }
 
         //set account and force it
         if(this.genericPayload.options.xrplAccount) {
             this.genericPayload.payload.txjson.Account = this.genericPayload.options.xrplAccount;
-            this.genericPayload.payload.options.forceAccount = true;
+            this.genericPayload.payload.options.signers = [this.genericPayload.options.xrplAccount];
         }
 
-        if(this.genericPayload.payload.txjson.TransactionType)
-            this.googleAnalytics.analyticsEventEmitter(this.genericPayload.payload.txjson.TransactionType.toLowerCase()+'_transaction', 'sendToXummGeneric', 'generic_payload_dialog_component');
+        this.genericPayload.payload.options.force_network = this.genericPayload.options.testnet ? "XAHAUTESTNET" : "XAHAU";
 
         let xummResponse:XummTypes.XummPostPayloadResponse;
         try {

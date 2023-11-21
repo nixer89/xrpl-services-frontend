@@ -2,7 +2,6 @@ import { Component, ViewChild, Output, EventEmitter, OnInit, OnDestroy, Input } 
 import { Subscription, Observable, Subject } from 'rxjs';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { XummTypes } from 'xumm-sdk';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
 import * as normalizer from '../../utils/normalizers'
 import { isValidXRPAddress } from 'src/app/utils/utils';
@@ -15,7 +14,7 @@ import { DateAdapter } from '@angular/material/core';
 })
 export class EscrowCreateComponent implements OnInit, OnDestroy{
 
-  constructor(private device:DeviceDetectorService, private dateAdapter: DateAdapter<any>, private googleAnalytics: GoogleAnalyticsService) {}
+  constructor(private device:DeviceDetectorService, private dateAdapter: DateAdapter<any>) {}
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -246,7 +245,6 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
 
   sendPayloadToXumm() {
 
-    this.googleAnalytics.analyticsEventEmitter('escrow_create', 'sendToXumm', 'escrow_create_component');
     let xummPayload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
         TransactionType: "EscrowCreate"
@@ -256,7 +254,7 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     }
 
     if(this.escrowYears > 10) {
-      xummPayload.custom_meta.instruction += "ATTENTION: Your XRP will be inaccessible for " + this.escrowYears + "years!\n\n";
+      xummPayload.custom_meta.instruction += "ATTENTION: Your XAH will be inaccessible for " + this.escrowYears + "years!\n\n";
     }
 
     if(this.destinationInput && this.destinationInput.trim().length>0 && isValidXRPAddress(this.destinationInput)) {

@@ -49,8 +49,8 @@ export class LedgerExchange {
             issuer: this.pair.issuer,
         };
 
-        const from = direction === 'sell' ? { currency: 'XRP' } : pair;
-        const to = direction === 'sell' ? pair : { currency: 'XRP' };
+        const from = direction === 'sell' ? { currency: 'XAH' } : pair;
+        const to = direction === 'sell' ? pair : { currency: 'XAH' };
 
         return {
             trade: {

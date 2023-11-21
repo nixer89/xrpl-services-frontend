@@ -9,7 +9,7 @@ import { AppRoutes } from './app.routes';
 import { AppComponent } from './app.component';
 import { TermsComponent } from './routes/specific/terms';
 import { PrivacyComponent } from './routes/specific/privacy'
-import { XrplTransactionsComponent } from './routes/xrpl-transactions';
+import { XahauTransactionsComponent } from './routes/xahau-transactions';
 import { Tools } from './routes/tools';
 import { GenericBackendDefinition } from './routes/generic-backend';
 import { EasyToken } from './routes/easyToken';
@@ -51,10 +51,10 @@ import { UnlCheckerComponent } from './components/tools/unlChecker';
 
 //Statistics
 import { Statistics } from './routes/statistics';
-import { XrplStatistics } from './routes/xrpl-statistics';
+import { XahauStatistics } from './routes/xahau-statistics';
 
 //NFT API
-import { NftApiBackend } from './routes/nft-api-backend';
+import { NftApiBackend } from './routes/uritoken-api-backend';
 
 //Angular Material
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -85,7 +85,6 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { AppService } from './services/app.service';
 import { XummService } from './services/xumm.service';
 import { UtilService } from './services/util.service';
-import { GoogleAnalyticsService } from './services/google-analytics.service';
 import { XRPLWebsocket } from './services/xrplWebSocket';
 
 //special
@@ -99,7 +98,7 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     AppComponent,
     TermsComponent,
     PrivacyComponent,
-    XrplTransactionsComponent,
+    XahauTransactionsComponent,
     Tools,
     GenericBackendDefinition,
     EasyToken,
@@ -133,7 +132,7 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     MultiSignFlowComponent,
     HighlightSearchPipe,
     Statistics,
-    XrplStatistics,
+    XahauStatistics,
     TokenDetailsDialog,
     IssuedNftList,
     UnlCheckerComponent,
@@ -171,13 +170,12 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     MatDatepickerModule,
     MatMomentDateModule,
     //Special
-    LocalStorageModule.forRoot({ prefix: 'XrplServices', storageType: 'localStorage', notifyOptions: {setItem: true, removeItem: false} }),
+    LocalStorageModule.forRoot({ prefix: 'XahauServices', storageType: 'localStorage', notifyOptions: {setItem: true, removeItem: false} }),
   ],
   providers: [
     AppService,
     XummService,
     UtilService,
-    GoogleAnalyticsService,
     XRPLWebsocket,
     DeviceDetectorService,
     MatMomentDateModule

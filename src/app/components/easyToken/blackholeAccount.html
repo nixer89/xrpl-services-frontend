@@ -31,7 +31,7 @@
               <label class="warning">We will charge you {{paymentAmount}} {{paymentCurrency}} for using this service.</label>
               <label>The payment is a ONE TIME PAYMENT. So if you pay and then close the website, you would need to pay again!</label><br/><br/>
 
-              <label class="loading">Please make sure to not have any remaining funds (XRP or other tokens) in your account! (except the {{paymentAmount}} {{paymentCurrency}} and self issued tokens!)</label><br/><br/>
+              <label class="loading">Please make sure to not have any remaining funds (XAH or other tokens) in your account! (except the {{paymentAmount}} {{paymentCurrency}} and self issued tokens!)</label><br/><br/>
               <label>Click 'Next' and follow the instructions if you are ready and you know what your are doing!</label>
               <div style="padding-top: 0.5em;">
                   <button mat-raised-button color="primary" (click)="moveNext()">Next</button>
@@ -75,7 +75,7 @@
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="1em">
           <ng-template matStepLabel>Issuer account</ng-template>
-          <label class="loading">What is the XRP Ledger account you want to black hole?</label>
+          <label class="loading">What is theXahau Network account you want to black hole?</label>
           <label>You need to sign in with the account you want to lose all access for!</label>
           <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
             <div *ngIf="!getIssuer() || !validIssuer" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="0.5em">
@@ -118,7 +118,7 @@
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
             <ng-template matStepLabel>Recipient Account</ng-template>
             <div fxLayout="column" fxLayoutGap="0.5em">
-              <label class="loading">What is the account you want to send your remaining XRP to?</label>
+              <label class="loading">What is the account you want to send your remaining XAH to?</label>
               <label *ngIf="recipient_account_info && (recipient_account_info.Account || recipient_account_info.account)">Currently selected:</label>
               <label *ngIf="recipient_account_info && recipient_account_info.Account">{{recipient_account_info.Account}}</label>
               <label *ngIf="recipient_account_info && recipient_account_info.account">{{recipient_account_info.account}}</label>
@@ -169,7 +169,7 @@
               <label>Payment received!</label>
             </mat-card>
             
-            <mat-hint *ngIf="paymentInitiated && paymentNotSuccessfull" style="padding-top: 0.5em;">Your payment was not successful on the XRP Ledger {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
+            <mat-hint *ngIf="paymentInitiated && paymentNotSuccessfull" style="padding-top: 0.5em;">Your payment was not successful on theXahau Network {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
           </div>
           <div *ngIf="loadingIssuerAccount" fxLayout="row" fxLayoutGap="0.3em">
             <label>Loading account data... </label>
@@ -189,12 +189,12 @@
           <mat-checkbox [(ngModel)]="checkBoxBlackhole1" [ngClass]="(checkBoxBlackhole1 ? 'success': 'warning')">I understand the implications and want to black hole my account.</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole2" [ngClass]="(checkBoxBlackhole2 ? 'success': 'warning')">I understand that I can not create more tokens. The supply of my Token will be fixed.</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole3" [ngClass]="(checkBoxBlackhole3 ? 'success': 'warning')">I understand that I will lose access to the issuer account: {{getIssuer()}}. I WON'T BE ABLE TO RECOVER THE ACCESS!</mat-checkbox>
-          <mat-checkbox [(ngModel)]="checkBoxBlackhole4" [ngClass]="(checkBoxBlackhole4 ? 'success': 'warning')">Before you start, please send ALL remaining balance from your account to an account of your choice. (XRP and any Tokens!) You don't need any remaining funds!</mat-checkbox>
+          <mat-checkbox [(ngModel)]="checkBoxBlackhole4" [ngClass]="(checkBoxBlackhole4 ? 'success': 'warning')">Before you start, please send ALL remaining balance from your account to an account of your choice. (XAH and any Tokens!) You don't need any remaining funds!</mat-checkbox>
           <mat-card *ngIf="checkBoxBlackhole1 && checkBoxBlackhole2 && checkBoxBlackhole3 && checkBoxBlackhole4 && (!blackholeRegularKeySet || !blackholeMasterDisabled)" fxLayout="column" fxLayoutGap="0.5em">
             <label>Okay, lets black hole the issuer account!</label>
             <label class="warning">We are going to set the RegularKey of the issuer account to the black hole address: <b>rrrrrrrrrrrrrrrrrrrrBZbvji</b> (Called 'ADDRESS_ONE'. <a href="https://xrpl.org/accounts.html#special-addresses" target="_blank">more info...</a> )</label>
             <label>No one has the secret keys to this account because the address is not derived from a known secret key.</label>
-            <label class="loading">Additionally we will disallow XRP being sent to your account and disable all other signing methods. This removes all access to this account.</label>
+            <label class="loading">Additionally we will disallow XAH being sent to your account and disable all other signing methods. This removes all access to this account.</label>
             <mat-checkbox [(ngModel)]="checkBoxBlackhole5" [ngClass]="(checkBoxBlackhole5 ? 'success': 'warning')">I have read and understand the above text. Let me remove all access to the account: {{getIssuer()}}!</mat-checkbox>
             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="0.5em">
               <button mat-raised-button color="primary" (click)="deleteSignerList()" [disabled]="!checkBoxBlackhole5 || !hasSignerList">
@@ -208,7 +208,7 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="0.5em">
               <button mat-raised-button color="primary" (click)="sendRemainingXRP()" [disabled]="!checkBoxBlackhole5 || hasSignerList || getAvailableBalanceIssuer() <= 1">
-                Send remainig XRP to Recipient
+                Send remainig XAH to Recipient
               </button>
               <div *ngIf="getAvailableBalanceIssuer() <= 1">
                 <i class="material-icons" style="color: green; font-size: 2em;">
@@ -218,7 +218,7 @@
             </div>
             <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="0.5em">
               <button mat-raised-button color="primary" (click)="disallowIncomingXrp()" [disabled]="!checkBoxBlackhole5 || hasSignerList || getAvailableBalanceIssuer() > 1 || blackholeDisallowXrp">
-                Disallow incoming XRP
+                Disallow incoming XAH
               </button>
               <div *ngIf="blackholeDisallowXrp">
                 <i class="material-icons" style="color: green; font-size: 2em;">

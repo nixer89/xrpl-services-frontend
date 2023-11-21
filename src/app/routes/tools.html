@@ -19,8 +19,8 @@
                     <label fxHide.xs>Logged in with:</label>
                     <label class="loading" ngStyle.xs="font-size: 0.8em;"> {{xrplAccount}}</label>
                     <label fxHide.xs>Balance:</label>
-                    <label class="loading" ngStyle.xs="font-size: 0.8em;">{{getAccountBalance()}} XRP.</label>
-                    <label class="warning" ngStyle.xs="font-size: 0.8em;">(Available: {{getAvailableBalance()}} XRP.)</label>
+                    <label class="loading" ngStyle.xs="font-size: 0.8em;">{{getAccountBalance()}} XAH.</label>
+                    <label class="warning" ngStyle.xs="font-size: 0.8em;">(Available: {{getAvailableBalance()}} XAH.)</label>
                 </div>
                 <label class="warning" ngStyle.xs="font-size: 0.8em;" *ngIf="!loadingData && xrplAccount && xrplAccount_Info && xrplAccount_Info.error">This account was not found on the {{isTestMode ? ' test net ' : ' main net '}}.</label>
                 <div fxLayout="row" fxLayoutAlign="center center" *ngIf="loadingData">
@@ -28,7 +28,7 @@
                     <mat-progress-spinner color="primary" mode="indeterminate" diameter=20></mat-progress-spinner>
                 </div>
                 <div fxLayout="row" fxLayoutAlign="center center" *ngIf="cannotConnectToNode">
-                    <label class="warning" ngStyle.xs="font-size: 0.8em;" >Cannot connect to the XRP Ledger! Check your internet connection!</label>
+                    <label class="warning" ngStyle.xs="font-size: 0.8em;" >Cannot connect to theXahau Network! Check your internet connection!</label>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@
         </div>
     </mat-card>
     <div *ngIf="lastTrxLinkBithomp || lastTrxLinkXrplOrg || lastTrxLinkXrpScan || lastTrxLinkXrp1ntel || lastTrxLinkXrplorer" style="padding-top: 1em;">
-        View your transaction on the XRP Ledger: <br fxHide fxShow.xs>
+        View your transaction on theXahau Network: <br fxHide fxShow.xs>
         <span *ngIf="lastTrxLinkBithomp"><a [href]="lastTrxLinkBithomp" target="_blank;" rel="noreferrer">bithomp</a> | </span>
         <span *ngIf="lastTrxLinkXrplOrg"><a  [href]="lastTrxLinkXrplOrg" target="_blank;" rel="noreferrer">xrpl.org</a></span>
         <span *ngIf="lastTrxLinkXrpScan"> | <a  [href]="lastTrxLinkXrpScan" target="_blank;" rel="noreferrer">xrpscan</a> | </span>

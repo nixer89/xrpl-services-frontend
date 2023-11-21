@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AppService } from '../../services/app.service';
 import { IssuerVerification, Token, TokenIssuer } from '../../utils/types'
 import * as normalizer from 'src/app/utils/normalizers';
@@ -30,8 +29,7 @@ export class IssuedTokenList implements OnInit {
     private app: AppService,
     private xummBackend: XummService,
     private deviceDetector: DeviceDetectorService,
-    private matDialog: MatDialog,
-    private googleAnalytics: GoogleAnalyticsService) {}
+    private matDialog: MatDialog) {}
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -74,7 +72,7 @@ export class IssuedTokenList implements OnInit {
   hotToken1W:any[];
   hotToken1M:any[];
 
-  errorMessage:string = "Could not load XRP Ledger tokens. Please try again later!";
+  errorMessage:string = "Could not loadXahau Network tokens. Please try again later!";
 
   async ngOnInit() {
     this.pageSize = this.deviceDetector.isMobile() ? 5 : this.pageSize;
@@ -160,8 +158,6 @@ export class IssuedTokenList implements OnInit {
           this.numberOfIssuedTokens = this.datasource.data.length;
         }
 
-        this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
-
         this.kycTokensOnly = this.allTokens.filter(token => token.kyc);
         this.selfAssessmentOnly = this.allTokens.filter(token => token && token.self_assessment && token.self_assessment.self_assessment && token.self_assessment.information)
       }
@@ -178,7 +174,7 @@ export class IssuedTokenList implements OnInit {
 
     let tokenIssuers:TokenIssuer[] = [];
     try {
-      let issuedTokensResponse:any = await this.app.get('https://api.xrpldata.com/api/v1/tokens');
+      let issuedTokensResponse:any = await this.app.get('https://xahau-api.xrpldata.com/api/v1/tokens');
 
       this.ledgerIndex = issuedTokensResponse.ledger_index;
       this.ledgerHash = issuedTokensResponse.ledger_hash;

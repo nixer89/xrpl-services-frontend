@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { GenericBackendPostRequest, TransactionValidation, XrplAccountChanged } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import * as normalizer from '../../utils/normalizers';
@@ -10,7 +9,6 @@ import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { isValidXRPAddress } from "src/app/utils/utils";
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatExpansionPanel } from "@angular/material/expansion";
 
 @Component({
     selector: "escrowListExecuter",
@@ -35,8 +33,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
         private xrplWebSocket: XRPLWebsocket,
         private xumm: XummService,
         private matDialog: MatDialog,
-        private snackBar: MatSnackBar,
-        private googleAnalytics: GoogleAnalyticsService) {}
+        private snackBar: MatSnackBar) {}
 
     ngOnInit() {
         this.escrowAccountChangedSubscription = this.escrowAccountChanged.subscribe(accountData => {
@@ -109,7 +106,6 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
                             this.escrowData[i].autorelease = false;
                     }
                 }
-                this.googleAnalytics.analyticsEventEmitter('load_escrow_list_executer', 'escrow_list_executer', 'escrow_list_executer_component');
 
                 this.loading = false;
 
@@ -182,12 +178,13 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
     payForEscrowRelease(escrow: any) {
         let genericBackendRequest:GenericBackendPostRequest = {
             options: {
+                testnet: this.isTestMode,
                 xrplAccount: escrow.Account
             },
             payload: {
                 txjson: {
                     TransactionType: "Payment",
-                    Memos : [{Memo: {MemoType: Buffer.from("[https://xrpl.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for Auto Release of Escrow! Owner:" + escrow.Account + " Sequence: " + escrow.sequence, 'utf8').toString('hex').toUpperCase()}}]
+                    Memos : [{Memo: {MemoType: Buffer.from("[https://xahau.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for Auto Release of Escrow! Owner:" + escrow.Account + " Sequence: " + escrow.sequence, 'utf8').toString('hex').toUpperCase()}}]
                 },
                 custom_meta: {
                     instruction: "SIGN WITH ESCROW OWNER ACCOUNT!!!\n\nEnable Auto Release for Escrow!\n\nEscrow-Owner: " + escrow.Account + "\nSequence: " + escrow.sequence + "\nFinishAfter: " + new Date(normalizer.rippleEpocheTimeToUTC(escrow.FinishAfter)).toLocaleString() + "\n" + (this.isTestMode ? "\nMake sure you are connected to Testnet!" : ""),
@@ -209,7 +206,6 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             //handle success
             this.snackBar.open("Transaction successful! You have enabled the auto release feature for your escrow!", null, {panelClass: 'snackbar-success', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
              
-            this.googleAnalytics.analyticsEventEmitter('pay_for_escrow_release', 'escrow_executer', 'escrow_executer_component');
           } else if( info && info.testnet && info.testnet != escrow.testnet) {
             this.snackBar.open("You have submitted a transaction on the " + (info.testnet ? "Testnet" : "Mainnet") + " for an escrow on the " + (escrow.testnet ? "Testnet": "Mainnet") + "! Can not activate Auto Release!", null, {panelClass: 'snackbar-failed', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
           } else if(info && info.account && info.account != escrow.Account) {
@@ -247,7 +243,6 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             if(info.success) {
                 this.snackBar.open("Ownership verified and auto release disabled!", null, {panelClass: 'snackbar-success', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
                 await this.loadEscrowList(escrow.Account);
-                this.googleAnalytics.analyticsEventEmitter('escrow_auto_release_disabled', 'escrow_executer', 'escrow_executer_component');
             } else {
                 this.snackBar.open("Ownership verified but error disabling auto release!", null, {panelClass: 'snackbar-success', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
             }

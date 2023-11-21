@@ -44,7 +44,7 @@ export function convertDemurrageToUTF8(demurrageCode: string): string {
     let code = String.fromCharCode(bytes[1]) + String.fromCharCode(bytes[2]) + String.fromCharCode(bytes[3]);
     let interest_start = (bytes[4] << 24) + (bytes[5] << 16) + (bytes[6] <<  8) + (bytes[7]);
     let interest_period = ieee754Float.fromBytes(bytes.slice(8, 16));
-    const year_seconds = 31536000; // By convention, the XRP Ledger's interest/demurrage rules use a fixed number of seconds per year (31536000), which is not adjusted for leap days or leap seconds
+    const year_seconds = 31536000; // By convention, theXahau Network's interest/demurrage rules use a fixed number of seconds per year (31536000), which is not adjusted for leap days or leap seconds
     let interest_after_year = precision(Math.pow(Math.E, (interest_start+year_seconds - interest_start) / interest_period), 14);
     let interest = (interest_after_year * 100) - 100;
 
@@ -113,12 +113,12 @@ export function isHex(string: string): boolean {
 export function normalizeCurrencyCodeXummImpl(currencyCode: string, maxLength = 20): string {
     if (!currencyCode) return '';
 
-    // Native XRP
-    if (currencyCode === 'XRP') {
+    // Native XAH
+    if (currencyCode === 'XAH') {
         return currencyCode;
     }
 
-    // IOU claims as XRP which consider as fake XRP
+    // IOU claims as XAH which consider as fake XAH
     if (currencyCode.toLowerCase() === 'xrp') {
         return 'FakeXRP';
     }

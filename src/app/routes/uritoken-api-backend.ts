@@ -7,8 +7,8 @@ import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
 
 @Component({
-  selector: 'nft-api-backend',
-  templateUrl: './nft-api-backend.html',
+  selector: 'uritoken-api-backend',
+  templateUrl: './uritoken-api-backend.html',
 })
 export class NftApiBackend {
 
@@ -19,10 +19,10 @@ export class NftApiBackend {
     let xummPayload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
           TransactionType: "Payment",
-          Memos: [{Memo: {MemoType: Buffer.from("[https://xrpl.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for using NFT API: https://api.xrpldata.com/docs", 'utf8').toString('hex').toUpperCase()}}]
+          Memos: [{Memo: {MemoType: Buffer.from("[https://xahau.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for using URIToken / NFT API: https://xahau-api.xrpldata.com/docs", 'utf8').toString('hex').toUpperCase()}}]
       },
       custom_meta: {
-        instruction: "You are about to pay for the XRP Ledger Services NFT API.\nPlease make sure to set the correct XRP amount for your choosen Tier/Rate Limit!",
+        instruction: "You are about to pay for theXahau Services NFT API.\nPlease make sure to set the correct XAH amount for your choosen Tier/Rate Limit!",
         blob: {
           purpose: "payment for NFT API"
         }
@@ -35,6 +35,7 @@ export class NftApiBackend {
   openGenericDialog(xummPayload: XummTypes.XummPostPayloadBodyJson):void {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: false,
         xrplAccount: this.localStorage.get("xrplAccount"),
         referer: 'abcde'
       },

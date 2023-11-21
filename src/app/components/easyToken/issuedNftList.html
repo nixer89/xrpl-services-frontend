@@ -3,7 +3,7 @@
   <mat-expansion-panel-header fxShow fxHide.lt-md>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">list</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> List of all NFTs on the XRP Ledger Mainnet </span>
+      <span class="loading" style="margin-left: 0.5em;"> List of all NFTs on theXahau Network Mainnet </span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
@@ -17,11 +17,11 @@
   <div fxLayout="column" fxLayoutGap="0.5em">
     <mat-card fxLayout="column" fxLayoutGap="0.5em">
       <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.5em">
-        <label class="warning">Loading XRP Ledger NFTs ...&nbsp;</label>
+        <label class="warning">LoadingXahau Network NFTs ...&nbsp;</label>
         <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
       </div>
       <div *ngIf="!loading && datasource && datasource.data" fxLayout="column" fxLayoutGap="0.5em">
-        <label><b>The below NFT table is based on XRP Ledger:</b></label>
+        <label><b>The below NFT table is based onXahau Network:</b></label>
         <table style="display: block;">
           <tr>
             <td><label>Ledger Index:&nbsp;</label></td>

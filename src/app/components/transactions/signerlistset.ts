@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } 
 import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
 import { XummTypes } from 'xumm-sdk';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, AccountObjectsChanged } from 'src/app/utils/types';
 import * as utils from 'src/app/utils/utils';
 
@@ -26,7 +25,7 @@ interface SignerEntry {
 })
 export class SignerListSetComponent implements OnInit, OnDestroy {
 
-  constructor(private googleAnalytics: GoogleAnalyticsService) { }
+  constructor() { }
 
   @Input()
   accountObjectsChanged: Observable<AccountObjectsChanged>;
@@ -227,8 +226,6 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   sendPayloadToXumm() {
-    this.googleAnalytics.analyticsEventEmitter('signer_list_set', 'sendToXumm', 'signer_list_set_component');
-
     this.payload.custom_meta = {};
 
     //console.log("sending to xumm");
@@ -275,7 +272,6 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   deleteSignerList() {
-    this.googleAnalytics.analyticsEventEmitter('delete_signer_list', 'sendToXumm', 'signer_list_set_component');
     this.onPayload.emit({
       txjson: {
         TransactionType: "SignerListSet",

@@ -1,6 +1,7 @@
 import { XummTypes } from 'xumm-sdk';
 
 export interface GenericBackendPostRequestOptions {
+    testnet: boolean,
     frontendId?: string,
     web?: boolean,
     pushDisabled?: boolean,

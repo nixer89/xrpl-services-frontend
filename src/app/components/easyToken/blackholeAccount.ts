@@ -5,7 +5,6 @@ import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import { Subject } from 'rxjs';
 import { TransactionValidation, GenericBackendPostRequest } from '../../utils/types';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
@@ -25,7 +24,6 @@ export class BlackholeAccount implements OnInit {
   constructor(
     private xummBackend: XummService,
     private matDialog: MatDialog,
-    private googleAnalytics: GoogleAnalyticsService,
     private device: DeviceDetectorService,
     private xrplWebSocket: XRPLWebsocket,
     private router: Router) { }
@@ -78,7 +76,7 @@ export class BlackholeAccount implements OnInit {
   ownerReserve:number = 2000000;
 
   paymentAmount:number = 15;
-  paymentCurrency:string = "XRP";
+  paymentCurrency:string = "XAH";
 
   @ViewChild('stepper') stepper: MatStepper;
 
@@ -97,7 +95,7 @@ export class BlackholeAccount implements OnInit {
         if(amount && !amount.issuer) {
           let blackholeAmount:number = Number(fixAmounts[window.location.origin+this.router.url]);
           this.paymentAmount = blackholeAmount / 1000000;
-          this.paymentCurrency = "XRP"
+          this.paymentCurrency = "XAH"
         } else if(amount && amount.issuer) {
           this.paymentAmount = amount.value;
           this.paymentCurrency = amount.currency;
@@ -191,13 +189,14 @@ export class BlackholeAccount implements OnInit {
   payForBlackhole() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         xrplAccount: this.getIssuer()
       },
       payload: {
         txjson: {
           Account: this.getIssuer(),
           TransactionType: "Payment",
-          Memos : [{Memo: {MemoType: Buffer.from("[https://xrpl.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment to blackhole XRPL account.", 'utf8').toString('hex').toUpperCase()}}]
+          Memos : [{Memo: {MemoType: Buffer.from("[https://xahau.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment to blackhole XRPL account.", 'utf8').toString('hex').toUpperCase()}}]
         },
         custom_meta: {
           instruction: "Please pay with the account you want to remove all access for!",
@@ -226,7 +225,6 @@ export class BlackholeAccount implements OnInit {
 
           //refresh amounts
           await this.loadAccountData();
-          this.googleAnalytics.analyticsEventEmitter('pay_for_blackhole', 'blackhole', 'blackhole_component');
       } else {
         this.paymentNotSuccessfull = true;
       }
@@ -236,7 +234,6 @@ export class BlackholeAccount implements OnInit {
   async loadAccountData() {
     if(this.issuerAccount) {
       this.loadingIssuerAccount = true;
-      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'blackhole', 'blackhole_component');
 
       let account_info_request:any = {
         command: "account_info",
@@ -303,7 +300,7 @@ export class BlackholeAccount implements OnInit {
       }
 
       let message_acc_info:any = await this.xrplWebSocket.getWebsocketMessage("blackhole_component", account_info_request, this.isTestMode);
-      //console.log("xrpl-transactions account info: " + JSON.stringify(message_acc_info));
+      //console.log("xahau-transactions account info: " + JSON.stringify(message_acc_info));
       //this.infoLabel = JSON.stringify(message_acc_info);
       if(message_acc_info && message_acc_info.status && message_acc_info.type && message_acc_info.type === 'response') {
         if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
@@ -322,6 +319,7 @@ export class BlackholeAccount implements OnInit {
   sendRemainingXRP() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },
@@ -333,7 +331,7 @@ export class BlackholeAccount implements OnInit {
           Amount: this.getAvailableBalanceIssuer()*1000000+""
         },
         custom_meta: {
-          instruction: "- Sending " + this.getAvailableBalanceIssuer() + " XRP to an account of your choice.\n\n- Please sign with the ISSUER account!"
+          instruction: "- Sending " + this.getAvailableBalanceIssuer() + " XAH to an account of your choice.\n\n- Please sign with the ISSUER account!"
         }
       }
     }
@@ -355,6 +353,7 @@ export class BlackholeAccount implements OnInit {
   disallowIncomingXrp() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },
@@ -365,7 +364,7 @@ export class BlackholeAccount implements OnInit {
           SetFlag: this.ACCOUNT_FLAG_DISABLE_INCOMING_XRP
         },
         custom_meta: {
-          instruction: "- Disallow incoming XRP\n\n- Please sign with the ISSUER account!"
+          instruction: "- Disallow incoming XAH\n\n- Please sign with the ISSUER account!"
         }
       }
     }
@@ -391,6 +390,7 @@ export class BlackholeAccount implements OnInit {
   setBlackholeAddress() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },
@@ -427,6 +427,7 @@ export class BlackholeAccount implements OnInit {
   disableMasterKeyForIssuer() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         xrplAccount: this.getIssuer()
       },
       payload: {
@@ -452,7 +453,6 @@ export class BlackholeAccount implements OnInit {
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.blackholeMasterDisabled = true;
-        this.googleAnalytics.analyticsEventEmitter('account_black_hole_succeed', 'easy_token', 'easy_token_component');
       } else {
         this.blackholeMasterDisabled = false;
       }
@@ -464,6 +464,7 @@ export class BlackholeAccount implements OnInit {
 
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         xrplAccount: this.getIssuer()
       },
       payload: {

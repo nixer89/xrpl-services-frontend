@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } 
 import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
 import { XummTypes } from 'xumm-sdk';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, AccountObjectsChanged } from 'src/app/utils/types';
 import { isValidXRPAddress } from 'src/app/utils/utils';
 
@@ -12,7 +11,7 @@ import { isValidXRPAddress } from 'src/app/utils/utils';
 })
 export class SetRegularKeyComponent implements OnInit, OnDestroy {
 
-  constructor(private googleAnalytics: GoogleAnalyticsService) { }
+  constructor() { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -84,8 +83,6 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
 
   sendPayloadToXumm() {
 
-    this.googleAnalytics.analyticsEventEmitter('set_regular_key', 'sendToXumm', 'set_regular_key_component');
-
     if(this.regularKeyInput && this.regularKeyInput.trim().length>0 && this.validAddress) {
       this.payload.txjson.RegularKey = this.regularKeyInput.trim();
       this.payload.custom_meta = {}
@@ -115,7 +112,6 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
   }
 
   deleteRegularKey() {
-    this.googleAnalytics.analyticsEventEmitter('delete_regular_key', 'sendToXumm', 'set_regular_key_component');
     let payloadToSend:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
         TransactionType: "SetRegularKey"

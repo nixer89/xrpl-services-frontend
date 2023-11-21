@@ -5,7 +5,7 @@
       <span class="loading" style="margin-left: 0.5em;"> Escrow Create </span>
     </mat-panel-title>
     <mat-panel-description>
-      Create an Escrow on the XRP Ledger.
+      Create an Escrow on theXahau Network.
     </mat-panel-description>
   </mat-expansion-panel-header>
   <mat-expansion-panel-header fxShow.xs fxHide>
@@ -19,8 +19,8 @@
 
   <div fxLayout="column" fxLayoutGap="0.3em">
     <a href="https://xrpl.org/escrowcreate.html" target="_blank" rel="noreferrer">Escrow Create Documentation</a><br/>
-    <label>Sequester XRP until the escrow process either finishes or is canceled.</label>
-    <label>Every Escrow adds {{ownerReserve/1000000}} XRP to your account reserve. Those {{ownerReserve/1000000}} XRP are inaccessible as long as the Escrow exists. When the Escrow is finished or cancelled, the {{ownerReserve/1000000}} XRP are returned to your available balance.</label>
+    <label>Sequester XAH until the escrow process either finishes or is canceled.</label>
+    <label>Every Escrow adds {{ownerReserve/1000000}} XAH to your account reserve. Those {{ownerReserve/1000000}} XAH are inaccessible as long as the Escrow exists. When the Escrow is finished or cancelled, the {{ownerReserve/1000000}} XAH are returned to your available balance.</label>
     <div style="margin-bottom: 1em;" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
       <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" [escrowsChanged]="escrowsChanged.asObservable()"></escrowList>
     </div>
@@ -28,14 +28,14 @@
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
         <input #inpdestination matInput name="destination" placeholder="Escrow Destination XRPL Address (required)" [(ngModel)]="destinationInput" (ngModelChange)="checkChanges()">
-        <mat-hint *ngIf="destinationInput && !validAddress">Not a valid XRP address</mat-hint>
+        <mat-hint *ngIf="destinationInput && !validAddress">Not a valid XAH address</mat-hint>
       </mat-form-field>
       <mat-form-field>
-        <input #inpamount matInput type="text" name="amount" placeholder="Escrow Amount in XRP (required)" [(ngModel)]="amountInput" (ngModelChange)="checkChanges()">
-        <mat-hint *ngIf="amountInput && !validAmount && maxSixDigits">The XRP amount cannot have more than 6 decimals.</mat-hint>
+        <input #inpamount matInput type="text" name="amount" placeholder="Escrow Amount in XAH (required)" [(ngModel)]="amountInput" (ngModelChange)="checkChanges()">
+        <mat-hint *ngIf="amountInput && !validAmount && maxSixDigits">The XAH amount cannot have more than 6 decimals.</mat-hint>
         <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && amountInput.toString().includes(',')">Not a valid amount. Please use '.' as decimal operator.</mat-hint>
         <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && !amountInput.toString().includes(',') && !escrowBiggerThanAvailable()">Not a valid amount</mat-hint>
-        <mat-hint *ngIf="amountInput && !validAmount && escrowBiggerThanAvailable()">Your escrow amount is too big. Max amount is: {{getAvailableBalanceForEscrow()}} XRP. ('Available Balance' minus {{ownerReserve/1000000}} XRP for account reserve) <a href="https://xrpl.org/reserves.html#owner-reserves" target="_blank"> (Reserve Info)</a></mat-hint>
+        <mat-hint *ngIf="amountInput && !validAmount && escrowBiggerThanAvailable()">Your escrow amount is too big. Max amount is: {{getAvailableBalanceForEscrow()}} XAH. ('Available Balance' minus {{ownerReserve/1000000}} XAH for account reserve) <a href="https://xrpl.org/reserves.html#owner-reserves" target="_blank"> (Reserve Info)</a></mat-hint>
       </mat-form-field>
       <mat-card fxLayout="column">
         <label>Finish After</label>  
@@ -56,7 +56,7 @@
         <mat-hint *ngIf="finishAfterFormCtrl && finishafterTimeInput && !validFinishAfter && !finishDateInFuture">Invalid date/time.</mat-hint>
         <mat-hint *ngIf="finishDateInFuture">Finish After needs to be in the future.</mat-hint>
         <mat-hint *ngIf="isFinishAfterDateSet() && !finishafterTimeInput">You have set a date. Please also set a time!</mat-hint>
-        <mat-hint *ngIf="validFinishAfter && escrowYears > 10">ATTENTION! You will make your XRP inaccessible for {{escrowYears}} Years!!!</mat-hint>
+        <mat-hint *ngIf="validFinishAfter && escrowYears > 10">ATTENTION! You will make your XAH inaccessible for {{escrowYears}} Years!!!</mat-hint>
         <mat-hint *ngIf="validFinishAfter && !finishDateInFuture" style="color: grey !important">UTC time: <b>{{finishAfterDateTime.toUTCString()}}</b></mat-hint>
         
       </mat-card>

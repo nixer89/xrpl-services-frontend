@@ -5,7 +5,6 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { XummTypes } from 'xumm-sdk';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
-import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
@@ -35,7 +34,6 @@ export class XummSignDialogComponent implements OnInit{
         private deviceDetector: DeviceDetectorService,
         @Inject(MAT_DIALOG_DATA) public data: any,
         public dialogRef: MatDialogRef<XummSignDialogComponent>,
-        private googleAnalytics: GoogleAnalyticsService,
         private localStorage: LocalStorageService,
         private overlayContainer: OverlayContainer) {
     }
@@ -60,6 +58,7 @@ export class XummSignDialogComponent implements OnInit{
         //setting up xumm payload and waiting for websocket
         let backendPayload:GenericBackendPostRequest = {
             options: {
+                testnet: this.data.testnet,
                 web: this.deviceDetector.isDesktop(),
                 referer: refererURL,
                 signinToValidate: true
@@ -80,7 +79,7 @@ export class XummSignDialogComponent implements OnInit{
         if(this.data.xrplAccount) {
             backendPayload.options.xrplAccount = this.data.xrplAccount;
             backendPayload.payload.txjson.Account = this.data.xrplAccount;
-            backendPayload.payload.options.forceAccount = true;
+            backendPayload.payload.options.signers = [this.data.xrplAccount];
         }
 
         if(this.data.instruction) {
@@ -91,8 +90,6 @@ export class XummSignDialogComponent implements OnInit{
             this.hasBlob = true;
             backendPayload.payload.custom_meta.blob = this.data.blob;
         }
-
-        this.googleAnalytics.analyticsEventEmitter(backendPayload.payload.txjson.TransactionType.toLowerCase(), 'sendToXummSignIn', 'signin_dialog_component');
 
         let xummResponse:XummTypes.XummPostPayloadResponse;
         try {

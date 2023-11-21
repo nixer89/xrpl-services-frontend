@@ -2,42 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { LocalStorageService } from 'angular-2-local-storage';
 
-declare let gtag: Function;
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'XRPL Services';
+  title = 'Xahau Services';
   darkMode:boolean;
 
-  constructor(private router: Router, private localStorage: LocalStorageService) {
-    this.router.events.subscribe(event => {
-      if(event instanceof NavigationEnd) {
-          let path = (event.urlAfterRedirects.includes('?') ? event.urlAfterRedirects.substring(0, event.urlAfterRedirects.indexOf('?')) : event.urlAfterRedirects);
-          gtag('config', 'UA-159404162-1', 
-                {
-                  'page_title': this.getPageTitle(path),
-                  'page_path': path
-                }
-              );
-       }
-    });
-  }
+  constructor(private router: Router, private localStorage: LocalStorageService) { }
 
   getPageTitle(page_path:string): string {
-    let title = "XRP Ledger Services";
+    let title = "Xahau Services";
 
     switch(page_path) {
-      case '': case '/': title = "XRPL Transactions"; break;
+      case '': case '/': title = "Xahau Transactions"; break;
       case '/easy-iou': title = "Easy-IOU"; break;
-      case '/tokens': title = "XRPL Tokens"; break;
-      case '/tools': title = "XRPL Tools"; break;
-      case '/terms': title = "XRPL Services Terms"; break;
-      case '/privacy': title = "XRPL Services Privacy"; break;
-      default: title = "XRPL Services"; break;
+      case '/tokens': title = "Xahau Tokens"; break;
+      case '/tools': title = "Xahau Tools"; break;
+      case '/terms': title = "Xahau Services Terms"; break;
+      case '/privacy': title = "Xahau Services Privacy"; break;
+      default: title = "Xahau Services"; break;
     }
 
     return title;

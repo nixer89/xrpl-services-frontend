@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
 import { isValidXRPAddress } from 'src/app/utils/utils';
 
@@ -11,7 +10,7 @@ import { isValidXRPAddress } from 'src/app/utils/utils';
 })
 export class EscrowCancelComponent implements OnInit, OnDestroy {
 
-  constructor(private googleAnalytics: GoogleAnalyticsService) { }
+  constructor() { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -99,8 +98,6 @@ export class EscrowCancelComponent implements OnInit, OnDestroy {
   }
 
   sendPayloadToXumm() {
-
-    this.googleAnalytics.analyticsEventEmitter('escrow_cancel', 'sendToXumm', 'escrow_cancel_component');
 
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {

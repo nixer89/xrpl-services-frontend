@@ -19,7 +19,7 @@
 
   <div fxLayout="column" fxLayoutGap="0.3em">
     <a href="https://xrpl.org/accountset.html" target="_blank" rel="noreferrer">AccountSet Documentation</a>
-    <label>An AccountSet transaction modifies the properties of an account in the XRP Ledger.</label>
+    <label>An AccountSet transaction modifies the properties of an account in theXahau Network.</label>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-bottom: 1em;padding-top: 1em;">
       <mat-form-field>
         <input #inpdomain matInput type="url" name="domain" matInput placeholder="Domain" [(ngModel)]="domainInput" (ngModelChange)="checkChanges()">
@@ -68,19 +68,19 @@
         </div>
         <div fxLayout="column">
           <mat-checkbox name="disallowXRP" style="padding-top: 1em;" [(ngModel)]="disallowXrpInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || requireDestTagChangeDetected || defaultRippleChangeDetected || deposithAuthChangeDetected">
-            Disallow incoming XRP
+            Disallow incoming XAH
             <label *ngIf="requireDestTagChangeDetected || disableMasterKeyChangeDetected || defaultRippleChangeDetected || deposithAuthChangeDetected" style="color: grey !important">&nbsp;(You can change only one Account Flag at a time.)</label>
           </mat-checkbox>
-          <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !defaultRippleChangeDetected && !deposithAuthChangeDetected && disallowXrpChangeDetected && disallowXrpInput">Careful! You are going to set the <b>Disallow incoming XRP</b> flag to your account. XRP should not be sent to this account. (Enforced by client applications, not by the XRP Ledger)</mat-hint>
-          <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !defaultRippleChangeDetected && !deposithAuthChangeDetected && disallowXrpChangeDetected && !disallowXrpInput">You are going to disable the <b>Disallow incoming XRP</b> flag of your account. XRP can then be sent to your account again.</mat-hint>
+          <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !defaultRippleChangeDetected && !deposithAuthChangeDetected && disallowXrpChangeDetected && disallowXrpInput">Careful! You are going to set the <b>Disallow incoming XAH</b> flag to your account. XAH should not be sent to this account. (Enforced by client applications, not by theXahau Network)</mat-hint>
+          <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !defaultRippleChangeDetected && !deposithAuthChangeDetected && disallowXrpChangeDetected && !disallowXrpInput">You are going to disable the <b>Disallow incoming XAH</b> flag of your account. XAH can then be sent to your account again.</mat-hint>
         </div>
         <div fxLayout="column">
           <mat-checkbox name="depositAuth" style="padding-top: 1em;" [(ngModel)]="depositAuthInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || requireDestTagChangeDetected || defaultRippleChangeDetected || disallowXrpChangeDetected">
             Enable Deposit Authorization
             <label *ngIf="requireDestTagChangeDetected || disableMasterKeyChangeDetected || defaultRippleChangeDetected || disallowXrpChangeDetected" style="color: grey !important">&nbsp;(You can change only one Account Flag at a time.)</label>
           </mat-checkbox>
-          <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !defaultRippleChangeDetected && !disallowXrpChangeDetected && deposithAuthChangeDetected && depositAuthInput">Careful! You are going to set the <b>Deposit Authorization</b>&nbsp;<a href="https://xrpl.org/depositauth.html" target="_blank">(docs)</a> flag to your account. This will block all transfers from strangers, including transfers of XRP and issued currencies.</mat-hint>
-          <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !defaultRippleChangeDetected && !disallowXrpChangeDetected && deposithAuthChangeDetected && !depositAuthInput">You are going to disable the <b>Deposit Authorization</b> flag of your account. Anyone can transfer XRP and other tokens to you, without authorization!.</mat-hint>
+          <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !defaultRippleChangeDetected && !disallowXrpChangeDetected && deposithAuthChangeDetected && depositAuthInput">Careful! You are going to set the <b>Deposit Authorization</b>&nbsp;<a href="https://xrpl.org/depositauth.html" target="_blank">(docs)</a> flag to your account. This will block all transfers from strangers, including transfers of XAH and issued currencies.</mat-hint>
+          <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !defaultRippleChangeDetected && !disallowXrpChangeDetected && deposithAuthChangeDetected && !depositAuthInput">You are going to disable the <b>Deposit Authorization</b> flag of your account. Anyone can transfer XAH and other tokens to you, without authorization!.</mat-hint>
         </div>
     </mat-card>
     <mat-hint *ngIf="requireDestTagChangeDetected && disableMasterKeyChangeDetected" style="color: orangered">You can change only one Account Flag at a time. To change two account flags, you have to execute two transactions.</mat-hint>

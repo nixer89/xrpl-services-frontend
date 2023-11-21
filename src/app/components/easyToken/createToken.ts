@@ -6,7 +6,6 @@ import { XummService } from '../../services/xumm.service'
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import { Subject } from 'rxjs';
 import { TransactionValidation, GenericBackendPostRequest } from '../../utils/types';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
@@ -26,7 +25,6 @@ export class CreateToken implements OnInit {
   constructor(
     private matDialog: MatDialog,
     private xummApi: XummService,
-    private googleAnalytics: GoogleAnalyticsService,
     private device: DeviceDetectorService,
     private xrplWebSocket: XRPLWebsocket) { }
 
@@ -92,7 +90,7 @@ export class CreateToken implements OnInit {
       payload: {
         txjson: {
           TransactionType: "Payment",
-          Memos : [{Memo: {MemoType: Buffer.from("[https://xrpl.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for creating Token: '"+this.currencyCode.trim()+"'", 'utf8').toString('hex').toUpperCase()}}]
+          Memos : [{Memo: {MemoType: Buffer.from("[https://xahau.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for creating Token: '"+this.currencyCode.trim()+"'", 'utf8').toString('hex').toUpperCase()}}]
         },
         custom_meta: {
           instruction: "Please pay with the account you want to issue your Token from!",
@@ -119,7 +117,6 @@ export class CreateToken implements OnInit {
           this.paymentNotSuccessfull = false;
           this.paymentNotFound = false;
           await this.loadAccountData();
-          this.googleAnalytics.analyticsEventEmitter('pay_for_token', 'easy_token', 'easy_token_component');
       } else {
         this.paymentNotSuccessfull = true;
         this.paymentNotFound = false;
@@ -153,7 +150,6 @@ export class CreateToken implements OnInit {
           this.paymentNotSuccessfull = false;
           this.paymentNotFound = false;
           await this.loadAccountData();
-          this.googleAnalytics.analyticsEventEmitter('login_for_token', 'easy_token', 'easy_token_component');
         } else {
           this.issuerAccount = info.account;
           this.validIssuer = true;
@@ -178,7 +174,6 @@ export class CreateToken implements OnInit {
   async loadAccountData() {
     if(this.issuerAccount) {
       this.loadingIssuerAccount = true;
-      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'easy_token', 'easy_token_component');
 
       let account_info_request:any = {
         command: "account_info",
@@ -221,6 +216,7 @@ export class CreateToken implements OnInit {
   sendDefaultRipple() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         xrplAccount: this.issuerAccount
       },
       payload: {
@@ -256,7 +252,7 @@ export class CreateToken implements OnInit {
   }
 
   checkChangesCurrencyCode() {
-    this.validCurrencyCode = this.currencyCode && /^[a-zA-Z\d?!@#$%^&*<>(){}[\]|]{3,20}$/.test(this.currencyCode) && this.currencyCode.toUpperCase() != "XRP";
+    this.validCurrencyCode = this.currencyCode && /^[a-zA-Z\d?!@#$%^&*<>(){}[\]|]{3,20}$/.test(this.currencyCode) && this.currencyCode.toUpperCase() != "XAH";
   }
 
   getCurrencyCodeForXRPL(): string {
@@ -273,6 +269,7 @@ export class CreateToken implements OnInit {
   setTrustline() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         xrplAccount: null
       },
       payload: {
@@ -312,6 +309,7 @@ export class CreateToken implements OnInit {
   issueToken() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.issuerAccount
       },
@@ -343,7 +341,6 @@ export class CreateToken implements OnInit {
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.weHaveIssued = true;
-        this.googleAnalytics.analyticsEventEmitter('token_created', 'easy_token', 'easy_token_component');
       } else {
         this.weHaveIssued = false;
       }
@@ -353,6 +350,7 @@ export class CreateToken implements OnInit {
   disallowIncomingXrp() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },
@@ -362,7 +360,7 @@ export class CreateToken implements OnInit {
           SetFlag: this.ACCOUNT_FLAG_DISABLE_INCOMING_XRP
         },
         custom_meta: {
-          instruction: "- Disallow incoming XRP\n\n- Please sign with the ISSUER account!"
+          instruction: "- Disallow incoming XAH\n\n- Please sign with the ISSUER account!"
         }
       }
     }
@@ -388,6 +386,7 @@ export class CreateToken implements OnInit {
   setBlackholeAddress() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },
@@ -423,6 +422,7 @@ export class CreateToken implements OnInit {
   disableMasterKeyForIssuer() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },
@@ -448,7 +448,6 @@ export class CreateToken implements OnInit {
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.blackholeMasterDisabled = true;
-        this.googleAnalytics.analyticsEventEmitter('account_black_hole_succeed', 'easy_token', 'easy_token_component');
       } else {
         this.blackholeMasterDisabled = false;
       }

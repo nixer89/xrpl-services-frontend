@@ -7,7 +7,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged } from '../utils/types';
-import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
@@ -48,7 +47,6 @@ export class Tools implements OnInit {
     private route: ActivatedRoute,
     private xummApi: XummService,
     private snackBar: MatSnackBar,
-    private googleAnalytics: GoogleAnalyticsService,
     private localStorage: LocalStorageService,
     private overlayContainer: OverlayContainer,
     private xrplWebSocket: XRPLWebsocket) { }
@@ -97,7 +95,6 @@ export class Tools implements OnInit {
       
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
-        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'tools_component');
         //check if transaction was successful and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
         //console.log(JSON.stringify(payloadInfo));
@@ -147,7 +144,6 @@ export class Tools implements OnInit {
             this.snackBar.dismiss();
             if(signInCheck.success) {
                 this.snackBar.open("Ownership verified and auto release disabled!", null, {panelClass: 'snackbar-success', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
-                this.googleAnalytics.analyticsEventEmitter('escrow_auto_release_disabled', 'escrow_executer', 'escrow_executer_component');
             } else {
                 this.snackBar.open("Ownership verified but error disabling auto release!", null, {panelClass: 'snackbar-success', duration: 7500, horizontalPosition: 'center', verticalPosition: 'top'});
             }
@@ -168,7 +164,6 @@ export class Tools implements OnInit {
             //handle success
             this.snackBar.open("Transaction successful! You have enabled the auto release feature for your escrow!", null, {panelClass: 'snackbar-success', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
             
-            this.googleAnalytics.analyticsEventEmitter('pay_for_escrow_release', 'escrow_executer', 'escrow_executer_component');
           } else if( trxInfo && trxInfo.testnet && trxInfo.testnet != escrow.testnet) {
             this.snackBar.open("You have submitted a transaction on the " + (trxInfo.testnet ? "Testnet" : "Mainnet") + " for an escrow on the " + (escrow.testnet ? "Testnet": "Mainnet") + "! Can not activate Auto Release!", null, {panelClass: 'snackbar-failed', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
           } else if(trxInfo && trxInfo.account && trxInfo.account != escrow.account) {
@@ -248,7 +243,6 @@ export class Tools implements OnInit {
 
   async loadAccountData(isInit?: boolean) {
     if(this.xrplAccount) {
-      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'tools_component');
 
       this.localStorage.set("xrplAccount", this.xrplAccount);
       this.localStorage.set("testMode", this.isTestMode);
@@ -345,7 +339,6 @@ export class Tools implements OnInit {
     }
 
     if(trxInfo) {
-      this.googleAnalytics.analyticsEventEmitter('handle_transaction_success', 'handle_transaction', 'tools_component');
 
       if(trxInfo.testnet != null)
         this.isTestMode = trxInfo.testnet;
@@ -366,7 +359,6 @@ export class Tools implements OnInit {
           this.transactionSuccessfull.next();
       }
     } else {
-      this.googleAnalytics.analyticsEventEmitter('handle_transaction_failed', 'handle_transaction', 'tools_component');
       this.lastTrxLinkBithomp = null;
       this.lastTrxLinkXrplOrg = null;
       this.lastTrxLinkXrpScan = null;
@@ -387,8 +379,11 @@ export class Tools implements OnInit {
     //console.log("received payload: " + JSON.stringify(payload));
 
     if(!genericBackendRequest.options)
-      genericBackendRequest.options = {};
+      genericBackendRequest.options = {
+        testnet: this.isTestMode
+      };
       
+    genericBackendRequest.options.testnet = this.isTestMode;
     genericBackendRequest.options.xrplAccount = this.xrplAccount ? this.xrplAccount : null
 
     this.openGenericDialog(genericBackendRequest);
@@ -415,7 +410,6 @@ export class Tools implements OnInit {
   }
 
   logoutAccount() {
-    this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'tools_component');
     this.xrplAccount = this.xrplAccount_Info = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = this.lastTrxLinkXrplorer = null;
     this.localStorage.remove("xrplAccount");
     this.localStorage.remove("testMode");

@@ -25,10 +25,10 @@
                 </ng-container>
 
                 <ng-container matColumnDef="amount">
-                    <mat-header-cell *matHeaderCellDef > Amount in XRP </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef > Amount in XAH </mat-header-cell>
                     <mat-cell *matCellDef="let escrow" (click)="mep.expanded=false">
                         <span fxShow fxHide.xs >{{getAmountInXRP(escrow.Amount)}}</span>
-                        <span fxShow.xs fxHide ><b>Escrow Amount in XRP:</b><br>{{getAmountInXRP(escrow.Amount)}}</span>
+                        <span fxShow.xs fxHide ><b>Escrow Amount in XAH:</b><br>{{getAmountInXRP(escrow.Amount)}}</span>
                     </mat-cell>
                 </ng-container>
 

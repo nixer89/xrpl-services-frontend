@@ -33,13 +33,13 @@ export class Statistics implements OnInit {
     this.loading = true;
     let promises:any[] = [];
     promises.push(this.xummApi.getTransactionStatistics());
-    promises.push(this.xummApi.getTransactionStatistics("https://escrowcreate-xapp.xrpl.services"));
-    promises.push(this.xummApi.getTransactionStatistics("https://tokencreate-xapp.xrpl.services"));
+    promises.push(this.xummApi.getTransactionStatistics("https://escrowcreate-xapp.xahau.services"));
+    promises.push(this.xummApi.getTransactionStatistics("https://tokencreate-xapp.xahau.services"));
     promises.push(this.xummApi.getEscrowNextRelease());
     promises.push(this.xummApi.getEscrowLastRelease());
     promises.push(this.xummApi.getEscrowCurrentCount());
-    promises.push(this.xummApi.getTransactionStatistics("https://nftcreate-xapp.xrpl.services"));
-    promises.push(this.xummApi.getTransactionStatistics("https://tokentrasher-xapp.xrpl.services"));
+    promises.push(this.xummApi.getTransactionStatistics("https://nftcreate-xapp.xahau.services"));
+    promises.push(this.xummApi.getTransactionStatistics("https://tokentrasher-xapp.xahau.services"));
 
 
     let results = await Promise.all(promises);

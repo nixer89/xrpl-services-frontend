@@ -2,7 +2,7 @@
   <div fxShow fxHide.xs fxFlex fxLayout="row">
     <div fxLayoutAlign="center center" style="background-color:#002c85;" class="mat-elevation-z4">
       <a [routerLink]="['/']" fxLayoutAlign="center center">
-        <img src="../../assets/topbar_logo.png" width="90px" height="90px" alt="XrplServices Logo" style="margin-right: 0.5em;">
+        <img src="../../assets/topbar_logo.png" width="90px" height="90px" alt="XahauServices Logo" style="margin-right: 0.5em;">
       </a>
     </div>
     <div fxFlex fxLayout="column">
@@ -28,29 +28,26 @@
       <mat-toolbar class="mat-elevation-z4 second-toolbar " color="primary" fxLayout="row" style="padding-left: 0px" ngStyle.xs="padding:0px; font-size: 0.5em;">
         <!-- normal menu -->
         <div fxShow fxHide.xs>
-          <button mat-button [routerLink]="['']" matTooltip="XRPL Transactions">
-            <i class="material-icons topbar-menu-icon">mobile_friendly</i> XRPL Transactions
+          <button mat-button [routerLink]="['']" matTooltip="Xahau Transactions">
+            <i class="material-icons topbar-menu-icon">mobile_friendly</i> Xahau Transactions
           </button>
           <button mat-button [routerLink]="['/tokens']" matTooltip="Issue your own Token!">
-            <i class="material-icons topbar-menu-icon">attach_money</i> XRPL Tokens
-          </button>
-          <button mat-button [routerLink]="['/xls-14d']" matTooltip="View NFTs on the XRPL!">
-            <i class="material-icons topbar-menu-icon">token</i> XLS-14D NFTs
+            <i class="material-icons topbar-menu-icon">attach_money</i> Xahau Tokens
           </button>
           <button mat-button [routerLink]="['/tools']" matTooltip="Tools">
             <i class="material-icons topbar-menu-icon">build</i> XRPL Tools
           </button>
-          <!--button mat-button [routerLink]="['/generic-backend']" matTooltip="XRPL Services Generic Backend">
+          <!--button mat-button [routerLink]="['/generic-backend']" matTooltip="Xahau Services Generic Backend">
             <i class="material-icons topbar-menu-icon">device_hub</i> Generic Backend
           </button-->
-          <button mat-button [routerLink]="['/xrpl-statistics']" matTooltip="XRP Ledger Stats">
-            <i class="material-icons topbar-menu-icon">analytics</i> XRPL Stats
+          <button mat-button [routerLink]="['/xahau-statistics']" matTooltip="Xahau Network Stats">
+            <i class="material-icons topbar-menu-icon">analytics</i> Xahau Stats
           </button>
-          <button mat-button [routerLink]="['/statistics']" matTooltip="XRPL Services Website Statistics">
+          <button mat-button [routerLink]="['/statistics']" matTooltip="Xahau Services Website Statistics">
             <i class="material-icons topbar-menu-icon">query_stats</i> Website Statistics
           </button>
-          <button mat-button [routerLink]="['/nft-api']" matTooltip="XRPL Services NFT API">
-            <i class="material-icons topbar-menu-icon">webhook</i> NFT API
+          <button mat-button [routerLink]="['/uritoken-api']" matTooltip="Xahau Services URIToken API">
+            <i class="material-icons topbar-menu-icon">webhook</i> URIToken API
           </button>
         </div>
 
@@ -68,7 +65,7 @@
         <mat-toolbar-row fxLayout="row">
           <div fxLayout="row" fxLayoutGap="0.3em" style="align-items: center;">
             <a [routerLink]="['/']" fxLayoutAlign="center center" fxLayoutGap="1em;" style="text-decoration: none; color: white;">
-              <img src="../../assets/topbar_logo.png" width="50px" height="50px" alt="XrplServices Logo" style="margin-right: 0.5em;">
+              <img src="../../assets/topbar_logo.png" width="50px" height="50px" alt="XahauServices Logo" style="margin-right: 0.5em;">
               <div class="title">{{title}}</div>
             </a>      
           </div>
@@ -90,35 +87,31 @@
         <mat-menu #appMenu="matMenu" yPosition="below" xPosition="after" fxLayout="column">
           <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['']">
             <mat-icon class="material-icons">mobile_friendly</mat-icon>
-            <span>XRPL Transactions</span>
+            <span>Xahau Transactions</span>
           </button>
           <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tokens']">
             <mat-icon class="material-icons">attach_money</mat-icon>
-            <span>XRPL Tokens</span>
-          </button>
-          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/xls-14d']">
-            <mat-icon class="material-icons">token</mat-icon>
-            <span>XLS-14D NFTs</span>
+            <span>Xahau Tokens</span>
           </button>
           <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/tools']">
             <mat-icon class="material-icons">build</mat-icon>
-            <span>XRPL Tools</span>
+            <span>Xahau Tools</span>
           </button>
-          <!--button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/generic-backend']" matTooltip="XRPL Services Generic Backend">
+          <!--button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/generic-backend']" matTooltip="Xahau Services Generic Backend">
             <mat-icon class="material-icons">device_hub</mat-icon>
             <span>Generic Backend</span>
           </button-->
-          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/xrpl-statistics']">
+          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/xahau-statistics']">
             <mat-icon class="material-icons">analytics</mat-icon>
-            <span>XRPL Statistics</span>
+            <span>Xahau Statistics</span>
           </button>
           <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/statistics']">
             <mat-icon class="material-icons">query_stats</mat-icon>
             <span>Website Statistics</span>
           </button>
-          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/nft-api']">
+          <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/uritoken-api']">
             <mat-icon class="material-icons">webhook</mat-icon>
-            <span>NFT API</span>
+            <span>URIToken API</span>
           </button>
         </mat-menu>
   

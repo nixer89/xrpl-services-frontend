@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 
 @Component({
   selector: 'terms',
@@ -9,10 +8,9 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 
 export class TermsComponent implements OnInit {
 
-  constructor(private titleService: Title, private googleAnalytics: GoogleAnalyticsService) {}
+  constructor(private titleService: Title) {}
 
   ngOnInit() {
-    this.titleService.setTitle("XRPL Services Terms");
-    this.googleAnalytics.analyticsEventEmitter('terms_opened', 'terms', 'terms_component');
+    this.titleService.setTitle("Xahau Services Terms");
   }
 }
