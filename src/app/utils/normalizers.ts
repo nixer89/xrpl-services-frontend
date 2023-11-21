@@ -44,7 +44,7 @@ export function convertDemurrageToUTF8(demurrageCode: string): string {
     let code = String.fromCharCode(bytes[1]) + String.fromCharCode(bytes[2]) + String.fromCharCode(bytes[3]);
     let interest_start = (bytes[4] << 24) + (bytes[5] << 16) + (bytes[6] <<  8) + (bytes[7]);
     let interest_period = ieee754Float.fromBytes(bytes.slice(8, 16));
-    const year_seconds = 31536000; // By convention, theXahau Network's interest/demurrage rules use a fixed number of seconds per year (31536000), which is not adjusted for leap days or leap seconds
+    const year_seconds = 31536000; // By convention, the Xahau  Network's interest/demurrage rules use a fixed number of seconds per year (31536000), which is not adjusted for leap days or leap seconds
     let interest_after_year = precision(Math.pow(Math.E, (interest_start+year_seconds - interest_start) / interest_period), 14);
     let interest = (interest_after_year * 100) - 100;
 
@@ -119,8 +119,8 @@ export function normalizeCurrencyCodeXummImpl(currencyCode: string, maxLength = 
     }
 
     // IOU claims as XAH which consider as fake XAH
-    if (currencyCode.toLowerCase() === 'xrp') {
-        return 'FakeXRP';
+    if (currencyCode.toLowerCase() === 'xah') {
+        return 'FakeXAH';
     }
 
     // IOU
@@ -147,9 +147,9 @@ export function normalizeCurrencyCodeXummImpl(currencyCode: string, maxLength = 
             // cleanup break lines and null bytes
             const clean = decoded.replace(/\0/g, '').replace(/(\r\n|\n|\r)/gm, ' ');
 
-            // check if decoded contains xrp
-            if (clean.toLowerCase().trim() === 'xrp') {
-                return 'FakeXRP';
+            // check if decoded contains xah
+            if (clean.toLowerCase().trim() === 'xah') {
+                return 'FakeXAH';
             }
             return clean;
         }
@@ -189,9 +189,9 @@ const HexEncoding = {
 };
 
 /**
- * Convert XRPL value to NFT value
+ * Convert Xahau value to NFT value
  * @param value number
- * @returns number in NFT value or false if XRPL value is not NFT
+ * @returns number in NFT value or false if Xahau value is not NFT
  */
  export const XRPLValueToNFT = (value: number): number | boolean => {
 
@@ -213,9 +213,9 @@ const HexEncoding = {
 };
 
 /**
- * Convert XRPL value to NFT value
+ * Convert Xahau value to NFT value
  * @param value number
- * @returns number in NFT value or false if XRPL value is not NFT
+ * @returns number in NFT value or false if Xahau value is not NFT
  */
  export const normalizeBalance = (value: number): number => {
 

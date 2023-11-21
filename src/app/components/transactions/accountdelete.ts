@@ -213,7 +213,7 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
       }
 
       payload.custom_meta = {}
-      payload.custom_meta.instruction = "Delete your XRPL Account\n\n - please sign with the account you want to delete!";
+      payload.custom_meta.instruction = "Delete your Xahau Account\n\n - please sign with the account you want to delete!";
     }
 
     this.onPayload.emit(payload);

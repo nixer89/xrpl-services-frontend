@@ -16,8 +16,8 @@
   <mat-card fxLayout="column" fxLayoutGap="0.5em">
     <label>After you have initially created your Token, you can issue more tokens to accounts which have a TrustLine to your issuer account.</label>
     <div *ngIf="!getIssuer() || !validIssuer">
-      <button mat-button matTooltip="Sign In via XUMM." matTooltipPosition="above" (click)="signInWithIssuer()" style="padding:0px;">
-        <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
+      <button mat-button matTooltip="Sign In via Xaman." matTooltipPosition="above" (click)="signInWithIssuer()" style="padding:0px;">
+        <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via Xaman">
       </button>
       &nbsp;<label class="loading">Please sign in with the issuer account.</label>
     </div>
@@ -27,7 +27,7 @@
         <div fxLayout="row" fxLayoutGap="0.5em">
           <mat-card class="theme-background">
             <div fxLayout="column" fxLayoutAlign="start center">
-                <label>XRPL Network</label>
+                <label>Xahau Network</label>
                 <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
                   <label>Main</label>&nbsp;
                   <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkSwitched()" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
@@ -39,8 +39,8 @@
         </div>
         <form fxLayout="column" fxLayoutGap="0.3em" style="padding-top: 0.8em;">
           <mat-form-field>
-            <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the Token" [(ngModel)]="issuerAccount" [readonly]="true">
-            <mat-hint *ngIf="getIssuer() && !validIssuer">Not a valid XRPL address</mat-hint>
+            <input #inpisseraccount matInput name="isseraccount" matInput placeholder="Xahau address which issues the Token" [(ngModel)]="issuerAccount" [readonly]="true">
+            <mat-hint *ngIf="getIssuer() && !validIssuer">Not a valid Xahau address</mat-hint>
           </mat-form-field>
         
           <label class="loading">Which address should the Token be sent to?</label>
@@ -79,12 +79,12 @@
         </div>
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
           <button mat-raised-button color="primary" (click)="issueToken()" [disabled]="!validAddress || !validIssuer || !validCurrencyCode || !validNumberOfTokens || notEnoughLimit">
-            Send Token via XUMM
+            Send Token via Xaman
           </button>
           <button *ngIf="currencyCode" mat-raised-button (click)="clearCurrencyCode()" [disabled]="!currencyCode">
             Clear Currency Code
           </button>
-          <label *ngIf="!recipientAccountInput || !validAddress">Please enter a valid XRPL address as recipient.</label>
+          <label *ngIf="!recipientAccountInput || !validAddress">Please enter a valid Xahau address as recipient.</label>
         </div>
       </div>
     </div>

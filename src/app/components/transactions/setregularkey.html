@@ -18,18 +18,18 @@
   </mat-expansion-panel-header>
 
   <div fxLayout="column" fxLayoutGap="0.3em">
-    <a href="https://xrpl.org/setregularkey.html" target="_blank" rel="noreferrer">Set Regular Key Documentation</a><br/>
+    <a href="https://docs.xahau.network/technical/protocol-reference/transactions/transaction-types/setregularkey" target="_blank" rel="noreferrer">Set Regular Key Documentation</a><br/>
     <label>A SetRegularKey transaction assigns, changes, or removes the regular key pair associated with an account.</label>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
-        <input #inpregularkey matInput name="regularkey" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address which will be able to sign transactions" [(ngModel)]="regularKeyInput" (ngModelChange)="checkChanges()">
-        <mat-hint *ngIf="regularKeyInput && !validAddress">Not a valid XRPL address</mat-hint>
+        <input #inpregularkey matInput name="regularkey" ngStyle.xs="font-size: 0.8em;" placeholder="Xahau address which will be able to sign transactions" [(ngModel)]="regularKeyInput" (ngModelChange)="checkChanges()">
+        <mat-hint *ngIf="regularKeyInput && !validAddress">Not a valid Xahau address</mat-hint>
         <mat-hint *ngIf="originalAccountInfo && regularKeyInput == originalAccountInfo.Account">You cannot set the Regular Key to the same address.</mat-hint>
       </mat-form-field>
     </form>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validAddress || (originalAccountInfo && (regularKeyInput == originalAccountInfo.Account || regularKeyInput == originalAccountInfo.RegularKey))">
-        Send Set Regular Key to XUMM
+        Send Set Regular Key to Xaman
       </button>
       <button mat-raised-button color="warn" (click)="deleteRegularKey()" matTooltip="Delete Regular Key!" [disabled]="(originalAccountInfo || signerList) && (!hasAlternativeSigningMethod() || originalAccountInfo && !originalAccountInfo.RegularKey)">
         Delete Regular Key

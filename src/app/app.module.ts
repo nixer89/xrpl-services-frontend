@@ -31,7 +31,7 @@ import { IssuedNftList } from './components/easyToken/issuedNftList';
 import { TokenDetailsDialog } from './components/easyToken/tokenDetailsDialog';
 import { BlackholeAccount } from './components/easyToken/blackholeAccount';
 
-//XRPL transactions
+//Xahau transactions
 import { AccountSetComponent } from './components/transactions/accountset';
 import { EscrowCreateComponent } from './components/transactions/escrowcreate';
 import { EscrowFinishComponent } from './components/transactions/escrowfinish';

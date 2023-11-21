@@ -14,7 +14,7 @@
   </mat-expansion-panel-header>
 
   <mat-card fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
-    <label>This functionality is now a XUMM xApp.</label>
+    <label>This functionality is now a Xaman xApp.</label>
     <label>Please click the link below to open the Token creator xApp:</label>
     <br/><br/>
     <label><a href="https://xumm.app/detect/xapp:nixer.blackhole" rel="noreferrer" target="_blank">'Blackhole Account' xApp</a></label>
@@ -48,7 +48,7 @@
               <div fxLayout="row" fxLayoutGap="0.5em">
                 <mat-card class="theme-background">
                   <div fxLayout="column" fxLayoutAlign="start center">
-                      <label>XRPL Network</label>
+                      <label>Xahau Network</label>
                       <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
                         <label>Main</label>&nbsp;
                         <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
@@ -59,8 +59,8 @@
                 <span style="flex: 1 1 auto;"></span>
               </div>
               <label class="warning" *ngIf="isTestMode">If you want to blackhole on the test net, the {{paymentAmount}} {{paymentCurrency}} payment can be done on the test net as well!</label>
-              <label class="success" *ngIf="isTestMode">Make sure your XUMM app is connected to the TEST network!</label>
-              <label class="success" *ngIf="!isTestMode">Make sure your XUMM app is connected to the MAIN network!</label>
+              <label class="success" *ngIf="isTestMode">Make sure your Xaman app is connected to the TEST network!</label>
+              <label class="success" *ngIf="!isTestMode">Make sure your Xaman app is connected to the MAIN network!</label>
             </div>
             <span style="flex: 1 1 auto;"></span>
           </div>
@@ -75,12 +75,12 @@
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="1em">
           <ng-template matStepLabel>Issuer account</ng-template>
-          <label class="loading">What is theXahau Network account you want to black hole?</label>
+          <label class="loading">What is the Xahau  Network account you want to black hole?</label>
           <label>You need to sign in with the account you want to lose all access for!</label>
           <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
             <div *ngIf="!getIssuer() || !validIssuer" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="0.5em">
-              <button mat-button matTooltip="SignIn via XUMM." matTooltipPosition="above" (click)="loginForBlackhole()" style="padding:0px;">
-                <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
+              <button mat-button matTooltip="SignIn via Xaman." matTooltipPosition="above" (click)="loginForBlackhole()" style="padding:0px;">
+                <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via Xaman">
               </button>
               <label class="loading">Sign in with the account you want to black hole!</label>
             </div>
@@ -124,7 +124,7 @@
               <label *ngIf="recipient_account_info && recipient_account_info.account">{{recipient_account_info.account}}</label>
   
               <div fxLayoutAlign="start center" style="padding-top: 0.5em;">
-                <button mat-raised-button color="primary" (click)="signInWithRecipientAccount()" [disabled]="loadingIssuerAccount">{{recipient_account_info && (recipient_account_info.Account || recipient_account_info.account) ? 'Change Account' : 'Choose from XUMM' }}</button>
+                <button mat-raised-button color="primary" (click)="signInWithRecipientAccount()" [disabled]="loadingIssuerAccount">{{recipient_account_info && (recipient_account_info.Account || recipient_account_info.account) ? 'Change Account' : 'Choose from Xaman' }}</button>
               </div>
             </div>
   
@@ -157,8 +157,8 @@
           <label>You need to pay the equivalent of {{paymentAmount}} {{paymentCurrency}} with the account you want to blackhole to use this service.</label>
           <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
             <div  style="padding-top: 0.5em;" *ngIf="!paymentInitiated || paymentNotSuccessfull">
-              <button mat-button matTooltip="Pay via XUMM." matTooltipPosition="above" (click)="payForBlackhole()" style="padding:0px;">
-                <img src="../../assets/xummPay.svg" style="width: 148px; height: 40px;" alt="Pay via XUMM">
+              <button mat-button matTooltip="Pay via Xaman." matTooltipPosition="above" (click)="payForBlackhole()" style="padding:0px;">
+                <img src="../../assets/xummPay.svg" style="width: 148px; height: 40px;" alt="Pay via Xaman">
               </button>
             </div>
 
@@ -169,7 +169,7 @@
               <label>Payment received!</label>
             </mat-card>
             
-            <mat-hint *ngIf="paymentInitiated && paymentNotSuccessfull" style="padding-top: 0.5em;">Your payment was not successful on theXahau Network {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
+            <mat-hint *ngIf="paymentInitiated && paymentNotSuccessfull" style="padding-top: 0.5em;">Your payment was not successful on the Xahau  Network {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
           </div>
           <div *ngIf="loadingIssuerAccount" fxLayout="row" fxLayoutGap="0.3em">
             <label>Loading account data... </label>

@@ -36,7 +36,7 @@ export class IssuedTokenList implements OnInit {
 
   sortColumns: string[] = ['account', 'kyc', 'selfassessment', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers'];
   
-  displayedColumns: string[] = ['account', 'kyc', 'selfassessment', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers',  'trustlinelink', 'dexlink', 'explorer'];
+  displayedColumns: string[] = ['account', 'kyc', 'selfassessment', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers',  'trustlinelink', 'explorer'];
   datasource:MatTableDataSource<TokenIssuer> = null;
 
   allTokens: TokenIssuer[] = null;

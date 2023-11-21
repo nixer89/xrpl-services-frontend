@@ -18,12 +18,12 @@
   </mat-expansion-panel-header>
 
   <div fxLayout="column" fxLayoutGap="0.3em">
-    <a href="https://xrpl.org/escrowfinish.html" target="_blank" rel="noreferrer">Escrow Finish Documentation</a><br/>
+    <a href="https://docs.xahau.network/technical/protocol-reference/transactions/transaction-types/escrowfinish" target="_blank" rel="noreferrer">Escrow Finish Documentation</a><br/>
     <label>Deliver XAH from a held payment to the recipient.</label>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
-        <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="xrplAccountChanged()">
-        <mat-hint *ngIf="escrowOwnerInput && !validAddress">Not a valid XRPL address</mat-hint>
+        <input #inpescrowowner matInput name="escrowowner" matInput placeholder="Xahau address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="xrplAccountChanged()">
+        <mat-hint *ngIf="escrowOwnerInput && !validAddress">Not a valid Xahau address</mat-hint>
         <mat-hint *ngIf="escrowOwnerChangedAutomatically">Escrow Owner changed. Your inserted account was the destination address.</mat-hint>
       </mat-form-field>
       <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validSequence ? 'block':'none' }">
@@ -44,9 +44,9 @@
     </form>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowFinish">
-        Send Escrow Finish to XUMM
+        Send Escrow Finish to Xaman
       </button>
-      <label *ngIf="!escrowOwnerInput || !validAddress">Please enter a valid XRPL address.</label>
+      <label *ngIf="!escrowOwnerInput || !validAddress">Please enter a valid Xahau address.</label>
       <label *ngIf="validAddress && ( !escrowSequenceInput || !validSequence )">Please enter a valid Escrow Sequence.</label>
     </div>
   </div>

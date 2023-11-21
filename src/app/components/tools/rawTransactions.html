@@ -5,7 +5,7 @@
       <span class="loading" style="margin-left: 0.5em;"> Raw JSON Transactions </span>
     </mat-panel-title>
     <mat-panel-description>
-      Create rawXahau Network transactions in JSON format and send it to your XUMM app!
+      Create rawXahau Network transactions in JSON format and send it to your Xaman app!
     </mat-panel-description>
   </mat-expansion-panel-header>
   <mat-expansion-panel-header fxShow.xs fxHide>
@@ -13,7 +13,7 @@
       <label class="loading">Raw Transactions</label>
     </mat-panel-title>
     <mat-panel-description>
-      Craft XRPL transactions
+      Craft Xahau transactions
     </mat-panel-description>
   </mat-expansion-panel-header>
   
@@ -38,7 +38,7 @@
         </mat-select>
       </mat-form-field>
       <div *ngIf="selectedTemplate && selectedTemplate.requiresAmendment">
-        <label class="warning">This transaction type requires an amendment which is NOT yet enabled on theXahau Network! This transaction won't be possible.</label>
+        <label class="warning">This transaction type requires an amendment which is NOT yet enabled on the Xahau  Network! This transaction won't be possible.</label>
       </div>
       <div *ngIf="selectedTemplate && selectedTemplate.docLink">
         <a [href]="selectedTemplate.docLink" target="_blank" rel="noreferrer">{{selectedTemplate.transactionType}} documentation</a>
@@ -49,11 +49,11 @@
       <ngx-codemirror style="height: 600px;" [options]="editorOptions" [(ngModel)]="rawJsonTransaction" (ngModelChange)="checkJson()"></ngx-codemirror>
     </div>
 
-    <label *ngIf="selectedTemplate && selectedTemplate.transactionType != 'None'">We have removed the "Sequence" and "Fee" properties since XUMM will take care of this!</label>
+    <label *ngIf="selectedTemplate && selectedTemplate.transactionType != 'None'">We have removed the "Sequence" and "Fee" properties since Xaman will take care of this!</label>
 
     <div fxLayout="row" fxLayoutAlign="start center" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!isValidJson">
-        Send Transaction to XUMM
+        Send Transaction to Xaman
       </button>
       <label *ngIf="!isValidJson">{{errorMsg}}</label>
     </div>

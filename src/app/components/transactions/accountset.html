@@ -5,7 +5,7 @@
       <span class="loading" style="margin-left: 0.5em;"> Account Set </span>
     </mat-panel-title>
     <mat-panel-description>
-      You can change your XRPL account settings here.
+      You can change your Xahau account settings here.
     </mat-panel-description>
   </mat-expansion-panel-header>
   <mat-expansion-panel-header fxShow.xs fxHide>
@@ -18,8 +18,8 @@
   </mat-expansion-panel-header>
 
   <div fxLayout="column" fxLayoutGap="0.3em">
-    <a href="https://xrpl.org/accountset.html" target="_blank" rel="noreferrer">AccountSet Documentation</a>
-    <label>An AccountSet transaction modifies the properties of an account in theXahau Network.</label>
+    <a href="https://docs.xahau.network/technical/protocol-reference/transactions/transaction-types/accountset" target="_blank" rel="noreferrer">AccountSet Documentation</a>
+    <label>An AccountSet transaction modifies the properties of an account in the Xahau  Network.</label>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-bottom: 1em;padding-top: 1em;">
       <mat-form-field>
         <input #inpdomain matInput type="url" name="domain" matInput placeholder="Domain" [(ngModel)]="domainInput" (ngModelChange)="checkChanges()">
@@ -71,7 +71,7 @@
             Disallow incoming XAH
             <label *ngIf="requireDestTagChangeDetected || disableMasterKeyChangeDetected || defaultRippleChangeDetected || deposithAuthChangeDetected" style="color: grey !important">&nbsp;(You can change only one Account Flag at a time.)</label>
           </mat-checkbox>
-          <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !defaultRippleChangeDetected && !deposithAuthChangeDetected && disallowXrpChangeDetected && disallowXrpInput">Careful! You are going to set the <b>Disallow incoming XAH</b> flag to your account. XAH should not be sent to this account. (Enforced by client applications, not by theXahau Network)</mat-hint>
+          <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !defaultRippleChangeDetected && !deposithAuthChangeDetected && disallowXrpChangeDetected && disallowXrpInput">Careful! You are going to set the <b>Disallow incoming XAH</b> flag to your account. XAH should not be sent to this account. (Enforced by client applications, not by the Xahau  Network)</mat-hint>
           <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !defaultRippleChangeDetected && !deposithAuthChangeDetected && disallowXrpChangeDetected && !disallowXrpInput">You are going to disable the <b>Disallow incoming XAH</b> flag of your account. XAH can then be sent to your account again.</mat-hint>
         </div>
         <div fxLayout="column">
@@ -87,7 +87,7 @@
     </form>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
       <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!isValidAccountSet">
-        Send Account Settings to XUMM
+        Send Account Settings to Xaman
       </button>
       <button mat-raised-button color="warn" (click)="deleteDomain()" matTooltip="{{originalAccountInfo && originalAccountInfo.Domain ? 'Delete Domain: ' : 'Delete Domain'}}{{hexToString(originalAccountInfo && originalAccountInfo.Domain)}}" [disabled]="originalAccountInfo && !originalAccountInfo.Domain">
         Delete Domain

@@ -36,7 +36,7 @@ export class IssuedNftList implements OnInit {
 
   sortColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers'];
   
-  displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers',  'trustlinelink', 'dexlink', 'explorer'];
+  displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers',  'trustlinelink', 'explorer'];
   datasource:MatTableDataSource<NftIssuer> = null;
 
   allTokens: NftIssuer[] = null;
@@ -289,11 +289,11 @@ export class IssuedNftList implements OnInit {
   }
 
   getBithompLink(account:string): string {
-    return "https://bithomp.com/explorer/"+account;
+    return "https://xahauexplorer.com/explorer/"+account;
   }
 
   getXRPScanLink(account:string): string {
-    return "https://xrpscan.com/account/"+account;
+    return "https://xahscan.com/account/"+account;
   }
 
   getXummDexLink(issuer:string, currency:string) {

@@ -18,15 +18,15 @@
   </mat-expansion-panel-header>
 
   <div fxLayout="column" fxLayoutGap="0.5em" fxLayoutGap.xs="0.3em">
-    <a href="https://xrpl.org/trustset.html" target="_blank" rel="noreferrer">Trust Set Documentation</a><br/>
+    <a href="https://docs.xahau.network/technical/protocol-reference/transactions/transaction-types/trustset" target="_blank" rel="noreferrer">Trust Set Documentation</a><br/>
     <label>Create or modify a trust line linking two accounts.</label>
     <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
       <trustlineList [xrplAccountInfoChanged]="xrplAccountInfoChangedSubject.asObservable()" [accountObjectsChanged]="trustlinesChangedSubject.asObservable()" (trustLineEdit)="onTrustLineEdit($event)" (trustLineDelete)="deleteTrustLine($event)" (disableRippling)="onDisableRippling($event)"></trustlineList>
     </div>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
-        <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the Token" [(ngModel)]="issuerAccountInput" (ngModelChange)="issuerAccountChanged()" [disabled]="isEditMode">
-        <mat-hint *ngIf="issuerAccountInput && !validAddress">Not a valid XRPL address</mat-hint>
+        <input #inpisseraccount matInput name="isseraccount" matInput placeholder="Xahau address which issues the Token" [(ngModel)]="issuerAccountInput" (ngModelChange)="issuerAccountChanged()" [disabled]="isEditMode">
+        <mat-hint *ngIf="issuerAccountInput && !validAddress">Not a valid Xahau address</mat-hint>
       </mat-form-field>
       <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
         <tokenList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></tokenList>
@@ -57,7 +57,7 @@
         
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em">
           <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidTrustSet || !issuerHasDefaultRipple || !currencyExists || loadingIssuerData">
-            Send Trust Set to XUMM
+            Send Trust Set to Xaman
           </button>
           <button *ngIf="isEditMode" mat-raised-button color="secondary" (click)="cancelEdit()">
             Cancel Edit
@@ -65,7 +65,7 @@
           <button *ngIf="isValidTrustSet" mat-raised-button color="secondary" (click)="clearInputs()">
             Clear Inputs
           </button>
-          <label *ngIf="!issuerAccountInput || !validAddress">Please enter a valid XRPL address.</label>
+          <label *ngIf="!issuerAccountInput || !validAddress">Please enter a valid Xahau address.</label>
           <label *ngIf="validAddress && ( !selectedCurrency || !validCurrency )">Please enter a valid Token currency code.</label>
           <label *ngIf="validAddress && validCurrency && ( !limitInput || !validLimit )">Please enter a valid Limit for this TrustLine.</label>
         </div>

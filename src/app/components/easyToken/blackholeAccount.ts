@@ -196,7 +196,7 @@ export class BlackholeAccount implements OnInit {
         txjson: {
           Account: this.getIssuer(),
           TransactionType: "Payment",
-          Memos : [{Memo: {MemoType: Buffer.from("[https://xahau.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment to blackhole XRPL account.", 'utf8').toString('hex').toUpperCase()}}]
+          Memos : [{Memo: {MemoType: Buffer.from("[https://xahau.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment to blackhole Xahau account.", 'utf8').toString('hex').toUpperCase()}}]
         },
         custom_meta: {
           instruction: "Please pay with the account you want to remove all access for!",

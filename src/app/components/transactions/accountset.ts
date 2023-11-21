@@ -236,7 +236,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     this.payload.txjson.Domain = '';
 
     this.payload.custom_meta = {};
-    this.payload.custom_meta.instruction = "Delete Domain attached to the XRPL account";
+    this.payload.custom_meta.instruction = "Delete Domain attached to the Xahau account";
 
     if(this.originalAccountInfo && this.originalAccountInfo.Domain)
       this.payload.custom_meta.instruction+= ": " + this.hexToString(this.originalAccountInfo.Domain);
@@ -250,7 +250,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   deleteEmailHash() {
     this.payload.txjson.EmailHash = "00000000000000000000000000000000";
     this.payload.custom_meta = {};
-    this.payload.custom_meta.instruction = "Delete Email attached to the XRPL account";
+    this.payload.custom_meta.instruction = "Delete Email attached to the Xahau account";
 
     this.onPayload.emit(this.payload);
     this.initializePayload();

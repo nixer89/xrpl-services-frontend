@@ -23,11 +23,11 @@
     <label>We are trying to detect if you have issued a Token or not. If the detection does not reflect your account status, please do not proceed with fixing the problems!</label>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
-        <input #inpxrplaccount matInput name="xrplaccount" matInput placeholder="XRPL address you want to run the check for" [(ngModel)]="xrplAccountInput" (ngModelChange)="checkChanges()">
-        <mat-hint *ngIf="xrplAccountInput && !validAddress">Not a valid XRPL address</mat-hint>
+        <input #inpxrplaccount matInput name="xrplaccount" matInput placeholder="Xahau address you want to run the check for" [(ngModel)]="xrplAccountInput" (ngModelChange)="checkChanges()">
+        <mat-hint *ngIf="xrplAccountInput && !validAddress">Not a valid Xahau address</mat-hint>
       </mat-form-field>
     </form>
-    <label class="warning" *ngIf="validAddress && !loadingProblems && accountNotFound">This account does not exist on theXahau Network {{isTestMode ? 'TEST' : 'MAIN'}} network.</label>
+    <label class="warning" *ngIf="validAddress && !loadingProblems && accountNotFound">This account does not exist on the Xahau  Network {{isTestMode ? 'TEST' : 'MAIN'}} network.</label>
     <label class="warning" *ngIf="validAddress && !loadingProblems && !accountNotFound && isGateway">We have detected that your account does issue some Token. If this is NOT correct, please DO NOT PROCEED!</label>
     <label class="warning" *ngIf="validAddress && !loadingProblems && !accountNotFound && !isGateway">We have detected that your account does NOT issue any Token. If this is NOT correct, please DO NOT PROCEED!</label>
   </div>

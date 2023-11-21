@@ -13,14 +13,14 @@
       <label class="loading">Account Delete</label>
     </mat-panel-title>
     <mat-panel-description>
-      Delete your XRPL account
+      Delete your Xahau account
     </mat-panel-description>
   </mat-expansion-panel-header>
 
   <div fxLayout="column" fxLayoutGap="0.3em">
-    <a href="https://xrpl.org/accountdelete.html" target="_blank" rel="noreferrer">Account Delete Documentation</a>
-    <label>An AccountDelete transaction deletes an account and any objects it owns in theXahau Network, if possible, sending the account's remaining XAH to a specified destination account.</label>
-    <label>The transaction cost to execute this transaction is {{ownerReserve/1000000}} XAH! This is a requirement of theXahau Network. The {{ownerReserve/1000000}} XAH will be burnt in the process to execute this transaction.</label>
+    <a href="https://docs.xahau.network/technical/protocol-reference/transactions/transaction-types/accountdelete" target="_blank" rel="noreferrer">Account Delete Documentation</a>
+    <label>An AccountDelete transaction deletes an account and any objects it owns in the Xahau  Network, if possible, sending the account's remaining XAH to a specified destination account.</label>
+    <label>The transaction cost to execute this transaction is {{ownerReserve/1000000}} XAH! This is a requirement of the Xahau  Network. The {{ownerReserve/1000000}} XAH will be burnt in the process to execute this transaction.</label>
     <div *ngIf="loadingPreconditions" fxLayout="row" fxLayoutGap="0.3em">
       <label>Checking if your logged in account can be deleted... </label>
       <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
@@ -35,17 +35,17 @@
     <form *ngIf="!loadingPreconditions && preconditionsFullFilled" fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <label class="warning">ATTENTION: Please do not use an exchange account or other custodial wallet as destination address! YOU MAY LOSE YOUR FUNDS!</label>
       <mat-form-field>
-        <input #inpdestinationaccount matInput name="destinationaccount" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address where remaining XAH should be sent to" [(ngModel)]="destinationAccountInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
-        <mat-hint *ngIf="destinationAccountInput && !validDestinationAddress">Not a valid XRPL address</mat-hint>
+        <input #inpdestinationaccount matInput name="destinationaccount" ngStyle.xs="font-size: 0.8em;" placeholder="Xahau address where remaining XAH should be sent to" [(ngModel)]="destinationAccountInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
+        <mat-hint *ngIf="destinationAccountInput && !validDestinationAddress">Not a valid Xahau address</mat-hint>
         <mat-hint *ngIf="originalAccountInfo && destinationAccountInput && destinationAccountInput == originalAccountInfo.Account">You cannot set the Destination address to the logged in address.</mat-hint>
-        <mat-hint *ngIf="destinationAccountInput && validDestinationAddress && !destinationAccountExists && !loadingDestinationAccount">This account does not exist on theXahau Network {{isTestMode? 'TEST' : 'MAIN'}} net. You need to activate it first with {{accountReserve}} XAH.</mat-hint>
+        <mat-hint *ngIf="destinationAccountInput && validDestinationAddress && !destinationAccountExists && !loadingDestinationAccount">This account does not exist on the Xahau  Network {{isTestMode? 'TEST' : 'MAIN'}} net. You need to activate it first with {{accountReserve}} XAH.</mat-hint>
       </mat-form-field>
       <div *ngIf="loadingDestinationAccount" fxLayout="row" fxLayoutGap="0.3em">
         <label>Loading destination account...</label>
         <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
       </div>
       <mat-form-field>
-        <input #inpdestinationtag matInput name="destinationtag" ngStyle.xs="font-size: 0.8em;" placeholder="Destination Tag for the XRPL address (optional)" [(ngModel)]="destinationTagInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
+        <input #inpdestinationtag matInput name="destinationtag" ngStyle.xs="font-size: 0.8em;" placeholder="Destination Tag for the Xahau address (optional)" [(ngModel)]="destinationTagInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
         <mat-hint *ngIf="destinationTagInput && !validTag">Not a valid Destination Tag. Only whole numbers between 0 and 4294967295 allowed!</mat-hint>
       </mat-form-field>
       <label *ngIf="originalAccountInfo && originalAccountInfo.Balance && destinationAccountInput" class="loading">Your account balance is: {{getAccountBalance()}} XAH. {{(ownerReserve)/1000000}} XAH will be burnt in transaction fee, so {{getTransferBalance()}} XAH will be sent to '{{destinationAccountInput.trim()}}'.</label>
@@ -56,7 +56,7 @@
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
       <div fxLayout="column">
         <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!checkBoxHint || !validDestinationAddress || loadingDestinationAccount || !destinationAccountExists || (destinationTagInput && !validTag) || (originalAccountInfo && (originalAccountInfo.error || (destinationTagInput && destinationTagInput.trim() === originalAccountInfo.Account)))">
-          Send Account Delete to XUMM
+          Send Account Delete to Xaman
         </button>
         <mat-hint *ngIf="!checkBoxHint && validDestinationAddress && !loadingDestinationAccount && destinationAccountExists && (!destinationTagInput || validTag) && (!originalAccountInfo || (originalAccountInfo && (!originalAccountInfo.error && (!destinationTagInput || destinationTagInput.trim() != originalAccountInfo.Account))))">Please confirm the checkbox above.</mat-hint>
       </div>

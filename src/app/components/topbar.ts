@@ -70,7 +70,7 @@ export class TopbarComponent implements OnInit {
           TransactionType: "Payment"
       },
       custom_meta: {
-        instruction: "You are about to send some love to xahau.services,\na project by @nixerFFM and not affiliated with XRPLLabs,\nthe creator of the XUMM wallet.\n\nThank you for your kindness, we appreciate you!!",
+        instruction: "You are about to send some love to xahau.services,\na project by @nixerFFM and not affiliated with XRPLLabs,\nthe creator of the Xaman wallet.\n\nThank you for your kindness, we appreciate you!!",
         blob: {
           isDonation: true,
           purpose: "freiwillige Zahlung für xahau.services Webseite"

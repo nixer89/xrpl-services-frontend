@@ -5,7 +5,7 @@
       <span class="loading" style="margin-left: 0.5em;"> Escrow Create </span>
     </mat-panel-title>
     <mat-panel-description>
-      Create an Escrow on theXahau Network.
+      Create an Escrow on the Xahau Network.
     </mat-panel-description>
   </mat-expansion-panel-header>
   <mat-expansion-panel-header fxShow.xs fxHide>
@@ -18,7 +18,7 @@
   </mat-expansion-panel-header>
 
   <div fxLayout="column" fxLayoutGap="0.3em">
-    <a href="https://xrpl.org/escrowcreate.html" target="_blank" rel="noreferrer">Escrow Create Documentation</a><br/>
+    <a href="https://docs.xahau.network/technical/protocol-reference/transactions/transaction-types/escrowcreate" target="_blank" rel="noreferrer">Escrow Create Documentation</a><br/>
     <label>Sequester XAH until the escrow process either finishes or is canceled.</label>
     <label>Every Escrow adds {{ownerReserve/1000000}} XAH to your account reserve. Those {{ownerReserve/1000000}} XAH are inaccessible as long as the Escrow exists. When the Escrow is finished or cancelled, the {{ownerReserve/1000000}} XAH are returned to your available balance.</label>
     <div style="margin-bottom: 1em;" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
@@ -27,7 +27,7 @@
     <label style="color: crimson;padding-top: 1em;"><b>Be careful. You could lock away your funds for years!</b><br/></label>
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
-        <input #inpdestination matInput name="destination" placeholder="Escrow Destination XRPL Address (required)" [(ngModel)]="destinationInput" (ngModelChange)="checkChanges()">
+        <input #inpdestination matInput name="destination" placeholder="Escrow Destination Xahau Address (required)" [(ngModel)]="destinationInput" (ngModelChange)="checkChanges()">
         <mat-hint *ngIf="destinationInput && !validAddress">Not a valid XAH address</mat-hint>
       </mat-form-field>
       <mat-form-field>
@@ -92,9 +92,9 @@
     </form>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrow">
-        Send Escrow Create to XUMM
+        Send Escrow Create to Xaman
       </button>
-      <label *ngIf="!destinationInput || !validAddress">Please enter a valid XRPL address as destination.</label>
+      <label *ngIf="!destinationInput || !validAddress">Please enter a valid Xahau address as destination.</label>
       <label *ngIf="validAddress && ( !amountInput || !validAmount )">Please enter a valid amount.</label>
       <label *ngIf="validAddress && validAmount && (!validFinishAfter && !validCondition)">Please provide a Finish After or Condition (password).</label>
     </div>

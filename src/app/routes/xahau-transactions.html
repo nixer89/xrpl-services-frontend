@@ -7,13 +7,13 @@
         </div>
         <div fxLayout="column" fxLayoutAlign="start center" class="floatcenter">
             <div *ngIf="!xrplAccount">
-                <button mat-raised-button class="theme-background" style="height: 50px; border-radius: 12px; padding: 5px 5px 5px 5px;" matTooltip="Login with XUMM to load your account data." matTooltipPosition="right" (click)="openSignInDialog()">
-                    <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with XUMM">
+                <button mat-raised-button class="theme-background" style="height: 50px; border-radius: 12px; padding: 5px 5px 5px 5px;" matTooltip="Login with Xaman to load your account data." matTooltipPosition="right" (click)="openSignInDialog()">
+                    <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with Xaman">
                 </button>
             </div>
             <div style="padding-top: 0.5em;" class="floatcenter">
                 <div *ngIf="!xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
-                    <label class="loading">Login to load your account data, use cool features and to receive XUMM push notifications.</label>
+                    <label class="loading">Login to load your account data, use cool features and to receive Xaman push notifications.</label>
                 </div>
                 <div *ngIf="xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
                     <label fxHide.xs>Logged in with:</label>
@@ -34,7 +34,7 @@
         </div>
         <mat-card class="theme-background" fxShow fxHide.xs >
             <div fxLayout="column" fxLayoutAlign="start center">
-                <label>XRPL Network</label>
+                <label>Xahau Network</label>
                 <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
                     <label>Main</label>&nbsp;
                     <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkChanged()" [disabled]="loadingData" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
@@ -45,7 +45,7 @@
     </div>
     <mat-card fxShow.xs fxHide class="theme-background floatcenter" style="font-size: 0.8em;">
         <div fxLayout="column" fxLayoutAlign="start center">
-            <label>XRPL Network</label>
+            <label>Xahau Network</label>
             <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
                 <label>Main</label>&nbsp;
                 <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkChanged()" [disabled]="loadingData" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
@@ -54,7 +54,7 @@
         </div>
     </mat-card>
     <div *ngIf="lastTrxLinkBithomp || lastTrxLinkXrplOrg || lastTrxLinkXrpScan || lastTrxLinkXrp1ntel || lastTrxLinkXrplorer" style="padding-top: 1em;">
-        View your transaction on theXahau Network: <br fxHide fxShow.xs>
+        View your transaction on the Xahau  Network: <br fxHide fxShow.xs>
         <span *ngIf="lastTrxLinkBithomp"><a [href]="lastTrxLinkBithomp" target="_blank;" rel="noreferrer">bithomp</a> | </span>
         <span *ngIf="lastTrxLinkXrplOrg"><a  [href]="lastTrxLinkXrplOrg" target="_blank;" rel="noreferrer">xrpl.org</a></span>
         <span *ngIf="lastTrxLinkXrpScan"> | <a  [href]="lastTrxLinkXrpScan" target="_blank;" rel="noreferrer">xrpscan</a> | </span>

@@ -2,7 +2,7 @@
   <mat-expansion-panel-header fxShow fxHide.xs>
     <mat-panel-title>
       <span> <mat-icon>add</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> Create a new Token on theXahau Network </span>
+      <span class="loading" style="margin-left: 0.5em;"> Create a new Token on the Xahau  Network </span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
@@ -14,7 +14,7 @@
   </mat-expansion-panel-header>
 
   <mat-card fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
-    <label>This functionality is now a XUMM xApp.</label>
+    <label>This functionality is now a Xaman xApp.</label>
     <label>Please click the link below to open the Token creator xApp:</label>
     <br/><br/>
     <label><a href="https://xumm.app/detect/xapp:nixer.tokencreate" rel="noreferrer" target="_blank">Token creator xApp</a></label>
@@ -24,7 +24,7 @@
       <mat-step completed="false" editable="false">
           <mat-card fxLayout="column" fxLayoutGap="0.5em">
               <ng-template matStepLabel>Description</ng-template>
-              <label>Easy-Token is (probably) the most simpliest way to create your own currency on theXahau Network.</label>
+              <label>Easy-Token is (probably) the most simpliest way to create your own currency on the Xahau  Network.</label>
               <label>From 'beer-token' over 'toilet-paper-token' (TPT), everything is possible!</label><br/><br/>
 
               <label class="warning">We will charge you 5 XAH for creating your Token and  your initial issuing to one other account.</label>
@@ -51,7 +51,7 @@
             <mat-checkbox [(ngModel)]="checkBoxIssuerInfo" [ngClass]="(checkBoxIssuerInfo ? 'success': 'warning')">It is recommended that the issuer account does NOT have outgoing trust lines! Please use an account as issuer account that you don't access/use regulary.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxFiveXrp" [ngClass]="(checkBoxFiveXrp ? 'success': 'warning')">You accept paying 5 XAH for this service, helping to issue your own Token.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxSufficientFunds" [ngClass]="(checkBoxSufficientFunds ? 'success': 'warning')">The issuing and recipient accounts have enough funds. (at least 5 XAH available balance, excluding account reserves!)</mat-checkbox>
-            <mat-checkbox [(ngModel)]="checkBoxNetwork" [ngClass]="(checkBoxNetwork ? 'success': 'warning')">Your XUMM app is connected to the MAIN or TEST network, depending on where you want to issue your Token.</mat-checkbox>
+            <mat-checkbox [(ngModel)]="checkBoxNetwork" [ngClass]="(checkBoxNetwork ? 'success': 'warning')">Your Xaman app is connected to the MAIN or TEST network, depending on where you want to issue your Token.</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxNoLiability" [ngClass]="(checkBoxNoLiability ? 'success': 'warning')">We take no liability if you are not able to issue your own Token. Only proceed if you know what your are doing!</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxDisclaimer" [ngClass]="(checkBoxDisclaimer ? 'success': 'warning')">We offer "basic" Token/TrustLine management. If you are going to issue your Token for commercial use, we recommend to NOT use this tool. We are not liable for any regulatory implications, depending on the jurisdiction you live in.</mat-checkbox>
 
@@ -71,7 +71,7 @@
               <div fxLayout="row" fxLayoutGap="0.5em">
                 <mat-card class="theme-background">
                   <div fxLayout="column" fxLayoutAlign="start center">
-                      <label>XRPL Network</label>
+                      <label>Xahau Network</label>
                       <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
                         <label>Main</label>&nbsp;
                         <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
@@ -82,8 +82,8 @@
                 <span style="flex: 1 1 auto;"></span>
               </div>
               <label class="warning" *ngIf="isTestMode">If you want to create on the test net, the 5 XAH payment can be done on the test net as well!</label>
-              <label class="success" *ngIf="isTestMode">Make sure your XUMM app is connected to the TEST network!</label>
-              <label class="success" *ngIf="!isTestMode">Make sure your XUMM app is connected to the MAIN network!</label>
+              <label class="success" *ngIf="isTestMode">Make sure your Xaman app is connected to the TEST network!</label>
+              <label class="success" *ngIf="!isTestMode">Make sure your Xaman app is connected to the MAIN network!</label>
             </div>
             <span style="flex: 1 1 auto;"></span>
           </div>
@@ -109,7 +109,7 @@
                 <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode.length >= 3 && currencyCode.length <=20">The currency code contains invalid characters.</mat-hint>
               </mat-form-field>
               <div *ngIf="currencyCode && validCurrencyCode && currencyCode.length > 3 && currencyCode.length < 21" fxLayout="column" fxLayoutGap="0.3em" style="margin-bottom: 1.5em;">
-                <label class="warning">Attention! Your currency code will be represented as HEX string on theXahau Network but most software does translate this into human readable characters! </label>
+                <label class="warning">Attention! Your currency code will be represented as HEX string on the Xahau  Network but most software does translate this into human readable characters! </label>
                 <label class="warning">HEX representation of your currency code: {{getCurrencyCodeForXRPL()}}</label>
               </div>
               
@@ -130,24 +130,24 @@
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
           <ng-template matStepLabel>Issuer account</ng-template>
-          <label class="loading">What is theXahau Network account which will be issuing your tokens?</label>
+          <label class="loading">What is the Xahau  Network account which will be issuing your tokens?</label>
           <label>You need to pay or sign in with the account you want to create your Token from. (the 'Issuer' account)</label>
           <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
             <div  style="padding-top: 0.5em;" *ngIf="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound">
-              <button mat-button matTooltip="Pay for your Token via XUMM." matTooltipPosition="above" (click)="payForToken()" style="padding:0px;">
-                <img src="../../assets/xummPay.svg" style="width: 148px; height: 40px;" alt="Pay via XUMM">
+              <button mat-button matTooltip="Pay for your Token via Xaman." matTooltipPosition="above" (click)="payForToken()" style="padding:0px;">
+                <img src="../../assets/xummPay.svg" style="width: 148px; height: 40px;" alt="Pay via Xaman">
               </button>
               &nbsp;<label class="warning">Make a 5 XAH payment if you haven't paid within the last 24h.</label>
             </div>
             <div *ngIf="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound">
-              <button mat-button matTooltip="SignIn via XUMM." matTooltipPosition="above" (click)="loginForToken()" style="padding:0px;">
-                <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
+              <button mat-button matTooltip="SignIn via Xaman." matTooltipPosition="above" (click)="loginForToken()" style="padding:0px;">
+                <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via Xaman">
               </button>
               &nbsp;<label class="loading">Sign in with the account you have paid within the last 24h.</label>
             </div>
             
-            <mat-hint *ngIf="paymentNotSuccessfull" style="padding-top: 0.5em;">You payment was not successful on theXahau Network {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
-            <mat-hint *ngIf="paymentNotSuccessfull">Please try again or use "Sign In with XUMM" if you think the payment was successful.</mat-hint>
+            <mat-hint *ngIf="paymentNotSuccessfull" style="padding-top: 0.5em;">You payment was not successful on the Xahau  Network {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
+            <mat-hint *ngIf="paymentNotSuccessfull">Please try again or use "Sign In with Xaman" if you think the payment was successful.</mat-hint>
             <mat-hint *ngIf="paymentNotFound" style="padding-top: 0.5em;">No valid payment found for account {{getIssuer()}} withing the last 24h.</mat-hint>
             <mat-hint *ngIf="paymentNotFound">Please make a 5 XAH payment or login with a different account.</mat-hint>
 
@@ -177,10 +177,10 @@
           <ng-template matStepLabel>Set DefaultRipple</ng-template>
           <div *ngIf="needDefaultRipple" fxLayout="column" fxLayoutGap="0.5em">
             <label>We need to set the DefaultRipple flag to your issuer account.</label>
-            <label>This allows you and others to send your Token through theXahau Network. If we do not set the flag, people won't be able to send your Token.</label>
+            <label>This allows you and others to send your Token through the Xahau  Network. If we do not set the flag, people won't be able to send your Token.</label>
             <div>
               <button mat-raised-button color="primary" (click)="sendDefaultRipple()">
-                Set DefaultRipple via XUMM
+                Set DefaultRipple via Xaman
               </button>
               <span style="flex: 1 1 auto;"></span>
             </div>
@@ -203,8 +203,8 @@
           <ng-template matStepLabel>Set TrustLine from recipient</ng-template>
           <div *ngIf="!recipientTrustlineSet && !recipientAddress" fxLayout="column" fxLayoutGap="0.5em">
             <label>We have to set a TrustLine from the Token recipient to the issuing account: {{getIssuer()}}</label>
-            <label class="warning">So please sign the next XUMM request with the account which should receive the Token!</label>
-            <label class="loading">You have to switch the signing account from the <b>issuer</b> to the <b>recipient</b> in the XUMM app!</label>
+            <label class="warning">So please sign the next Xaman request with the account which should receive the Token!</label>
+            <label class="loading">You have to switch the signing account from the <b>issuer</b> to the <b>recipient</b> in the Xaman app!</label>
             <div>
               <button mat-raised-button color="primary" (click)="setTrustline()">
                 Set Trustline from Recipient to Issuer
@@ -233,7 +233,7 @@
             <label class="warning">We are going to issue: <b>{{this.limit}} {{this.currencyCode}}</b></label>
             <label>to: <b>{{this.recipientAddress}}</b></label>
             <label></label>
-            <label class="loading">You have to switch the signing account from the <b>recipient</b> to the <b>issuing</b> in the XUMM app!</label>
+            <label class="loading">You have to switch the signing account from the <b>recipient</b> to the <b>issuing</b> in the Xaman app!</label>
             <label>Please keep in mind this is just an inital issuing. You can issue more of your Token at any time through this website with "Issue more if your created Token".</label>
             <label> (The recipient needs to have a TrustLine to your issueing account with a proper limit!)</label>
             <label></label>
@@ -249,7 +249,7 @@
             <i class="material-icons" style="color: green; font-size: 3em;">
                 check_circle_outline
             </i>
-            <label>Congratulations! You have created your own token on theXahau Network!</label>
+            <label>Congratulations! You have created your own token on the Xahau  Network!</label>
           </div>
           <div fxLayoutGap="0.5em" style="padding-top: 0.5em;">
             <button mat-raised-button color="primary" (click)="moveNext()" [disabled]="!weHaveIssued">Next</button>
@@ -308,7 +308,7 @@
       <mat-step completed="false" editable="false">
         <mat-card fxLayout="column" fxLayoutGap="0.5em">
           <ng-template matStepLabel>Finished!</ng-template>
-          <label>You can now send your Token through theXahau Network to accounts which also have added a TrustLine with your issuer account: <b>{{getIssuer()}}</b></label><br>
+          <label>You can now send your Token through the Xahau  Network to accounts which also have added a TrustLine with your issuer account: <b>{{getIssuer()}}</b></label><br>
           <label>People can setup a TrustLine to your issuer account via the "Trust Set" transaction on the page "Xahau Transactions"!</label>
           <label>You can share the following link with people interested to set a TrustLine to you account:</label>
           <a href="https://xahau.services?issuer={{getIssuer()}}&currency={{currencyCode}}&limit={{limit}}" target="_blank">https://xahau.services?issuer={{getIssuer()}}&currency={{currencyCode}}&limit={{limit}}</a>
