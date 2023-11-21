@@ -42,7 +42,6 @@ export class XahauStatistics implements OnInit {
       let xahauStatistics:any = await this.app.get('https://xahau-api.xrpldata.com/api/v1/ledgerdata');
 
       if(xahauStatistics) {
-        console.log(JSON.stringify(xahauStatistics));
         this.generalStats = {
           ledger_index: xahauStatistics.ledger_index,
           ledger_hash: xahauStatistics.ledger_hash,

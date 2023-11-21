@@ -40,7 +40,7 @@
             <div fxLayout="row">
                 <label>Total XAH:</label>
                 <span style="flex: 1 1 auto;"></span>
-                <label class="right-label-stats">{{numberWithCommas(roundNumber((accountrootStats.special_data.BalanceValueTotal + (escrowStats ? escrowStats.special_data.AmountValueTotal : 0)) / 1000000,1))}} XAH</label>
+                <label class="right-label-stats">{{numberWithCommas(roundNumber((accountrootStats.special_data.BalanceValueTotal + (escrowStats?.special_data?.AmountValueTotal ? escrowStats?.special_data?.AmountValueTotal : 0)) / 1000000,1))}} XAH</label>
             </div>
         </div>
     </mat-card>
@@ -263,7 +263,7 @@
                 <label class="right-label-stats">{{numberWithCommas(roundNumber(offerStats.special_data.XrpTotal / 1000000,1))}} XAH</label>
             </div>
             <div>
-                <label class="warning">(NOT ALL OFFERS ARE FUNDED!)</label>
+                <label class="warning">(SOME OFFERS MIGHT BE UNFUNDED!)</label>
             </div>
         </div>
     </mat-card>
