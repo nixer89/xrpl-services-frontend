@@ -5,7 +5,7 @@ import { Injectable, Optional, SkipSelf } from '@angular/core';
 export class XRPLWebsocket {
     
     originalTestModeValue:boolean = false;
-    mainNodes:string[] = ['wss://xahau.network'];
+    mainNodes:string[] = ['wss://xahau.org'];
     testNodes:string[] = ['wss://xahau-test.net'];
     mainFirst:boolean = true;
     testFirst:boolean = true;

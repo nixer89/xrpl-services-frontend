@@ -1,17 +1,9 @@
 [METADATA]
-modified = 2021-12-07T13:00:00.000Z
-
-[[VALIDATORS]]
-public_key = "nHB4cGH8jhVLc7QUwp3zysA3JxmTA7Qi2CEQgMn6Yit6E6YqDAsg"
-attestation = "BBEC70B3DED5BD24E9CCC3F3073267862156AABC1AE830935FBF27DFDDEA0F94B3A32DE1AD81D1CCDCD93EF43231223B4E1913624C94C24F03CC91173EF7CB01"
-network = "main"
-owner_country = "de"
-server_country = "de"
-unl = "https://vl.xrplf.org"
+modified = 2023-11-28T14:00:00.000Z
 
 [[ACCOUNTS]]
 address = "rNixerUVPwrhxGDt4UooDu6FJ7zuofvjCF"
-desc = "https://xahau.services address, a website by 'Daniel SiedentopfXahau Services'"
+desc = "https://xahau.services address, a website by 'Daniel Siedentopf Xahau Services'"
 
 [[ACCOUNTS]]
 address = "rELeasERs3m4inA1UinRLTpXemqyStqzwh"
@@ -23,5 +15,5 @@ desc = "private address, owned by @nixerFFM"
 
 [[PRINCIPALS]]
 name = "Xahau Services"
-email = "info@xahau.services"
+email = "info@xrpl.services"
 twitter = "XahauServices"
