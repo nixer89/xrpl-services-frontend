@@ -64,7 +64,7 @@ export class TokenList implements OnInit, OnDestroy {
                 
                 if(!this.testMode) {
 
-                    let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+xrplAccount+"/obligations?origin=https://xahau.services")
+                    let xrpscanResponse:any = await this.app.get("https://api.xahscan.com/api/v1/account/"+xrplAccount+"/obligations?origin=https://xahau.services")
 
                     if(xrpscanResponse && xrpscanResponse.length > 0) {
                         for(let i = 0; i < xrpscanResponse.length; i++) {
