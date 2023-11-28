@@ -85,7 +85,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
 
       try {
 
-        let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+this.xrplAccountInput.trim()+"/obligations?origin=https://xahau.services")
+        let xrpscanResponse:any = await this.app.get("https://api.xahscan.com/api/v1/account/"+this.xrplAccountInput.trim()+"/obligations?origin=https://xahau.services")
 
         if(xrpscanResponse && xrpscanResponse.length > 0) {
             this.obligations = xrpscanResponse;

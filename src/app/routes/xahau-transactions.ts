@@ -27,8 +27,6 @@ export class XahauTransactionsComponent implements OnInit {
   lastTrxLinkBithomp:string;
   lastTrxLinkXrplOrg:string;
   lastTrxLinkXrpScan:string;
-  lastTrxLinkXrp1ntel:string;
-  lastTrxLinkXrplorer:string;
 
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
   accountObjectsChanged: Subject<AccountObjectsChanged> = new Subject<AccountObjectsChanged>();
@@ -351,14 +349,12 @@ export class XahauTransactionsComponent implements OnInit {
 
       if(trxInfo.txid) {
         if(trxInfo.testnet) {
-          this.lastTrxLinkBithomp = "https://test.bithomp.com/explorer/"+trxInfo.txid;
-          this.lastTrxLinkXrplOrg = "https://testnet.xrpl.org/transactions/"+trxInfo.txid;
+          this.lastTrxLinkBithomp = "https://test.xahauexplorer.com/explorer/"+trxInfo.txid;
+          this.lastTrxLinkXrplOrg = "https://xahau-testnet.xrpl.org/transactions/"+trxInfo.txid;
         } else {
-          this.lastTrxLinkBithomp = "https://bithomp.com/explorer/"+trxInfo.txid;
-          this.lastTrxLinkXrplOrg = "https://livenet.xrpl.org/transactions/"+trxInfo.txid;
-          this.lastTrxLinkXrpScan = "https://xrpscan.com/tx/"+trxInfo.txid;
-          this.lastTrxLinkXrp1ntel = "https://xrp1ntel.com/tx/"+trxInfo.txid;
-          this.lastTrxLinkXrplorer = "https://xrplorer.com/transaction/"+trxInfo.txid;
+          this.lastTrxLinkBithomp = "https://xahauexplorer.com/explorer/"+trxInfo.txid;
+          this.lastTrxLinkXrplOrg = "https://xahau.xrpl.org/transactions/"+trxInfo.txid;
+          this.lastTrxLinkXrpScan = "https://xahscan.com/tx/"+trxInfo.txid;
         }
 
         if(trxInfo.success) {
@@ -500,7 +496,7 @@ export class XahauTransactionsComponent implements OnInit {
   }
 
   logoutAccount() {
-    this.xrplAccount = this.xrplAccount_Info = this.xrplAccount_Objects = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = this.lastTrxLinkXrplorer = null;
+    this.xrplAccount = this.xrplAccount_Info = this.xrplAccount_Objects = this.lastTrxLinkBithomp = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = null;
     this.localStorage.remove("xrplAccount");
     this.localStorage.remove("testMode");
     this.emitAccountInfoChanged();

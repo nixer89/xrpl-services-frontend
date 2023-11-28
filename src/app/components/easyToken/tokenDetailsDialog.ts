@@ -148,9 +148,9 @@ export class TokenDetailsDialog implements OnInit {
     getExplorerLink(): string {
         if(this.tokenIssuer && this.tokenIssuer.resolvedBy) {
             if(this.tokenIssuer.resolvedBy.toUpperCase() === "XRPSCAN")
-                return "https://xrpscan.com/account/"+this.tokenIssuer.account;
+                return "https://xahscan.com/account/"+this.tokenIssuer.account;
             else
-                return "https://bithomp.com/explorer/"+this.tokenIssuer.account;
+                return "https://xahauexplorer.com/explorer/"+this.tokenIssuer.account;
         }
     }
 

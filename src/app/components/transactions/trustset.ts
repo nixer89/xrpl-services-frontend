@@ -199,7 +199,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
       try {
         if(!this.testMode) {
-          let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+this.issuerAccountInput+"/obligations?origin=https://xahau.services")
+          let xrpscanResponse:any = await this.app.get("https://api.xahscan.com/api/v1/account/"+this.issuerAccountInput+"/obligations?origin=https://xahau.services")
               
           let currencyToCheck = this.selectedCurrency.currencyCode;
 

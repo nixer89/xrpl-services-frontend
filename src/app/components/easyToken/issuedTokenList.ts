@@ -300,11 +300,11 @@ export class IssuedTokenList implements OnInit {
   }
 
   getBithompLink(account:string): string {
-    return "https://bithomp.com/explorer/"+account;
+    return "https://xahauexplorer.com/explorer/"+account;
   }
 
   getXRPScanLink(account:string): string {
-    return "https://xrpscan.com/account/"+account;
+    return "https://xahscan.com/account/"+account;
   }
 
   getXummDexLink(issuer:string, currency:string) {

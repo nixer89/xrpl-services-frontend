@@ -53,13 +53,11 @@
             </div>
         </div>
     </mat-card>
-    <div *ngIf="lastTrxLinkBithomp || lastTrxLinkXrplOrg || lastTrxLinkXrpScan || lastTrxLinkXrp1ntel || lastTrxLinkXrplorer" style="padding-top: 1em;">
-        View your transaction on the Xahau  Network: <br fxHide fxShow.xs>
-        <span *ngIf="lastTrxLinkBithomp"><a [href]="lastTrxLinkBithomp" target="_blank;" rel="noreferrer">bithomp</a> | </span>
-        <span *ngIf="lastTrxLinkXrplOrg"><a  [href]="lastTrxLinkXrplOrg" target="_blank;" rel="noreferrer">xrpl.org</a></span>
-        <span *ngIf="lastTrxLinkXrpScan"> | <a  [href]="lastTrxLinkXrpScan" target="_blank;" rel="noreferrer">xrpscan</a> | </span>
-        <span *ngIf="lastTrxLinkXrp1ntel"><a  [href]="lastTrxLinkXrp1ntel" target="_blank;" rel="noreferrer">xrp1ntel</a> | </span>
-        <span *ngIf="lastTrxLinkXrplorer"><a  [href]="lastTrxLinkXrplorer" target="_blank;" rel="noreferrer">xrplorer</a></span>
+    <div *ngIf="lastTrxLinkBithomp || lastTrxLinkXrplOrg || lastTrxLinkXrpScan" style="padding-top: 1em;">
+        View your transaction on the Xahau Network: <br fxHide fxShow.xs>
+        <span *ngIf="lastTrxLinkBithomp"><a [href]="lastTrxLinkBithomp" target="_blank;" rel="noreferrer">XAHAU Explorer</a> | </span>
+        <span *ngIf="lastTrxLinkXrplOrg"><a  [href]="lastTrxLinkXrplOrg" target="_blank;" rel="noreferrer">xahau.xrpl.org</a></span>
+        <span *ngIf="lastTrxLinkXrpScan"> | <a  [href]="lastTrxLinkXrpScan" target="_blank;" rel="noreferrer">Xahscan</a> | </span>
     </div>
     <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
         <testNetCredentials></testNetCredentials>
