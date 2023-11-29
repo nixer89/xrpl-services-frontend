@@ -163,7 +163,7 @@ export class IssuedNftList implements OnInit {
 
     let tokenIssuers:NftIssuer[] = [];
     try {
-      let issuedTokensResponse:any = await this.app.get('https://xahau-api.xrpldata.com/api/v1/nfts');
+      let issuedTokensResponse:any = await this.app.get('https://api.xahaudata.com/api/v1/nfts');
 
       this.ledgerIndex = issuedTokensResponse.ledger_index;
       this.ledgerHash = issuedTokensResponse.ledger_hash;

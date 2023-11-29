@@ -39,7 +39,7 @@ export class XahauStatistics implements OnInit {
     this.loading = true;
     
     try {
-      let xahauStatistics:any = await this.app.get('https://xahau-api.xrpldata.com/api/v1/ledgerdata');
+      let xahauStatistics:any = await this.app.get('https://api.xahaudata.com/api/v1/ledgerdata');
 
       if(xahauStatistics) {
         this.generalStats = {

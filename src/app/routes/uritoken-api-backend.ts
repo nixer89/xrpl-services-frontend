@@ -19,7 +19,7 @@ export class NftApiBackend {
     let xummPayload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
           TransactionType: "Payment",
-          Memos: [{Memo: {MemoType: Buffer.from("[https://xahau.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for using URIToken / NFT API: https://xahau-api.xrpldata.com/docs", 'utf8').toString('hex').toUpperCase()}}]
+          Memos: [{Memo: {MemoType: Buffer.from("[https://xahau.services]-Memo", 'utf8').toString('hex').toUpperCase(), MemoData: Buffer.from("Payment for using URIToken / NFT API: https://api.xahaudata.com/docs", 'utf8').toString('hex').toUpperCase()}}]
       },
       custom_meta: {
         instruction: "You are about to pay for the Xahau  Services NFT API.\nPlease make sure to set the correct XAH amount for your choosen Tier/Rate Limit!",
