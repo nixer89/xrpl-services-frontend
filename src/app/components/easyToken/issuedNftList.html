@@ -260,15 +260,15 @@
           <mat-header-cell *matHeaderCellDef mat-sort-header> Explorers </mat-header-cell>
           <mat-cell *matCellDef="let row">
               <span fxShow fxHide.lt-md fxLayout="column" fxLayout.gt-lg="row">
-                <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
+                <a [href]="getBithompLink(row.account)" target="_blank">XahauExplorer</a>
                 <label fxHide fxShow.gt-lg>&nbsp;|&nbsp;</label>
-                <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
+                <a [href]="getXRPScanLink(row.account)" target="_blank">XAHScan</a>
               </span>
               <span fxShow.lt-md fxHide fxLayout="row">
                 <b>Explorers:</b>&nbsp;
-                <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
+                <a [href]="getBithompLink(row.account)" target="_blank">XahauExplorer</a>
                 <label>&nbsp;|&nbsp;</label>
-                <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
+                <a [href]="getXRPScanLink(row.account)" target="_blank">XAHScan</a>
               </span>
           </mat-cell>
           <mat-footer-cell *matFooterCellDef><b>-</b></mat-footer-cell>
