@@ -201,7 +201,8 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
 
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
-        TransactionType: "AccountDelete"
+        TransactionType: "AccountDelete",
+        Fee: this.ownerReserve
       }
     }
 

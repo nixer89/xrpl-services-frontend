@@ -33,7 +33,7 @@ export class TestNetCredentialsComponent {
 
     try {
       //call ripple servers to get testnet credentials with a balance
-      this.newAccount = await this.app.post("https://faucet.altnet.rippletest.net/accounts", {});
+      this.newAccount = await this.app.post("https://xahau-test.net/accounts", {});
       //this.newAccount = {"account":{"xAddress":"TVrRjmCE1twUKGbFBhdyR12pXqitZtAv6PjXB3E33Nm8hTQ","secret":"snEtbXeqo7f7Bg2oc552CV6yct4QW","classicAddress":"rUwnrWz9PnV7oFcFcpdkEjCbVUAEaZCgso","address":"rUwnrWz9PnV7oFcFcpdkEjCbVUAEaZCgso"},"amount":1000,"balance":1000};
       //console.log("credentials: " + JSON.stringify(this.newAccount));
 
