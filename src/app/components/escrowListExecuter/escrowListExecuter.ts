@@ -161,8 +161,13 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             return "-";
     }
 
-    getAmountInXRP(amount: string): Number {
-        return Number.parseInt(amount) / 1000000;
+    getAmount(amount: string | {currency: string, issuer: string, value: string}): string {
+        if(typeof(amount) === 'string') {
+
+        } else {
+            return Number.parseInt(amount.value) + " " + normalizer.normalizeCurrencyCodeXummImpl(amount.currency);
+        }
+        
     }
 
     enableAutoFinish(escrow: any) {

@@ -36,11 +36,11 @@
                 </ng-container>
 
                 <ng-container matColumnDef="amount">
-                    <mat-header-cell *matHeaderCellDef > Amount in XAH </mat-header-cell>
+                    <mat-header-cell *matHeaderCellDef > Amount </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
                         <span fxLayout="row">
-                            <label fxShow.xs fxHide><b>Amount in XAH:</b>&nbsp;</label>
-                            <label>{{getAmountInXRP(escrow.Amount)}}</label>
+                            <label fxShow.xs fxHide><b>Amount:</b>&nbsp;</label>
+                            <label>{{getAmount(escrow.Amount)}}</label>
                         </span>
                     </mat-cell>
                 </ng-container>

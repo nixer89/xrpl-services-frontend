@@ -138,8 +138,13 @@ export class EscrowList implements OnInit, OnDestroy {
             return "-";
     }
 
-    getAmountInXRP(amount: string): Number {
-        return Number.parseInt(amount) / 1000000;
+    getAmount(amount: string | {currency: string, issuer: string, value: string}): string {
+        if(typeof(amount) === 'string') {
+
+        } else {
+            return Number.parseInt(amount.value) + " " + normalizer.normalizeCurrencyCodeXummImpl(amount.currency);
+        }
+        
     }
 
     async escrowSelected(escrow: any) {
