@@ -6,7 +6,7 @@ export class UtilService {
     constructor(private app: AppService) {}
 
     async getTransactionTypes(loggedInAccount?:string): Promise<any> {
-        let dirList:any[] = await this.app.get('https://api.github.com/repos/xrplf/xrpl-dev-portal/contents/content/references/protocol/transactions/types');
+        let dirList:any[] = await this.app.get('https://api.github.com/repos/xrplf/xrpl-dev-portal/contents/docs/references/protocol/transactions/types');
         let relevantFiles:any[] = dirList.filter(r => !r.name.includes('.ja.') && r.name.match(/^[a-zA-Z]+\.md$/))
 
         let sources:any[] = [];
