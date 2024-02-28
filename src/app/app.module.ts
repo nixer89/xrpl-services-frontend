@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutes } from './app.routes';
 
@@ -144,7 +143,6 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutes,
-    FlexLayoutModule,
     MatToolbarModule,
     MatExpansionModule,
     MatCardModule,

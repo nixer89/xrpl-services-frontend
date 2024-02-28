@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
