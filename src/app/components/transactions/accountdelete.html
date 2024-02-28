@@ -35,7 +35,7 @@
     <form *ngIf="!loadingPreconditions && preconditionsFullFilled" data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em">
       <label class="warning">ATTENTION: Please do not use an exchange account or other custodial wallet as destination address! YOU MAY LOSE YOUR FUNDS!</label>
       <mat-form-field>
-        <input #inpdestinationaccount matInput name="destinationaccount" ngStyle.xs="font-size: 0.8em" placeholder="XRPL address where remaining XRP should be sent to" [(ngModel)]="destinationAccountInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
+        <input #inpdestinationaccount matInput name="destinationaccount" placeholder="XRPL address where remaining XRP should be sent to" [(ngModel)]="destinationAccountInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
         <mat-hint *ngIf="destinationAccountInput && !validDestinationAddress">Not a valid XRPL address</mat-hint>
         <mat-hint *ngIf="originalAccountInfo && destinationAccountInput && destinationAccountInput == originalAccountInfo.Account">You cannot set the Destination address to the logged in address.</mat-hint>
         <mat-hint *ngIf="destinationAccountInput && validDestinationAddress && !destinationAccountExists && !loadingDestinationAccount">This account does not exist on the XRP Ledger {{isTestMode? 'TEST' : 'MAIN'}} net. You need to activate it first with {{accountReserve}} XRP.</mat-hint>
@@ -45,7 +45,7 @@
         <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
       </div>
       <mat-form-field>
-        <input #inpdestinationtag matInput name="destinationtag" ngStyle.xs="font-size: 0.8em" placeholder="Destination Tag for the XRPL address (optional)" [(ngModel)]="destinationTagInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
+        <input #inpdestinationtag matInput name="destinationtag" placeholder="Destination Tag for the XRPL address (optional)" [(ngModel)]="destinationTagInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
         <mat-hint *ngIf="destinationTagInput && !validTag">Not a valid Destination Tag. Only whole numbers between 0 and 4294967295 allowed!</mat-hint>
       </mat-form-field>
       <label *ngIf="originalAccountInfo && originalAccountInfo.Balance && destinationAccountInput" class="loading">Your account balance is: {{getAccountBalance()}} XRP. {{(ownerReserve)/1000000}} XRP will be burnt in transaction fee, so {{getTransferBalance()}} XRP will be sent to '{{destinationAccountInput.trim()}}'.</label>
