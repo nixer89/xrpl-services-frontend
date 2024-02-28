@@ -6,7 +6,6 @@ import { XummService } from '../../services/xumm.service'
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import { Subject } from 'rxjs';
 import { TransactionValidation, GenericBackendPostRequest } from '../../utils/types';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
@@ -26,7 +25,6 @@ export class CreateToken implements OnInit {
   constructor(
     private matDialog: MatDialog,
     private xummApi: XummService,
-    private googleAnalytics: GoogleAnalyticsService,
     private device: DeviceDetectorService,
     private xrplWebSocket: XRPLWebsocket) { }
 
@@ -119,7 +117,6 @@ export class CreateToken implements OnInit {
           this.paymentNotSuccessfull = false;
           this.paymentNotFound = false;
           await this.loadAccountData();
-          this.googleAnalytics.analyticsEventEmitter('pay_for_token', 'easy_token', 'easy_token_component');
       } else {
         this.paymentNotSuccessfull = true;
         this.paymentNotFound = false;
@@ -153,7 +150,6 @@ export class CreateToken implements OnInit {
           this.paymentNotSuccessfull = false;
           this.paymentNotFound = false;
           await this.loadAccountData();
-          this.googleAnalytics.analyticsEventEmitter('login_for_token', 'easy_token', 'easy_token_component');
         } else {
           this.issuerAccount = info.account;
           this.validIssuer = true;
@@ -178,7 +174,6 @@ export class CreateToken implements OnInit {
   async loadAccountData() {
     if(this.issuerAccount) {
       this.loadingIssuerAccount = true;
-      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'easy_token', 'easy_token_component');
 
       let account_info_request:any = {
         command: "account_info",
@@ -343,7 +338,6 @@ export class CreateToken implements OnInit {
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.weHaveIssued = true;
-        this.googleAnalytics.analyticsEventEmitter('token_created', 'easy_token', 'easy_token_component');
       } else {
         this.weHaveIssued = false;
       }
@@ -448,7 +442,6 @@ export class CreateToken implements OnInit {
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.blackholeMasterDisabled = true;
-        this.googleAnalytics.analyticsEventEmitter('account_black_hole_succeed', 'easy_token', 'easy_token_component');
       } else {
         this.blackholeMasterDisabled = false;
       }

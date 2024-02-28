@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { XrplAccountChanged, TrustLine } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 
@@ -34,7 +33,7 @@ export class TrustLineListIssuing implements OnInit, OnDestroy {
     private recipientAccountChangedSubscription: Subscription;
     private issuerAccountChangedSubscription: Subscription;
 
-    constructor(private xrplWebSocket: XRPLWebsocket, private googleAnalytics: GoogleAnalyticsService) {}
+    constructor(private xrplWebSocket: XRPLWebsocket) {}
 
     ngOnInit() {
         this.recipientAccountChangedSubscription = this.recipientAccountChanged.subscribe(recipientAccountInfo => {
@@ -71,7 +70,6 @@ export class TrustLineListIssuing implements OnInit, OnDestroy {
     }
 
     async loadTrustLineList(xrplAccount: string) {
-        this.googleAnalytics.analyticsEventEmitter('load_trustline_list_issuing', 'trustline_list_issuing', 'trustline_list_issuing_component');
 
         if(xrplAccount) {
             this.loading = true;

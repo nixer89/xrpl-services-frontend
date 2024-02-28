@@ -1,14 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AppService } from '../../services/app.service';
 import { IssuerVerification, Token, NftIssuer } from '../../utils/types'
 import * as normalizer from 'src/app/utils/normalizers';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { TokenDetailsDialog } from './tokenDetailsDialog';
 import { XummService } from 'src/app/services/xumm.service';
 
@@ -30,8 +29,7 @@ export class IssuedNftList implements OnInit {
     private app: AppService,
     private xummBackend: XummService,
     private deviceDetector: DeviceDetectorService,
-    private matDialog: MatDialog,
-    private googleAnalytics: GoogleAnalyticsService) {}
+    private matDialog: MatDialog,) {}
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -149,8 +147,6 @@ export class IssuedNftList implements OnInit {
         if(this.datasource && this.datasource.data) {
           this.numberOfIssuedTokens = this.datasource.data.length;
         }
-
-        this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
 
         this.kycTokensOnly = this.allTokens.filter(token => token.kyc);
       }

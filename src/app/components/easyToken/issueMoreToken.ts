@@ -6,7 +6,6 @@ import { XummService } from '../../services/xumm.service'
 import { Subject } from 'rxjs';
 import { TransactionValidation, GenericBackendPostRequest, XrplAccountChanged } from '../../utils/types';
 import * as normalizer from '../../utils/normalizers';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
@@ -29,7 +28,6 @@ export class IssueMoreToken implements OnInit {
 
   constructor(
     private matDialog: MatDialog,
-    private googleAnalytics: GoogleAnalyticsService,
     private route: ActivatedRoute,
     private router: Router,
     private xummApi: XummService,
@@ -97,7 +95,6 @@ export class IssueMoreToken implements OnInit {
       
       let signinToValidate = params.signinToValidate;
       if(payloadId) {
-        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'issue_more_token', 'issue_more_token_component');
         this.mep.expanded = true;
         //check if transaction was successful and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
@@ -163,7 +160,6 @@ export class IssueMoreToken implements OnInit {
     if(info && info.success) {
       this.snackBar.open("Your transaction was successful on " + (info.testnet ? 'test net.' : 'main net.'), null, {panelClass: 'snackbar-success', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'});
       this.reset();
-      this.googleAnalytics.analyticsEventEmitter('issued_more_token', 'issue_more_token', 'issue_more_token_component');
     } else {
       this.snackBar.open("Your transaction was not successful. Please try again.", null, {panelClass: 'snackbar-failed', duration: 5000, horizontalPosition: 'center', verticalPosition: 'top'})
     }

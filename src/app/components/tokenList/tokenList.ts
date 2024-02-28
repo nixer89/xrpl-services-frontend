@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { XrplAccountChanged, Token } from 'src/app/utils/types';
 import * as normalizer from 'src/app/utils/normalizers';
 import { AppService } from "src/app/services/app.service";
@@ -29,7 +28,7 @@ export class TokenList implements OnInit, OnDestroy {
 
     private tokenAccountChangedSubscription: Subscription;
 
-    constructor(private xrplWebSocket: XRPLWebsocket, private app: AppService, private googleAnalytics: GoogleAnalyticsService) {}
+    constructor(private xrplWebSocket: XRPLWebsocket, private app: AppService) {}
 
     ngOnInit() {
         this.tokenAccountChangedSubscription = this.issuerAccountChanged.subscribe(accountData => {
@@ -79,7 +78,6 @@ export class TokenList implements OnInit, OnDestroy {
                         if(this.tokenList && this.tokenList.length == 0)
                             this.tokenList = null;
 
-                        this.googleAnalytics.analyticsEventEmitter('load_token_list', 'token_list', 'token_list_component');
                     } else {                
                         this.tokenList = null;
                     }
@@ -111,7 +109,6 @@ export class TokenList implements OnInit, OnDestroy {
                             this.tokenList = null;
                     
                         //console.log(JSON.stringify(this.tokenList));
-                        this.googleAnalytics.analyticsEventEmitter('load_token_list', 'token_list', 'token_list_component');
                     } else {                
                       this.tokenList = null;
                     }
@@ -125,7 +122,6 @@ export class TokenList implements OnInit, OnDestroy {
     }
 
     tokenSelected(token: Token) {
-        this.googleAnalytics.analyticsEventEmitter('token_list_selected', 'token_list', 'token_list_component');
         //console.log("token selected: " + JSON.stringify(token));
         this.issuerCurrencySelected.emit(token)
     }

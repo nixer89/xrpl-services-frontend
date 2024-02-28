@@ -14,17 +14,6 @@ export class AppComponent implements OnInit {
   darkMode:boolean;
 
   constructor(private router: Router, private localStorage: LocalStorageService) {
-    this.router.events.subscribe(event => {
-      if(event instanceof NavigationEnd) {
-          let path = (event.urlAfterRedirects.includes('?') ? event.urlAfterRedirects.substring(0, event.urlAfterRedirects.indexOf('?')) : event.urlAfterRedirects);
-          gtag('config', 'UA-159404162-1', 
-                {
-                  'page_title': this.getPageTitle(path),
-                  'page_path': path
-                }
-              );
-       }
-    });
   }
 
   getPageTitle(page_path:string): string {

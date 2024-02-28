@@ -3,7 +3,6 @@ import { AppService } from '../../services/app.service';
 import * as qrcode from 'qrcode';
 import * as clipboard from 'copy-to-clipboard';
 import { MatStepper } from '@angular/material/stepper';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 
 @Component({
@@ -13,7 +12,7 @@ import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack
 })
 export class TestNetCredentialsComponent {
 
-  constructor(private app: AppService, private snackBar: MatSnackBar, private googleAnalytics: GoogleAnalyticsService) {}
+  constructor(private app: AppService, private snackBar: MatSnackBar) {}
 
   loading:boolean = false;
   error:string = null;

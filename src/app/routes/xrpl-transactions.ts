@@ -9,7 +9,6 @@ import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged, AccountObjectsChanged } from '../utils/types';
 import { XummTypes } from 'xumm-sdk';
-import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
@@ -51,7 +50,6 @@ export class XrplTransactionsComponent implements OnInit {
     private route: ActivatedRoute,
     private xummApi: XummService,
     private snackBar: MatSnackBar,
-    private googleAnalytics: GoogleAnalyticsService,
     private localStorage: LocalStorageService,
     private overlayContainer: OverlayContainer,
     private xrplWebsocket: XRPLWebsocket,
@@ -102,7 +100,6 @@ export class XrplTransactionsComponent implements OnInit {
       let signinToValidate = params.signinToValidate;
 
       if(payloadId) {
-        this.googleAnalytics.analyticsEventEmitter('opened_with_payload_id', 'opened_with_payload', 'xrpl_transactions_component');
         //check if transaction was successful and redirect user to stats page right away:
         this.snackBar.open("Loading ...", null, {panelClass: 'snackbar-success', horizontalPosition: 'center', verticalPosition: 'top'});
         //console.log(JSON.stringify(payloadInfo));
@@ -207,7 +204,6 @@ export class XrplTransactionsComponent implements OnInit {
   async loadAccountData(isInit?: boolean) {
     
       if(this.xrplAccount) {
-        this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'account_data', 'xrpl_transactions_component');
         this.cannotConnectToNode = false;
         this.loadingData = true;
 
@@ -350,7 +346,6 @@ export class XrplTransactionsComponent implements OnInit {
     }
 
     if(trxInfo) {
-      this.googleAnalytics.analyticsEventEmitter('handle_transaction_success', 'handle_transaction', 'xrpl_transactions_component');
       if(trxInfo.success && trxInfo.testnet != null)
         this.isTestMode = trxInfo.testnet;
 
@@ -378,7 +373,6 @@ export class XrplTransactionsComponent implements OnInit {
         //}
       }
     } else {
-      this.googleAnalytics.analyticsEventEmitter('handle_transaction_failed', 'handle_transaction', 'xrpl_transactions_component');
       this.lastTrxLinkBithomp = null;
       this.lastTrxLinkXrplOrg = null;
       this.lastTrxLinkXrpScan = null;
@@ -505,7 +499,6 @@ export class XrplTransactionsComponent implements OnInit {
   }
 
   logoutAccount() {
-    this.googleAnalytics.analyticsEventEmitter('logout_clicked', 'logout', 'xrpl_transactions_component');
     this.xrplAccount = this.xrplAccount_Info = this.xrplAccount_Objects = this.lastTrxLinkBithomp = this.lastTrxLinkXrp1ntel = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = this.lastTrxLinkXrplorer = null;
     this.localStorage.remove("xrplAccount");
     this.localStorage.remove("testMode");

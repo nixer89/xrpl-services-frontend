@@ -5,7 +5,6 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatLegacyDialogRef as MatDialogRef, MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { XummTypes } from 'xumm-sdk';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
-import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
@@ -35,7 +34,6 @@ export class XummSignDialogComponent implements OnInit{
         private deviceDetector: DeviceDetectorService,
         @Inject(MAT_DIALOG_DATA) public data: any,
         public dialogRef: MatDialogRef<XummSignDialogComponent>,
-        private googleAnalytics: GoogleAnalyticsService,
         private localStorage: LocalStorageService,
         private overlayContainer: OverlayContainer) {
     }
@@ -91,8 +89,6 @@ export class XummSignDialogComponent implements OnInit{
             this.hasBlob = true;
             backendPayload.payload.custom_meta.blob = this.data.blob;
         }
-
-        this.googleAnalytics.analyticsEventEmitter(backendPayload.payload.txjson.TransactionType.toLowerCase(), 'sendToXummSignIn', 'signin_dialog_component');
 
         let xummResponse:XummTypes.XummPostPayloadResponse;
         try {

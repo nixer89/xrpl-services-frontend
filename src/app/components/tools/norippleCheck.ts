@@ -1,7 +1,6 @@
 import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription} from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, GenericBackendPostRequest } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import { isValidXRPAddress } from 'src/app/utils/utils';
@@ -19,7 +18,7 @@ interface NoRippleCheck {
 })
 export class NoRippleCheckComponent implements OnInit, OnDestroy {
 
-  constructor(private xrplWebSocket: XRPLWebsocket, private app:AppService, private googleAnalytics: GoogleAnalyticsService) { }
+  constructor(private xrplWebSocket: XRPLWebsocket, private app:AppService) { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -82,7 +81,6 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
 
   async loadProblems() {
     if(this.xrplAccountInput && this.validAddress) {
-      this.googleAnalytics.analyticsEventEmitter('load_noripple_check', 'noripple_check', 'noripple_check_component');
       this.loadingProblems = true;
 
       try {
@@ -93,8 +91,7 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
             this.obligations = xrpscanResponse;
             this.isGateway = true;
 
-            this.googleAnalytics.analyticsEventEmitter('load_token_list', 'token_list', 'token_list_component');
-        } else {                
+        } else {
             this.isGateway = false;
             this.obligations = null;
         }
@@ -166,8 +163,6 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
   }
 
   sendPayloadToXumm(txJson: XummTypes.XummJsonTransaction) {
-
-    this.googleAnalytics.analyticsEventEmitter('no_ripple_check', 'sendToXumm', 'no_ripple_check_component');
 
     if(txJson) {
       delete txJson.Sequence;
