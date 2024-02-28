@@ -1,10 +1,10 @@
-<div *ngIf="loading" fxLayout="row" fxLayoutAlign="start center">
+<div *ngIf="loading" data-layout="row" data-layout-align="start center">
     <label>Loading escrows...&nbsp;</label>
     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
 </div>
 <label style="color: darkorange" *ngIf="!loading && !escrowData && !isCancel && this.isFinish">No Escrows found that meet the EscrowFinish requirements.</label>
 <label style="color: darkorange" *ngIf="!loading && !escrowData && isCancel && !this.isFinish">No Escrows found that meet the EscrowCancel requirements.</label>
-<mat-accordion [hidden]="loading || !escrowData || escrowData.length <= 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+<mat-accordion [hidden]="loading || !escrowData || escrowData.length <= 0" data-layout-gap="0.5em" style="padding-top: 0.5em;">
     <mat-expansion-panel #mep>
         <mat-expansion-panel-header>
           <mat-panel-title>
@@ -13,7 +13,7 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
 
-        <div fxLayout="column">
+        <div data-layout="column">
             <mat-table [dataSource]="datasource" class="mat-elevation-z8">
 
                 <ng-container matColumnDef="destination">

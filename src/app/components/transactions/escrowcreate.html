@@ -17,7 +17,7 @@
     </mat-panel-description>
   </mat-expansion-panel-header>
 
-  <div fxLayout="column" fxLayoutGap="0.3em">
+  <div data-layout="column" data-layout-gap="0.3em">
     <a href="https://xrpl.org/escrowcreate.html" target="_blank" rel="noreferrer">Escrow Create Documentation</a><br/>
     <label>Sequester XRP until the escrow process either finishes or is canceled.</label>
     <label>Every Escrow adds {{ownerReserve/1000000}} XRP to your account reserve. Those {{ownerReserve/1000000}} XRP are inaccessible as long as the Escrow exists. When the Escrow is finished or cancelled, the {{ownerReserve/1000000}} XRP are returned to your available balance.</label>
@@ -25,7 +25,7 @@
       <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" [escrowsChanged]="escrowsChanged.asObservable()"></escrowList>
     </div>
     <label style="color: crimson;padding-top: 1em;"><b>Be careful. You could lock away your funds for years!</b><br/></label>
-    <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
+    <form data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
         <input #inpdestination matInput name="destination" placeholder="Escrow Destination XRPL Address (required)" [(ngModel)]="destinationInput" (ngModelChange)="checkChanges()">
         <mat-hint *ngIf="destinationInput && !validAddress">Not a valid XRP address</mat-hint>
@@ -37,7 +37,7 @@
         <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && !amountInput.toString().includes(',') && !escrowBiggerThanAvailable()">Not a valid amount</mat-hint>
         <mat-hint *ngIf="amountInput && !validAmount && escrowBiggerThanAvailable()">Your escrow amount is too big. Max amount is: {{getAvailableBalanceForEscrow()}} XRP. ('Available Balance' minus {{ownerReserve/1000000}} XRP for account reserve) <a href="https://xrpl.org/reserves.html#owner-reserves" target="_blank"> (Reserve Info)</a></mat-hint>
       </mat-form-field>
-      <mat-card fxLayout="column">
+      <mat-card data-layout="column">
         <label>Finish After</label>  
         <mat-card-content style="padding-top:1em;">
           <mat-form-field>
@@ -60,7 +60,7 @@
         <mat-hint *ngIf="validFinishAfter && !finishDateInFuture" style="color: grey !important">UTC time: <b>{{finishAfterDateTime.toUTCString()}}</b></mat-hint>
         
       </mat-card>
-      <mat-card fxLayout="column">
+      <mat-card data-layout="column">
         <label>Cancel After (optional</label>
         <mat-card-content style="padding-top:1em;">
           <mat-form-field>
@@ -90,7 +90,7 @@
         </button>
       </mat-form-field>
     </form>
-    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
+    <div data-layout="row" fxLayout.xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start" data-layout-gap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrow">
         Send Escrow Create to XUMM
       </button>

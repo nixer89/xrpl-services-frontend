@@ -13,7 +13,7 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <mat-card fxLayout="column" fxLayoutGap="0.5em">
+  <mat-card data-layout="column" data-layout-gap="0.5em">
     <label>After you have initially created your Token, you can issue more tokens to accounts which have a TrustLine to your issuer account.</label>
     <div *ngIf="!getIssuer() || !validIssuer">
       <button mat-button matTooltip="Sign In via XUMM." matTooltipPosition="above" (click)="signInWithIssuer()" style="padding:0px;">
@@ -22,13 +22,13 @@
       &nbsp;<label class="loading">Please sign in with the issuer account.</label>
     </div>
     <div [ngStyle]="{'display': !validIssuer ? 'none':'block' }">
-      <div fxLayout="column" fxLayoutGap="0.3em">
+      <div data-layout="column" data-layout-gap="0.3em">
         <label class="loading">Do you want to send your tokens on the main network or test network?</label>
-        <div fxLayout="row" fxLayoutGap="0.5em">
+        <div data-layout="row" data-layout-gap="0.5em">
           <mat-card class="theme-background">
-            <div fxLayout="column" fxLayoutAlign="start center">
+            <div data-layout="column" data-layout-align="start center">
                 <label>XRPL Network</label>
-                <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
+                <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em;">
                   <label>Main</label>&nbsp;
                   <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkSwitched()" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                   <label>Test</label>
@@ -37,7 +37,7 @@
           </mat-card>
           <span style="flex: 1 1 auto;"></span>
         </div>
-        <form fxLayout="column" fxLayoutGap="0.3em" style="padding-top: 0.8em;">
+        <form data-layout="column" data-layout-gap="0.3em" style="padding-top: 0.8em;">
           <mat-form-field>
             <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the Token" [(ngModel)]="issuerAccount" [readonly]="true">
             <mat-hint *ngIf="getIssuer() && !validIssuer">Not a valid XRPL address</mat-hint>
@@ -60,11 +60,11 @@
             <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode === 'XRP'">You cannot issue any XRP!</mat-hint>
           </mat-form-field>
 
-          <div *ngIf="validCurrencyCode && validAddress && loadingRecipientToIssuerTL" fxLayout="row" fxLayoutGap="0.3em">
+          <div *ngIf="validCurrencyCode && validAddress && loadingRecipientToIssuerTL" data-layout="row" data-layout-gap="0.3em">
             <label>Checking some things...</label>
             <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
           </div>
-          <div *ngIf="validCurrencyCode && validAddress && !loadingRecipientToIssuerTL && recipientToIssuerTrustLine" fxLayout="column" fxLayoutGap="0.3em">
+          <div *ngIf="validCurrencyCode && validAddress && !loadingRecipientToIssuerTL && recipientToIssuerTrustLine" data-layout="column" data-layout-gap="0.3em">
             <label class="loading">How many more tokens you want to issue? (Max: {{getMaxIssuerTokens()}} {{getCurrencyCodeAscii(currencyCode)}})</label>
             <mat-form-field>
               <input matInput name="Number of tokens" placeholder="Number of tokens" [(ngModel)]="numberOfTokens" (ngModelChange)="checkChangesNumberOfTokens()">
@@ -73,11 +73,11 @@
             </mat-form-field>
           </div>
         </form>
-        <div *ngIf="(recipientToIssuerTrustLine && getMaxIssuerTokens() == 0) || (numberOfTokens && validNumberOfTokens && notEnoughLimit)" fxLayout="column" fxLayoutGap="0.3em">
+        <div *ngIf="(recipientToIssuerTrustLine && getMaxIssuerTokens() == 0) || (numberOfTokens && validNumberOfTokens && notEnoughLimit)" data-layout="column" data-layout-gap="0.3em">
           <label>You can share the following link with the recipient to update his trustline with the limit of tokens you want to issue:</label>
           <a href="https://xrpl.services?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}" target="_blank">https://xrpl.services?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}</a>
         </div>
-        <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
+        <div data-layout="row" fxLayout.xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start" data-layout-gap="0.5em" style="padding-top: 2em;">
           <button mat-raised-button color="primary" (click)="issueToken()" [disabled]="!validAddress || !validIssuer || !validCurrencyCode || !validNumberOfTokens || notEnoughLimit">
             Send Token via XUMM
           </button>

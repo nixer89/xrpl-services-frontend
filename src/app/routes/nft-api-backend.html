@@ -1,5 +1,5 @@
-<mat-card fxFlex fxLayout="column" fxLayoutGap="0.5em" class="margin-5" ngStyle.xs="font-size: 0.8em">
-    <mat-card class="theme-background" fxLayout="column" fxLayoutGap="0.5em">
+<mat-card fxFlex data-layout="column" data-layout-gap="0.5em" class="margin-5" ngStyle.xs="font-size: 0.8em">
+    <mat-card class="theme-background" data-layout="column" data-layout-gap="0.5em">
         <h2>XRPL Services NFT API</h2>
         <label>The XRP Ledger Services NFT API offers easy access to advanced NFT specific API calls which rippled can not provide. The API specification can be found here: (<a href="https://api.xrpldata.com/docs" target="_blank">https://api.xrpldata.com/docs</a>).</label><br/>
 
@@ -8,7 +8,7 @@
         
         <label>If you already have received your API key, you can pay the monthly amount through this page by clicking on the below button. Please send the appropriate amount of the Tier/Rate Limit you want to be able to access with your API key.</label>
         <div>
-            <span fxLayoutAlign="start center">
+            <span data-layout-align="start center">
                 <b>Pay for elevated API access:</b>&nbsp;&nbsp;
                 <button mat-button matTooltip="Pay for API access." matTooltipPosition="above" (click)="payViaXumm()" style="padding:0px;">
                   <img src="../../assets/xummPay.svg" style="width: 120px; height: 36px;" alt="Pay via XUMM">

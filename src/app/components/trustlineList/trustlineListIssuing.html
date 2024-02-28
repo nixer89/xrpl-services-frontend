@@ -1,10 +1,10 @@
-<div *ngIf="loading" fxLayout="row" fxLayoutAlign="start center">
+<div *ngIf="loading" data-layout="row" data-layout-align="start center">
     <label>Loading TrustLines ...&nbsp;</label>
     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
 </div>
 <label style="color: darkorange" *ngIf="!loading && issuerAccount && recipientAccount && recipientAccountNotFound">The recipient account does not exist on the XRP Ledger {{testMode?'TEST':'MAIN'}}net!</label>
 <label style="color: darkorange" *ngIf="!loading && issuerAccount && recipientAccount && !recipientAccountNotFound && (!trustLines || trustLines.length < 1)">The recipient does not have a TrustLine with the iusser on the XRP Ledger {{testMode?'TEST':'MAIN'}} net!</label>
-<mat-accordion *ngIf="!loading && trustLines && trustLines.length > 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+<mat-accordion *ngIf="!loading && trustLines && trustLines.length > 0" data-layout-gap="0.5em" style="padding-top: 0.5em;">
     <mat-expansion-panel #mep>
         <mat-expansion-panel-header>
           <mat-panel-title>
@@ -48,9 +48,9 @@
             <ng-container matColumnDef="info">
                 <mat-header-cell *matHeaderCellDef > Info </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
-                    <div *ngIf="trustline.limitN <= trustline.balanceN" fxLayout="row" fxLayoutAlign="start center">
-                        <span fxShow fxHide.xs fxLayout="row" fxLayoutAlign="start center" ><mat-icon class="warning">warning</mat-icon>&nbsp;The TrustLine does not have enough limit to issue more tokens. Please ask the recipient to increase the limit.</span>
-                        <span fxShow.xs fxHide fxLayout="row" fxLayoutAlign="start center"><b>Info:</b>&nbsp;<mat-icon class="warning">warning</mat-icon>&nbsp;The TrustLine does not have enough limit to issue more tokens. Please ask the recipient to increase the limit.</span>
+                    <div *ngIf="trustline.limitN <= trustline.balanceN" data-layout="row" data-layout-align="start center">
+                        <span fxShow fxHide.xs data-layout="row" data-layout-align="start center" ><mat-icon class="warning">warning</mat-icon>&nbsp;The TrustLine does not have enough limit to issue more tokens. Please ask the recipient to increase the limit.</span>
+                        <span fxShow.xs fxHide data-layout="row" data-layout-align="start center"><b>Info:</b>&nbsp;<mat-icon class="warning">warning</mat-icon>&nbsp;The TrustLine does not have enough limit to issue more tokens. Please ask the recipient to increase the limit.</span>
                     </div>
                 </mat-cell>
             </ng-container>

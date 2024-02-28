@@ -1,21 +1,21 @@
-<mat-card fxFlex fxLayout="column" fxLayoutGap="0.5em" class="margin-5">
-    <div fxLayout="row" fxLayout.xs="column">
+<mat-card fxFlex data-layout="column" data-layout-gap="0.5em" class="margin-5">
+    <div data-layout="row" fxLayout.xs="column">
         <div *ngIf="xrplAccount" style="align-self: start;">
             <button mat-raised-button color="primary" matTooltip="Logout" matTooltipPosition="below" (click)="logoutAccount()">
                 Logout
             </button>
         </div>
-        <div fxLayout="column" fxLayoutAlign="start center" class="floatcenter">
+        <div data-layout="column" data-layout-align="start center" class="floatcenter">
             <div *ngIf="!xrplAccount">
                 <button mat-raised-button class="theme-background" style="height: 50px; border-radius: 12px; padding: 5px 5px 5px 5px;" matTooltip="Login with XUMM to load your account data." matTooltipPosition="right" (click)="openSignInDialog()">
                     <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with XUMM">
                 </button>
             </div>
             <div style="padding-top: 0.5em;" class="floatcenter">
-                <div *ngIf="!xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
+                <div *ngIf="!xrplAccount" data-layout="column" fxLayout.gt-md="row" data-layout-gap="0.5em">
                     <label class="loading">Login to load your account data, use cool features and to receive XUMM push notifications.</label>
                 </div>
-                <div *ngIf="xrplAccount" fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="0.5em">
+                <div *ngIf="xrplAccount" data-layout="column" fxLayout.gt-md="row" data-layout-gap="0.5em">
                     <label fxHide.xs>Logged in with:</label>
                     <label class="loading" ngStyle.xs="font-size: 0.8em;"> {{xrplAccount}}</label>
                     <label fxHide.xs>Balance:</label>
@@ -23,19 +23,19 @@
                     <label class="warning" ngStyle.xs="font-size: 0.8em;">(Available: {{getAvailableBalance()}} XRP.)</label>
                 </div>
                 <label class="warning" ngStyle.xs="font-size: 0.8em;" *ngIf="!loadingData && xrplAccount && xrplAccount_Info && xrplAccount_Info.error">This account was not found on the {{isTestMode ? ' test net ' : ' main net '}}.</label>
-                <div fxLayout="row" fxLayoutAlign="center center" *ngIf="loadingData">
+                <div data-layout="row" data-layout-align="center center" *ngIf="loadingData">
                     <label class="loading" ngStyle.xs="font-size: 0.8em;" >Loading account data...</label>
                     <mat-progress-spinner color="primary" mode="indeterminate" diameter=20></mat-progress-spinner>
                 </div>
-                <div fxLayout="row" fxLayoutAlign="center center" *ngIf="cannotConnectToNode">
+                <div data-layout="row" data-layout-align="center center" *ngIf="cannotConnectToNode">
                     <label class="warning" ngStyle.xs="font-size: 0.8em;" >Cannot connect to the XRP Ledger! Check your internet connection!</label>
                 </div>
             </div>
         </div>
         <mat-card class="theme-background" fxShow fxHide.xs >
-            <div fxLayout="column" fxLayoutAlign="start center">
+            <div data-layout="column" data-layout-align="start center">
                 <label>XRPL Network</label>
-                <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
+                <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em;">
                     <label>Main</label>&nbsp;
                     <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkChanged()" [disabled]="loadingData" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                     <label>Test</label>
@@ -44,9 +44,9 @@
         </mat-card>
     </div>
     <mat-card fxShow.xs fxHide class="theme-background floatcenter" style="font-size: 0.8em;">
-        <div fxLayout="column" fxLayoutAlign="start center">
+        <div data-layout="column" data-layout-align="start center">
             <label>XRPL Network</label>
-            <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
+            <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em;">
                 <label>Main</label>&nbsp;
                 <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkChanged()" [disabled]="loadingData" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                 <label>Test</label>
@@ -61,7 +61,7 @@
         <span *ngIf="lastTrxLinkXrp1ntel"><a  [href]="lastTrxLinkXrp1ntel" target="_blank;" rel="noreferrer">xrp1ntel</a> | </span>
         <span *ngIf="lastTrxLinkXrplorer"><a  [href]="lastTrxLinkXrplorer" target="_blank;" rel="noreferrer">xrplorer</a></span>
     </div>
-    <mat-accordion fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+    <mat-accordion data-layout="column" data-layout-gap="0.5em" style="padding-top: 0.5em;">
         <accountset [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" (onPayload)="onPayloadReceived($event)"></accountset>
         <escrowcreate [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowcreate>
         <escrowfinish [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowfinish>

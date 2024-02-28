@@ -17,28 +17,28 @@
     </mat-panel-description>
   </mat-expansion-panel-header>
 
-  <div fxFlex fxLayout="column" fxLayoutGap="0.8em">
+  <div fxFlex data-layout="column" data-layout-gap="0.8em">
     <a href="https://xrpl.org/signerlistset.html" target="_blank" rel="noreferrer">Signer List Set Documentation</a>
     <label>The SignerListSet transaction creates, replaces, or removes a list of signers that can be used to multi-sign a transaction.</label>
-    <form fxLayout="column" fxLayoutGap="0.5em">
+    <form data-layout="column" data-layout-gap="0.5em">
       <mat-form-field style="margin-bottom: 15px;" ngStyle.xs="margin-bottom: 25px;">
         <input #inpsignerquorum matInput name="signerquorum" matInput placeholder="Signer Quorum. A target number for the signer weights" [(ngModel)]="signerQuorumInput" (ngModelChange)="checkChanges()">
         <mat-hint *ngIf="validSignerQuorum.valid" style="color: grey !important">{{validSignerQuorum.message}}</mat-hint>
         <mat-hint *ngIf="!validSignerQuorum.valid">{{validSignerQuorum.message}}</mat-hint>
       </mat-form-field>
     </form>
-    <mat-card fxLayout="column" fxLayoutGap="0.5em" ngStyle.xs="padding: 8px;">
+    <mat-card data-layout="column" data-layout-gap="0.5em" ngStyle.xs="padding: 8px;">
       <h4>Signer List (maximum of 32 XRPL addresses)</h4>
       <mat-hint style="color: grey !important">Please make sure that the XRPL account this Signer List will be submitted to is not in the list below. Otherwise your transaction will fail.</mat-hint>
       <label>Current overall signer list weight: {{overallSignerWeights}}</label>
-      <mat-accordion fxLayout="column" fxLayoutGap="0.5em">
-        <mat-expansion-panel *ngFor="let signer of signerList; index as i;" fxLayout="column" [ngClass]="(i%2==0 ? 'expansion-panel-light': 'theme-background')">
+      <mat-accordion data-layout="column" data-layout-gap="0.5em">
+        <mat-expansion-panel *ngFor="let signer of signerList; index as i;" data-layout="column" [ngClass]="(i%2==0 ? 'expansion-panel-light': 'theme-background')">
           <mat-expansion-panel-header [ngClass]="(i%2==0 ? 'expansion-panel-light': 'theme-background')">
             <mat-panel-title ngStyle.xs="font-size: 0.8em;" *ngIf="signer.SignerEntry.Account">
-              <div *ngIf="signer.valid" fxLayout="row" fxLayout.xs="column">
+              <div *ngIf="signer.valid" data-layout="row" fxLayout.xs="column">
                 {{i+1}}.&nbsp;{{signer.SignerEntry.Account}}&nbsp;|&nbsp;Weight:{{signer.SignerEntry.SignerWeight}}
               </div>
-              <div *ngIf="!signer.valid" fxLayout="row" fxLayout.xs="column" style="align-items: center;">
+              <div *ngIf="!signer.valid" data-layout="row" fxLayout.xs="column" style="align-items: center;">
                 {{i+1}}.&nbsp;{{signer.SignerEntry.Account}}&nbsp;<mat-icon style="color: orangered;">error_outline</mat-icon>
               </div>
             </mat-panel-title>
@@ -47,7 +47,7 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
 
-          <form fxLayout="column" fxLayoutGap="0.5em">
+          <form data-layout="column" data-layout-gap="0.5em">
             <mat-form-field>
               <input #inpaddress matInput name="signeraddress" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address to add to the signer list" [(ngModel)]="signer.SignerEntry.Account" (ngModelChange)="checkSignerChanges(signer)">
               <mat-hint *ngIf="signer.SignerEntry.Account && !isValidXRPAddress(signer.SignerEntry.Account)">Not a valid XRPL address</mat-hint>
@@ -72,7 +72,7 @@
       </div>
     </mat-card>
     
-    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
+    <div data-layout="row" fxLayout.xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start" data-layout-gap="0.5em">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!this.signerQuorumInput || !validSignerList">
         Send Signer List Set to XUMM
       </button>

@@ -1,13 +1,13 @@
-<mat-dialog-content fxFlex fxLayout="column" ngStyle.gt-xs="min-width: 20em">
-    <div *ngIf="isOverview && !loading" fxLayout="column" fxLayoutGap="1em">
+<mat-dialog-content fxFlex data-layout="column" ngStyle.gt-xs="min-width: 20em">
+    <div *ngIf="isOverview && !loading" data-layout="column" data-layout-gap="1em">
         <h3 class="floatcenter">{{genericPayload.payload.txjson.TransactionType}}</h3>
-        <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="0.8em" ngStyle.gt-xs="width: 90%;">
+        <div data-layout="column" data-layout-align="start start" data-layout-gap="0.8em" ngStyle.gt-xs="width: 90%;">
             <mat-card class="theme-background" *ngIf="genericPayload.payload.custom_meta">
                 <h4>Summary:</h4>
                 <label class="break-words">{{genericPayload.payload.custom_meta.instruction}}</label>
             </mat-card>
-            <mat-card class="warning-background" fxLayout="column" style="font-weight: bold; max-width: 500px;" *ngIf="genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm">
-                <div fxLayout="row" fxLayoutAlign="center center">
+            <mat-card class="warning-background" data-layout="column" style="font-weight: bold; max-width: 500px;" *ngIf="genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm">
+                <div data-layout="row" data-layout-align="center center">
                     <i class="material-icons" style="color: yellow; font-size: 2em;">
                         warning
                     </i>
@@ -28,8 +28,8 @@
                 <label>For more information please read this tweet:</label>
                 <a href="https://twitter.com/XummWallet/status/1461225738594623488" target="_blank">@XummWallet tweet</a>
             </mat-card>
-            <mat-card class="theme-background" *ngIf="showKyc && (!genericPayload.payload.custom_meta || !genericPayload.payload.custom_meta.blob || !genericPayload.payload.custom_meta.blob.addWarningXumm)" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">
-                <div fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
+            <mat-card class="theme-background" *ngIf="showKyc && (!genericPayload.payload.custom_meta || !genericPayload.payload.custom_meta.blob || !genericPayload.payload.custom_meta.blob.addWarningXumm)" data-layout="column" data-layout-gap="0.3em" style="width: 100%;">
+                <div data-layout="row" data-layout-gap="0.3em" data-layout-align="start center">
                     <label><b>KYC:</b></label>
                     <div *ngIf="!loadingKYC && !loadingKycFailed && hasKyc">
                         <i class="material-icons" style="color: green; font-size: 1.4em;">
@@ -51,14 +51,14 @@
                 <div *ngIf="!loadingKYC && !loadingKycFailed && !hasKyc">
                     <label class="loading" style="font-size:0.7em;">Disclaimer: the token issuer hasn’t gone through KYC yet.<br>Please proceed with caution and do your own research!</label>
                 </div>
-                <div *ngIf="loadingKYC" fxLayout="row" fxLayoutGap="0.5em">
+                <div *ngIf="loadingKYC" data-layout="row" data-layout-gap="0.5em">
                     <label>Loading KYC...</label>
                     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
                 </div>
 
                 
             </mat-card>
-            <mat-card class="theme-background" *ngIf="!genericPayload.payload.txjson.Memos" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">
+            <mat-card class="theme-background" *ngIf="!genericPayload.payload.txjson.Memos" data-layout="column" data-layout-gap="0.3em" style="width: 100%;">
                 <h4>Transaction Memo (optional):</h4>
                 <mat-form-field style="width: 100%;">
                     <input matInput type="text" [(ngModel)]="memoInput" placeholder="Memo" aria-label="XRPL Transaction Memo">
@@ -67,24 +67,24 @@
             <div *ngIf="genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm">
                 <mat-checkbox [(ngModel)]="tokenWarningAccepted" [ngClass]="(tokenWarningAccepted ? 'success': 'warning')">I understand the above warning and accept the risk.</mat-checkbox>
             </div>
-            <div fxLayout="row" fxLayoutGap="0.5em">
+            <div data-layout="row" data-layout-gap="0.5em">
                 <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!tokenWarningAccepted">Confirm</button>
                 <button mat-raised-button color="warn" (click)="closeIt()">Cancel</button>
             </div>
         </div>
     </div>
-    <div *ngIf="loading && !showError && !waitingForPayment" fxLayout="column" class="floatcenter" style="width:300px; height: 200px;">
+    <div *ngIf="loading && !showError && !waitingForPayment" data-layout="column" class="floatcenter" style="width:300px; height: 200px;">
         <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
     </div>
-    <div *ngIf="!loading && !showError && waitingForPayment" fxLayout="column" fxLayoutGap="1.5em">
-        <div *ngIf="qrLink" fxLayout="column" fxLayoutGap="0.5em" class="floatcenter">
+    <div *ngIf="!loading && !showError && waitingForPayment" data-layout="column" data-layout-gap="1.5em">
+        <div *ngIf="qrLink" data-layout="column" data-layout-gap="0.5em" class="floatcenter">
             <span *ngIf="pushed">Push notification has been sent. If not received, scan QR code.</span>
             <span *ngIf="!pushed">Scan QR code to show the XUMM Sign Request in your XUMM App:</span>
             <mat-progress-spinner *ngIf="!showQR" color="primary" mode="indeterminate"></mat-progress-spinner>
             <img (load)="QRLoaded()" [src]="qrLink" width="150" height="150" style="vertical-align: middle;" alt="">
             <span *ngIf="showQR">Alternatively click the following link: <a [href]="payloadLink">Open in XUMM</a></span>
         </div>
-        <div class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
+        <div class="floatcenter" data-layout="column" data-layout-gap="0.5em">
             <span>Waiting for you to sign the request...</span>
             <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
             <span style="flex: 1 1 auto;"></span>
@@ -98,7 +98,7 @@
             </button>
         </div>
     </div>
-    <div *ngIf="showError && !waitingForPayment && !loading" class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
+    <div *ngIf="showError && !waitingForPayment && !loading" class="floatcenter" data-layout="column" data-layout-gap="0.5em">
         <div *ngIf="!requestExpired && backendNotAvailable" style="color: red;">
             {{backendErrorMessage}}
         </div>

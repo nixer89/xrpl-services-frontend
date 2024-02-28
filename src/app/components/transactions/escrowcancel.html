@@ -17,10 +17,10 @@
     </mat-panel-description>
   </mat-expansion-panel-header>
 
-  <div fxLayout="column" fxLayoutGap="0.3em">
+  <div data-layout="column" data-layout-gap="0.3em">
     <a href="https://xrpl.org/escrowcancel.html" target="_blank" rel="noreferrer">Escrow Cancel Documentation</a><br/>
     <label>Return escrowed XRP to the sender.</label>
-    <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;padding-top: 1em;">
+    <form data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em;padding-top: 1em;">
       <mat-form-field>
         <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="xrplAccountChanged()">
         <mat-hint *ngIf="escrowOwnerInput && !validAddress">Not a valid XRPL address</mat-hint>
@@ -33,7 +33,7 @@
         <mat-hint *ngIf="escrowSequenceInput && !validSequence">Not a valid Escrow Sequence</mat-hint>
       </mat-form-field>
     </form>
-    <div fxLayout="row" fxLayoutAlign="start center" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
+    <div data-layout="row" data-layout-align="start center" fxLayout.xs="column" fxLayoutAlign.xs="start start" data-layout-gap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowCancel">
         Send Escrow Cancel to XUMM
       </button>

@@ -17,8 +17,8 @@
     </mat-panel-description>
   </mat-expansion-panel-header>
   
-  <div fxLayout="column" fxLayoutGap="0.5em">
-    <div *ngIf="loadingTemplates" fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
+  <div data-layout="column" data-layout-gap="0.5em">
+    <div *ngIf="loadingTemplates" data-layout="row" data-layout-gap="0.3em" data-layout-align="start center">
       <label>Loading transaction templates... </label>
       <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
     </div>
@@ -30,7 +30,7 @@
             {{selectedTemplate.transactionType}}
           </mat-select-trigger>
           <mat-option *ngFor="let template of transactionTemplates" [value]="template">
-            <div fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
+            <div data-layout="row" data-layout-gap="0.3em" data-layout-align="start center">
               <label>{{template.transactionType}}</label>
               <mat-icon class="warning" style="transform: scale(0.8);" *ngIf="template.requiresAmendment">build</mat-icon>
             </div>
@@ -51,7 +51,7 @@
 
     <label *ngIf="selectedTemplate && selectedTemplate.transactionType != 'None'">We have removed the "Sequence" and "Fee" properties since XUMM will take care of this!</label>
 
-    <div fxLayout="row" fxLayoutAlign="start center" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
+    <div data-layout="row" data-layout-align="start center" fxLayout.xs="column" fxLayoutAlign.xs="start start" data-layout-gap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!isValidJson">
         Send Transaction to XUMM
       </button>

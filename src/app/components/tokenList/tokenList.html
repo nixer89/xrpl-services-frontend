@@ -1,9 +1,9 @@
-<div *ngIf="loading" fxLayout="row" fxLayoutAlign="start center">
+<div *ngIf="loading" data-layout="row" data-layout-align="start center">
     <label>Loading Tokens ...&nbsp;</label>
     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
 </div>
 <label style="color: darkorange" *ngIf="originalIsserAccount && !loading && (!tokenList || (tokenList && tokenList.length == 0))">This account does not issue any Token on the XRP Ledger {{testMode ? 'TEST' : 'MAIN'}} net.</label>
-<mat-accordion *ngIf="originalIsserAccount && !loading && tokenList && tokenList.length > 0" fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+<mat-accordion *ngIf="originalIsserAccount && !loading && tokenList && tokenList.length > 0" data-layout-gap="0.5em" style="padding-top: 0.5em;">
     <mat-expansion-panel #mep>
         <mat-expansion-panel-header>
           <mat-panel-title>

@@ -13,16 +13,16 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <mat-card fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
+  <mat-card fxFlex data-layout="column" data-layout-gap="0.2em" class="margin-5">
     <label>This functionality is now a XUMM xApp.</label>
     <label>Please click the link below to open the Token creator xApp:</label>
     <br/><br/>
     <label><a href="https://xumm.app/detect/xapp:nixer.tokencreate" rel="noreferrer" target="_blank">Token creator xApp</a></label>
   </mat-card>
-  <!--mat-card *ngIf="isDektop()" fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
+  <!--mat-card *ngIf="isDektop()" data-layout="column" data-layout-gap="0.2em" class="margin-5">
     <mat-vertical-stepper linear #stepper>
       <mat-step completed="false" editable="false">
-          <mat-card fxLayout="column" fxLayoutGap="0.5em">
+          <mat-card data-layout="column" data-layout-gap="0.5em">
               <ng-template matStepLabel>Description</ng-template>
               <label>Easy-Token is (probably) the most simpliest way to create your own currency on the XRP Ledger.</label>
               <label>From 'beer-token' over 'toilet-paper-token' (TPT), everything is possible!</label><br/><br/>
@@ -43,7 +43,7 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
             <ng-template matStepLabel>Requirements</ng-template>
             <label class="loading">The following requirements need to be met to create your Token.</label>
             <label>Please read and accept every checkbox to make sure you understand what you are doing and you are good to go!</label><br/><br/>
@@ -55,7 +55,7 @@
             <mat-checkbox [(ngModel)]="checkBoxNoLiability" [ngClass]="(checkBoxNoLiability ? 'success': 'warning')">We take no liability if you are not able to issue your own Token. Only proceed if you know what your are doing!</mat-checkbox>
             <mat-checkbox [(ngModel)]="checkBoxDisclaimer" [ngClass]="(checkBoxDisclaimer ? 'success': 'warning')">We offer "basic" Token/TrustLine management. If you are going to issue your Token for commercial use, we recommend to NOT use this tool. We are not liable for any regulatory implications, depending on the jurisdiction you live in.</mat-checkbox>
 
-            <div style="padding-top: 0.5em;" fxLayoutGap="0.5em">
+            <div style="padding-top: 0.5em;" data-layout-gap="0.5em">
                 <button mat-raised-button color="primary" [disabled]="!checkBoxTwoAccounts || !checkBoxIssuerInfo || !checkBoxFiveXrp || !checkBoxSufficientFunds || !checkBoxNetwork || !checkBoxNoLiability || !checkBoxDisclaimer" (click)="moveNext()">Next</button>
                 <button mat-raised-button (click)="moveBack()">Back</button>
             </div>
@@ -63,16 +63,16 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
-          <div fxLayout="row" fxLayoutGap="0.5em">
-            <div fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
+          <div data-layout="row" data-layout-gap="0.5em">
+            <div data-layout="column" data-layout-gap="0.5em">
               <ng-template matStepLabel>Select the network</ng-template>
               <label class="loading">Do you want to create a Token on the main network or test network?</label>
-              <div fxLayout="row" fxLayoutGap="0.5em">
+              <div data-layout="row" data-layout-gap="0.5em">
                 <mat-card class="theme-background">
-                  <div fxLayout="column" fxLayoutAlign="start center">
+                  <div data-layout="column" data-layout-align="start center">
                       <label>XRPL Network</label>
-                      <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
+                      <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em;">
                         <label>Main</label>&nbsp;
                         <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                         <label>Test</label>
@@ -87,7 +87,7 @@
             </div>
             <span style="flex: 1 1 auto;"></span>
           </div>
-          <div fxLayout="row" fxLayoutGap="0.5em">
+          <div data-layout="row" data-layout-gap="0.5em">
             <button mat-raised-button color="primary" (click)="moveNext()">Next</button>
             <button mat-raised-button (click)="moveBack()">Back</button>
             <span style="flex: 1 1 auto;"></span>
@@ -96,10 +96,10 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
             <ng-template matStepLabel>Information about your Token</ng-template>
             <label>We need to define some details about the Token you want to create.</label>
-            <form fxLayout="column" fxLayoutGap="0.5em">
+            <form data-layout="column" data-layout-gap="0.5em">
               <label class="loading">What is the currency code you want to use for your Token? As Example: 'ABC' or 'NixerCoin'</label>
               <mat-form-field style="padding-top: 0.5em;">
                 <input matInput name="Currency Code" placeholder="Currency Code" [(ngModel)]="currencyCode" (ngModelChange)="checkChangesCurrencyCode()">
@@ -108,7 +108,7 @@
                 <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode.length > 20">The currency code can have a maximum of 20 characters.</mat-hint>
                 <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode.length >= 3 && currencyCode.length <=20">The currency code contains invalid characters.</mat-hint>
               </mat-form-field>
-              <div *ngIf="currencyCode && validCurrencyCode && currencyCode.length > 3 && currencyCode.length < 21" fxLayout="column" fxLayoutGap="0.3em" style="margin-bottom: 1.5em;">
+              <div *ngIf="currencyCode && validCurrencyCode && currencyCode.length > 3 && currencyCode.length < 21" data-layout="column" data-layout-gap="0.3em" style="margin-bottom: 1.5em;">
                 <label class="warning">Attention! Your currency code will be represented as HEX string on the XRP Ledger but most software does translate this into human readable characters! </label>
                 <label class="warning">HEX representation of your currency code: {{getCurrencyCodeForXRPL()}}</label>
               </div>
@@ -120,7 +120,7 @@
               </mat-form-field>
             </form>
             
-            <div fxLayoutGap="0.5em">
+            <div data-layout-gap="0.5em">
                 <button mat-raised-button color="primary" (click)="moveNext()" [disabled]="!validCurrencyCode || !validLimit">Next</button>
                 <button mat-raised-button (click)="moveBack()">Back</button>
             </div>
@@ -128,11 +128,11 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
           <ng-template matStepLabel>Issuer account</ng-template>
           <label class="loading">What is the XRP Ledger account which will be issuing your tokens?</label>
           <label>You need to pay or sign in with the account you want to create your Token from. (the 'Issuer' account)</label>
-          <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
+          <div *ngIf="!loadingIssuerAccount" data-layout="column" data-layout-gap="0.5em">
             <div  style="padding-top: 0.5em;" *ngIf="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound">
               <button mat-button matTooltip="Pay for your Token via XUMM." matTooltipPosition="above" (click)="payForToken()" style="padding:0px;">
                 <img src="../../assets/xummPay.svg" style="width: 148px; height: 40px;" alt="Pay via XUMM">
@@ -151,9 +151,9 @@
             <mat-hint *ngIf="paymentNotFound" style="padding-top: 0.5em;">No valid payment found for account {{getIssuer()}} withing the last 24h.</mat-hint>
             <mat-hint *ngIf="paymentNotFound">Please make a 5 XRP payment or login with a different account.</mat-hint>
 
-            <div fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !paymentNotSuccessfull && !paymentNotFound && !loadingIssuerAccount">
+            <div data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !paymentNotSuccessfull && !paymentNotFound && !loadingIssuerAccount">
               <label>The account you want to issue a Token with is: </label>
-              <div fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
+              <div data-layout="row" data-layout-gap="0.5em" data-layout-align="start center">
                 <label class="warning">{{getIssuer()}}</label>
                 <button mat-icon-button (click)="clearIssuerAccount()" aria-label="Clear Issuer Account">
                   <mat-icon>cancel</mat-icon>
@@ -161,11 +161,11 @@
               </div>
             </div>
           </div>
-          <div *ngIf="loadingIssuerAccount" fxLayout="row" fxLayoutGap="0.3em">
+          <div *ngIf="loadingIssuerAccount" data-layout="row" data-layout-gap="0.3em">
             <label>Loading account data... </label>
             <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
           </div>
-          <div fxLayoutGap="0.5em">
+          <div data-layout-gap="0.5em">
               <button mat-raised-button color="primary" [disabled]="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound || loadingIssuerAccount" (click)="moveNext()">Next</button>
               <button mat-raised-button (click)="moveBack()">Back</button>
           </div>
@@ -173,9 +173,9 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
           <ng-template matStepLabel>Set DefaultRipple</ng-template>
-          <div *ngIf="needDefaultRipple" fxLayout="column" fxLayoutGap="0.5em">
+          <div *ngIf="needDefaultRipple" data-layout="column" data-layout-gap="0.5em">
             <label>We need to set the DefaultRipple flag to your issuer account.</label>
             <label>This allows you and others to send your Token through the XRP Ledger. If we do not set the flag, people won't be able to send your Token.</label>
             <div>
@@ -185,13 +185,13 @@
               <span style="flex: 1 1 auto;"></span>
             </div>
           </div>
-          <div *ngIf="!needDefaultRipple" fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
+          <div *ngIf="!needDefaultRipple" data-layout="row" data-layout-gap="0.5em" data-layout-align="start center">
             <i class="material-icons" style="color: green; font-size: 3em;">
                 check_circle_outline
             </i>
             <label>The DefaultRipple flag is set at the issuer account! We are good to go!</label>
           </div>
-          <div fxLayoutGap="0.5em">
+          <div data-layout-gap="0.5em">
             <button mat-raised-button color="primary" [disabled]="needDefaultRipple" (click)="moveNext()">Next</button>
             <button mat-raised-button (click)="moveBack()">Back</button>
           </div>
@@ -199,9 +199,9 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
           <ng-template matStepLabel>Set TrustLine from recipient</ng-template>
-          <div *ngIf="!recipientTrustlineSet && !recipientAddress" fxLayout="column" fxLayoutGap="0.5em">
+          <div *ngIf="!recipientTrustlineSet && !recipientAddress" data-layout="column" data-layout-gap="0.5em">
             <label>We have to set a TrustLine from the Token recipient to the issuing account: {{getIssuer()}}</label>
             <label class="warning">So please sign the next XUMM request with the account which should receive the Token!</label>
             <label class="loading">You have to switch the signing account from the <b>issuer</b> to the <b>recipient</b> in the XUMM app!</label>
@@ -212,13 +212,13 @@
               <span style="flex: 1 1 auto;"></span>
             </div>
           </div>
-          <div *ngIf="recipientTrustlineSet && recipientAddress" fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
+          <div *ngIf="recipientTrustlineSet && recipientAddress" data-layout="row" data-layout-gap="0.5em" data-layout-align="start center">
             <i class="material-icons" style="color: green; font-size: 3em;">
                 check_circle_outline
             </i>
           <label>The TrustLine has been set. Lets move to the next step!</label>
           </div>
-          <div fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+          <div data-layout-gap="0.5em" style="padding-top: 0.5em;">
             <button mat-raised-button color="primary" (click)="moveNext()" [disabled]="!recipientTrustlineSet && !recipientAddress">Next</button>
             <button mat-raised-button (click)="moveBack()">Back</button>
           </div>
@@ -226,9 +226,9 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
           <ng-template matStepLabel>Issuing your Token</ng-template>
-          <div *ngIf="!weHaveIssued" fxLayout="column" fxLayoutGap="0.5em">
+          <div *ngIf="!weHaveIssued" data-layout="column" data-layout-gap="0.5em">
             <label>Okay, lets issue your token now!</label>
             <label class="warning">We are going to issue: <b>{{this.limit}} {{this.currencyCode}}</b></label>
             <label>to: <b>{{this.recipientAddress}}</b></label>
@@ -245,13 +245,13 @@
               <span style="flex: 1 1 auto;"></span>
             </div>
           </div>
-          <div *ngIf="weHaveIssued" fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
+          <div *ngIf="weHaveIssued" data-layout="row" data-layout-gap="0.5em" data-layout-align="start center">
             <i class="material-icons" style="color: green; font-size: 3em;">
                 check_circle_outline
             </i>
             <label>Congratulations! You have created your own token on the XRP Ledger!</label>
           </div>
-          <div fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+          <div data-layout-gap="0.5em" style="padding-top: 0.5em;">
             <button mat-raised-button color="primary" (click)="moveNext()" [disabled]="!weHaveIssued">Next</button>
             <button mat-raised-button (click)="moveBack()">Back</button>
           </div>
@@ -259,7 +259,7 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
           <ng-template matStepLabel>Black hole Issuer (optional!)</ng-template>
           <label class="loading">This is an optional step. You can "black hole" the issuer account. That means you would not be able to issue more tokens (fixed supply) AND you would lose access to the issuer account!</label>
           <label class="warning">Please skip this step if you don't know what that means!</label>
@@ -267,7 +267,7 @@
           <mat-checkbox [(ngModel)]="checkBoxBlackhole2" [ngClass]="(checkBoxBlackhole2 ? 'success': 'warning')">I understand that I can not create more tokens. The supply of my Token will be fixed.</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole3" [ngClass]="(checkBoxBlackhole3 ? 'success': 'warning')">I understand that I will lose access to the issuer account: {{getIssuer()}}. I WON'T BE ABLE TO RECOVER THE ACCESS!</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole4" [ngClass]="(checkBoxBlackhole4 ? 'success': 'warning')">Before you start, please send all remaining balance from the issuer account to an account of your choice. You don't need any remaining funds!</mat-checkbox>
-          <mat-card *ngIf="checkBoxBlackhole1 && checkBoxBlackhole2 && checkBoxBlackhole3 && checkBoxBlackhole4 && (!blackholeRegularKeySet || !blackholeMasterDisabled)" fxLayout="column" fxLayoutGap="0.5em">
+          <mat-card *ngIf="checkBoxBlackhole1 && checkBoxBlackhole2 && checkBoxBlackhole3 && checkBoxBlackhole4 && (!blackholeRegularKeySet || !blackholeMasterDisabled)" data-layout="column" data-layout-gap="0.5em">
             <label>Okay, lets black hole the issuer account!</label>
             <label class="warning">We are going to set the RegularKey of the issuer account to the black hole address: <b>rrrrrrrrrrrrrrrrrrrrBZbvji</b> (Called 'ADDRESS_ONE'. <a href="https://xrpl.org/accounts.html#special-addresses" target="_blank">more info...</a> )</label>
             <label>No one has the secret keys to this account because the address is not derived from a known secret key.</label>
@@ -292,13 +292,13 @@
               <span style="flex: 1 1 auto;"></span>
             </div>
           </mat-card>
-          <div *ngIf="blackholeRegularKeySet && blackholeMasterDisabled" fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
+          <div *ngIf="blackholeRegularKeySet && blackholeMasterDisabled" data-layout="row" data-layout-gap="0.5em" data-layout-align="start center">
             <i class="material-icons" style="color: green; font-size: 3em;">
                 check_circle_outline
             </i>
             <label>You have successfully lost all access to the issuer account {{getIssuer()}}</label>
           </div>
-          <div fxLayoutGap="0.5em" style="padding-top: 0.5em;">
+          <div data-layout-gap="0.5em" style="padding-top: 0.5em;">
             <button mat-raised-button color="primary" (click)="moveNext()" [disabled]="checkBoxBlackhole5 && !blackholeRegularKeySet && !blackholeMasterDisabled">{{blackholeRegularKeySet && blackholeMasterDisabled ? 'Next' : 'Skip'}}</button>
             <button mat-raised-button (click)="moveBack()">Back</button>
           </div>
@@ -306,7 +306,7 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
           <ng-template matStepLabel>Finished!</ng-template>
           <label>You can now send your Token through the XRP Ledger to accounts which also have added a TrustLine with your issuer account: <b>{{getIssuer()}}</b></label><br>
           <label>People can setup a TrustLine to your issuer account via the "Trust Set" transaction on the page "XRPL Transactions"!</label>

@@ -14,13 +14,13 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <div fxLayout="column" fxLayoutGap="0.5em">
-    <mat-card fxLayout="column" fxLayoutGap="0.5em">
-      <div *ngIf="loading" fxLayout="row" fxLayoutGap="0.5em">
+  <div data-layout="column" data-layout-gap="0.5em">
+    <mat-card data-layout="column" data-layout-gap="0.5em">
+      <div *ngIf="loading" data-layout="row" data-layout-gap="0.5em">
         <label class="warning">Loading XRP Ledger tokens ...&nbsp;</label>
         <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
       </div>
-      <div *ngIf="!loading && datasource && datasource.data" fxLayout="column" fxLayoutGap="0.5em">
+      <div *ngIf="!loading && datasource && datasource.data" data-layout="column" data-layout-gap="0.5em">
         <label><b>The below token table is based on XRP Ledger:</b></label>
         <table style="display: block;">
           <tr>
@@ -53,7 +53,7 @@
         </table>
         
       </div>
-      <div *ngIf="!loading && (!datasource || !datasource.data)"  fxLayout="column" fxLayoutGap="0.5em">
+      <div *ngIf="!loading && (!datasource || !datasource.data)"  data-layout="column" data-layout-gap="0.5em">
         <label class="warning">{{errorMessage}}</label>
       </div>
     </mat-card>
@@ -67,12 +67,12 @@
       <input matInput [disabled]="loading"  (keyup)="applyFilter($event)" placeholder="account, currency, number, ...">
     </mat-form-field>
 
-    <div fxLayout="column" style="padding-bottom: 0.5em;" fxLayoutGap="0.5em">
+    <div data-layout="column" style="padding-bottom: 0.5em;" data-layout-gap="0.5em">
       <mat-checkbox [disabled]="loading" [(ngModel)]="showSelfAssessmentOnly" class="loading" (change)="switchTokenList()">Show only Tokens with Self-Assessment</mat-checkbox>
       <mat-checkbox [disabled]="loading" [(ngModel)]="showKycOnly" class="loading" (change)="switchTokenList()">Show only XUMM KYC'd issuers</mat-checkbox>
     </div>
 
-    <!--div fxHide fxShow.xs fxLayout="row" fxLayoutGap="0.3em" style="padding-bottom: 1em">
+    <!--div fxHide fxShow.xs data-layout="row" data-layout-gap="0.3em" style="padding-bottom: 1em">
       <mat-form-field style="width: 100%;">
         <mat-label>Sort table by:</mat-label>
         <mat-chip-list>
@@ -83,14 +83,14 @@
       </mat-form-field>
     </div-->
 
-    <div fxLayout="column">
+    <div data-layout="column">
 
       <mat-table [dataSource]="datasource" class="mat-elevation-z8" matSort multiTemplateDataRows matSortActive="holders" matSortDirection="desc">
 
         <ng-container matColumnDef="account">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Issuer Account </mat-header-cell>
           <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
-              <span fxShow fxHide.lt-md fxLayout="row" fxLayoutGap="0.3em">
+              <span fxShow fxHide.lt-md data-layout="row" data-layout-gap="0.3em">
                 <label [innerHTML]="row.account | highlightSearch: filterText"></label>
               </span>
               <span fxShow.lt-md fxHide >
@@ -104,14 +104,14 @@
         <ng-container matColumnDef="kyc">
           <mat-header-cell *matHeaderCellDef mat-sort-header> XUMM KYC </mat-header-cell>
           <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
-              <span fxShow fxHide.lt-md fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="0.3em">
-                <div *ngIf="row.kyc" fxLayout="row" fxLayoutAlign="center center">
+              <span fxShow fxHide.lt-md data-layout="row" data-layout-align="center center" data-layout-gap="0.3em">
+                <div *ngIf="row.kyc" data-layout="row" data-layout-align="center center">
                   <i class="material-icons" style="color: green; font-size: 1.4em;">
                     check_circle
                   </i>
                 </div>
               </span>
-              <span fxShow.lt-md fxHide fxLayout="row" fxLayoutAlign="center start">
+              <span fxShow.lt-md fxHide data-layout="row" data-layout-align="center start">
                 <b>XUMM KYC:</b>&nbsp;
                 <div *ngIf="row.kyc">
                   <i class="material-icons" style="color: green; font-size: 1.2em;">
@@ -129,12 +129,12 @@
         <ng-container matColumnDef="selfassessment">
           <mat-header-cell *matHeaderCellDef> Self Assessment </mat-header-cell>
           <mat-cell *matCellDef="let row">
-              <span fxShow fxHide.lt-md fxLayout="column" fxLayout.gt-md="row">
+              <span fxShow fxHide.lt-md data-layout="column" fxLayout.gt-md="row">
                 <div *ngIf="row && row.self_assessment && row.self_assessment.information">
                   <a [href]="row.self_assessment.information" target="_blank">Link</a>
                 </div>
               </span>
-              <span fxShow.lt-md fxHide fxLayout="row">
+              <span fxShow.lt-md fxHide data-layout="row">
                 <b>Self Assessment:</b>&nbsp;
                 <div *ngIf="row && row.self_assessment && row.self_assessment.information">
                   <a [href]="row.self_assessment.information" target="_blank">Link</a>
@@ -150,13 +150,13 @@
         <ng-container matColumnDef="username">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Accountname </mat-header-cell>
           <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
-              <span fxShow fxHide.lt-md fxLayout="row">
+              <span fxShow fxHide.lt-md data-layout="row">
                 <label [innerHTML]="row.username | highlightSearch: filterText"></label>
                 <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
               </span>
-              <span fxShow.lt-md fxHide fxLayout="row">
+              <span fxShow.lt-md fxHide data-layout="row">
                 <b>Accountname:</b>&nbsp;
-                <div fxLayout="row">
+                <div data-layout="row">
                   <label [innerHTML]="row.username | highlightSearch: filterText"></label>
                   <mat-chip-list style="padding-left: 0.2em;" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
                 </div>
@@ -168,7 +168,7 @@
         <ng-container matColumnDef="currency">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Token Currency Code </mat-header-cell>
             <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
-                <span fxShow fxHide.lt-md fxLayout="row">
+                <span fxShow fxHide.lt-md data-layout="row">
                   <label [innerHTML]="row.currencyCodeUTF8 | highlightSearch: filterText"></label>
                   <div *ngIf="row.isHot">
                     &nbsp;<i #tooltip="matTooltip"
@@ -178,7 +178,7 @@
                     style="color: #FF6B6B; font-size: 1.2em;">local_fire_department</i>
                   </div>
                 </span>
-                <span fxShow.lt-md fxHide fxLayout="row">
+                <span fxShow.lt-md fxHide data-layout="row">
                   <b>Token Currency Code:</b>&nbsp;
                   <label [innerHTML]="row.currencyCodeUTF8 | highlightSearch: filterText"></label>
                   <div *ngIf="row.isHot">
@@ -210,10 +210,10 @@
         <ng-container matColumnDef="trustlines">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Number of TrustLines </mat-header-cell>
           <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
-              <span fxShow fxHide.lt-md fxLayout="column">
+              <span fxShow fxHide.lt-md data-layout="column">
                 <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
               </span>
-              <span fxShow.lt-md fxHide fxLayout="row">
+              <span fxShow.lt-md fxHide data-layout="row">
                 <b>Number of TrustLines:</b>&nbsp;
                 <label [innerHTML]="row.trustlines | highlightSearch: filterText"></label>
               </span>
@@ -224,10 +224,10 @@
         <ng-container matColumnDef="holders">
           <mat-header-cell *matHeaderCellDef mat-sort-header> Number of Holders </mat-header-cell>
           <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
-              <span fxShow fxHide.lt-md fxLayout="column">
+              <span fxShow fxHide.lt-md data-layout="column">
                 <label [innerHTML]="row.holders | highlightSearch: filterText"></label>
               </span>
-              <span fxShow.lt-md fxHide fxLayout="row">
+              <span fxShow.lt-md fxHide data-layout="row">
                 <b>Number of Holders:</b>&nbsp;
                 <label [innerHTML]="row.holders | highlightSearch: filterText"></label>
               </span>
@@ -252,10 +252,10 @@
         <ng-container matColumnDef="trustlinelink">
           <mat-header-cell *matHeaderCellDef> Trustline </mat-header-cell>
           <mat-cell *matCellDef="let row">
-              <span fxShow fxHide.lt-md fxLayout="column" fxLayout.gt-md="row">
+              <span fxShow fxHide.lt-md data-layout="column" fxLayout.gt-md="row">
                 <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row)" target="_blank">Set Trustline</a>
               </span>
-              <span fxShow.lt-md fxHide fxLayout="row">
+              <span fxShow.lt-md fxHide data-layout="row">
                 <b>Trustline:</b>&nbsp;
                 <a [routerLink]="['/']" [queryParams]="getTrustlineQueryParams(row)" target="_blank">Set Trustline</a>
               </span>
@@ -266,12 +266,12 @@
         <ng-container matColumnDef="dexlink">
           <mat-header-cell *matHeaderCellDef> Dex </mat-header-cell>
           <mat-cell *matCellDef="let row">
-              <span fxShow fxHide.lt-md fxLayout="column" fxLayout.gt-lg="row">
+              <span fxShow fxHide.lt-md data-layout="column" fxLayout.gt-lg="row">
                 <a [href]="getXummDexLink(row.account,row.currencyCode)" target="_blank">XUMM Dex</a>
                 <label fxHide fxShow.gt-lg>&nbsp;|&nbsp;</label>
                 <a [href]="getSologenicDexLink(row.account,row.currencyCode)" target="_blank">Sologenic</a>
               </span>
-              <span fxShow.lt-md fxHide fxLayout="row">
+              <span fxShow.lt-md fxHide data-layout="row">
                 <b>Dex:</b>&nbsp;
                 <a [href]="getXummDexLink(row.account,row.currencyCode)" target="_blank">XUMM Dex xApp</a>
                 <label>&nbsp;|&nbsp;</label>
@@ -284,12 +284,12 @@
         <ng-container matColumnDef="explorer">
           <mat-header-cell *matHeaderCellDef> Explorers </mat-header-cell>
           <mat-cell *matCellDef="let row">
-              <span fxShow fxHide.lt-md fxLayout="column" fxLayout.gt-lg="row">
+              <span fxShow fxHide.lt-md data-layout="column" fxLayout.gt-lg="row">
                 <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
                 <label fxHide fxShow.gt-lg>&nbsp;|&nbsp;</label>
                 <a [href]="getXRPScanLink(row.account)" target="_blank">XRPScan</a>
               </span>
-              <span fxShow.lt-md fxHide fxLayout="row">
+              <span fxShow.lt-md fxHide data-layout="row">
                 <b>Explorers:</b>&nbsp;
                 <a [href]="getBithompLink(row.account)" target="_blank">Bithomp</a>
                 <label>&nbsp;|&nbsp;</label>

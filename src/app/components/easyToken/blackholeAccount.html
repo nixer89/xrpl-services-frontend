@@ -13,17 +13,17 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <mat-card fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
+  <mat-card fxFlex data-layout="column" data-layout-gap="0.2em" class="margin-5">
     <label>This functionality is now a XUMM xApp.</label>
     <label>Please click the link below to open the Token creator xApp:</label>
     <br/><br/>
     <label><a href="https://xumm.app/detect/xapp:nixer.blackhole" rel="noreferrer" target="_blank">'Blackhole Account' xApp</a></label>
   </mat-card>
 
-  <!--mat-card *ngIf="isDektop()" fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
+  <!--mat-card *ngIf="isDektop()" data-layout="column" data-layout-gap="0.2em" class="margin-5">
     <mat-vertical-stepper linear #stepper>
       <mat-step completed="false" editable="false">
-          <mat-card fxLayout="column" fxLayoutGap="0.5em">
+          <mat-card data-layout="column" data-layout-gap="0.5em">
               <ng-template matStepLabel>Description</ng-template>
               <label>To black hole an account means to lose ALL ACCESS to it. You won't be able to recover this access. In fact, NO ONE CAN !</label>
               <label>We will need to execute some transactions in a specific order.</label><br/><br/>
@@ -40,16 +40,16 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
-          <div fxLayout="row" fxLayoutGap="0.5em">
-            <div fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
+          <div data-layout="row" data-layout-gap="0.5em">
+            <div data-layout="column" data-layout-gap="0.5em">
               <ng-template matStepLabel>Select the network</ng-template>
               <label class="loading">Do you want to blackhole your account on the main network or test network?</label>
-              <div fxLayout="row" fxLayoutGap="0.5em">
+              <div data-layout="row" data-layout-gap="0.5em">
                 <mat-card class="theme-background">
-                  <div fxLayout="column" fxLayoutAlign="start center">
+                  <div data-layout="column" data-layout-align="start center">
                       <label>XRPL Network</label>
-                      <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
+                      <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em;">
                         <label>Main</label>&nbsp;
                         <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                         <label>Test</label>
@@ -64,7 +64,7 @@
             </div>
             <span style="flex: 1 1 auto;"></span>
           </div>
-          <div fxLayout="row" fxLayoutGap="0.5em">
+          <div data-layout="row" data-layout-gap="0.5em">
             <button mat-raised-button color="primary" (click)="moveNext()">Next</button>
             <button mat-raised-button (click)="moveBack()">Back</button>
             <span style="flex: 1 1 auto;"></span>
@@ -73,21 +73,21 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="1em">
+        <mat-card data-layout="column" data-layout-gap="1em">
           <ng-template matStepLabel>Issuer account</ng-template>
           <label class="loading">What is the XRP Ledger account you want to black hole?</label>
           <label>You need to sign in with the account you want to lose all access for!</label>
-          <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
-            <div *ngIf="!getIssuer() || !validIssuer" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="0.5em">
+          <div *ngIf="!loadingIssuerAccount" data-layout="column" data-layout-gap="0.5em">
+            <div *ngIf="!getIssuer() || !validIssuer" data-layout="column" data-layout-align="start start" data-layout-gap="0.5em">
               <button mat-button matTooltip="SignIn via XUMM." matTooltipPosition="above" (click)="loginForBlackhole()" style="padding:0px;">
                 <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
               </button>
               <label class="loading">Sign in with the account you want to black hole!</label>
             </div>
 
-            <div fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !loadingIssuerAccount">
+            <div data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !loadingIssuerAccount">
               <label>The account you want to looe all access for: </label>
-              <div fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
+              <div data-layout="row" data-layout-gap="0.5em" data-layout-align="start center">
                 <label class="warning">{{getIssuer()}}</label>
                 <button mat-icon-button (click)="clearIssuerAccount()" aria-label="Clear Issuer Account">
                   <mat-icon>cancel</mat-icon>
@@ -98,7 +98,7 @@
 
           <mat-hint *ngIf="!loadingIssuerAccount && validIssuer && hasTokenBalance" style="padding-top: 0.5em;">You still have some tokens in your account. We do not allow you to black hole the account. Please send the token to another account before you start to black hole this one.</mat-hint>
 
-          <div *ngIf="loadingIssuerAccount" fxLayout="row" fxLayoutGap="0.3em">
+          <div *ngIf="loadingIssuerAccount" data-layout="row" data-layout-gap="0.3em">
             <label>Loading account data... </label>
             <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
           </div>
@@ -107,7 +107,7 @@
             <mat-checkbox [(ngModel)]="checkBoxIgnoreOwnerCount" [ngClass]="(checkBoxIgnoreOwnerCount ? 'success': 'warning')">You still hold account objects like Escrows, Offers, Trustlines, etc in your account. If you black hole your account, they will be inaccessible forever. Please select this checkbox if you are sure you want to continue and lose all access to your account objects.</mat-checkbox>
           </div>
           
-          <div fxLayoutGap="0.5em">
+          <div data-layout-gap="0.5em">
               <button mat-raised-button color="primary" [disabled]="!getIssuer() || !validIssuer || hasTokenBalance || loadingIssuerAccount || loadingTokens || !checkBoxIgnoreOwnerCount" (click)="moveNext()">Next</button>
               <button mat-raised-button (click)="moveBack()">Back</button>
           </div>
@@ -115,15 +115,15 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
             <ng-template matStepLabel>Recipient Account</ng-template>
-            <div fxLayout="column" fxLayoutGap="0.5em">
+            <div data-layout="column" data-layout-gap="0.5em">
               <label class="loading">What is the account you want to send your remaining XRP to?</label>
               <label *ngIf="recipient_account_info && (recipient_account_info.Account || recipient_account_info.account)">Currently selected:</label>
               <label *ngIf="recipient_account_info && recipient_account_info.Account">{{recipient_account_info.Account}}</label>
               <label *ngIf="recipient_account_info && recipient_account_info.account">{{recipient_account_info.account}}</label>
   
-              <div fxLayoutAlign="start center" style="padding-top: 0.5em;">
+              <div data-layout-align="start center" style="padding-top: 0.5em;">
                 <button mat-raised-button color="primary" (click)="signInWithRecipientAccount()" [disabled]="loadingIssuerAccount">{{recipient_account_info && (recipient_account_info.Account || recipient_account_info.account) ? 'Change Account' : 'Choose from XUMM' }}</button>
               </div>
             </div>
@@ -139,12 +139,12 @@
               </mat-card>
             </div>
   
-            <div *ngIf="loadingIssuerAccount" fxLayoutAlign="start center">
+            <div *ngIf="loadingIssuerAccount" data-layout-align="start center">
               <label>Loading...</label>
               <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
             </div>
   
-            <div style="padding-top: 0.5em;" fxLayoutGap="0.5em">
+            <div style="padding-top: 0.5em;" data-layout-gap="0.5em">
                 <button mat-raised-button color="primary" (click)="moveNext()" [disabled]="!recipient_account_info || !issuer_account_info || !recipient_account_info.Account || loadingIssuerAccount || recipient_account_info.Account == issuer_account_info.Account">Next</button>
                 <button mat-raised-button class="xumm-grey-background" (click)="moveBack()" [disabled]="loadingIssuerAccount">Back</button>
             </div>
@@ -152,17 +152,17 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
           <ng-template matStepLabel>Payment</ng-template>
           <label>You need to pay the equivalent of {{paymentAmount}} {{paymentCurrency}} with the account you want to blackhole to use this service.</label>
-          <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
+          <div *ngIf="!loadingIssuerAccount" data-layout="column" data-layout-gap="0.5em">
             <div  style="padding-top: 0.5em;" *ngIf="!paymentInitiated || paymentNotSuccessfull">
               <button mat-button matTooltip="Pay via XUMM." matTooltipPosition="above" (click)="payForBlackhole()" style="padding:0px;">
                 <img src="../../assets/xummPay.svg" style="width: 148px; height: 40px;" alt="Pay via XUMM">
               </button>
             </div>
 
-            <mat-card *ngIf="paymentInitiated && !paymentNotSuccessfull" fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
+            <mat-card *ngIf="paymentInitiated && !paymentNotSuccessfull" data-layout="row" data-layout-gap="0.5em" data-layout-align="start center">
               <i class="material-icons" style="color: green; font-size: 2em;">
                   check_circle_outline
               </i>
@@ -171,11 +171,11 @@
             
             <mat-hint *ngIf="paymentInitiated && paymentNotSuccessfull" style="padding-top: 0.5em;">Your payment was not successful on the XRP Ledger {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
           </div>
-          <div *ngIf="loadingIssuerAccount" fxLayout="row" fxLayoutGap="0.3em">
+          <div *ngIf="loadingIssuerAccount" data-layout="row" data-layout-gap="0.3em">
             <label>Loading account data... </label>
             <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
           </div>
-          <div fxLayoutGap="0.5em">
+          <div data-layout-gap="0.5em">
               <button mat-raised-button color="primary" [disabled]="!getIssuer() || !validIssuer || !paymentInitiated || paymentNotSuccessfull || loadingIssuerAccount" (click)="moveNext()">Next</button>
               <button mat-raised-button (click)="moveBack()">Back</button>
           </div>
@@ -183,20 +183,20 @@
       </mat-step>
 
       <mat-step completed="false" editable="false">
-        <mat-card fxLayout="column" fxLayoutGap="0.5em">
+        <mat-card data-layout="column" data-layout-gap="0.5em">
           <ng-template matStepLabel>Black hole account</ng-template>
           <label class="loading">You are going to "black hole" your account. That means you would not be able to issue more tokens (fixed supply) AND you would lose ALL access to your account!</label>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole1" [ngClass]="(checkBoxBlackhole1 ? 'success': 'warning')">I understand the implications and want to black hole my account.</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole2" [ngClass]="(checkBoxBlackhole2 ? 'success': 'warning')">I understand that I can not create more tokens. The supply of my Token will be fixed.</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole3" [ngClass]="(checkBoxBlackhole3 ? 'success': 'warning')">I understand that I will lose access to the issuer account: {{getIssuer()}}. I WON'T BE ABLE TO RECOVER THE ACCESS!</mat-checkbox>
           <mat-checkbox [(ngModel)]="checkBoxBlackhole4" [ngClass]="(checkBoxBlackhole4 ? 'success': 'warning')">Before you start, please send ALL remaining balance from your account to an account of your choice. (XRP and any Tokens!) You don't need any remaining funds!</mat-checkbox>
-          <mat-card *ngIf="checkBoxBlackhole1 && checkBoxBlackhole2 && checkBoxBlackhole3 && checkBoxBlackhole4 && (!blackholeRegularKeySet || !blackholeMasterDisabled)" fxLayout="column" fxLayoutGap="0.5em">
+          <mat-card *ngIf="checkBoxBlackhole1 && checkBoxBlackhole2 && checkBoxBlackhole3 && checkBoxBlackhole4 && (!blackholeRegularKeySet || !blackholeMasterDisabled)" data-layout="column" data-layout-gap="0.5em">
             <label>Okay, lets black hole the issuer account!</label>
             <label class="warning">We are going to set the RegularKey of the issuer account to the black hole address: <b>rrrrrrrrrrrrrrrrrrrrBZbvji</b> (Called 'ADDRESS_ONE'. <a href="https://xrpl.org/accounts.html#special-addresses" target="_blank">more info...</a> )</label>
             <label>No one has the secret keys to this account because the address is not derived from a known secret key.</label>
             <label class="loading">Additionally we will disallow XRP being sent to your account and disable all other signing methods. This removes all access to this account.</label>
             <mat-checkbox [(ngModel)]="checkBoxBlackhole5" [ngClass]="(checkBoxBlackhole5 ? 'success': 'warning')">I have read and understand the above text. Let me remove all access to the account: {{getIssuer()}}!</mat-checkbox>
-            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="0.5em">
+            <div data-layout="row" data-layout-align="start start" data-layout-gap="0.5em">
               <button mat-raised-button color="primary" (click)="deleteSignerList()" [disabled]="!checkBoxBlackhole5 || !hasSignerList">
                 Delete Signer List
               </button>
@@ -206,7 +206,7 @@
                 </i>
               </div>
             </div>
-            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="0.5em">
+            <div data-layout="row" data-layout-align="start start" data-layout-gap="0.5em">
               <button mat-raised-button color="primary" (click)="sendRemainingXRP()" [disabled]="!checkBoxBlackhole5 || hasSignerList || getAvailableBalanceIssuer() <= 1">
                 Send remainig XRP to Recipient
               </button>
@@ -216,7 +216,7 @@
                 </i>
               </div>
             </div>
-            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="0.5em">
+            <div data-layout="row" data-layout-align="start start" data-layout-gap="0.5em">
               <button mat-raised-button color="primary" (click)="disallowIncomingXrp()" [disabled]="!checkBoxBlackhole5 || hasSignerList || getAvailableBalanceIssuer() > 1 || blackholeDisallowXrp">
                 Disallow incoming XRP
               </button>
@@ -226,7 +226,7 @@
                 </i>
               </div>
             </div>
-            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="0.5em">
+            <div data-layout="row" data-layout-align="start start" data-layout-gap="0.5em">
               <button mat-raised-button color="primary" (click)="setBlackholeAddress()" [disabled]="!checkBoxBlackhole5 || hasSignerList || getAvailableBalanceIssuer() > 1 || !blackholeDisallowXrp || blackholeRegularKeySet">
                 Set black hole address as RegularKey
               </button>
@@ -236,7 +236,7 @@
                 </i>
               </div>
             </div>
-            <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="0.5em">
+            <div data-layout="row" data-layout-align="start start" data-layout-gap="0.5em">
               <button mat-raised-button color="primary" (click)="disableMasterKeyForIssuer()" [disabled]="!checkBoxBlackhole5 || hasSignerList || getAvailableBalanceIssuer() > 1 || !blackholeDisallowXrp || !blackholeRegularKeySet || blackholeMasterDisabled">
                 Disable MasterKey of Issuer account
               </button>
@@ -247,7 +247,7 @@
               </div>
             </div>
           </mat-card>
-          <div *ngIf="!hasSignerList && blackholeDisallowXrp && blackholeRegularKeySet && blackholeMasterDisabled" fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">
+          <div *ngIf="!hasSignerList && blackholeDisallowXrp && blackholeRegularKeySet && blackholeMasterDisabled" data-layout="row" data-layout-gap="0.5em" data-layout-align="start center">
             <i class="material-icons" style="color: green; font-size: 3em;">
                 check_circle_outline
             </i>
