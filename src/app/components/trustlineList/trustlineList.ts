@@ -4,8 +4,8 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import * as util from '../../utils/flagutils';
 import * as normalizer from 'src/app/utils/normalizers';
 import { AccountInfoChanged, AccountObjectsChanged, RippleState, SimpleTrustLine } from 'src/app/utils/types';
-import { MatPaginator } from "@angular/material/paginator";
-import { MatTableDataSource } from "@angular/material/table";
+import { MatLegacyPaginator as MatPaginator } from "@angular/material/legacy-paginator";
+import { MatLegacyTableDataSource as MatTableDataSource } from "@angular/material/legacy-table";
 
 //RippleState Flags
 const lsfLowReserve = 0x10000;

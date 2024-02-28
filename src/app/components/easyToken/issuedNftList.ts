@@ -3,12 +3,12 @@ import { GoogleAnalyticsService } from '../../services/google-analytics.service'
 import { AppService } from '../../services/app.service';
 import { IssuerVerification, Token, NftIssuer } from '../../utils/types'
 import * as normalizer from 'src/app/utils/normalizers';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatLegacyPaginator as MatPaginator } from '@angular/material/legacy-paginator';
 import { MatSort } from '@angular/material/sort';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TokenDetailsDialog } from './tokenDetailsDialog';
 import { XummService } from 'src/app/services/xumm.service';
 

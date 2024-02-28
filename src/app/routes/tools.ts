@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 import { Subject } from 'rxjs'
 import { Router, ActivatedRoute } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged } from '../utils/types';
 import { GoogleAnalyticsService } from '../services/google-analytics.service';

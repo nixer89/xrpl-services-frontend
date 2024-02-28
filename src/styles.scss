@@ -2,8 +2,6 @@
 @use "css-fx-layout" as fx;
 
 @import './theme';
-@import "~codemirror/lib/codemirror";
-@import "~codemirror/theme/material-darker";
 
 // If you want to include the responsive API selectors
 $includeResponsiveApi: true;

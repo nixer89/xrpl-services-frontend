@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
