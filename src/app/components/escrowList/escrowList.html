@@ -4,7 +4,7 @@
 </div>
 <label style="color: darkorange" *ngIf="!loading && !escrowData && !isCancel && this.isFinish">No Escrows found that meet the EscrowFinish requirements.</label>
 <label style="color: darkorange" *ngIf="!loading && !escrowData && isCancel && !this.isFinish">No Escrows found that meet the EscrowCancel requirements.</label>
-<mat-accordion [hidden]="loading || !escrowData || escrowData.length <= 0" data-layout-gap="0.5em" style="padding-top: 0.5em;">
+<mat-accordion [hidden]="loading || !escrowData || escrowData.length <= 0" data-layout-gap="0.5em" style="padding-top: 0.5em">
     <mat-expansion-panel #mep>
         <mat-expansion-panel-header>
           <mat-panel-title>

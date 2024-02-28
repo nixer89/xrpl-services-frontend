@@ -3,7 +3,7 @@
     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
 </div>
 <label style="color: darkorange" *ngIf="!loading && account_Info && account_Info.Account && (!trustLines || trustLines.length < 1)">This account does not have any TrustLines yet.</label>
-<mat-accordion [hidden]="loading || !trustLines || trustLines.length <= 0" data-layout-gap="0.5em" style="padding-top: 0.5em;">
+<mat-accordion [hidden]="loading || !trustLines || trustLines.length <= 0" data-layout-gap="0.5em" style="padding-top: 0.5em">
     <mat-expansion-panel #mep>
         <mat-expansion-panel-header>
           <mat-panel-title>
@@ -77,7 +77,7 @@
                 <ng-container matColumnDef="actions">
                     <mat-header-cell *matHeaderCellDef > Actions: </mat-header-cell>
                     <mat-cell *matCellDef="let trustline">
-                        <div data-layout="row" fxLayout.gt-md="row" data-layout-xs="row" data-layout-gap="0.2em">
+                        <div data-layout="row" data-layout-gt-md="row" data-layout-xs="row" data-layout-gap="0.2em">
                             <button mat-icon-button aria-label="Edit" [disabled]="trustline.limit === '0' && trustline.limit_peer != '0'" [matTooltip]="trustline.limit === '0' && trustline.limit_peer != '0' ? 'You did not create this TrustLine. Not able to edit!': 'Edit this TrustLine'" matTooltipPosition="above" (click)="editTrustline(trustline);mep.expanded=false">
                                 <mat-icon>edit</mat-icon>
                             </button>

@@ -2,7 +2,7 @@
   <mat-expansion-panel-header data-hide-xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">delete</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> Account Delete </span>
+      <span class="loading" style="margin-left: 0.5em"> Account Delete </span>
     </mat-panel-title>
     <mat-panel-description>
       Delete your XRP Ledger account to get back {{(accountReserve-ownerReserve)/1000000}} XRP of the wallet reserve.
@@ -32,10 +32,10 @@
         <label>You can view the AccountDelete requirements <a href="https://xrpl.org/accounts.html#deletion-of-accounts" target="_blank">here.</a></label>
       </mat-card>
     </div>
-    <form *ngIf="!loadingPreconditions && preconditionsFullFilled" data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em;">
+    <form *ngIf="!loadingPreconditions && preconditionsFullFilled" data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em">
       <label class="warning">ATTENTION: Please do not use an exchange account or other custodial wallet as destination address! YOU MAY LOSE YOUR FUNDS!</label>
       <mat-form-field>
-        <input #inpdestinationaccount matInput name="destinationaccount" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address where remaining XRP should be sent to" [(ngModel)]="destinationAccountInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
+        <input #inpdestinationaccount matInput name="destinationaccount" ngStyle.xs="font-size: 0.8em" placeholder="XRPL address where remaining XRP should be sent to" [(ngModel)]="destinationAccountInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
         <mat-hint *ngIf="destinationAccountInput && !validDestinationAddress">Not a valid XRPL address</mat-hint>
         <mat-hint *ngIf="originalAccountInfo && destinationAccountInput && destinationAccountInput == originalAccountInfo.Account">You cannot set the Destination address to the logged in address.</mat-hint>
         <mat-hint *ngIf="destinationAccountInput && validDestinationAddress && !destinationAccountExists && !loadingDestinationAccount">This account does not exist on the XRP Ledger {{isTestMode? 'TEST' : 'MAIN'}} net. You need to activate it first with {{accountReserve}} XRP.</mat-hint>
@@ -45,15 +45,15 @@
         <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
       </div>
       <mat-form-field>
-        <input #inpdestinationtag matInput name="destinationtag" ngStyle.xs="font-size: 0.8em;" placeholder="Destination Tag for the XRPL address (optional)" [(ngModel)]="destinationTagInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
+        <input #inpdestinationtag matInput name="destinationtag" ngStyle.xs="font-size: 0.8em" placeholder="Destination Tag for the XRPL address (optional)" [(ngModel)]="destinationTagInput" (ngModelChange)="checkChanges()" [disabled]="loadingDestinationAccount">
         <mat-hint *ngIf="destinationTagInput && !validTag">Not a valid Destination Tag. Only whole numbers between 0 and 4294967295 allowed!</mat-hint>
       </mat-form-field>
       <label *ngIf="originalAccountInfo && originalAccountInfo.Balance && destinationAccountInput" class="loading">Your account balance is: {{getAccountBalance()}} XRP. {{(ownerReserve)/1000000}} XRP will be burnt in transaction fee, so {{getTransferBalance()}} XRP will be sent to '{{destinationAccountInput.trim()}}'.</label>
     </form>
-    <div *ngIf="preconditionsFullFilled" data-layout="column" style="padding-top: 2em;">
+    <div *ngIf="preconditionsFullFilled" data-layout="column" style="padding-top: 2em">
       <mat-checkbox [(ngModel)]="checkBoxHint" [disabled]="!preconditionsFullFilled" [ngClass]="(checkBoxHint ? 'success': 'warning')">I understand to NOT use an exchange or other custodial wallet as destination account because I might lose my funds!</mat-checkbox>
     </div>
-    <div data-layout="row" data-layout-xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start" data-layout-gap="0.5em">
+    <div data-layout="row" data-layout-xs="column" data-layout-align="start center" data-layout-align-xs="start start" data-layout-gap="0.5em">
       <div data-layout="column">
         <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!checkBoxHint || !validDestinationAddress || loadingDestinationAccount || !destinationAccountExists || (destinationTagInput && !validTag) || (originalAccountInfo && (originalAccountInfo.error || (destinationTagInput && destinationTagInput.trim() === originalAccountInfo.Account)))">
           Send Account Delete to XUMM

@@ -39,7 +39,7 @@ export class TestNetCredentialsComponent {
       //console.log("credentials: " + JSON.stringify(this.newAccount));
 
       if(this.newAccount)
-        this.qrCode = await qrcode.toDataURL(this.newAccount.account.secret);
+        this.qrCode = await qrcode.toDataURL(this.newAccount.seed);
 
       if(!this.newAccount || !this.qrCode)
         this.error = "Something went wrong. Please try again later! If the error persists, please report via twitter @XrplServices!"
@@ -52,13 +52,11 @@ export class TestNetCredentialsComponent {
     }
 
     this.loading = false;
-
-    this.googleAnalytics.analyticsEventEmitter('test_net_account_created', 'test_net', 'test_net_component');
   }
 
   copyFamilySeed() {
-    if(this.newAccount && this.newAccount.account && this.newAccount.account.secret) {
-      clipboard(this.newAccount.account.secret);
+    if(this.newAccount && this.newAccount.account && this.newAccount.seed) {
+      clipboard(this.newAccount.seed);
       this.snackBar.dismiss();
       this.snackBar.open("Family Seed copied to clipboard!", null, {panelClass: 'snackbar-success', duration: 3000, horizontalPosition: 'center', verticalPosition: 'bottom'});
     }

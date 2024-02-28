@@ -2,7 +2,7 @@
   <mat-expansion-panel-header data-hide-xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">swap_horiz</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> Trust Set (TrustLines) </span>
+      <span class="loading" style="margin-left: 0.5em"> Trust Set (TrustLines) </span>
     </mat-panel-title>
     <mat-panel-description>
       Create or modify a TrustLine linking two accounts.
@@ -17,18 +17,18 @@
     </mat-panel-description>
   </mat-expansion-panel-header>
 
-  <div data-layout="column" data-layout-gap="0.5em" fxLayoutGap.xs="0.3em">
+  <div data-layout="column" data-layout-gap="0.5em" data-layout-gap-xs="0.3em">
     <a href="https://xrpl.org/trustset.html" target="_blank" rel="noreferrer">Trust Set Documentation</a><br/>
     <label>Create or modify a trust line linking two accounts.</label>
-    <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
+    <div style="margin-bottom: 1em" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
       <trustlineList [xrplAccountInfoChanged]="xrplAccountInfoChangedSubject.asObservable()" [accountObjectsChanged]="trustlinesChangedSubject.asObservable()" (trustLineEdit)="onTrustLineEdit($event)" (trustLineDelete)="deleteTrustLine($event)" (disableRippling)="onDisableRippling($event)"></trustlineList>
     </div>
-    <form data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em;">
+    <form data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em">
       <mat-form-field>
         <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the Token" [(ngModel)]="issuerAccountInput" (ngModelChange)="issuerAccountChanged()" [disabled]="isEditMode">
         <mat-hint *ngIf="issuerAccountInput && !validAddress">Not a valid XRPL address</mat-hint>
       </mat-form-field>
-      <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
+      <div style="margin-bottom: 1em" [ngStyle]="{'display': !validCurrency ? 'block':'none' }">
         <tokenList [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" (issuerCurrencySelected)="onIssuedCurrencyFound($event)"></tokenList>
       </div>
       <div *ngIf="selectedCurrency && validCurrency" data-layout="column" data-layout-gap="0.5em">
@@ -44,8 +44,8 @@
         </mat-form-field>
       </div>
     </form>
-    <div data-layout="row" data-layout-xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start"  data-layout-gap="0.5em" style="padding-top: 2em;">
-      <div *ngIf="loadingIssuerData" data-layout="row" data-layout-xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start"  data-layout-gap="0.5em">
+    <div data-layout="row" data-layout-xs="column" data-layout-align="start center" data-layout-align-xs="start start"  data-layout-gap="0.5em" style="padding-top: 2em">
+      <div *ngIf="loadingIssuerData" data-layout="row" data-layout-xs="column" data-layout-align="start center" data-layout-align-xs="start start"  data-layout-gap="0.5em">
         <label>Loading ...&nbsp;</label>
         <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
       </div>
@@ -55,7 +55,7 @@
           <label class="warning" *ngIf="allFieldsSet && validAddress && currencyExists && !issuerHasDefaultRipple">The issuer has the "DefaultRipple" flag not set. We do not allow you to set this trust line because you will not be able to transfer your tokens to others, and will possibly be unable to ever remove the TrustLine again. Please contact the token issuer to fix this problem!</label>
         </div>
         
-        <div data-layout="row" data-layout-xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start"  data-layout-gap="0.5em">
+        <div data-layout="row" data-layout-xs="column" data-layout-align="start center" data-layout-align-xs="start start"  data-layout-gap="0.5em">
           <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidTrustSet || !issuerHasDefaultRipple || !currencyExists || loadingIssuerData">
             Send Trust Set to XUMM
           </button>

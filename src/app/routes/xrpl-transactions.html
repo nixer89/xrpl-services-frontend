@@ -1,4 +1,4 @@
-<mat-card fxFlex data-layout="column" data-layout-gap="0.5em" class="margin-5">
+<mat-card  data-layout="column" data-layout-gap="0.5em" class="margin-5">
     <div data-layout="row" data-layout-xs="column">
         <div *ngIf="xrplAccount" style="align-self: start;">
             <button mat-raised-button color="primary" matTooltip="Logout" matTooltipPosition="below" (click)="logoutAccount()">
@@ -11,31 +11,31 @@
                     <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with XUMM">
                 </button>
             </div>
-            <div style="padding-top: 0.5em;" class="floatcenter">
-                <div *ngIf="!xrplAccount" data-layout="column" fxLayout.gt-md="row" data-layout-gap="0.5em">
+            <div style="padding-top: 0.5em" class="floatcenter">
+                <div *ngIf="!xrplAccount" data-layout="column" data-layout-gt-md="row" data-layout-gap="0.5em">
                     <label class="loading">Login to load your account data, use cool features and to receive XUMM push notifications.</label>
                 </div>
-                <div *ngIf="xrplAccount" data-layout="column" fxLayout.gt-md="row" data-layout-gap="0.5em">
-                    <label fxHide.xs>Logged in with:</label>
-                    <label class="loading" ngStyle.xs="font-size: 0.8em;"> {{xrplAccount}}</label>
-                    <label fxHide.xs>Balance:</label>
-                    <label class="loading" ngStyle.xs="font-size: 0.8em;">{{getAccountBalance()}} XRP.</label>
-                    <label class="warning" ngStyle.xs="font-size: 0.8em;">(Available: {{getAvailableBalance()}} XRP.)</label>
+                <div *ngIf="xrplAccount" data-layout="column" data-layout-gt-md="row" data-layout-gap="0.5em">
+                    <label data-hide-xs>Logged in with:</label>
+                    <label class="loading" ngStyle.xs="font-size: 0.8em"> {{xrplAccount}}</label>
+                    <label data-hide-xs>Balance:</label>
+                    <label class="loading" ngStyle.xs="font-size: 0.8em">{{getAccountBalance()}} XRP.</label>
+                    <label class="warning" ngStyle.xs="font-size: 0.8em">(Available: {{getAvailableBalance()}} XRP.)</label>
                 </div>
-                <label class="warning" ngStyle.xs="font-size: 0.8em;" *ngIf="!loadingData && xrplAccount && xrplAccount_Info && xrplAccount_Info.error">This account was not found on the {{isTestMode ? ' test net ' : ' main net '}}.</label>
+                <label class="warning" ngStyle.xs="font-size: 0.8em" *ngIf="!loadingData && xrplAccount && xrplAccount_Info && xrplAccount_Info.error">This account was not found on the {{isTestMode ? ' test net ' : ' main net '}}.</label>
                 <div data-layout="row" data-layout-align="center center" *ngIf="loadingData">
-                    <label class="loading" ngStyle.xs="font-size: 0.8em;" >Loading account data...</label>
+                    <label class="loading" ngStyle.xs="font-size: 0.8em" >Loading account data...</label>
                     <mat-progress-spinner color="primary" mode="indeterminate" diameter=20></mat-progress-spinner>
                 </div>
                 <div data-layout="row" data-layout-align="center center" *ngIf="cannotConnectToNode">
-                    <label class="warning" ngStyle.xs="font-size: 0.8em;" >Cannot connect to the XRP Ledger! Check your internet connection!</label>
+                    <label class="warning" ngStyle.xs="font-size: 0.8em" >Cannot connect to the XRP Ledger! Check your internet connection!</label>
                 </div>
             </div>
         </div>
         <mat-card class="theme-background" data-hide-xs >
             <div data-layout="column" data-layout-align="start center">
                 <label>XRPL Network</label>
-                <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em;">
+                <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em">
                     <label>Main</label>&nbsp;
                     <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkChanged()" [disabled]="loadingData" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                     <label>Test</label>
@@ -43,17 +43,17 @@
             </div>
         </mat-card>
     </div>
-    <mat-card data-hide-gt-xs class="theme-background floatcenter" style="font-size: 0.8em;">
+    <mat-card data-hide-gt-xs class="theme-background floatcenter" style="font-size: 0.8em">
         <div data-layout="column" data-layout-align="start center">
             <label>XRPL Network</label>
-            <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em;">
+            <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em">
                 <label>Main</label>&nbsp;
                 <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkChanged()" [disabled]="loadingData" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                 <label>Test</label>
             </div>
         </div>
     </mat-card>
-    <div *ngIf="lastTrxLinkBithomp || lastTrxLinkXrplOrg || lastTrxLinkXrpScan || lastTrxLinkXrp1ntel || lastTrxLinkXrplorer" style="padding-top: 1em;">
+    <div *ngIf="lastTrxLinkBithomp || lastTrxLinkXrplOrg || lastTrxLinkXrpScan || lastTrxLinkXrp1ntel || lastTrxLinkXrplorer" style="padding-top: 1em">
         View your transaction on the XRP Ledger: <br data-hide-gt-xs>
         <span *ngIf="lastTrxLinkBithomp"><a [href]="lastTrxLinkBithomp" target="_blank;" rel="noreferrer">bithomp</a> | </span>
         <span *ngIf="lastTrxLinkXrplOrg"><a  [href]="lastTrxLinkXrplOrg" target="_blank;" rel="noreferrer">xrpl.org</a></span>
@@ -61,7 +61,7 @@
         <span *ngIf="lastTrxLinkXrp1ntel"><a  [href]="lastTrxLinkXrp1ntel" target="_blank;" rel="noreferrer">xrp1ntel</a> | </span>
         <span *ngIf="lastTrxLinkXrplorer"><a  [href]="lastTrxLinkXrplorer" target="_blank;" rel="noreferrer">xrplorer</a></span>
     </div>
-    <mat-accordion data-layout="column" data-layout-gap="0.5em" style="padding-top: 0.5em;">
+    <mat-accordion data-layout="column" data-layout-gap="0.5em" style="padding-top: 0.5em">
         <accountset [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" (onPayload)="onPayloadReceived($event)"></accountset>
         <escrowcreate [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowcreate>
         <escrowfinish [accountInfoChanged]="accountInfoChanged.asObservable()" [accountObjectsChanged]="accountObjectsChanged.asObservable()" [transactionSuccessfull]="transactionSuccessfull.asObservable()" (onPayload)="onPayloadReceived($event)"></escrowfinish>

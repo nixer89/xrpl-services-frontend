@@ -3,7 +3,7 @@
     <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
 </div>
 <label style="color: darkorange" *ngIf="!loading && !escrowData">The logged in account does not have any Escrows on the {{isTestMode ? 'Testnet' : 'Mainnet'}} which meet the auto release criterias. (FinishAfter time has to be set and no Condition/Password)</label>
-<mat-accordion *ngIf="!loading && escrowData && escrowData.length > 0" data-layout="column" data-layout-gap="0.5em" style="padding-top: 0.5em;">
+<mat-accordion *ngIf="!loading && escrowData && escrowData.length > 0" data-layout="column" data-layout-gap="0.5em" style="padding-top: 0.5em">
     <label class="loading">Welcome to the automatic Escrow release service ("Escrow Releaser") of the XrplServices!</label>
     <label>After creating an Escrow, the funds you locked away are still in your account. If you set a "FinishAfter" time for your Escrow, the funds can NOT be released before that time.</label>
     <label>But releasing the Escrow (sending the funds to the destination account) does NOT happen automatically. Not even if you choose the account which created the escrow as destination for the escrow!</label>
@@ -61,12 +61,12 @@
                         <span data-layout="row">
                             <label data-hide-gt-xs><b>Auto Release:</b>&nbsp;</label>
                             <div *ngIf="escrow.autorelease">
-                                <i class="material-icons" style="color: green; font-size: 2em;">
+                                <i class="material-icons" style="color: green; font-size: 2em">
                                     check_circle_outline
                                 </i>
                             </div>
                             <div *ngIf="!escrow.autorelease">
-                                <i class="material-icons" style="color: red; font-size: 2em;">
+                                <i class="material-icons" style="color: red; font-size: 2em">
                                     highlight_off
                                 </i>
                             </div>

@@ -2,7 +2,7 @@
   <mat-expansion-panel-header data-hide-xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">send</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> Escrow Finish </span>
+      <span class="loading" style="margin-left: 0.5em"> Escrow Finish </span>
     </mat-panel-title>
     <mat-panel-description>
       Execute an Escrow Finish transaction to release your funds in Escrow.
@@ -20,13 +20,13 @@
   <div data-layout="column" data-layout-gap="0.3em">
     <a href="https://xrpl.org/escrowfinish.html" target="_blank" rel="noreferrer">Escrow Finish Documentation</a><br/>
     <label>Deliver XRP from a held payment to the recipient.</label>
-    <form data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em;">
+    <form data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em">
       <mat-form-field>
         <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="xrplAccountChanged()">
         <mat-hint *ngIf="escrowOwnerInput && !validAddress">Not a valid XRPL address</mat-hint>
         <mat-hint *ngIf="escrowOwnerChangedAutomatically">Escrow Owner changed. Your inserted account was the destination address.</mat-hint>
       </mat-form-field>
-      <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validSequence ? 'block':'none' }">
+      <div style="margin-bottom: 1em" [ngStyle]="{'display': !validSequence ? 'block':'none' }">
         <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" [escrowsChanged]="escrowsChanged.asObservable()" (escrowSequenceFound)="onEscrowSequenceFound($event)" [isFinish]="true"></escrowList>
       </div>
       <mat-form-field [ngClass]="{'changed': showEscrowSequenceSelectedStyle}">
@@ -42,7 +42,7 @@
         </button>
       </mat-form-field>
     </form>
-    <div data-layout="row" data-layout-xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start"  data-layout-gap="0.5em" style="padding-top: 2em;">
+    <div data-layout="row" data-layout-xs="column" data-layout-align="start center" data-layout-align-xs="start start"  data-layout-gap="0.5em" style="padding-top: 2em">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowFinish">
         Send Escrow Finish to XUMM
       </button>

@@ -4,7 +4,7 @@
 </div>
 <label style="color: darkorange" *ngIf="!loading && issuerAccount && recipientAccount && recipientAccountNotFound">The recipient account does not exist on the XRP Ledger {{testMode?'TEST':'MAIN'}}net!</label>
 <label style="color: darkorange" *ngIf="!loading && issuerAccount && recipientAccount && !recipientAccountNotFound && (!trustLines || trustLines.length < 1)">The recipient does not have a TrustLine with the iusser on the XRP Ledger {{testMode?'TEST':'MAIN'}} net!</label>
-<mat-accordion *ngIf="!loading && trustLines && trustLines.length > 0" data-layout-gap="0.5em" style="padding-top: 0.5em;">
+<mat-accordion *ngIf="!loading && trustLines && trustLines.length > 0" data-layout-gap="0.5em" style="padding-top: 0.5em">
     <mat-expansion-panel #mep>
         <mat-expansion-panel-header>
           <mat-panel-title>

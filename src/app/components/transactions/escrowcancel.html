@@ -2,7 +2,7 @@
   <mat-expansion-panel-header data-hide-xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">cancel</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> Escrow Cancel </span>
+      <span class="loading" style="margin-left: 0.5em"> Escrow Cancel </span>
     </mat-panel-title>
     <mat-panel-description>
       Cancel an Escrow to return the funds back to the Escrow Owner Account.
@@ -20,12 +20,12 @@
   <div data-layout="column" data-layout-gap="0.3em">
     <a href="https://xrpl.org/escrowcancel.html" target="_blank" rel="noreferrer">Escrow Cancel Documentation</a><br/>
     <label>Return escrowed XRP to the sender.</label>
-    <form data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em;padding-top: 1em;">
+    <form data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em;padding-top: 1em">
       <mat-form-field>
         <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="xrplAccountChanged()">
         <mat-hint *ngIf="escrowOwnerInput && !validAddress">Not a valid XRPL address</mat-hint>
       </mat-form-field>
-      <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validSequence ? 'block':'none' }">
+      <div style="margin-bottom: 1em" [ngStyle]="{'display': !validSequence ? 'block':'none' }">
         <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" [escrowsChanged]="escrowsChanged.asObservable()" (escrowSequenceFound)="onEscrowSequenceFound($event)" [isCancel]="true"></escrowList>
       </div>
       <mat-form-field [ngClass]="{'changed': showEscrowSequenceSelectedStyle}">
@@ -33,7 +33,7 @@
         <mat-hint *ngIf="escrowSequenceInput && !validSequence">Not a valid Escrow Sequence</mat-hint>
       </mat-form-field>
     </form>
-    <div data-layout="row" data-layout-align="start center" data-layout-xs="column" fxLayoutAlign.xs="start start" data-layout-gap="0.5em" style="padding-top: 2em;">
+    <div data-layout="row" data-layout-align="start center" data-layout-xs="column" data-layout-align-xs="start start" data-layout-gap="0.5em" style="padding-top: 2em">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowCancel">
         Send Escrow Cancel to XUMM
       </button>

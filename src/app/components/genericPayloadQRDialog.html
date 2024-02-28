@@ -1,22 +1,22 @@
-<mat-dialog-content fxFlex data-layout="column" ngStyle.gt-xs="min-width: 20em">
+<mat-dialog-content data-layout="column" style="min-width: 20em;">
     <div *ngIf="isOverview && !loading" data-layout="column" data-layout-gap="1em">
         <h3 class="floatcenter">{{genericPayload.payload.txjson.TransactionType}}</h3>
-        <div data-layout="column" data-layout-align="start start" data-layout-gap="0.8em" ngStyle.gt-xs="width: 90%;">
-            <mat-card class="theme-background" *ngIf="genericPayload.payload.custom_meta">
+        <div data-layout="column" data-layout-align="start start" data-layout-gap="0.8em">
+            <mat-card class="theme-background" *ngIf="genericPayload.payload.custom_meta" style="min-width: 18em;">
                 <h4>Summary:</h4>
                 <label class="break-words">{{genericPayload.payload.custom_meta.instruction}}</label>
             </mat-card>
-            <mat-card class="warning-background" data-layout="column" style="font-weight: bold; max-width: 500px;" *ngIf="genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm">
+            <mat-card class="warning-background" data-layout="column" style="font-weight: bold; width: 100%; max-width: 500px;" *ngIf="genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm">
                 <div data-layout="row" data-layout-align="center center">
-                    <i class="material-icons" style="color: yellow; font-size: 2em;">
+                    <i class="material-icons" style="color: yellow; font-size: 2em">
                         warning
                     </i>
                     &nbsp;
-                    <i class="material-icons" style="color: yellow; font-size: 2em;">
+                    <i class="material-icons" style="color: yellow; font-size: 2em">
                         warning
                     </i>
                     &nbsp;
-                    <i class="material-icons" style="color: yellow; font-size: 2em;">
+                    <i class="material-icons" style="color: yellow; font-size: 2em">
                         warning
                     </i>
                 </div>
@@ -32,24 +32,24 @@
                 <div data-layout="row" data-layout-gap="0.3em" data-layout-align="start center">
                     <label><b>KYC:</b></label>
                     <div *ngIf="!loadingKYC && !loadingKycFailed && hasKyc">
-                        <i class="material-icons" style="color: green; font-size: 1.4em;">
+                        <i class="material-icons" style="color: green; font-size: 1.4em">
                             check_circle
                         </i>
                     </div>
                     <div *ngIf="!loadingKYC && !loadingKycFailed && !hasKyc">
-                        <i class="material-icons" style="color: red; font-size: 1.4em;">
+                        <i class="material-icons" style="color: red; font-size: 1.4em">
                             highlight_off
                         </i>
                     </div>
                     <div *ngIf="!loadingKYC && loadingKycFailed">
-                        <label class="warning"  style="font-size:0.9em;">( KYC data of the token creator could not be loaded! )</label>
+                        <label class="warning"  style="font-size:0.9em">( KYC data of the token creator could not be loaded! )</label>
                     </div>
                 </div>
                 <div *ngIf="!loadingKYC && !loadingKycFailed && hasKyc">
-                    <label class="loading" style="font-size:0.7em;">Disclaimer: just because an issuer completed KYC does not mean that<br>the token has any value! Please proceed with caution and do your own research!</label>
+                    <label class="loading" style="font-size:0.7em">Disclaimer: just because an issuer completed KYC does not mean that<br>the token has any value! Please proceed with caution and do your own research!</label>
                 </div>
                 <div *ngIf="!loadingKYC && !loadingKycFailed && !hasKyc">
-                    <label class="loading" style="font-size:0.7em;">Disclaimer: the token issuer hasn’t gone through KYC yet.<br>Please proceed with caution and do your own research!</label>
+                    <label class="loading" style="font-size:0.7em">Disclaimer: the token issuer hasn’t gone through KYC yet.<br>Please proceed with caution and do your own research!</label>
                 </div>
                 <div *ngIf="loadingKYC" data-layout="row" data-layout-gap="0.5em">
                     <label>Loading KYC...</label>
@@ -58,7 +58,7 @@
 
                 
             </mat-card>
-            <mat-card class="theme-background" *ngIf="!genericPayload.payload.txjson.Memos" data-layout="column" data-layout-gap="0.3em" style="width: 100%;">
+            <mat-card class="theme-background" *ngIf="!genericPayload.payload.txjson.Memos" data-layout="column" data-layout-gap="0.3em" style="min-width: 18em;">
                 <h4>Transaction Memo (optional):</h4>
                 <mat-form-field style="width: 100%;">
                     <input matInput type="text" [(ngModel)]="memoInput" placeholder="Memo" aria-label="XRPL Transaction Memo">
@@ -122,7 +122,7 @@
 
     <div *ngIf="transactionSigned" class="floatcenter">
         <div>
-            <i class="material-icons" style="color: green; font-size: 3em;">
+            <i class="material-icons" style="color: green; font-size: 3em">
                 check_circle_outline
             </i>
         </div>

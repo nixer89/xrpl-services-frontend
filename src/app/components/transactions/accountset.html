@@ -2,7 +2,7 @@
   <mat-expansion-panel-header data-hide-xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">settings</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> Account Set </span>
+      <span class="loading" style="margin-left: 0.5em"> Account Set </span>
     </mat-panel-title>
     <mat-panel-description>
       You can change your XRPL account settings here.
@@ -20,7 +20,7 @@
   <div data-layout="column" data-layout-gap="0.3em">
     <a href="https://xrpl.org/accountset.html" target="_blank" rel="noreferrer">AccountSet Documentation</a>
     <label>An AccountSet transaction modifies the properties of an account in the XRP Ledger.</label>
-    <form data-layout="column" data-layout-gap="0.5em" style="padding-bottom: 1em;padding-top: 1em;">
+    <form data-layout="column" data-layout-gap="0.5em" style="padding-bottom: 1em;padding-top: 1em">
       <mat-form-field>
         <input #inpdomain matInput type="url" name="domain" matInput placeholder="Domain" [(ngModel)]="domainInput" (ngModelChange)="checkChanges()">
         <mat-hint *ngIf="domainChangeDetected && !validDomain">Not a valid domain</mat-hint>
@@ -42,7 +42,7 @@
       <mat-card data-layout="column">
         <h3><b>Account Flags:</b></h3>
         <div data-layout="column">
-          <mat-checkbox name="requireDestTag" style="padding-top: 1em;" [(ngModel)]="requireDestTagInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || defaultRippleChangeDetected || disallowXrpChangeDetected || deposithAuthChangeDetected">
+          <mat-checkbox name="requireDestTag" style="padding-top: 1em" [(ngModel)]="requireDestTagInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || defaultRippleChangeDetected || disallowXrpChangeDetected || deposithAuthChangeDetected">
             Require Destination Tag
             <label *ngIf="disableMasterKeyChangeDetected || defaultRippleChangeDetected || disallowXrpChangeDetected || deposithAuthChangeDetected" style="color: grey !important">&nbsp;(You can change only one Account Flag at a time.)</label>
           </mat-checkbox>
@@ -50,7 +50,7 @@
           <mat-hint *ngIf="!(requireDestTagChangeDetected && disableMasterKeyChangeDetected) && !(requireDestTagChangeDetected && defaultRippleChangeDetected && disallowXrpChangeDetected && deposithAuthChangeDetected) && requireDestTagChangeDetected && !requireDestTagInput">Attention! Users will be able to send transactions without <b>Destination Tag</b>!</mat-hint>
         </div>
         <div data-layout="column">
-          <mat-checkbox name="disableMasterkey" style="padding-top: 1em;" [(ngModel)]="disableMasterKeyInput" (change)="checkChanges()" [disabled]="originalAccountInfo && !hasAlternativeSigningMethod() || requireDestTagChangeDetected || defaultRippleChangeDetected || disallowXrpChangeDetected || deposithAuthChangeDetected">
+          <mat-checkbox name="disableMasterkey" style="padding-top: 1em" [(ngModel)]="disableMasterKeyInput" (change)="checkChanges()" [disabled]="originalAccountInfo && !hasAlternativeSigningMethod() || requireDestTagChangeDetected || defaultRippleChangeDetected || disallowXrpChangeDetected || deposithAuthChangeDetected">
             Disable Master Key
             <label *ngIf="(requireDestTagChangeDetected || defaultRippleChangeDetected || disallowXrpChangeDetected || deposithAuthChangeDetected) && (!originalAccountInfo || hasAlternativeSigningMethod())" style="color: grey !important">&nbsp;(You can change only one Account Flag at a time.)</label>
           </mat-checkbox>
@@ -59,7 +59,7 @@
           <mat-hint *ngIf="!requireDestTagChangeDetected && !defaultRippleChangeDetected && !disallowXrpChangeDetected && !deposithAuthChangeDetected && disableMasterKeyChangeDetected && !disableMasterKeyInput">Attention! You are going to reactivate your <b>Master Key</b>! If it was compromised, attackers have the possibility to steal your funds!</mat-hint>
         </div>
         <div data-layout="column">
-          <mat-checkbox name="defaultRipple" style="padding-top: 1em;" [(ngModel)]="defaultRippleInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || requireDestTagChangeDetected || disallowXrpChangeDetected || deposithAuthChangeDetected">
+          <mat-checkbox name="defaultRipple" style="padding-top: 1em" [(ngModel)]="defaultRippleInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || requireDestTagChangeDetected || disallowXrpChangeDetected || deposithAuthChangeDetected">
             Default Ripple
             <label *ngIf="requireDestTagChangeDetected || disableMasterKeyChangeDetected || disallowXrpChangeDetected || deposithAuthChangeDetected" style="color: grey !important">&nbsp;(You can change only one Account Flag at a time.)</label>
           </mat-checkbox>
@@ -67,7 +67,7 @@
           <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !disallowXrpChangeDetected && !deposithAuthChangeDetected && defaultRippleChangeDetected && !defaultRippleInput">You are going to disable the <b>Default Ripple</b> flag of your account. New Trust Lines won't allow <a href="https://xrpl.org/rippling.html" target="_blank">rippling</a> by default anymore!</mat-hint>
         </div>
         <div data-layout="column">
-          <mat-checkbox name="disallowXRP" style="padding-top: 1em;" [(ngModel)]="disallowXrpInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || requireDestTagChangeDetected || defaultRippleChangeDetected || deposithAuthChangeDetected">
+          <mat-checkbox name="disallowXRP" style="padding-top: 1em" [(ngModel)]="disallowXrpInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || requireDestTagChangeDetected || defaultRippleChangeDetected || deposithAuthChangeDetected">
             Disallow incoming XRP
             <label *ngIf="requireDestTagChangeDetected || disableMasterKeyChangeDetected || defaultRippleChangeDetected || deposithAuthChangeDetected" style="color: grey !important">&nbsp;(You can change only one Account Flag at a time.)</label>
           </mat-checkbox>
@@ -75,7 +75,7 @@
           <mat-hint *ngIf="!requireDestTagChangeDetected && !disableMasterKeyChangeDetected && !defaultRippleChangeDetected && !deposithAuthChangeDetected && disallowXrpChangeDetected && !disallowXrpInput">You are going to disable the <b>Disallow incoming XRP</b> flag of your account. XRP can then be sent to your account again.</mat-hint>
         </div>
         <div data-layout="column">
-          <mat-checkbox name="depositAuth" style="padding-top: 1em;" [(ngModel)]="depositAuthInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || requireDestTagChangeDetected || defaultRippleChangeDetected || disallowXrpChangeDetected">
+          <mat-checkbox name="depositAuth" style="padding-top: 1em" [(ngModel)]="depositAuthInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || requireDestTagChangeDetected || defaultRippleChangeDetected || disallowXrpChangeDetected">
             Enable Deposit Authorization
             <label *ngIf="requireDestTagChangeDetected || disableMasterKeyChangeDetected || defaultRippleChangeDetected || disallowXrpChangeDetected" style="color: grey !important">&nbsp;(You can change only one Account Flag at a time.)</label>
           </mat-checkbox>
@@ -85,7 +85,7 @@
     </mat-card>
     <mat-hint *ngIf="requireDestTagChangeDetected && disableMasterKeyChangeDetected" style="color: orangered">You can change only one Account Flag at a time. To change two account flags, you have to execute two transactions.</mat-hint>
     </form>
-    <div data-layout="row" data-layout-xs="column" fxLayoutAlign.xs="start start" data-layout-gap="0.5em">
+    <div data-layout="row" data-layout-xs="column" data-layout-align-xs="start start" data-layout-gap="0.5em">
       <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!isValidAccountSet">
         Send Account Settings to XUMM
       </button>

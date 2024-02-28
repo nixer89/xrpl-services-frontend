@@ -2,7 +2,7 @@
   <mat-expansion-panel-header data-hide-xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">add_box</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> Escrow Create </span>
+      <span class="loading" style="margin-left: 0.5em"> Escrow Create </span>
     </mat-panel-title>
     <mat-panel-description>
       Create an Escrow on the XRP Ledger.
@@ -21,11 +21,11 @@
     <a href="https://xrpl.org/escrowcreate.html" target="_blank" rel="noreferrer">Escrow Create Documentation</a><br/>
     <label>Sequester XRP until the escrow process either finishes or is canceled.</label>
     <label>Every Escrow adds {{ownerReserve/1000000}} XRP to your account reserve. Those {{ownerReserve/1000000}} XRP are inaccessible as long as the Escrow exists. When the Escrow is finished or cancelled, the {{ownerReserve/1000000}} XRP are returned to your available balance.</label>
-    <div style="margin-bottom: 1em;" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
+    <div style="margin-bottom: 1em" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
       <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" [escrowsChanged]="escrowsChanged.asObservable()"></escrowList>
     </div>
-    <label style="color: crimson;padding-top: 1em;"><b>Be careful. You could lock away your funds for years!</b><br/></label>
-    <form data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em;">
+    <label style="color: crimson;padding-top: 1em"><b>Be careful. You could lock away your funds for years!</b><br/></label>
+    <form data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em">
       <mat-form-field>
         <input #inpdestination matInput name="destination" placeholder="Escrow Destination XRPL Address (required)" [(ngModel)]="destinationInput" (ngModelChange)="checkChanges()">
         <mat-hint *ngIf="destinationInput && !validAddress">Not a valid XRP address</mat-hint>
@@ -39,7 +39,7 @@
       </mat-form-field>
       <mat-card data-layout="column">
         <label>Finish After</label>  
-        <mat-card-content style="padding-top:1em;">
+        <mat-card-content style="padding-top:1em">
           <mat-form-field>
             <mat-label>Choose a date</mat-label>
             <input matInput name="finishafterdate" [matDatepicker]="picker" [formControl]="finishAfterFormCtrl" (dateChange)="checkChanges()" readonly="true" (click)="picker.open()">
@@ -62,7 +62,7 @@
       </mat-card>
       <mat-card data-layout="column">
         <label>Cancel After (optional</label>
-        <mat-card-content style="padding-top:1em;">
+        <mat-card-content style="padding-top:1em">
           <mat-form-field>
             <mat-label>Choose a date</mat-label>
             <input matInput name="cancelafterdate" [matDatepicker]="picker2" [formControl]="cancelAfterFormCtrl" (dateChange)="checkChanges()" readonly="true" (click)="picker2.open()">
@@ -90,7 +90,7 @@
         </button>
       </mat-form-field>
     </form>
-    <div data-layout="row" data-layout-xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start" data-layout-gap="0.5em" style="padding-top: 2em;">
+    <div data-layout="row" data-layout-xs="column" data-layout-align="start center" data-layout-align-xs="start start" data-layout-gap="0.5em" style="padding-top: 2em">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrow">
         Send Escrow Create to XUMM
       </button>

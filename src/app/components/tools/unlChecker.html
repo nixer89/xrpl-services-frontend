@@ -2,7 +2,7 @@
   <mat-expansion-panel-header data-hide-xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">playlist_add_check</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> UNL Checker </span>
+      <span class="loading" style="margin-left: 0.5em"> UNL Checker </span>
     </mat-panel-title>
     <mat-panel-description>
       Checks and parses an UNL
@@ -17,16 +17,16 @@
     </mat-panel-description>
   </mat-expansion-panel-header>
 
-  <div data-layout="column" data-layout-gap="0.5em" fxLayoutGap.xs="0.3em">
+  <div data-layout="column" data-layout-gap="0.5em" data-layout-gap-xs="0.3em">
     <label>This tool checks an UNL (Unique Node List) for validity and parses the UNL data into a readable format.</label>
     <label>Please insert an url which hosts an UNL. As example: https://vl.xrplf.org</label>
-    <form data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em;">
+    <form data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em">
       <mat-form-field>
         <input #inpunl matInput name="unl" matInput placeholder="URL of the UNL you want to check" [(ngModel)]="unlUrl">
       </mat-form-field>
     </form>
 
-    <div data-layout="column" data-layout-gap="0.5em" data-layout-align="start start" style="padding-top: 0.5em;">
+    <div data-layout="column" data-layout-gap="0.5em" data-layout-align="start start" style="padding-top: 0.5em">
       <button mat-raised-button color="primary" (click)="checkUNL()" [disabled]="loading">Check UNL</button>
       <div *ngIf="loading" data-layout="row" data-layout-gap="0.5em">
         <label>Analyzing UNL...&nbsp;</label>
@@ -35,7 +35,7 @@
     </div>
   </div>
 
-  <mat-card *ngIf="errors && errors.length > 0" data-layout="column" data-layout-gap="0.5em" fxLayoutGap.xs="0.3em" style="margin-top: 1em;">
+  <mat-card *ngIf="errors && errors.length > 0" data-layout="column" data-layout-gap="0.5em" data-layout-gap-xs="0.3em" style="margin-top: 1em">
     <div *ngFor="let error of errors">
       <mat-card data-layout="column" data-layout-gap="0.3em">
           <label class="warning">{{error}}</label>
@@ -43,71 +43,75 @@
     </div>
   </mat-card>
 
-  <mat-card *ngIf="validatorNodes && validatorNodes.length > 0" data-layout="column" data-layout-gap="0.5em" fxLayoutGap.xs="0.3em" style="margin-top: 1em;">
-    <div *ngIf="!errors || errors.length == 0">
-      <label class="success">UNL checked successfully and all signature are valid!</label>
-    </div>
-    <div data-layout="row" data-layout-gap="0.3em">
-      <label class="loading">Master Public Key:</label>
-      <label class="break-words">{{unlData.master_key}}</label>
-    </div>
-    <div data-layout="row" data-layout-gap="0.3em">
-      <label class="loading">Master Signature:</label>
-      <label class="break-words">{{unlData.master_signature}}</label>
-    </div>
-    <div data-layout="row" data-layout-gap="0.3em">
-      <label class="loading">Manifest:</label>
-      <label class="break-words">{{unlData.manifest}}</label>
-    </div>
-    <div data-layout="row" data-layout-gap="0.3em">
-      <label class="loading">SigningPubKey:</label>
-      <label class="break-words">{{unlData.signing_pub_key}}</label>
-    </div>
-    <div data-layout="row" data-layout-gap="0.3em">
-      <label class="loading">Signature:</label>
-      <label class="break-words">{{unlData.signature}}</label>
-    </div>
-    <div data-layout="row" data-layout-gap="0.3em">
-      <label class="loading">Version:</label>
-      <label class="break-words">{{unlData.version}}</label>
-    </div>
-    <div data-layout="row" data-layout-gap="0.3em">
-      <label class="loading">Sequence:</label>
-      <label class="break-words">{{unlData.sequence}}</label>
-    </div>
-    <div data-layout="row" data-layout-gap="0.3em">
-      <label class="loading">Expiration:</label>
-      <label class="break-words">{{unlData.expiration}}</label>
-      <label *ngIf="unlData.expiration_days_left > 30" class="success">({{unlData.expiration_days_left}} Days left)</label>
-      <label *ngIf="unlData.expiration_days_left >=0 && unlData.expiration_days_left <= 30" class="loading"><b>({{unlData.expiration_days_left}} Days left)</b></label>
-      <label *ngIf="unlData.expiration_days_left < 0" class="warning"><b>(Expired {{unlData.expiration_days_left*-1}} Day ago!)</b></label>
-    </div>
-    <div data-layout="row" data-layout-gap="0.3em">
-      <label class="loading">Number of Validators:</label>
-      <label class="break-words">{{unlData.validator_count}}</label>
-    </div>
-    <div data-layout="column" data-layout-gap="0.5em">
-      <h3>Validators:</h3>
-      <div data-layout="column" data-layout-gap="0.5em" style="max-width: 100%;">
-        <div *ngFor="let validator of validatorNodes">
-          <mat-card class="theme-background break-words" data-layout="column" data-layout-gap="0.3em">
-              <label class="loading">Node Public Key:</label>
-              <label> {{validator.node_pub}}</label>
-              <label class="loading">Manifest:</label>
-              <label> {{validator.manifest}}</label>
-              <label class="loading">Domain:</label>
-              <label> {{validator.parsedManifest.Domain ? validator.parsedManifest.Domain : '-'}}</label>
-              <label class="loading">Validation Public Key:</label>
-              <label> {{validator.parsedManifest.PublicKey.toUpperCase()}}</label>
-              <label class="loading">Signing Public Key:</label>
-              <label> {{validator.parsedManifest.SigningPubKey.toUpperCase()}}</label>
-              <label class="loading">Signature:</label>
-              <label> {{validator.parsedManifest.Signature.toUpperCase()}}</label>
-              <label class="loading">Master Signature:</label>
-              <label> {{validator.parsedManifest.MasterSignature.toUpperCase()}}</label>
-              <label class="loading">Sequence:</label>
-              <label> {{validator.parsedManifest.Sequence}}</label>
-          </mat-card>
+  <mat-card *ngIf="validatorNodes && validatorNodes.length > 0" style="margin-top: 1em">
+    <div data-layout="column" data-layout-gap="0.5em" data-layout-gap-xs="0.3em">
+      <div *ngIf="!errors || errors.length == 0">
+        <label class="success">UNL checked successfully and all signature are valid!</label>
+      </div>
+      <div data-layout="row" data-layout-gap="0.3em">
+        <label class="loading">Master Public Key:</label>
+        <label class="break-words">{{unlData.master_key}}</label>
+      </div>
+      <div data-layout="row" data-layout-gap="0.3em">
+        <label class="loading">Master Signature:</label>
+        <label class="break-words">{{unlData.master_signature}}</label>
+      </div>
+      <div data-layout="row" data-layout-gap="0.3em">
+        <label class="loading">Manifest:</label>
+        <label class="break-words">{{unlData.manifest}}</label>
+      </div>
+      <div data-layout="row" data-layout-gap="0.3em">
+        <label class="loading">SigningPubKey:</label>
+        <label class="break-words">{{unlData.signing_pub_key}}</label>
+      </div>
+      <div data-layout="row" data-layout-gap="0.3em">
+        <label class="loading">Signature:</label>
+        <label class="break-words">{{unlData.signature}}</label>
+      </div>
+      <div data-layout="row" data-layout-gap="0.3em">
+        <label class="loading">Version:</label>
+        <label class="break-words">{{unlData.version}}</label>
+      </div>
+      <div data-layout="row" data-layout-gap="0.3em">
+        <label class="loading">Sequence:</label>
+        <label class="break-words">{{unlData.sequence}}</label>
+      </div>
+      <div data-layout="row" data-layout-gap="0.3em">
+        <label class="loading">Expiration:</label>
+        <label class="break-words">{{unlData.expiration}}</label>
+        <label *ngIf="unlData.expiration_days_left > 30" class="success">({{unlData.expiration_days_left}} Days left)</label>
+        <label *ngIf="unlData.expiration_days_left >=0 && unlData.expiration_days_left <= 30" class="loading"><b>({{unlData.expiration_days_left}} Days left)</b></label>
+        <label *ngIf="unlData.expiration_days_left < 0" class="warning"><b>(Expired {{unlData.expiration_days_left*-1}} Day ago!)</b></label>
+      </div>
+      <div data-layout="row" data-layout-gap="0.3em">
+        <label class="loading">Number of Validators:</label>
+        <label class="break-words">{{unlData.validator_count}}</label>
+      </div>
+      <div data-layout="column" data-layout-gap="0.5em">
+        <h3>Validators:</h3>
+        <div data-layout="column" data-layout-gap="0.5em" style="max-width: 100%;">
+          <div *ngFor="let validator of validatorNodes">
+            <mat-card class="theme-background break-words">
+              <div data-layout="column" data-layout-gap="0.3em">
+                <label class="loading">Node Public Key:</label>
+                <label> {{validator.node_pub}}</label>
+                <label class="loading">Manifest:</label>
+                <label> {{validator.manifest}}</label>
+                <label class="loading">Domain:</label>
+                <label> {{validator.parsedManifest.Domain ? validator.parsedManifest.Domain : '-'}}</label>
+                <label class="loading">Validation Public Key:</label>
+                <label> {{validator.parsedManifest.PublicKey.toUpperCase()}}</label>
+                <label class="loading">Signing Public Key:</label>
+                <label> {{validator.parsedManifest.SigningPubKey.toUpperCase()}}</label>
+                <label class="loading">Signature:</label>
+                <label> {{validator.parsedManifest.Signature.toUpperCase()}}</label>
+                <label class="loading">Master Signature:</label>
+                <label> {{validator.parsedManifest.MasterSignature.toUpperCase()}}</label>
+                <label class="loading">Sequence:</label>
+                <label> {{validator.parsedManifest.Sequence}}</label>
+              </div>
+            </mat-card>
+          </div>
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@
   <mat-expansion-panel-header data-hide-xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">alarm</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> Escrow Releaser </span>
+      <span class="loading" style="margin-left: 0.5em"> Escrow Releaser </span>
     </mat-panel-title>
     <mat-panel-description>
       Set your Escrows to be auto released!
@@ -22,7 +22,7 @@
     <label class="warning" *ngIf="originalAccountInfo && originalAccountInfo.account">Account does not exist on the XRP Ledger {{isTestMode ? 'Testnet' : 'Mainnet'}}</label>
   </div>
   
-  <div style="margin-bottom: 1em;" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
+  <div style="margin-bottom: 1em" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
     <escrowListExecuter [escrowAccountChanged]="escrowAccountChanged.asObservable()"></escrowListExecuter>
   </div>
 

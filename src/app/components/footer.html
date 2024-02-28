@@ -1,13 +1,7 @@
-<mat-card fxFlex data-layout="row" data-layout-align="start center" data-hide-xs id="footer-row" class="margin-5">
+<mat-card style="display: flex;" data-layout-gt-xs="row" data-layout-align-gt-xs="start center" data-layout-xs="column" data-layout-align-xs="center center" id="footer-row" class="margin-5">
     <a class="footerlink" [routerLink]="['/terms']">Terms & Conditions</a>
     <a class="footerlink" [routerLink]="['/privacy']">Privacy Policy</a>
     <span style="flex: 1 1 auto;"></span>
     <span>v.{{appVersion}} -&nbsp;</span>
-    <span>All rights reserved</span>
-</mat-card>
-<mat-card fxFlex data-layout="column" data-layout-align="center center" data-hide-gt-xs id="footer-column" class="margin-5">
-    <a class="footerlink" [routerLink]="['/terms']">Terms & Conditions</a>
-    <a class="footerlink" [routerLink]="['/privacy']">Privacy Policy</a>
-    <span>v.{{appVersion}}</span>
     <span>All rights reserved</span>
 </mat-card>

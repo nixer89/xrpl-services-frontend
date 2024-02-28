@@ -2,18 +2,18 @@
   <mat-expansion-panel-header data-hide-xs id="blackhole">
     <mat-panel-title>
       <span> <mat-icon>block</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;"> Blackhole Account </span>
+      <span class="loading" style="margin-left: 0.5em"> Blackhole Account </span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
   <mat-expansion-panel-header data-hide-gt-xs id="blackhole">
     <mat-panel-title>
       <span> <mat-icon>block</mat-icon> </span>
-      <span class="loading" style="margin-left: 0.5em;">Blackhole Account</span>
+      <span class="loading" style="margin-left: 0.5em">Blackhole Account</span>
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <mat-card fxFlex data-layout="column" data-layout-gap="0.2em" class="margin-5">
+  <mat-card  data-layout="column" data-layout-gap="0.2em" class="margin-5">
     <label>This functionality is now a XUMM xApp.</label>
     <label>Please click the link below to open the Token creator xApp:</label>
     <br/><br/>
@@ -33,7 +33,7 @@
 
               <label class="loading">Please make sure to not have any remaining funds (XRP or other tokens) in your account! (except the {{paymentAmount}} {{paymentCurrency}} and self issued tokens!)</label><br/><br/>
               <label>Click 'Next' and follow the instructions if you are ready and you know what your are doing!</label>
-              <div style="padding-top: 0.5em;">
+              <div style="padding-top: 0.5em">
                   <button mat-raised-button color="primary" (click)="moveNext()">Next</button>
               </div>
           </mat-card>
@@ -49,7 +49,7 @@
                 <mat-card class="theme-background">
                   <div data-layout="column" data-layout-align="start center">
                       <label>XRPL Network</label>
-                      <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em;">
+                      <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em">
                         <label>Main</label>&nbsp;
                         <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                         <label>Test</label>
@@ -85,7 +85,7 @@
               <label class="loading">Sign in with the account you want to black hole!</label>
             </div>
 
-            <div data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em;" *ngIf="getIssuer() && validIssuer && !loadingIssuerAccount">
+            <div data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em" *ngIf="getIssuer() && validIssuer && !loadingIssuerAccount">
               <label>The account you want to looe all access for: </label>
               <div data-layout="row" data-layout-gap="0.5em" data-layout-align="start center">
                 <label class="warning">{{getIssuer()}}</label>
@@ -96,7 +96,7 @@
             </div>
           </div>
 
-          <mat-hint *ngIf="!loadingIssuerAccount && validIssuer && hasTokenBalance" style="padding-top: 0.5em;">You still have some tokens in your account. We do not allow you to black hole the account. Please send the token to another account before you start to black hole this one.</mat-hint>
+          <mat-hint *ngIf="!loadingIssuerAccount && validIssuer && hasTokenBalance" style="padding-top: 0.5em">You still have some tokens in your account. We do not allow you to black hole the account. Please send the token to another account before you start to black hole this one.</mat-hint>
 
           <div *ngIf="loadingIssuerAccount" data-layout="row" data-layout-gap="0.3em">
             <label>Loading account data... </label>
@@ -123,12 +123,12 @@
               <label *ngIf="recipient_account_info && recipient_account_info.Account">{{recipient_account_info.Account}}</label>
               <label *ngIf="recipient_account_info && recipient_account_info.account">{{recipient_account_info.account}}</label>
   
-              <div data-layout-align="start center" style="padding-top: 0.5em;">
+              <div data-layout-align="start center" style="padding-top: 0.5em">
                 <button mat-raised-button color="primary" (click)="signInWithRecipientAccount()" [disabled]="loadingIssuerAccount">{{recipient_account_info && (recipient_account_info.Account || recipient_account_info.account) ? 'Change Account' : 'Choose from XUMM' }}</button>
               </div>
             </div>
   
-            <div style="padding-top: 0.5em;">
+            <div style="padding-top: 0.5em">
               <mat-card *ngIf="recipient_account_info && recipient_account_info.error && recipient_account_info.error == 'actNotFound' && !loadingIssuerAccount">
                 <label class="warning">This account is not activated on {{isTestMode ? 'Testnet' : 'Mainnet'}}.</label>
               </mat-card>
@@ -144,7 +144,7 @@
               <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
             </div>
   
-            <div style="padding-top: 0.5em;" data-layout-gap="0.5em">
+            <div style="padding-top: 0.5em" data-layout-gap="0.5em">
                 <button mat-raised-button color="primary" (click)="moveNext()" [disabled]="!recipient_account_info || !issuer_account_info || !recipient_account_info.Account || loadingIssuerAccount || recipient_account_info.Account == issuer_account_info.Account">Next</button>
                 <button mat-raised-button class="xumm-grey-background" (click)="moveBack()" [disabled]="loadingIssuerAccount">Back</button>
             </div>
@@ -156,20 +156,20 @@
           <ng-template matStepLabel>Payment</ng-template>
           <label>You need to pay the equivalent of {{paymentAmount}} {{paymentCurrency}} with the account you want to blackhole to use this service.</label>
           <div *ngIf="!loadingIssuerAccount" data-layout="column" data-layout-gap="0.5em">
-            <div  style="padding-top: 0.5em;" *ngIf="!paymentInitiated || paymentNotSuccessfull">
+            <div  style="padding-top: 0.5em" *ngIf="!paymentInitiated || paymentNotSuccessfull">
               <button mat-button matTooltip="Pay via XUMM." matTooltipPosition="above" (click)="payForBlackhole()" style="padding:0px;">
                 <img src="../../assets/xummPay.svg" style="width: 148px; height: 40px;" alt="Pay via XUMM">
               </button>
             </div>
 
             <mat-card *ngIf="paymentInitiated && !paymentNotSuccessfull" data-layout="row" data-layout-gap="0.5em" data-layout-align="start center">
-              <i class="material-icons" style="color: green; font-size: 2em;">
+              <i class="material-icons" style="color: green; font-size: 2em">
                   check_circle_outline
               </i>
               <label>Payment received!</label>
             </mat-card>
             
-            <mat-hint *ngIf="paymentInitiated && paymentNotSuccessfull" style="padding-top: 0.5em;">Your payment was not successful on the XRP Ledger {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
+            <mat-hint *ngIf="paymentInitiated && paymentNotSuccessfull" style="padding-top: 0.5em">Your payment was not successful on the XRP Ledger {{isTestMode ? 'TEST' : 'MAIN'}} net.</mat-hint>
           </div>
           <div *ngIf="loadingIssuerAccount" data-layout="row" data-layout-gap="0.3em">
             <label>Loading account data... </label>
@@ -201,7 +201,7 @@
                 Delete Signer List
               </button>
               <div *ngIf="!hasSignerList">
-                <i class="material-icons" style="color: green; font-size: 2em;">
+                <i class="material-icons" style="color: green; font-size: 2em">
                   check_circle_outline
                 </i>
               </div>
@@ -211,7 +211,7 @@
                 Send remainig XRP to Recipient
               </button>
               <div *ngIf="getAvailableBalanceIssuer() <= 1">
-                <i class="material-icons" style="color: green; font-size: 2em;">
+                <i class="material-icons" style="color: green; font-size: 2em">
                   check_circle_outline
                 </i>
               </div>
@@ -221,7 +221,7 @@
                 Disallow incoming XRP
               </button>
               <div *ngIf="blackholeDisallowXrp">
-                <i class="material-icons" style="color: green; font-size: 2em;">
+                <i class="material-icons" style="color: green; font-size: 2em">
                   check_circle_outline
                 </i>
               </div>
@@ -231,7 +231,7 @@
                 Set black hole address as RegularKey
               </button>
               <div *ngIf="blackholeRegularKeySet">
-                <i class="material-icons" style="color: green; font-size: 2em;">
+                <i class="material-icons" style="color: green; font-size: 2em">
                   check_circle_outline
                 </i>
               </div>
@@ -241,14 +241,14 @@
                 Disable MasterKey of Issuer account
               </button>
               <div *ngIf="blackholeMasterDisabled">
-                <i class="material-icons" style="color: green; font-size: 2em;">
+                <i class="material-icons" style="color: green; font-size: 2em">
                   check_circle_outline
                 </i>
               </div>
             </div>
           </mat-card>
           <div *ngIf="!hasSignerList && blackholeDisallowXrp && blackholeRegularKeySet && blackholeMasterDisabled" data-layout="row" data-layout-gap="0.5em" data-layout-align="start center">
-            <i class="material-icons" style="color: green; font-size: 3em;">
+            <i class="material-icons" style="color: green; font-size: 3em">
                 check_circle_outline
             </i>
             <label>You have successfully lost all access to the issuer account {{getIssuer()}}</label>

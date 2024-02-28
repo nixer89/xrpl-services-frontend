@@ -1,89 +1,98 @@
-<mat-dialog-content fxFlex data-layout="column" ngStyle.gt-xs="min-width: 20em" style="width: fit-content; height: fit-content;">
+<mat-dialog-content data-layout="column" style="min-width: 20em; width: fit-content; height: fit-content;">
     <h3 class="loading">Token Information</h3>
     <div data-layout="column" data-layout-gap="0.5em" style="padding-top: 1em; width: fit-content; height: fit-content;">
 
-        <mat-card data-layout="row" data-layout-gap="1em"class="theme-background">
-            <div data-layout="column" data-layout-gap="0.3em" style="width: 50%">
-                <label><b>Issuer:</b></label>
-                <label class="break-words">{{tokenIssuer.account}}</label>
-            </div>
-
-            <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
-                <label><b>Name:</b></label>
-                <label>{{tokenIssuer.username ? tokenIssuer.username : '-'}}</label>
-            </div>
-        </mat-card>
-
-        <mat-card data-layout="row" data-layout-gap="1em"class="theme-background">
-            <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
-                <label><b>Currency:</b></label>
-                <label>{{tokenIssuer.currencyCodeUTF8}}</label>
-            </div>
-
-            <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
-                <label><b>Currency (HEX-Code):</b></label>
-                <label class="break-words" *ngIf="tokenIssuer.currencyCode.length > 3">{{tokenIssuer.currencyCode}}</label>
-                <label *ngIf="tokenIssuer.currencyCode.length == 3">-</label>
-            </div>
-        </mat-card>
-
-        <mat-card data-layout="row" data-layout-gap="1em"class="theme-background">
-
-            <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
-                <label><b>Supply:</b></label>
-                <label>{{convertedAmount}}</label>
-            </div>
-
-            <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
-                <label><b>Supply fixed:</b></label>
-                <div *ngIf="!accountData">
-                    -
+        <mat-card class="theme-background">
+            <div data-layout="row" data-layout-gap="1em">
+                <div data-layout="column" data-layout-gap="0.3em" style="width: 50%">
+                    <label><b>Issuer:</b></label>
+                    <label class="break-words">{{tokenIssuer.account}}</label>
                 </div>
-                <div *ngIf="accountData && accountIsBlackholed()" style="display: flex">
-                    <i class="material-icons" style="color: green; font-size: 1.4em;">
-                        check_circle
-                    </i>
-                </div>
-                <div *ngIf="accountData && !accountIsBlackholed()" style="display: flex; width: 50%;">
-                    <i class="material-icons" style="color: red; font-size: 1.4em;">
-                        highlight_off
-                    </i>
+
+                <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
+                    <label><b>Name:</b></label>
+                    <label>{{tokenIssuer.username ? tokenIssuer.username : '-'}}</label>
                 </div>
             </div>
         </mat-card>
 
-        <mat-card data-layout="row" data-layout-gap="1em"class="theme-background">
-
-            <div data-layout="column" data-layout-gap="0.3em" style="width: 50%;" >
-                <label><b>KYC:</b></label>
-                <div *ngIf="tokenIssuer.kyc" style="display: flex">
-                    <i class="material-icons" style="color: green; font-size: 1.4em;">
-                        verified
-                    </i>
+        <mat-card class="theme-background">
+            <div data-layout="row" data-layout-gap="1em">
+                <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
+                    <label><b>Currency:</b></label>
+                    <label>{{tokenIssuer.currencyCodeUTF8}}</label>
                 </div>
-                <div *ngIf="!tokenIssuer.kyc" style="display: flex">
-                    <i class="material-icons" style="color: red; font-size: 1.4em;">
-                        highlight_off
-                    </i>
-                </div>
-            </div>
 
-            <div data-layout="column" data-layout-gap="0.3em" style="width: 50%;">
-                <label><b>Provided by:</b></label>
-                <label>XUMM</label>
+                <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
+                    <label><b>Currency (HEX-Code):</b></label>
+                    <label class="break-words" *ngIf="tokenIssuer.currencyCode.length > 3">{{tokenIssuer.currencyCode}}</label>
+                    <label *ngIf="tokenIssuer.currencyCode.length == 3">-</label>
+                </div>
             </div>
         </mat-card>
 
-        <mat-card data-layout="row" data-layout-gap="1em"class="theme-background">
+        <mat-card class="theme-background">
 
-            <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
-                <label><b>Trustlines:</b></label>
-                <label>{{tokenIssuer.trustlines}}</label>
+            <div data-layout="row" data-layout-gap="1em">
+                <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
+                    <label><b>Supply:</b></label>
+                    <label>{{convertedAmount}}</label>
+                </div>
+
+                <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
+                    <label><b>Supply fixed:</b></label>
+                    <div *ngIf="!accountData">
+                        -
+                    </div>
+                    <div *ngIf="accountData && accountIsBlackholed()" style="display: flex">
+                        <i class="material-icons" style="color: green; font-size: 1.4em">
+                            check_circle
+                        </i>
+                    </div>
+                    <div *ngIf="accountData && !accountIsBlackholed()" style="display: flex; width: 50%;">
+                        <i class="material-icons" style="color: red; font-size: 1.4em">
+                            highlight_off
+                        </i>
+                    </div>
+                </div>
             </div>
+        </mat-card>
 
-            <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
-                <label><b>DEX Offers:</b></label>
-                <label>{{tokenIssuer.offers}}</label>
+        <mat-card class="theme-background">
+
+            <div data-layout="row" data-layout-gap="1em">
+                <div data-layout="column" data-layout-gap="0.3em" style="width: 50%;" >
+                    <label><b>KYC:</b></label>
+                    <div *ngIf="tokenIssuer.kyc" style="display: flex">
+                        <i class="material-icons" style="color: green; font-size: 1.4em">
+                            verified
+                        </i>
+                    </div>
+                    <div *ngIf="!tokenIssuer.kyc" style="display: flex">
+                        <i class="material-icons" style="color: red; font-size: 1.4em">
+                            highlight_off
+                        </i>
+                    </div>
+                </div>
+
+                <div data-layout="column" data-layout-gap="0.3em" style="width: 50%;">
+                    <label><b>Provided by:</b></label>
+                    <label>XUMM</label>
+                </div>
+            </div>
+        </mat-card>
+
+        <mat-card class="theme-background">
+            <div data-layout="row" data-layout-gap="1em">
+                <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
+                    <label><b>Trustlines:</b></label>
+                    <label>{{tokenIssuer.trustlines}}</label>
+                </div>
+
+                <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
+                    <label><b>DEX Offers:</b></label>
+                    <label>{{tokenIssuer.offers}}</label>
+                </div>
             </div>
         </mat-card>
 
@@ -97,17 +106,17 @@
                 </div>
                 <div *ngIf="!loadingLiquidity && !liquidityCheckFailed" data-layout="row">
                     <div *ngFor="let in of fullStars">
-                        <i class="material-icons" style="color:#FFB300 ; font-size: 1.4em;">
+                        <i class="material-icons" style="color:#FFB300 ; font-size: 1.4em">
                             star
                         </i>
                     </div>
                     <div *ngFor="let in of halfStars">
-                        <i class="material-icons" style="color:#FFB300 ; font-size: 1.4em;">
+                        <i class="material-icons" style="color:#FFB300 ; font-size: 1.4em">
                             star_half
                         </i>
                     </div>
                     <div *ngFor="let in of emptyStars">
-                        <i class="material-icons" style="color:#FFB300 ; font-size: 1.4em;">
+                        <i class="material-icons" style="color:#FFB300 ; font-size: 1.4em">
                             star_outline
                         </i>
                     </div>
@@ -123,42 +132,46 @@
             </div>
         </mat-card-->
 
-        <mat-card data-layout="row" data-layout-gap="1em"class="theme-background">
+        <mat-card class="theme-background">
 
-            <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
-                <label><b>Twitter:</b></label>
-                <div *ngIf="tokenIssuer.twitter">
-                    <a href="https://twitter.com/{{tokenIssuer.twitter}}" target="_blank">@{{tokenIssuer.twitter}}</a>
+            <div data-layout="row" data-layout-gap="1em">
+                <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
+                    <label><b>Twitter:</b></label>
+                    <div *ngIf="tokenIssuer.twitter">
+                        <a href="https://twitter.com/{{tokenIssuer.twitter}}" target="_blank">@{{tokenIssuer.twitter}}</a>
+                    </div>
+                    <div *ngIf="!tokenIssuer.twitter">
+                        -
+                    </div>
                 </div>
-                <div *ngIf="!tokenIssuer.twitter">
-                    -
-                </div>
-            </div>
 
-            <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
-                <label><b>Domain:</b></label>
-                <div *ngIf="tokenIssuer.domain">
-                    <a href="{{addMissingHttpsIfMissing(tokenIssuer.domain)}}" target="_blank">{{tokenIssuer.domain}}</a>
-                </div>
-                <div *ngIf="!tokenIssuer.domain && accountData && accountData.Domain">
-                    <a href="{{addMissingHttpsIfMissing(getDomainFromXrplAccount())}}" target="_blank">{{getDomainFromXrplAccount()}}</a>
-                </div>
-                <div *ngIf="!tokenIssuer.domain && (!accountData || !accountData.Domain)">
-                    -
+                <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
+                    <label><b>Domain:</b></label>
+                    <div *ngIf="tokenIssuer.domain">
+                        <a href="{{addMissingHttpsIfMissing(tokenIssuer.domain)}}" target="_blank">{{tokenIssuer.domain}}</a>
+                    </div>
+                    <div *ngIf="!tokenIssuer.domain && accountData && accountData.Domain">
+                        <a href="{{addMissingHttpsIfMissing(getDomainFromXrplAccount())}}" target="_blank">{{getDomainFromXrplAccount()}}</a>
+                    </div>
+                    <div *ngIf="!tokenIssuer.domain && (!accountData || !accountData.Domain)">
+                        -
+                    </div>
                 </div>
             </div>
         </mat-card>
 
-        <mat-card data-layout="row" data-layout-gap="1em"class="theme-background">
+        <mat-card class="theme-background">
 
-            <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
-                <label><b>Token creation:</b></label>
-                <label>{{getTokenCreation()}}</label>
-            </div>
+            <div data-layout="row" data-layout-gap="1em">
+                <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
+                    <label><b>Token creation:</b></label>
+                    <label>{{getTokenCreation()}}</label>
+                </div>
 
-            <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
-                <label><b>Provided by:</b></label>
-                <a href="https://xrplorer.com" target="_blank">xrplorer.com</a>
+                <div data-layout="column" data-layout-gap="0.3em" style="width:50%">
+                    <label><b>Provided by:</b></label>
+                    <a href="https://xrplorer.com" target="_blank">xrplorer.com</a>
+                </div>
             </div>
         </mat-card>
 
