@@ -1,5 +1,5 @@
 <mat-expansion-panel>
-  <mat-expansion-panel-header fxShow fxHide.xs>
+  <mat-expansion-panel-header data-hide-xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">playlist_add_check</mat-icon> </span>
       <span class="loading" style="margin-left: 0.5em;"> Check Trust Lines Settings </span>
@@ -44,7 +44,7 @@
           <ng-container matColumnDef="problem">
               <mat-header-cell *matHeaderCellDef> Problem description </mat-header-cell>
               <mat-cell *matCellDef="let problem">
-                  <span fxShow fxHide.xs > {{problem.problem}}</span>
+                  <span data-hide-xs > {{problem.problem}}</span>
                   <span fxShow.xs fxHide ><b>Problem:</b><br>{{problem.problem}}</span>
               </mat-cell>
           </ng-container>
@@ -59,7 +59,7 @@
               </mat-cell>
           </ng-container>
 
-          <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
           <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
       </mat-table>

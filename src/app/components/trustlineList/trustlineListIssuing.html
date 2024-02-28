@@ -16,7 +16,7 @@
             <ng-container matColumnDef="currency">
                 <mat-header-cell *matHeaderCellDef> Token Currency Code </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
-                    <span fxShow fxHide.xs > {{getCurrencyCode(trustline.currency)}}</span>
+                    <span data-hide-xs > {{getCurrencyCode(trustline.currency)}}</span>
                     <span fxShow.xs fxHide ><b>Token Currency Code:</b>&nbsp;{{getCurrencyCode(trustline.currency)}}</span>
                 </mat-cell>
             </ng-container>
@@ -24,7 +24,7 @@
             <ng-container matColumnDef="account">
                 <mat-header-cell *matHeaderCellDef> Issuer </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
-                    <span fxShow fxHide.xs > {{trustline.account}}</span>
+                    <span data-hide-xs > {{trustline.account}}</span>
                     <span fxShow.xs fxHide ><b>Issuer:</b><br>{{trustline.account}}</span>
                 </mat-cell>
             </ng-container>            
@@ -32,7 +32,7 @@
             <ng-container matColumnDef="balance">
                 <mat-header-cell *matHeaderCellDef> Balance of this TrustLine </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
-                    <span fxShow fxHide.xs > {{stringToFloat(trustline.balance)}}</span>
+                    <span data-hide-xs > {{stringToFloat(trustline.balance)}}</span>
                     <span fxShow.xs fxHide ><b>Balance:</b>&nbsp;{{stringToFloat(trustline.balance)}}</span>
                 </mat-cell>
             </ng-container>
@@ -40,7 +40,7 @@
             <ng-container matColumnDef="limit">
                 <mat-header-cell *matHeaderCellDef > Limit of this TrustLine </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
-                    <span fxShow fxHide.xs >{{stringToFloat(trustline.limit)}}</span>
+                    <span data-hide-xs >{{stringToFloat(trustline.limit)}}</span>
                     <span fxShow.xs fxHide ><b>Limit:</b>&nbsp;{{stringToFloat(trustline.limit)}}</span>
                 </mat-cell>
             </ng-container>
@@ -49,13 +49,13 @@
                 <mat-header-cell *matHeaderCellDef > Info </mat-header-cell>
                 <mat-cell *matCellDef="let trustline">
                     <div *ngIf="trustline.limitN <= trustline.balanceN" data-layout="row" data-layout-align="start center">
-                        <span fxShow fxHide.xs data-layout="row" data-layout-align="start center" ><mat-icon class="warning">warning</mat-icon>&nbsp;The TrustLine does not have enough limit to issue more tokens. Please ask the recipient to increase the limit.</span>
+                        <span data-hide-xs data-layout="row" data-layout-align="start center" ><mat-icon class="warning">warning</mat-icon>&nbsp;The TrustLine does not have enough limit to issue more tokens. Please ask the recipient to increase the limit.</span>
                         <span fxShow.xs fxHide data-layout="row" data-layout-align="start center"><b>Info:</b>&nbsp;<mat-icon class="warning">warning</mat-icon>&nbsp;The TrustLine does not have enough limit to issue more tokens. Please ask the recipient to increase the limit.</span>
                     </div>
                 </mat-cell>
             </ng-container>
 
-            <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" (click)="selectTrustLine(row)"></mat-row>
 
         </mat-table>

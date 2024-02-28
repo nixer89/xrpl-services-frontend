@@ -104,7 +104,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
             </mat-table>

@@ -1,5 +1,5 @@
 <div fxFlex data-layout="column">
-  <div fxShow fxHide.xs fxFlex data-layout="row">
+  <div data-hide-xs fxFlex data-layout="row">
     <div data-layout-align="center center" style="background-color:#002c85;" class="mat-elevation-z4">
       <a [routerLink]="['/']" data-layout-align="center center">
         <img src="../../assets/topbar_logo.png" width="90px" height="90px" alt="XrplServices Logo" style="margin-right: 0.5em;">
@@ -27,7 +27,7 @@
       </mat-toolbar>
       <mat-toolbar class="mat-elevation-z4 second-toolbar " color="primary" data-layout="row" style="padding-left: 0px" ngStyle.xs="padding:0px; font-size: 0.5em;">
         <!-- normal menu -->
-        <div fxShow fxHide.xs>
+        <div data-hide-xs>
           <button mat-button [routerLink]="['']" matTooltip="XRPL Transactions">
             <i class="material-icons topbar-menu-icon">mobile_friendly</i> XRPL Transactions
           </button>

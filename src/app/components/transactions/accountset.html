@@ -1,5 +1,5 @@
 <mat-expansion-panel [disabled]="originalAccountInfo && originalAccountInfo.error">
-  <mat-expansion-panel-header fxShow fxHide.xs>
+  <mat-expansion-panel-header data-hide-xs>
     <mat-panel-title>
       <span> <mat-icon style="transform: scale(0.9);">settings</mat-icon> </span>
       <span class="loading" style="margin-left: 0.5em;"> Account Set </span>
@@ -32,7 +32,7 @@
       <div *ngIf="originalAccountInfo && originalAccountInfo.EmailHash && originalAccountInfo.urlgravatar" data-layout="column" data-layout-gap="0.3em">
         <label >Your current <a href="https://en.gravatar.com/support/what-is-gravatar/" target="_blank" rel="noreferrer">Gravatar</a>:</label>
         <img width="80" height="80" src="{{originalAccountInfo.urlgravatar}}"/>
-        <a fxShow fxHide.xs href="{{originalAccountInfo.urlgravatar}}" target="_blank" rel="noreferrer">
+        <a data-hide-xs href="{{originalAccountInfo.urlgravatar}}" target="_blank" rel="noreferrer">
           {{originalAccountInfo.urlgravatar}}
         </a>
         <a fxShow.xs fxHide href="{{originalAccountInfo.urlgravatar}}" target="_blank" rel="noreferrer">

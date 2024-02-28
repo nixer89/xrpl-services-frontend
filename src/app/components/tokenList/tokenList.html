@@ -15,7 +15,7 @@
             <ng-container matColumnDef="currency">
                 <mat-header-cell *matHeaderCellDef> Token Currency Code </mat-header-cell>
                 <mat-cell *matCellDef="let token" (click)="mep.expanded=false">
-                    <span fxShow fxHide.xs > {{getCurrencyCode(token.currency)}}</span>
+                    <span data-hide-xs > {{getCurrencyCode(token.currency)}}</span>
                     <span fxShow.xs fxHide ><b>Token Currency Code:</b><br>{{getCurrencyCode(token.currency)}}</span>
                 </mat-cell>
             </ng-container>
@@ -23,12 +23,12 @@
             <ng-container matColumnDef="amount">
                 <mat-header-cell *matHeaderCellDef > Total issued value of this currency </mat-header-cell>
                 <mat-cell *matCellDef="let token" (click)="mep.expanded=false">
-                    <span fxShow fxHide.xs >{{stringToFloat(token.amount)}}</span>
+                    <span data-hide-xs >{{stringToFloat(token.amount)}}</span>
                     <span fxShow.xs fxHide ><b>Total issued value:</b><br>{{stringToFloat(token.amount)}}</span>
                 </mat-cell>
             </ng-container>
 
-            <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" (click)="tokenSelected(row)"></mat-row>
 
         </mat-table>

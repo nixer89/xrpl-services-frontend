@@ -19,7 +19,7 @@
                 <ng-container matColumnDef="destination">
                     <mat-header-cell *matHeaderCellDef> Destination </mat-header-cell>
                     <mat-cell *matCellDef="let escrow" (click)="mep.expanded=false">
-                        <span fxShow fxHide.xs > {{escrow.Destination}}</span>
+                        <span data-hide-xs > {{escrow.Destination}}</span>
                         <span fxShow.xs fxHide ><b>Destination:</b><br>{{escrow.Destination}}</span>
                     </mat-cell>
                 </ng-container>
@@ -27,7 +27,7 @@
                 <ng-container matColumnDef="amount">
                     <mat-header-cell *matHeaderCellDef > Amount in XRP </mat-header-cell>
                     <mat-cell *matCellDef="let escrow" (click)="mep.expanded=false">
-                        <span fxShow fxHide.xs >{{getAmountInXRP(escrow.Amount)}}</span>
+                        <span data-hide-xs >{{getAmountInXRP(escrow.Amount)}}</span>
                         <span fxShow.xs fxHide ><b>Escrow Amount in XRP:</b><br>{{getAmountInXRP(escrow.Amount)}}</span>
                     </mat-cell>
                 </ng-container>
@@ -35,7 +35,7 @@
                 <ng-container matColumnDef="finishafter">
                     <mat-header-cell *matHeaderCellDef > Finish After </mat-header-cell>
                     <mat-cell *matCellDef="let escrow" (click)="mep.expanded=false">
-                        <span fxShow fxHide.xs >{{getTimeFromRippleTime(escrow.FinishAfter)}}</span>
+                        <span data-hide-xs >{{getTimeFromRippleTime(escrow.FinishAfter)}}</span>
                         <span fxShow.xs fxHide ><b>Finish:</b>&nbsp;{{getTimeFromRippleTime(escrow.FinishAfter)}}</span>
                     </mat-cell>
                 </ng-container>
@@ -43,7 +43,7 @@
                 <ng-container matColumnDef="cancelafter">
                     <mat-header-cell *matHeaderCellDef > Cancel After </mat-header-cell>
                     <mat-cell *matCellDef="let escrow" (click)="mep.expanded=false">
-                        <span fxShow fxHide.xs >{{getTimeFromRippleTime(escrow.CancelAfter)}}</span>
+                        <span data-hide-xs >{{getTimeFromRippleTime(escrow.CancelAfter)}}</span>
                         <span fxShow.xs fxHide ><b>Cancel:</b>&nbsp;{{getTimeFromRippleTime(escrow.CancelAfter)}}</span>
                     </mat-cell>
                 </ng-container>
@@ -51,12 +51,12 @@
                 <ng-container matColumnDef="condition">
                     <mat-header-cell *matHeaderCellDef > Has Password </mat-header-cell>
                     <mat-cell *matCellDef="let escrow" (click)="mep.expanded=false">
-                        <span fxShow fxHide.xs ><mat-checkbox [checked]="escrow.Condition" [disabled]="true"></mat-checkbox></span>
+                        <span data-hide-xs ><mat-checkbox [checked]="escrow.Condition" [disabled]="true"></mat-checkbox></span>
                         <span fxShow.xs fxHide><b>Has Password:</b>&nbsp;<mat-checkbox [checked]="escrow.Condition" [disabled]="true"></mat-checkbox></span>
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;" (click)="escrowSelected(row)"></mat-row>
 
             </mat-table>

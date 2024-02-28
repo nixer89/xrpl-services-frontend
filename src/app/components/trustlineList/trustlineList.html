@@ -16,7 +16,7 @@
                 <ng-container matColumnDef="currency">
                     <mat-header-cell *matHeaderCellDef> Token Currency Code </mat-header-cell>
                     <mat-cell *matCellDef="let trustline">
-                        <span fxShow fxHide.xs > {{trustline.currencyN}}</span>
+                        <span data-hide-xs > {{trustline.currencyN}}</span>
                         <span fxShow.xs fxHide ><b>Token Currency Code:</b>&nbsp;{{trustline.currencyN}}</span>
                     </mat-cell>
                 </ng-container>
@@ -24,7 +24,7 @@
                 <ng-container matColumnDef="account">
                     <mat-header-cell *matHeaderCellDef> Counterparty </mat-header-cell>
                     <mat-cell *matCellDef="let trustline">
-                        <span fxShow fxHide.xs > {{trustline.account}}</span>
+                        <span data-hide-xs > {{trustline.account}}</span>
                         <span fxShow.xs fxHide ><b>Counterparty:</b><br>{{trustline.account}}</span>
                     </mat-cell>
                 </ng-container>            
@@ -32,7 +32,7 @@
                 <ng-container matColumnDef="balance">
                     <mat-header-cell *matHeaderCellDef> Balance of this TrustLine </mat-header-cell>
                     <mat-cell *matCellDef="let trustline">
-                        <span fxShow fxHide.xs > {{trustline.balanceN}}</span>
+                        <span data-hide-xs > {{trustline.balanceN}}</span>
                         <span fxShow.xs fxHide ><b>Balance:</b>&nbsp;{{trustline.balanceN}}</span>
                     </mat-cell>
                 </ng-container>
@@ -40,7 +40,7 @@
                 <ng-container matColumnDef="limit">
                     <mat-header-cell *matHeaderCellDef > Limit of this TrustLine </mat-header-cell>
                     <mat-cell *matCellDef="let trustline">
-                        <span fxShow fxHide.xs >{{stringToFloat(trustline.limit)}}</span>
+                        <span data-hide-xs >{{stringToFloat(trustline.limit)}}</span>
                         <span fxShow.xs fxHide ><b>Limit:</b>&nbsp;{{stringToFloat(trustline.limit)}}</span>
                     </mat-cell>
                 </ng-container>
@@ -48,7 +48,7 @@
                 <ng-container matColumnDef="limit_peer">
                     <mat-header-cell *matHeaderCellDef > Limit from counterparty </mat-header-cell>
                     <mat-cell *matCellDef="let trustline">
-                        <span fxShow fxHide.xs >{{stringToFloat(trustline.limit_peer)}}</span>
+                        <span data-hide-xs >{{stringToFloat(trustline.limit_peer)}}</span>
                         <span fxShow.xs fxHide ><b>Limit Counterparty:</b>&nbsp;{{stringToFloat(trustline.limit_peer)}}</span>
                     </mat-cell>
                 </ng-container>
@@ -56,7 +56,7 @@
                 <ng-container matColumnDef="no_ripple">
                     <mat-header-cell *matHeaderCellDef > Rippling Disabled </mat-header-cell>
                     <mat-cell *matCellDef="let trustline">
-                        <span fxShow fxHide.xs data-layout-gap="">
+                        <span data-hide-xs data-layout-gap="">
                             <mat-checkbox [checked]="trustline.no_ripple" [disabled]="trustline.no_ripple" (click)="setNoRippleFlag(trustline)"></mat-checkbox>
                             <button mat-icon-button *ngIf="!trustline.no_ripple && !accountHasDefaultRipple()" matTooltip="It is highly recommended to disable rippling on your trustline. Click here to do so." (click)="setNoRippleFlag(trustline)">
                                 <mat-icon class="warning">warning</mat-icon>
@@ -91,7 +91,7 @@
                     </mat-cell>
                 </ng-container>
 
-                <mat-header-row fxShow fxHide.xs *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
                 <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
             </mat-table>
