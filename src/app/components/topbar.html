@@ -6,7 +6,7 @@
       </a>
     </div>
     <div fxFlex data-layout="column">
-      <mat-toolbar data-layout="row" fxLayout.xs="column" color="primary" style="background-color:#002c85;" class="mat-elevation-z4">  
+      <mat-toolbar data-layout="row" data-layout-xs="column" color="primary" style="background-color:#002c85;" class="mat-elevation-z4">  
         <mat-toolbar-row data-layout="row">
           <div data-layout="row" data-layout-gap="0.3em" style="align-items: center;">
             <a [routerLink]="['/']" data-layout-align="center center" data-layout-gap="1em;" style="text-decoration: none; color: white;">
@@ -62,9 +62,9 @@
       </mat-toolbar>
     </div>
   </div>
-  <div fxShow.xs fxHide fxFlex data-layout="row">
+  <div data-hide-gt-xs fxFlex data-layout="row">
     <div fxFlex data-layout="column">
-      <mat-toolbar data-layout="row" fxLayout.xs="column" color="primary" style="background-color:#002c85; padding-top: 0.3em;" class="mat-elevation-z4">  
+      <mat-toolbar data-layout="row" data-layout-xs="column" color="primary" style="background-color:#002c85; padding-top: 0.3em;" class="mat-elevation-z4">  
         <mat-toolbar-row data-layout="row">
           <div data-layout="row" data-layout-gap="0.3em" style="align-items: center;">
             <a [routerLink]="['/']" data-layout-align="center center" data-layout-gap="1em;" style="text-decoration: none; color: white;">

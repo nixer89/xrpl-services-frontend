@@ -8,7 +8,7 @@
       Check the status of the DefaultRipple field for an account and the NoRipple flag of its trust lines
     </mat-panel-description>
   </mat-expansion-panel-header>
-  <mat-expansion-panel-header fxShow.xs fxHide>
+  <mat-expansion-panel-header data-hide-gt-xs>
     <mat-panel-title>
       <label class="loading">Check Trust Lines</label>
     </mat-panel-title>
@@ -45,7 +45,7 @@
               <mat-header-cell *matHeaderCellDef> Problem description </mat-header-cell>
               <mat-cell *matCellDef="let problem">
                   <span data-hide-xs > {{problem.problem}}</span>
-                  <span fxShow.xs fxHide ><b>Problem:</b><br>{{problem.problem}}</span>
+                  <span data-hide-gt-xs ><b>Problem:</b><br>{{problem.problem}}</span>
               </mat-cell>
           </ng-container>
 
@@ -60,7 +60,7 @@
           </ng-container>
 
           <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-          <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          <mat-row data-layout-xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
       </mat-table>
     </div>

@@ -8,7 +8,7 @@
       Create, replace, or remove a list of signers that can be used to multi-sign a transaction.
     </mat-panel-description>
   </mat-expansion-panel-header>
-  <mat-expansion-panel-header fxShow.xs fxHide>
+  <mat-expansion-panel-header data-hide-gt-xs>
     <mat-panel-title>
       <label class="loading">Signer List Set</label>
     </mat-panel-title>
@@ -35,10 +35,10 @@
         <mat-expansion-panel *ngFor="let signer of signerList; index as i;" data-layout="column" [ngClass]="(i%2==0 ? 'expansion-panel-light': 'theme-background')">
           <mat-expansion-panel-header [ngClass]="(i%2==0 ? 'expansion-panel-light': 'theme-background')">
             <mat-panel-title ngStyle.xs="font-size: 0.8em;" *ngIf="signer.SignerEntry.Account">
-              <div *ngIf="signer.valid" data-layout="row" fxLayout.xs="column">
+              <div *ngIf="signer.valid" data-layout="row" data-layout-xs="column">
                 {{i+1}}.&nbsp;{{signer.SignerEntry.Account}}&nbsp;|&nbsp;Weight:{{signer.SignerEntry.SignerWeight}}
               </div>
-              <div *ngIf="!signer.valid" data-layout="row" fxLayout.xs="column" style="align-items: center;">
+              <div *ngIf="!signer.valid" data-layout="row" data-layout-xs="column" style="align-items: center;">
                 {{i+1}}.&nbsp;{{signer.SignerEntry.Account}}&nbsp;<mat-icon style="color: orangered;">error_outline</mat-icon>
               </div>
             </mat-panel-title>
@@ -72,7 +72,7 @@
       </div>
     </mat-card>
     
-    <div data-layout="row" fxLayout.xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start" data-layout-gap="0.5em">
+    <div data-layout="row" data-layout-xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start" data-layout-gap="0.5em">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!this.signerQuorumInput || !validSignerList">
         Send Signer List Set to XUMM
       </button>

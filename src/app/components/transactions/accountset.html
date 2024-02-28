@@ -8,7 +8,7 @@
       You can change your XRPL account settings here.
     </mat-panel-description>
   </mat-expansion-panel-header>
-  <mat-expansion-panel-header fxShow.xs fxHide>
+  <mat-expansion-panel-header data-hide-gt-xs>
     <mat-panel-title>
       <label class="loading">Account Set</label>
     </mat-panel-title>
@@ -35,7 +35,7 @@
         <a data-hide-xs href="{{originalAccountInfo.urlgravatar}}" target="_blank" rel="noreferrer">
           {{originalAccountInfo.urlgravatar}}
         </a>
-        <a fxShow.xs fxHide href="{{originalAccountInfo.urlgravatar}}" target="_blank" rel="noreferrer">
+        <a data-hide-gt-xs href="{{originalAccountInfo.urlgravatar}}" target="_blank" rel="noreferrer">
           Gravatar Link
         </a>
       </div>
@@ -85,7 +85,7 @@
     </mat-card>
     <mat-hint *ngIf="requireDestTagChangeDetected && disableMasterKeyChangeDetected" style="color: orangered">You can change only one Account Flag at a time. To change two account flags, you have to execute two transactions.</mat-hint>
     </form>
-    <div data-layout="row" fxLayout.xs="column" fxLayoutAlign.xs="start start" data-layout-gap="0.5em">
+    <div data-layout="row" data-layout-xs="column" fxLayoutAlign.xs="start start" data-layout-gap="0.5em">
       <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!isValidAccountSet">
         Send Account Settings to XUMM
       </button>

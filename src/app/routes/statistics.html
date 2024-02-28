@@ -26,7 +26,7 @@
                             <mat-header-cell *matHeaderCellDef> Transaction Type </mat-header-cell>
                             <mat-cell *matCellDef="let transaction">
                                 <span data-layout="row">
-                                    <label fxShow.xs fxHide><b>Transaction Type:</b>&nbsp;</label>
+                                    <label data-hide-gt-xs><b>Transaction Type:</b>&nbsp;</label>
                                     <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.name}}</label>
                                     <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.name}}</b></label>
                                 </span>
@@ -37,7 +37,7 @@
                             <mat-header-cell *matHeaderCellDef > Number of Trx </mat-header-cell>
                             <mat-cell *matCellDef="let transaction">
                                 <span data-layout="row">
-                                    <label fxShow.xs fxHide><b>Number of Trx:</b>&nbsp;</label>
+                                    <label data-hide-gt-xs><b>Number of Trx:</b>&nbsp;</label>
                                     <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.number}}</label>
                                     <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.number}}</b></label>
                                 </span>
@@ -45,7 +45,7 @@
                         </ng-container>
 
                         <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-                        <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                        <mat-row data-layout-xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
                     </mat-table>
                 </div>
@@ -80,7 +80,7 @@
                             <mat-header-cell *matHeaderCellDef> Transaction Type </mat-header-cell>
                             <mat-cell *matCellDef="let transaction">
                                 <span data-layout="row">
-                                    <label fxShow.xs fxHide><b>Transaction Type:</b>&nbsp;</label>
+                                    <label data-hide-gt-xs><b>Transaction Type:</b>&nbsp;</label>
                                     <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.name}}</label>
                                     <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.name}}</b></label>
                                 </span>
@@ -91,7 +91,7 @@
                             <mat-header-cell *matHeaderCellDef > Number of Trx </mat-header-cell>
                             <mat-cell *matCellDef="let transaction">
                                 <span data-layout="row">
-                                    <label fxShow.xs fxHide><b>Number of Trx:</b>&nbsp;</label>
+                                    <label data-hide-gt-xs><b>Number of Trx:</b>&nbsp;</label>
                                     <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.number}}</label>
                                     <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.number}}</b></label>
                                 </span>
@@ -99,7 +99,7 @@
                         </ng-container>
 
                         <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-                        <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                        <mat-row data-layout-xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
                     </mat-table>
                 </div>
@@ -134,7 +134,7 @@
                             <mat-header-cell *matHeaderCellDef> Transaction Type </mat-header-cell>
                             <mat-cell *matCellDef="let transaction">
                                 <span data-layout="row">
-                                    <label fxShow.xs fxHide><b>Transaction Type:</b>&nbsp;</label>
+                                    <label data-hide-gt-xs><b>Transaction Type:</b>&nbsp;</label>
                                     <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.name}}</label>
                                     <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.name}}</b></label>
                                 </span>
@@ -145,7 +145,7 @@
                             <mat-header-cell *matHeaderCellDef > Number of Trx </mat-header-cell>
                             <mat-cell *matCellDef="let transaction">
                                 <span data-layout="row">
-                                    <label fxShow.xs fxHide><b>Number of Trx:</b>&nbsp;</label>
+                                    <label data-hide-gt-xs><b>Number of Trx:</b>&nbsp;</label>
                                     <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.number}}</label>
                                     <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.number}}</b></label>
                                 </span>
@@ -153,7 +153,7 @@
                         </ng-container>
 
                         <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-                        <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                        <mat-row data-layout-xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
                     </mat-table>
                 </div>
@@ -205,7 +205,7 @@
                             <mat-header-cell *matHeaderCellDef> Transaction Type </mat-header-cell>
                             <mat-cell *matCellDef="let transaction">
                                 <span data-layout="row">
-                                    <label fxShow.xs fxHide><b>Transaction Type:</b>&nbsp;</label>
+                                    <label data-hide-gt-xs><b>Transaction Type:</b>&nbsp;</label>
                                     <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.name}}</label>
                                     <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.name}}</b></label>
                                 </span>
@@ -216,7 +216,7 @@
                             <mat-header-cell *matHeaderCellDef > Number of Trx </mat-header-cell>
                             <mat-cell *matCellDef="let transaction">
                                 <span data-layout="row">
-                                    <label fxShow.xs fxHide><b>Number of Trx:</b>&nbsp;</label>
+                                    <label data-hide-gt-xs><b>Number of Trx:</b>&nbsp;</label>
                                     <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.number}}</label>
                                     <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.number}}</b></label>
                                 </span>
@@ -224,7 +224,7 @@
                         </ng-container>
 
                         <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-                        <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                        <mat-row data-layout-xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
                     </mat-table>
                 </div>
@@ -259,7 +259,7 @@
                             <mat-header-cell *matHeaderCellDef> Transaction Type </mat-header-cell>
                             <mat-cell *matCellDef="let transaction">
                                 <span data-layout="row">
-                                    <label fxShow.xs fxHide><b>Transaction Type:</b>&nbsp;</label>
+                                    <label data-hide-gt-xs><b>Transaction Type:</b>&nbsp;</label>
                                     <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.name}}</label>
                                     <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.name}}</b></label>
                                 </span>
@@ -270,7 +270,7 @@
                             <mat-header-cell *matHeaderCellDef > Number of Trx </mat-header-cell>
                             <mat-cell *matCellDef="let transaction">
                                 <span data-layout="row">
-                                    <label fxShow.xs fxHide><b>Number of Trx:</b>&nbsp;</label>
+                                    <label data-hide-gt-xs><b>Number of Trx:</b>&nbsp;</label>
                                     <label *ngIf="!transaction.name.startsWith('Overall')">{{transaction.number}}</label>
                                     <label *ngIf="transaction.name.startsWith('Overall')"><b>{{transaction.number}}</b></label>
                                 </span>
@@ -278,7 +278,7 @@
                         </ng-container>
 
                         <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-                        <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                        <mat-row data-layout-xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
                     </mat-table>
                 </div>

@@ -1,5 +1,5 @@
 <mat-card fxFlex data-layout="column" data-layout-gap="0.5em" class="margin-5">
-    <div data-layout="row" fxLayout.xs="column">
+    <div data-layout="row" data-layout-xs="column">
         <div *ngIf="xrplAccount" style="align-self: start;">
             <button mat-raised-button color="primary" matTooltip="Logout" matTooltipPosition="below" (click)="logoutAccount()">
                 Logout
@@ -43,7 +43,7 @@
             </div>
         </mat-card>
     </div>
-    <mat-card fxShow.xs fxHide class="theme-background floatcenter" style="font-size: 0.8em;">
+    <mat-card data-hide-gt-xs class="theme-background floatcenter" style="font-size: 0.8em;">
         <div data-layout="column" data-layout-align="start center">
             <label>XRPL Network</label>
             <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em;">
@@ -54,7 +54,7 @@
         </div>
     </mat-card>
     <div *ngIf="lastTrxLinkBithomp || lastTrxLinkXrplOrg || lastTrxLinkXrpScan || lastTrxLinkXrp1ntel || lastTrxLinkXrplorer" style="padding-top: 1em;">
-        View your transaction on the XRP Ledger: <br fxHide fxShow.xs>
+        View your transaction on the XRP Ledger: <br data-hide-gt-xs>
         <span *ngIf="lastTrxLinkBithomp"><a [href]="lastTrxLinkBithomp" target="_blank;" rel="noreferrer">bithomp</a> | </span>
         <span *ngIf="lastTrxLinkXrplOrg"><a  [href]="lastTrxLinkXrplOrg" target="_blank;" rel="noreferrer">xrpl.org</a></span>
         <span *ngIf="lastTrxLinkXrpScan"> | <a  [href]="lastTrxLinkXrpScan" target="_blank;" rel="noreferrer">xrpscan</a> | </span>

@@ -29,7 +29,7 @@
                     <mat-header-cell *matHeaderCellDef> Destination </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
                         <span data-layout="row">
-                            <label fxShow.xs fxHide><b>Destination:</b>&nbsp;</label>
+                            <label data-hide-gt-xs><b>Destination:</b>&nbsp;</label>
                             <label>{{escrow.Destination}}</label>
                         </span>
                     </mat-cell>
@@ -39,7 +39,7 @@
                     <mat-header-cell *matHeaderCellDef > Amount in XRP </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
                         <span data-layout="row">
-                            <label fxShow.xs fxHide><b>Amount in XRP:</b>&nbsp;</label>
+                            <label data-hide-gt-xs><b>Amount in XRP:</b>&nbsp;</label>
                             <label>{{getAmountInXRP(escrow.Amount)}}</label>
                         </span>
                     </mat-cell>
@@ -49,7 +49,7 @@
                     <mat-header-cell *matHeaderCellDef > Finish After </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
                         <span data-layout="row">
-                            <label fxShow.xs fxHide><b>Finish:</b>&nbsp;</label>
+                            <label data-hide-gt-xs><b>Finish:</b>&nbsp;</label>
                             <label>{{getTimeFromRippleTime(escrow.FinishAfter)}}</label>
                         </span>
                     </mat-cell>
@@ -59,7 +59,7 @@
                     <mat-header-cell *matHeaderCellDef > Auto Release </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
                         <span data-layout="row">
-                            <label fxShow.xs fxHide><b>Auto Release:</b>&nbsp;</label>
+                            <label data-hide-gt-xs><b>Auto Release:</b>&nbsp;</label>
                             <div *ngIf="escrow.autorelease">
                                 <i class="material-icons" style="color: green; font-size: 2em;">
                                     check_circle_outline
@@ -78,7 +78,7 @@
                     <mat-header-cell *matHeaderCellDef > Expected Auto Release </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
                         <span data-layout="row">
-                            <label fxShow.xs fxHide><b>Expected Auto Release:</b>&nbsp;</label>
+                            <label data-hide-gt-xs><b>Expected Auto Release:</b>&nbsp;</label>
                             <div *ngIf="escrow.autorelease">
                                 <label>{{getExpectedAutoReleaseTime(escrow.FinishAfter)}}</label>
                             </div>
@@ -93,7 +93,7 @@
                     <mat-header-cell *matHeaderCellDef > Action </mat-header-cell>
                     <mat-cell *matCellDef="let escrow">
                         <span  data-layout="row">
-                            <label fxShow.xs fxHide><b>Action:</b>&nbsp;</label>
+                            <label data-hide-gt-xs><b>Action:</b>&nbsp;</label>
                             <button *ngIf="!escrow.autorelease" mat-raised-button color="primary" matTooltip="Enable automatic release for this Escrow." matTooltipPosition="above" (click)="enableAutoFinish(escrow)" style="padding:0px;">
                                 Enable
                             </button>
@@ -105,7 +105,7 @@
                 </ng-container>
 
                 <mat-header-row data-hide-xs *matHeaderRowDef="displayedColumns"></mat-header-row>
-                <mat-row fxLayout.xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                <mat-row data-layout-xs="column" *matRowDef="let row; columns: displayedColumns;"></mat-row>
 
             </mat-table>
         </mat-expansion-panel>

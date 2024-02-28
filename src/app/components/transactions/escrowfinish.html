@@ -8,7 +8,7 @@
       Execute an Escrow Finish transaction to release your funds in Escrow.
     </mat-panel-description>
   </mat-expansion-panel-header>
-  <mat-expansion-panel-header fxShow.xs fxHide>
+  <mat-expansion-panel-header data-hide-gt-xs>
     <mat-panel-title>
       <label class="loading">Escrow Finish</label>
     </mat-panel-title>
@@ -42,7 +42,7 @@
         </button>
       </mat-form-field>
     </form>
-    <div data-layout="row" fxLayout.xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start"  data-layout-gap="0.5em" style="padding-top: 2em;">
+    <div data-layout="row" data-layout-xs="column" data-layout-align="start center" fxLayoutAlign.xs="start start"  data-layout-gap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowFinish">
         Send Escrow Finish to XUMM
       </button>
