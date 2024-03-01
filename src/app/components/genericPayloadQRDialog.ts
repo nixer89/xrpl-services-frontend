@@ -149,7 +149,7 @@ export class GenericPayloadQRDialog implements OnInit {
         //set account and force it
         if(this.genericPayload.options.xrplAccount) {
             this.genericPayload.payload.txjson.Account = this.genericPayload.options.xrplAccount;
-            this.genericPayload.payload.options.forceAccount = true;
+            this.genericPayload.payload.options.signers = [this.genericPayload.options.xrplAccount];
         }
 
         let xummResponse:XummTypes.XummPostPayloadResponse;
