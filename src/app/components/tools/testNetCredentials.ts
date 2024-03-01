@@ -3,7 +3,7 @@ import { AppService } from '../../services/app.service';
 import * as qrcode from 'qrcode';
 import * as clipboard from 'copy-to-clipboard';
 import { MatStepper } from '@angular/material/stepper';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'testNetCredentials',

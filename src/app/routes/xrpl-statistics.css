@@ -4,7 +4,7 @@
     background-color: var(--background-color);
 }
 
-.mat-card > :last-child:not(.mat-card-footer) {
+.mat-mdc-card > :last-child:not(.mat-mdc-card-footer) {
     margin: 10px;
 }
 

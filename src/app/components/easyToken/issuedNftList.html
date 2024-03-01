@@ -15,7 +15,7 @@
   </mat-expansion-panel-header>
 
   <div data-layout="column" data-layout-gap="0.5em">
-    <mat-card data-layout="column" data-layout-gap="0.5em">
+    <mat-card appearance="outlined" data-layout="column" data-layout-gap="0.5em">
       <div *ngIf="loading" data-layout="row" data-layout-gap="0.5em">
         <label class="warning">Loading XRP Ledger NFTs ...&nbsp;</label>
         <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
@@ -127,13 +127,13 @@
           <mat-cell *matCellDef="let row" (click)="openDetailsDialog(row)">
               <span data-hide-lt-md data-layout="row">
                 <label [innerHTML]="row.username | highlightSearch: filterText"></label>
-                <mat-chip-list style="padding-left: 0.2em" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
+                <mat-chip-listbox style="padding-left: 0.2em" *ngIf="row.username"><mat-chip-option [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip-option></mat-chip-listbox>
               </span>
               <span data-hide-gt-sm data-layout="row">
                 <b>Accountname:</b>&nbsp;
                 <div data-layout="row">
                   <label [innerHTML]="row.username | highlightSearch: filterText"></label>
-                  <mat-chip-list style="padding-left: 0.2em" *ngIf="row.username"><mat-chip [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip></mat-chip-list>
+                  <mat-chip-listbox style="padding-left: 0.2em" *ngIf="row.username"><mat-chip-option [ngClass]="(row.resolvedBy == 'Bithomp' ? 'mat-chip-bithomp': 'mat-chip-xrpscan')">{{row.resolvedBy}}</mat-chip-option></mat-chip-listbox>
                 </div>
               </span>
           </mat-cell>

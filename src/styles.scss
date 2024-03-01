@@ -50,10 +50,10 @@ a.footerlink {
     float: right;
 }
 
-.mat-button.sign-in-button {
+.mat-mdc-button.sign-in-button {
     width: 230;
     min-width: 230px;
-    height: 40px;
+    height: 38px;
     padding-left: 0px;
     padding-right: 0px;
 }
@@ -84,7 +84,7 @@ body .snackbar-failed {
     justify-content: center;
 }
 
-.mat-card.margin-5 {
+body .margin-5 {
     margin: 5px;
 }
 
@@ -95,16 +95,18 @@ body .snackbar-failed {
     font-weight: 600;
 }
 
-.mat-hint {
+.mat-mdc-form-field-hint {
     color: #f44336 !important;
 }
 
 // adds breaks to the mat-checkboxes with long labels
+/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
 .mat-checkbox-layout {
     white-space: normal !important;
 }
 
 // rather than center the checkbox, put the checkbox in the first line
+/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
 .mat-checkbox-inner-container {
     margin-top: 3px !important;
 }
@@ -139,11 +141,11 @@ body .snackbar-failed {
         padding-top: 6px !important;
     }
 
-    .mat-card {
+    .mat-mdc-card {
         padding: 12px 8px 12px !important;
     }
 
-    .mat-dialog-container {
+    .mat-mdc-dialog-container {
         padding: 12px !important;
     }
 

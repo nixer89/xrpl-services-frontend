@@ -37,7 +37,7 @@
         <mat-hint *ngIf="amountInput && !validAmount && !maxSixDigits && !amountInput.toString().includes(',') && !escrowBiggerThanAvailable()">Not a valid amount</mat-hint>
         <mat-hint *ngIf="amountInput && !validAmount && escrowBiggerThanAvailable()">Your escrow amount is too big. Max amount is: {{getAvailableBalanceForEscrow()}} XRP. ('Available Balance' minus {{ownerReserve/1000000}} XRP for account reserve) <a href="https://xrpl.org/reserves.html#owner-reserves" target="_blank"> (Reserve Info)</a></mat-hint>
       </mat-form-field>
-      <mat-card data-layout="column">
+      <mat-card appearance="outlined" data-layout="column">
         <label>Finish After</label>  
         <mat-card-content style="padding-top:1em">
           <mat-form-field>
@@ -60,7 +60,7 @@
         <mat-hint *ngIf="validFinishAfter && !finishDateInFuture" style="color: grey !important">UTC time: <b>{{finishAfterDateTime.toUTCString()}}</b></mat-hint>
         
       </mat-card>
-      <mat-card data-layout="column">
+      <mat-card appearance="outlined" data-layout="column">
         <label>Cancel After (optional</label>
         <mat-card-content style="padding-top:1em">
           <mat-form-field>

@@ -3,7 +3,7 @@ table{
     width: 100%;
 }
 
-.mat-cell {
+.mat-mdc-cell {
     justify-content: center;
 }
 
@@ -120,14 +120,14 @@ table{
 
 @media (max-width:599px) {
 
-    .mat-footer-row , .mat-row {
+    .mat-mdc-footer-row , .mat-mdc-row {
         padding-top: 0.5em;
         align-items: start;
         min-height: 24px;
         cursor: pointer;
     }
 
-    .mat-cell {
+    .mat-mdc-cell {
         padding-left: 1em;
     }
 

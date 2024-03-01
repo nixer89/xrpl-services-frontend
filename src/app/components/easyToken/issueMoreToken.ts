@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
 import { XummService } from '../../services/xumm.service'
@@ -8,7 +8,7 @@ import { TransactionValidation, GenericBackendPostRequest, XrplAccountChanged } 
 import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
-import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { isValidXRPAddress } from 'src/app/utils/utils';
 
 interface TrustLine {

@@ -3,8 +3,8 @@ import { Observable, Subscription } from 'rxjs';
 import * as util from '../../utils/flagutils';
 import * as normalizer from 'src/app/utils/normalizers';
 import { AccountInfoChanged, AccountObjectsChanged, RippleState, SimpleTrustLine } from 'src/app/utils/types';
-import { MatLegacyPaginator as MatPaginator } from "@angular/material/legacy-paginator";
-import { MatLegacyTableDataSource as MatTableDataSource } from "@angular/material/legacy-table";
+import { MatPaginator } from "@angular/material/paginator";
+import { MatTableDataSource } from "@angular/material/table";
 
 //RippleState Flags
 const lsfLowReserve = 0x10000;

@@ -2,11 +2,11 @@
     <div *ngIf="isOverview && !loading" data-layout="column" data-layout-gap="1em">
         <h3 class="floatcenter">{{genericPayload.payload.txjson.TransactionType}}</h3>
         <div data-layout="column" data-layout-align="start start" data-layout-gap="0.8em">
-            <mat-card class="theme-background" *ngIf="genericPayload.payload.custom_meta" style="min-width: 18em;">
+            <mat-card appearance="outlined" class="theme-background" *ngIf="genericPayload.payload.custom_meta" style="min-width: 18em;">
                 <h4>Summary:</h4>
                 <label class="break-words">{{genericPayload.payload.custom_meta.instruction}}</label>
             </mat-card>
-            <mat-card class="warning-background" data-layout="column" style="font-weight: bold; width: 100%; max-width: 500px;" *ngIf="genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm">
+            <mat-card appearance="outlined" class="warning-background" data-layout="column" style="font-weight: bold; width: 100%; max-width: 500px;" *ngIf="genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm">
                 <div data-layout="row" data-layout-align="center center">
                     <i class="material-icons" style="color: yellow; font-size: 2em">
                         warning
@@ -28,7 +28,7 @@
                 <label>For more information please read this tweet:</label>
                 <a href="https://twitter.com/XummWallet/status/1461225738594623488" target="_blank">@XummWallet tweet</a>
             </mat-card>
-            <mat-card class="theme-background" *ngIf="showKyc && (!genericPayload.payload.custom_meta || !genericPayload.payload.custom_meta.blob || !genericPayload.payload.custom_meta.blob.addWarningXumm)" data-layout="column" data-layout-gap="0.3em" style="width: 100%;">
+            <mat-card appearance="outlined" class="theme-background" *ngIf="showKyc && (!genericPayload.payload.custom_meta || !genericPayload.payload.custom_meta.blob || !genericPayload.payload.custom_meta.blob.addWarningXumm)" data-layout="column" data-layout-gap="0.3em" style="width: 100%;">
                 <div data-layout="row" data-layout-gap="0.3em" data-layout-align="start center">
                     <label><b>KYC:</b></label>
                     <div *ngIf="!loadingKYC && !loadingKycFailed && hasKyc">
@@ -58,7 +58,7 @@
 
                 
             </mat-card>
-            <mat-card class="theme-background" *ngIf="!genericPayload.payload.txjson.Memos" data-layout="column" data-layout-gap="0.3em" style="min-width: 18em;">
+            <mat-card appearance="outlined" class="theme-background" *ngIf="!genericPayload.payload.txjson.Memos" data-layout="column" data-layout-gap="0.3em" style="min-width: 18em;">
                 <h4>Transaction Memo (optional):</h4>
                 <mat-form-field style="width: 100%;">
                     <input matInput type="text" [(ngModel)]="memoInput" placeholder="Memo" aria-label="XRPL Transaction Memo">

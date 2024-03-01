@@ -8,9 +8,9 @@
 //  If you specify typography styles for the components you use elsewhere, you should delete this line.
 //  If you don't need the default component typographies but still want the hierarchy styles,
 //  you can delete this line and instead use:
-//    `@include mat.legacy-typography-hierarchy(mat.define-legacy-typography-config());`
-@include mat.all-legacy-component-typographies();
-@include mat.legacy-core();
+//    `@include mat.legacy-typography-hierarchy(mat.define-typography-config());`
+@include mat.all-component-typographies();
+@include mat.core();
 
 .light-theme {
   $primary: mat.define-palette(mat.$indigo-palette);
@@ -67,7 +67,7 @@
     background-color: white !important;
   }
 
-  @include mat.all-legacy-component-themes($light-theme);
+  @include mat.all-component-themes($light-theme);
 }
 
 // Our dark theme
@@ -88,7 +88,7 @@
   a:active {
     color: #FF8F00;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
   .mat-form-field.mat-focused .mat-form-field-label {
     color: rgba(255, 255, 255, 0.7) !important;
   }
@@ -141,10 +141,10 @@
   .snackbar-success {
     background-color: #303030 !important;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version.*/
   .mat-option.mat-selected:not(.mat-option-disabled) {
     color: #FF8F00 !important
   }
 
-  @include mat.all-legacy-component-themes($dark-theme);
+  @include mat.all-component-themes($dark-theme);
 }

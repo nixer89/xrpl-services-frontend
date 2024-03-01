@@ -1,19 +1,19 @@
-<mat-card *ngIf="loading" class="margin-5" data-layout="row" data-layout-align="center center">
+<mat-card appearance="outlined" *ngIf="loading" class="margin-5" data-layout="row" data-layout-align="center center">
     <div data-layout="row" data-layout-gap="0.5em" data-layout-align="center center">
         <h3 class="right-label-stats">Loading Data ...</h3>
         <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
     </div>
 </mat-card>
 
-<mat-card *ngIf="!loading && tooManyRequests" class="margin-5" data-layout="row" data-layout-align="center center">
+<mat-card appearance="outlined" *ngIf="!loading && tooManyRequests" class="margin-5" data-layout="row" data-layout-align="center center">
     <div data-layout="row" data-layout-gap="0.5em" data-layout-align="center center">
         <h3 class="right-label-stats" style="text-align: center;">Too many requests. Please try again later!</h3>
     </div>
 </mat-card>
 
-<mat-card *ngIf="generalStats && !loading && !tooManyRequests" class="margin-5" style="display:flex; flex-wrap: wrap;">
+<mat-card appearance="outlined" *ngIf="generalStats && !loading && !tooManyRequests" class="margin-5" style="display:flex; flex-wrap: wrap;">
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>General XRPL Statistics</h3>
 
         <div data-layout="column" data-layout-gap="0.3em">
@@ -45,7 +45,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Accounts</h3>
         <div data-layout="column" data-layout-gap="0.3em">
             <div data-layout="row">
@@ -96,7 +96,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Accounts Additional</h3>
         <div data-layout="column" data-layout-gap="0.3em">
             <div data-layout="row">
@@ -142,7 +142,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Trustlines (RippleState)</h3>
         <div data-layout="column" data-layout-gap="0.3em">
             <div data-layout="row">
@@ -173,7 +173,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Escrows</h3>
         <div data-layout="column" data-layout-gap="0.3em">
             <div data-layout="row">
@@ -219,7 +219,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Offers</h3>
         <div data-layout="column" data-layout-gap="0.3em">
             <div data-layout="row">
@@ -268,7 +268,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>NFToken Offers</h3>
         <div data-layout="column" data-layout-gap="0.3em">
             <div data-layout="row">
@@ -309,7 +309,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>NFToken Pages</h3>
 
         <div data-layout="column" data-layout-gap="0.3em">
@@ -341,7 +341,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Signer Lists</h3>
 
         <div data-layout="column" data-layout-gap="0.3em">
@@ -373,7 +373,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Payment Channels</h3>
 
         <div data-layout="column" data-layout-gap="0.3em">
@@ -405,7 +405,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Tickets</h3>
 
         <div data-layout="column" data-layout-gap="0.3em">
@@ -432,7 +432,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Checks</h3>
 
         <div data-layout="column" data-layout-gap="0.3em">
@@ -464,7 +464,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Deposit Preauth</h3>
 
         <div data-layout="column" data-layout-gap="0.3em">
@@ -491,7 +491,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Directory Nodes</h3>
 
         <div data-layout="column" data-layout-gap="0.3em">
@@ -533,7 +533,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Ledger Hashes Objects</h3>
 
         <div data-layout="column" data-layout-gap="0.3em">
@@ -560,7 +560,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Fee Settings Objects</h3>
 
         <div data-layout="column" data-layout-gap="0.3em">
@@ -587,7 +587,7 @@
         </div>
     </mat-card>
 
-    <mat-card class="stats-component">
+    <mat-card appearance="outlined" class="stats-component">
         <h3>Amendment Objects</h3>
 
         <div data-layout="column" data-layout-gap="0.3em">

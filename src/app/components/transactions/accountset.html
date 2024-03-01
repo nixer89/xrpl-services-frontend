@@ -39,7 +39,7 @@
           Gravatar Link
         </a>
       </div>
-      <mat-card data-layout="column">
+      <mat-card appearance="outlined" data-layout="column">
         <h3><b>Account Flags:</b></h3>
         <div data-layout="column">
           <mat-checkbox name="requireDestTag" style="padding-top: 1em" [(ngModel)]="requireDestTagInput" (change)="checkChanges()" [disabled]="disableMasterKeyChangeDetected || defaultRippleChangeDetected || disallowXrpChangeDetected || deposithAuthChangeDetected">
