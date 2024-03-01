@@ -13,6 +13,7 @@ import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'xrpl-transactions',
