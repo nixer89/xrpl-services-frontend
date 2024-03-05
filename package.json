@@ -29,7 +29,6 @@
     "@angular/platform-browser-dynamic": "^17.2.3",
     "@angular/router": "^17.2.3",
     "@ctrl/ngx-codemirror": "^7.0.0",
-    "angular-2-local-storage": "^3.0.2",
     "buffer": "^6.0.3",
     "codemirror": "^5.65.16",
     "copy-to-clipboard": "^3.3.3",

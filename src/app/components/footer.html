@@ -1,7 +1,10 @@
-<mat-card appearance="outlined" style="display: flex;" data-layout-gt-xs="row" data-layout-align-gt-xs="start center" data-layout-xs="column" data-layout-align-xs="center center" id="footer-row" class="margin-5">
-    <a class="footerlink" [routerLink]="['/terms']">Terms & Conditions</a>
-    <a class="footerlink" [routerLink]="['/privacy']">Privacy Policy</a>
-    <span style="flex: 1 1 auto;"></span>
-    <span>v.{{appVersion}} -&nbsp;</span>
-    <span>All rights reserved</span>
+<mat-card appearance="outlined" id="footer-row" class="margin-5">
+    <div data-layout="row" data-layout-align="start center" data-layout-xs="column" data-layout-align-xs="center center" class="margin-5">
+        <a class="footerlink" [routerLink]="['/terms']">Terms & Conditions</a>
+        <a class="footerlink" [routerLink]="['/privacy']">Privacy Policy</a>
+        <span style="flex: 1 1 auto;"></span>
+        <span>v.{{appVersion}} -&nbsp;</span>
+        <span>All rights reserved</span>
+    </div>
+    
 </mat-card>

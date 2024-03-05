@@ -86,10 +86,10 @@ import { AppService } from './services/app.service';
 import { XummService } from './services/xumm.service';
 import { UtilService } from './services/util.service';
 import { XRPLWebsocket } from './services/xrplWebSocket';
+import { LocalStorageService } from './services/local-storage.service';
 
 //special
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { LocalStorageModule } from 'angular-2-local-storage';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { HighlightSearchPipe } from './utils/searchHighlight';
 
@@ -124,41 +124,7 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     MatChipsModule,
     CodemirrorModule,
     MatDatepickerModule,
-    MatMomentDateModule,
-    //Special
-    LocalStorageModule.forRoot({ prefix: 'XrplServices', storageType: 'localStorage', notifyOptions: {setItem: true, removeItem: false} }),
-  ],
-  exports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    MatToolbarModule,
-    MatExpansionModule,
-    MatCardModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-    MatInputModule,
-    MatNativeDateModule,
-    MatSlideToggleModule,
-    MatIconModule,
-    MatSnackBarModule,
-    MatCheckboxModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatMenuModule,
-    MatStepperModule,
-    MatSelectModule,
-    MatSortModule,
-    MatChipsModule,
-    CodemirrorModule,
-    MatDatepickerModule,
-    MatMomentDateModule,
-    //Special
+    MatMomentDateModule
   ],
   declarations: [
     AppComponent,
@@ -210,7 +176,8 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     UtilService,
     XRPLWebsocket,
     DeviceDetectorService,
-    MatMomentDateModule
+    MatMomentDateModule,
+    LocalStorageService
   ],
   bootstrap: [AppComponent]
 })

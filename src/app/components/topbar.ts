@@ -4,7 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
 import { XummTypes } from 'xumm-sdk';
-import { LocalStorageService } from 'angular-2-local-storage'
+import { LocalStorageService } from '../services/local-storage.service'
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { TypeWriter } from '../utils/TypeWriter';
 import { XummService } from '../services/xumm.service';
@@ -36,7 +36,7 @@ export class TopbarComponent implements OnInit {
     this.loadingBackend = false;
     //console.log("backendAvailable: " + this.backendAvailable)
 
-    this.isDarkTheme = this.localStorage.get("darkMode");
+    this.isDarkTheme = this.localStorage.get("darkMode") === 'true';
     this.setOverlayClass();
 
     this.tw = new TypeWriter(["XRP Ledger Services", "created by nixerFFM", "XRP Ledger Services"], t => {
@@ -49,7 +49,7 @@ export class TopbarComponent implements OnInit {
   toggleDarkTheme() {
     this.isDarkTheme = !this.isDarkTheme;
     this.darkThemeChanged.emit(this.isDarkTheme);
-    this.localStorage.set("darkMode", this.isDarkTheme);
+    this.localStorage.set("darkMode", this.isDarkTheme+"");
     this.setOverlayClass();
   }
 

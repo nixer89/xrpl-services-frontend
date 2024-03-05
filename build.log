@@ -1,0 +1,27 @@
+
+> xrpl-services@4.9.2 build
+> ng build --configuration production
+
+One or more browsers which are configured in the project's Browserslist configuration will be ignored as ES5 output is not supported by the Angular CLI.
+Ignored browsers: kaios 2.5, op_mini all
+- Generating browser application bundles (phase: setup)...
+✔ Browser application bundle generation complete.
+✔ Browser application bundle generation complete.
+
+Warning: D:\XRP Ledger Services\xrpl.services\xrpl-services-frontend\src\app\services\xrpllabs-liquidity-check\checkLiquidityForToken.ts depends on 'xrpl-orderbook-reader'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+
+
+Error: src/app/app.module.ts:172:5 - error NG6001: The class 'LocalStorageService' is listed in the declarations of the NgModule 'AppModule', but is not a directive, a component, or a pipe. Either remove it from the NgModule's declarations, or add an appropriate Angular decorator.
+
+172     LocalStorageService
+        ~~~~~~~~~~~~~~~~~~~
+
+  src/app/services/local-storage.service.ts:4:14
+    4 export class LocalStorageService {
+                   ~~~~~~~~~~~~~~~~~~~
+    'LocalStorageService' is declared here.
+
+
+

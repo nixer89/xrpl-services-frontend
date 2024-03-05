@@ -9,11 +9,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged, AccountObjectsChanged } from '../utils/types';
 import { XummTypes } from 'xumm-sdk';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/local-storage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'xrpl-transactions',
@@ -66,7 +65,7 @@ export class XrplTransactionsComponent implements OnInit {
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
     }
 
-    this.dismissInfo = this.localStorage && this.localStorage.get("dismissInfo");
+    this.dismissInfo = this.localStorage && this.localStorage.get("dismissInfo") === 'true';
 
     this.route.queryParams.subscribe(async params => {
 
@@ -153,8 +152,7 @@ export class XrplTransactionsComponent implements OnInit {
       if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
         this.xrplAccount = this.localStorage.get("xrplAccount");
         
-        if(this.localStorage.keys().includes("testMode"))
-          this.isTestMode = this.localStorage.get("testMode");
+        this.isTestMode = this.localStorage.get("testMode") === 'true';
           
         this.loadAccountData(true);
       }
@@ -209,7 +207,7 @@ export class XrplTransactionsComponent implements OnInit {
         this.loadingData = true;
 
         this.localStorage.set("xrplAccount", this.xrplAccount);
-        this.localStorage.set("testMode", this.isTestMode);
+        this.localStorage.set("testMode", this.isTestMode+"");
 
         let account_info_request:any = {
           command: "account_info",
@@ -386,7 +384,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   createRandomImage(account:string) {
     try {
-      let giftSendTime:number = this.localStorage.get("gift_time");
+      let giftSendTime:number = parseInt(this.localStorage.get("gift_time"));
 
       if(!giftSendTime || (giftSendTime < (Date.now() - 86400000))) { //check non existent or older than 24 h
         //make christmas gift!
@@ -410,7 +408,7 @@ export class XrplTransactionsComponent implements OnInit {
         img.onclick = (event => {
           this.xummApi.makeChristmasPaymentRequest(account);
           this.snackBar.open("Merry Christmas! If you are lucky, you will receive a small gift within the next 24 hours!", null, {panelClass: 'snackbar-success', duration: 8000, horizontalPosition: 'center', verticalPosition: 'top'});
-          this.localStorage.set("gift_time", Date.now());
+          this.localStorage.set("gift_time", Date.now().toString());
           //delete image
           img.remove();
         });
@@ -510,7 +508,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   gotIt() {
     this.dismissInfo = true;
-    this.localStorage.set("dismissInfo", true);
+    this.localStorage.set("dismissInfo", "true");
   }
 
   private randomIntFromInterval(min, max) { // min and max included 

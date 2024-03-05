@@ -38,20 +38,24 @@
         <mat-hint *ngIf="amountInput && !validAmount && escrowBiggerThanAvailable()">Your escrow amount is too big. Max amount is: {{getAvailableBalanceForEscrow()}} XRP. ('Available Balance' minus {{ownerReserve/1000000}} XRP for account reserve) <a href="https://xrpl.org/reserves.html#owner-reserves" target="_blank"> (Reserve Info)</a></mat-hint>
       </mat-form-field>
       <mat-card appearance="outlined" data-layout="column">
-        <label>Finish After</label>  
+        <label><b>Finish After</b></label>  
         <mat-card-content style="padding-top:1em">
-          <mat-form-field>
-            <mat-label>Choose a date</mat-label>
-            <input matInput name="finishafterdate" [matDatepicker]="picker" [formControl]="finishAfterFormCtrl" (dateChange)="checkChanges()" readonly="true" (click)="picker.open()">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput name="finishaftertime" type="text" step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
-          </mat-form-field>
-          <button mat-icon-button color ="warn" (click)="resetFinishAfter()">
-            <mat-icon>highlight_off</mat-icon>
-          </button>
+          <div data-layout="row" data-layout-align="start" data-layout-gap="0.5em">
+            <mat-form-field>
+              <mat-label>Choose a date</mat-label>
+              <input matInput name="finishafterdate" [matDatepicker]="picker" [formControl]="finishAfterFormCtrl" (dateChange)="checkChanges()" readonly="true" (click)="picker.open()">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput name="finishaftertime" type="text" step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="finishafterTimeInput" (ngModelChange)="checkChanges()">
+            </mat-form-field>
+            <div style="align-items: center;">
+              <button mat-icon-button color ="warn" (click)="resetFinishAfter()">
+                <mat-icon>highlight_off</mat-icon>
+              </button>
+            </div>
+          </div>
         </mat-card-content>
         <mat-hint *ngIf="finishAfterFormCtrl && finishafterTimeInput && !validFinishAfter && !finishDateInFuture">Invalid date/time.</mat-hint>
         <mat-hint *ngIf="finishDateInFuture">Finish After needs to be in the future.</mat-hint>
@@ -61,20 +65,22 @@
         
       </mat-card>
       <mat-card appearance="outlined" data-layout="column">
-        <label>Cancel After (optional</label>
+        <label><b>Cancel After (optional)</b></label>
         <mat-card-content style="padding-top:1em">
-          <mat-form-field>
-            <mat-label>Choose a date</mat-label>
-            <input matInput name="cancelafterdate" [matDatepicker]="picker2" [formControl]="cancelAfterFormCtrl" (dateChange)="checkChanges()" readonly="true" (click)="picker2.open()">
-            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-            <mat-datepicker #picker2></mat-datepicker>
-          </mat-form-field>
-          <mat-form-field>
-            <input matInput name="cancelaftertime" type="text" step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
-          </mat-form-field>
-          <button mat-icon-button color="warn" (click)="resetCancelAfter()">
-            <mat-icon>highlight_off</mat-icon>
-          </button>
+          <div data-layout="row" data-layout-align="start" data-layout-gap="0.5em">
+            <mat-form-field>
+              <mat-label>Choose a date</mat-label>
+              <input matInput name="cancelafterdate" [matDatepicker]="picker2" [formControl]="cancelAfterFormCtrl" (dateChange)="checkChanges()" readonly="true" (click)="picker2.open()">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+              <input matInput name="cancelaftertime" type="text" step="2" placeholder="HH:mm:ss (24h format)" [(ngModel)]="cancelafterTimeInput" (ngModelChange)="checkChanges()">
+            </mat-form-field>
+            <button mat-icon-button color="warn" (click)="resetCancelAfter()">
+              <mat-icon>highlight_off</mat-icon>
+            </button>
+          </div>
         </mat-card-content>
         <mat-hint *ngIf="cancelAfterFormCtrl && cancelafterTimeInput && !validCancelAfter">Invalid date/time.</mat-hint>
         <mat-hint *ngIf="validCancelAfter && cancelDateInFuture">Cancel After needs to be in the future.</mat-hint>

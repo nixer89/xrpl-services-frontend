@@ -7,7 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged } from '../utils/types';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/local-storage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { XummTypes } from 'xumm-sdk';
@@ -61,7 +61,7 @@ export class Tools implements OnInit {
         this.overlayContainer.getContainerElement().classList.add('dark-theme');
     }
 
-    this.dismissInfo = this.localStorage && this.localStorage.get("dismissInfo");
+    this.dismissInfo = this.localStorage && this.localStorage.get("dismissInfo") === 'true';
 
     this.route.queryParams.subscribe(async params => {
       
@@ -112,8 +112,8 @@ export class Tools implements OnInit {
     if(!this.xrplAccount && this.localStorage.get("xrplAccount")) {
       this.xrplAccount = this.localStorage.get("xrplAccount");
 
-      if(this.localStorage.keys().includes("testMode") && this.localStorage.get("testMode") != null)
-        this.isTestMode = this.localStorage.get("testMode");
+      if(this.localStorage.get("testMode") != null)
+        this.isTestMode = this.localStorage.get("testMode") === 'true';
 
       await this.loadAccountData(true);
     }
@@ -245,7 +245,7 @@ export class Tools implements OnInit {
     if(this.xrplAccount) {
 
       this.localStorage.set("xrplAccount", this.xrplAccount);
-      this.localStorage.set("testMode", this.isTestMode);
+      this.localStorage.set("testMode", this.isTestMode+"");
 
       this.cannotConnectToNode = false;
       this.loadingData = true;
@@ -416,7 +416,7 @@ export class Tools implements OnInit {
 
   gotIt() {
     this.dismissInfo = true;
-    this.localStorage.set("dismissInfo", true);
+    this.localStorage.set("dismissInfo", "true");
   }
 
 }

@@ -1,5 +1,4 @@
 @use '@angular/material' as mat;
-@import '@angular/material/theming';
 
 // TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
 //  The following line adds:
@@ -76,6 +75,14 @@
   $dark-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400);
   $dark-warn: mat.define-palette(mat.$red-palette);   
   $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
+
+  label {
+    color: white;
+  }
+
+  span {
+    color: white;
+  }
 
   a {
     color: #FFB300;

@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, ViewChild, OnInit, OnDestroy } 
 import { Observable, Subscription } from 'rxjs';
 import { AccountInfoChanged, GenericBackendPostRequest, TransactionTemplate } from 'src/app/utils/types';
 import { XummTypes } from 'xumm-sdk';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../../services/local-storage.service';
 import { UtilService } from '../../services/util.service';
 import { MatExpansionPanel } from '@angular/material/expansion';
 
@@ -63,6 +63,8 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
       }
     });
 
+    /**
+     * 
     this.darkModeChangedSubscription = this.localStorage.setItems$.subscribe(value => {
       //console.log(JSON.stringify(value));
 
@@ -73,9 +75,12 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
           this.editorOptions = Object.assign({}, this.editorOptions, { theme: 'default' });
       }
     });
+    *
+    */
 
     this.loadTransactionTemplates();
   }
+  
 
   async loadTransactionTemplates() {
     this.loadingTemplates = true;

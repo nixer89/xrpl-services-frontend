@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { LocalStorageService } from 'angular-2-local-storage';
-
-declare let gtag: Function;
+import { LocalStorageService } from './services/local-storage.service';
 
 @Component({
   selector: 'app-root',
@@ -35,13 +33,12 @@ export class AppComponent implements OnInit {
   ngOnInit(){
     this.localStorage.remove("xrplAccount");
     this.localStorage.remove("testMode");
-    let storageKeys:string[] = this.localStorage.keys();
-    if(storageKeys && storageKeys.includes('darkMode')) {
-      this.darkMode = this.localStorage.get("darkMode");
+    if(this.localStorage.get('darkMode')) {
+      this.darkMode = this.localStorage.get("darkMode") === "true";
     }
     else {
       this.darkMode = true;
-      this.localStorage.set("darkMode", this.darkMode);
+      this.localStorage.set("darkMode", this.darkMode+"");
     }
     
     var bodyStyles = document.body.style;
