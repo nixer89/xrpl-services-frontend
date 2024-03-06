@@ -13,7 +13,7 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <mat-card appearance="outlined" data-layout="column" data-layout-gap="0.5em">
+  <mat-card appearance="raised" data-layout="column" data-layout-gap="0.5em">
     <label>After you have initially created your Token, you can issue more tokens to accounts which have a TrustLine to your issuer account.</label>
     <div *ngIf="!getIssuer() || !validIssuer">
       <button mat-button matTooltip="Sign In via XUMM." matTooltipPosition="above" (click)="signInWithIssuer()" style="padding:0px;">
@@ -25,7 +25,7 @@
       <div data-layout="column" data-layout-gap="0.3em">
         <label class="loading">Do you want to send your tokens on the main network or test network?</label>
         <div data-layout="row" data-layout-gap="0.5em">
-          <mat-card appearance="outlined" class="theme-background">
+          <mat-card appearance="raised" class="theme-background">
             <div data-layout="column" data-layout-align="start center">
                 <label>XRPL Network</label>
                 <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em">

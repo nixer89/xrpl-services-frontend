@@ -26,7 +26,7 @@
       <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
     </div>
     <div *ngIf="!loadingPreconditions && !preconditionsFullFilled" data-layout="column" data-layout-gap="0.3em">
-      <mat-card appearance="outlined" data-layout="column" data-layout-gap="0.3em">
+      <mat-card appearance="raised" data-layout="column" data-layout-gap="0.3em">
         <label class="loading" style="white-space: pre-wrap;"><b>ACCOUNT DELETION NOT POSSIBLE!</b></label>
         <label class="warning" style="white-space: pre-wrap;">{{this.errorMsg}}</label>
         <label>You can view the AccountDelete requirements <a href="https://xrpl.org/accounts.html#deletion-of-accounts" target="_blank">here.</a></label>

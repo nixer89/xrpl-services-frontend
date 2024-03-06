@@ -27,7 +27,7 @@
         <mat-hint *ngIf="!validSignerQuorum.valid">{{validSignerQuorum.message}}</mat-hint>
       </mat-form-field>
     </form>
-    <mat-card appearance="outlined" >
+    <mat-card appearance="raised" >
       <h4>Signer List (maximum of 32 XRPL addresses)</h4>
       <div data-layout="column" data-layout-gap="0.5em" ngStyle.xs="padding: 8px;">
         <mat-hint style="color: grey !important">Please make sure that the XRPL account this Signer List will be submitted to is not in the list below. Otherwise your transaction will fail.</mat-hint>

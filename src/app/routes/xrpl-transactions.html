@@ -1,4 +1,4 @@
-<mat-card appearance="outlined"  data-layout="column" data-layout-gap="0.5em" class="margin-5">
+<mat-card appearance="raised"  data-layout="column" data-layout-gap="0.5em" class="margin-5">
     <div data-layout="row" data-layout-xs="column" data-layout-gap="0.5em" class="margin-5">
         <div *ngIf="xrplAccount" style="align-self: start;">
             <button mat-raised-button color="primary" matTooltip="Logout" matTooltipPosition="below" (click)="logoutAccount()">
@@ -32,7 +32,7 @@
                 </div>
             </div>
         </div>
-        <mat-card appearance="outlined" class="theme-background margin-5" data-hide-xs >
+        <mat-card appearance="raised" class="theme-background margin-5" data-hide-xs >
             <div data-layout="column" data-layout-align="start center">
                 <label>XRPL Network</label>
                 <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em;">
@@ -43,7 +43,7 @@
             </div>
         </mat-card>
     </div>
-    <mat-card appearance="outlined" data-hide-gt-xs class="theme-background floatcenter" style="font-size: 0.8em">
+    <mat-card appearance="raised" data-hide-gt-xs class="theme-background floatcenter" style="font-size: 0.8em">
         <div data-layout="column" data-layout-align="start center">
             <label>XRPL Network</label>
             <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em">

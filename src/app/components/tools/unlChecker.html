@@ -35,15 +35,15 @@
     </div>
   </div>
 
-  <mat-card appearance="outlined" *ngIf="errors && errors.length > 0" data-layout="column" data-layout-gap="0.5em" data-layout-gap-xs="0.3em" style="margin-top: 1em">
+  <mat-card appearance="raised" *ngIf="errors && errors.length > 0" data-layout="column" data-layout-gap="0.5em" data-layout-gap-xs="0.3em" style="margin-top: 1em">
     <div *ngFor="let error of errors">
-      <mat-card appearance="outlined" data-layout="column" data-layout-gap="0.3em">
+      <mat-card appearance="raised" data-layout="column" data-layout-gap="0.3em">
           <label class="warning">{{error}}</label>
       </mat-card>
     </div>
   </mat-card>
 
-  <mat-card appearance="outlined" *ngIf="validatorNodes && validatorNodes.length > 0" style="margin-top: 1em">
+  <mat-card appearance="raised" *ngIf="validatorNodes && validatorNodes.length > 0" style="margin-top: 1em">
     <div data-layout="column" data-layout-gap="0.5em" data-layout-gap-xs="0.3em">
       <div *ngIf="!errors || errors.length == 0">
         <label class="success">UNL checked successfully and all signature are valid!</label>
@@ -91,7 +91,7 @@
         <h3>Validators:</h3>
         <div data-layout="column" data-layout-gap="0.5em" style="max-width: 100%;">
           <div *ngFor="let validator of validatorNodes">
-            <mat-card appearance="outlined" class="theme-background break-words">
+            <mat-card appearance="raised" class="theme-background break-words">
               <div data-layout="column" data-layout-gap="0.3em">
                 <label class="loading">Node Public Key:</label>
                 <label> {{validator.node_pub}}</label>

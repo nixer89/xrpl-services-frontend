@@ -32,7 +32,7 @@
     <label class="warning" *ngIf="validAddress && !loadingProblems && !accountNotFound && !isGateway">We have detected that your account does NOT issue any Token. If this is NOT correct, please DO NOT PROCEED!</label>
   </div>
 
-  <mat-card appearance="outlined" *ngIf="validAddress && !accountNotFound" data-layout="column" data-layout-gap="0.5em" data-layout-gap-xs="0.3em" style="margin-top: 1em">
+  <mat-card appearance="raised" *ngIf="validAddress && !accountNotFound" data-layout="column" data-layout-gap="0.5em" data-layout-gap-xs="0.3em" style="margin-top: 1em">
     <div *ngIf="loadingProblems" data-layout="row" data-layout-align="start center">
       <label>Checking your Account and Trust Line settings...&nbsp;</label>
       <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
