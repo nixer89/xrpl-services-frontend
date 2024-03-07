@@ -3,6 +3,9 @@
 
 @import './theme';
 
+@import "codemirror/lib/codemirror";
+@import "codemirror/theme/material-darker";
+
 // If you want to include the responsive API selectors
 $includeResponsiveApi: true;
 
@@ -54,12 +57,13 @@ a.footerlink {
     float: right;
 }
 
-.mat-mdc-button.sign-in-button {
+.mat-mdc-raised-button.sign-in-button {
     width: 230;
     min-width: 230px;
     height: 35px;
     padding-left: 0px;
     padding-right: 0px;
+    align-items: normal !important;
 }
 
 .mat-expansion-panel-header-title {
@@ -90,6 +94,10 @@ body .snackbar-failed {
 
 body .margin-5 {
     margin: 5px;
+}
+
+.mdc-button .mdc-button__label .flex {
+    display: flex;
 }
 
 .changed {

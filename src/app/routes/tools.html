@@ -7,7 +7,7 @@
         </div>
         <div data-layout="column" data-layout-align="start center" class="floatcenter">
             <div *ngIf="!xrplAccount">
-                <button mat-raised-button class="theme-background" style="height: 50px; border-radius: 10px; padding: 5px;" matTooltip="Login with XUMM to load your account data." matTooltipPosition="right" (click)="openSignInDialog()">
+                <button mat-raised-button class="theme-background sign-in-button" style="height: 50px; border-radius: 10px; padding: 5px;" matTooltip="Login with XUMM to load your account data." matTooltipPosition="right" (click)="openSignInDialog()">
                     <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with XUMM">
                 </button>
             </div>
@@ -37,7 +37,7 @@
                 <label>XRPL Network</label>
                 <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em">
                     <label>Main</label>&nbsp;
-                    <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkChanged()" [disabled]="loadingData" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
+                    <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkChanged()" [disabled]="loadingData" [hideIcon]="true" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                     <label>Test</label>
                 </div>
             </div>
@@ -48,7 +48,7 @@
             <label>XRPL Network</label>
             <div data-layout="row" data-layout-align="start center" style="margin-top: 0.5em">
                 <label>Main</label>&nbsp;
-                <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkChanged()" [disabled]="loadingData" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
+                <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkChanged()" [disabled]="loadingData" [hideIcon]="true" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
                 <label>Test</label>
             </div>
         </div>

@@ -15,19 +15,17 @@
           </div>
             <!-- This fills the remaining space of the current row -->
           <span style="flex: 1 1 auto"></span>
-          <div>
-            <span data-layout="row" data-layout-align="center center">
-              Support this project:&nbsp;
-              <button mat-button matTooltip="Send some Love!" matTooltipPosition="below" (click)="supportViaXumm()" style="padding:0px;">
+          <div data-layout="row" data-layout-align="start center">
+              <label>Support this project:&nbsp;</label>
+              <button matTooltip="Send some Love!" matTooltipPosition="below" (click)="supportViaXumm()" class="flex" style="border: none; background-color: transparent;">
                 <img src="../../assets/xummPay.svg" style="width: 150px; height: 45px;" alt="Support via XUMM">
               </button>
-            </span>
           </div>
         </mat-toolbar-row>
       </mat-toolbar>
       <mat-toolbar class="mat-elevation-z4 second-toolbar " color="primary" data-layout="row" style="padding-left: 0px">
         <!-- normal menu -->
-        <div data-hide-xs>
+        <div data-layout="row" data-layout-gap="0.5em" data-hide-xs>
           <button mat-button [routerLink]="['']" matTooltip="XRPL Transactions">
             <i class="material-icons topbar-menu-icon">mobile_friendly</i> XRPL Transactions
           </button>
@@ -40,9 +38,6 @@
           <button mat-button [routerLink]="['/tools']" matTooltip="Tools">
             <i class="material-icons topbar-menu-icon">build</i> XRPL Tools
           </button>
-          <!--button mat-button [routerLink]="['/generic-backend']" matTooltip="XRPL Services Generic Backend">
-            <i class="material-icons topbar-menu-icon">device_hub</i> Generic Backend
-          </button-->
           <button mat-button [routerLink]="['/xrpl-statistics']" matTooltip="XRP Ledger Stats">
             <i class="material-icons topbar-menu-icon">analytics</i> XRPL Stats
           </button>
@@ -76,7 +71,7 @@
         <mat-toolbar-row>
           <span style="font-size: 0.8em" data-layout-align="center center">
             Support this project:&nbsp;
-            <button mat-button matTooltip="Send some Love!" matTooltipPosition="above" (click)="supportViaXumm()" style="padding:0px;">
+            <button matTooltip="Send some Love!" matTooltipPosition="above" (click)="supportViaXumm()" style="padding:0px; border: none; background-color: transparent;">
               <img src="../../assets/xummPay.svg" style="width: 120px; height: 36px;" alt="Support via XUMM">
             </button>
           </span>
@@ -104,10 +99,6 @@
             <mat-icon class="material-icons">build</mat-icon>
             <span>XRPL Tools</span>
           </button>
-          <!--button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/generic-backend']" matTooltip="XRPL Services Generic Backend">
-            <mat-icon class="material-icons">device_hub</mat-icon>
-            <span>Generic Backend</span>
-          </button-->
           <button mat-menu-item [ngStyle]="{'color': isDarkTheme?'white':'black' }" [routerLink]="['/xrpl-statistics']">
             <mat-icon class="material-icons">analytics</mat-icon>
             <span>XRPL Statistics</span>

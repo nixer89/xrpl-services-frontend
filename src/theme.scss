@@ -33,8 +33,8 @@
     background-color: #fc1a1a !important;
   }
 
-  .warning {
-    color: #EB0000;
+  .warning .label {
+    color: #EB0000 !important;
   }
 
   .loading {
@@ -47,7 +47,7 @@
   }
 
   .success {
-    color: green
+    color: green !important;
   }
 
   .theme-background {
@@ -69,6 +69,14 @@
   $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
   label {
+    color: white;
+  }
+
+  h2 {
+    color: white;
+  }
+
+  h3 {
     color: white;
   }
 

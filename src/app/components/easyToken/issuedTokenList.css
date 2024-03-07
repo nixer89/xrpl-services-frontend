@@ -22,22 +22,15 @@ td {
 
 /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
 .mat-chip-bithomp {
-    font-size: 9px !important;
     background-color: #22A9BC !important;
     color: white !important;
 } 
 
 /* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
 .mat-chip-xrpscan {
-    font-size: 9px !important;
-    min-height: 12px;
-    padding: 7px 5px;
-    border-radius: 7px;
     background-color: #3279B6 !important;
     color: white !important;
 }
-
-
 
 @media (min-width:959px) {
 
@@ -80,8 +73,8 @@ td {
     .mat-column-selfassessment {
         word-wrap: break-word !important;
         white-space: unset !important;
-        flex: 0 0 4% !important;
-        width: 4% !important;
+        flex: 0 0 5% !important;
+        width: 5% !important;
         overflow-wrap: break-word;
         word-wrap: break-word;
     
@@ -188,8 +181,8 @@ td {
     .mat-column-offers {
         word-wrap: break-word !important;
         white-space: unset !important;
-        flex: 0 0 5% !important;
-        width: 5% !important;
+        flex: 0 0 6% !important;
+        width: 6% !important;
         overflow-wrap: break-word;
         word-wrap: break-word;
     
@@ -224,8 +217,8 @@ td {
     .mat-column-dexlink {
         word-wrap: break-word !important;
         white-space: unset !important;
-        flex: 0 0 7% !important;
-        width: 7% !important;
+        flex: 0 0 8% !important;
+        width: 8% !important;
         overflow-wrap: break-word;
         word-wrap: break-word;
     
@@ -290,6 +283,13 @@ td {
     .mat-mdc-cell {
         padding-left: 1em;
         font-size: 12px;
+        justify-content: start;
+        border-bottom-style: none;
+    }
+
+    .mat-mdc-row {
+        border-bottom-style: solid !important;
+        border-bottom-width: 0 !important;
     }
 
     .mat-column-account {
