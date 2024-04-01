@@ -13,6 +13,7 @@ import { LocalStorageService } from '../services/local-storage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { isInstalled, getPublicKey, signMessage } from "@gemwallet/api";
 
 @Component({
   selector: 'xrpl-transactions',
@@ -318,6 +319,50 @@ export class XrplTransactionsComponent implements OnInit {
         this.loadAccountData(false);
       }
     });
+  }
+
+  signInGem(): void {
+    isInstalled().then((response) => {
+      if (response.result?.isInstalled) {
+        getPublicKey().then((response) => {
+          const pubkey = response.result?.publicKey;
+          const address = response.result?.address;
+          fetch('https://xrpl-wallet-connect.vercel.app/api/auth/gem/nonce?pubkey=' + pubkey + '&address=' + address)
+          .then(response => response.json())
+          .then(data => {
+            const nonceToken = data.token;
+
+            signMessage(nonceToken).then((response) => {
+              const signedMessage = response.result?.signedMessage;
+              if (!signedMessage) {
+                console.error("Failed to sign message");
+                return;
+              }
+
+              fetch('https://xrpl-wallet-connect.vercel.app/api/auth/gem/checksign?signature=' + signedMessage + '&nonce=' + nonceToken, {
+                method: 'GET',
+              })
+              .then(response => response.json())
+              .then(data => {
+                const address = data.address;
+                this.loadingData = true;
+                this.xrplAccount = address;
+                this.loadAccountData(false);
+              });
+            });
+              
+          });
+        }).catch((error) => {
+          console.log(error);
+        });
+      }
+    });
+  }
+ 
+  signInCrossmark(): void {
+    const hashUrl = "https://xrpl-wallet-connect.vercel.app/api/auth/crossmark/hash";
+    const hashR = fetch(hashUrl);
+    const hashJson = hashR.then((response) => response.json());
   }
 
   openGenericDialog(payload: GenericBackendPostRequest):void {
