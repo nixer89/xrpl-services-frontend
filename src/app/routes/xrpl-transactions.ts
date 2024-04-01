@@ -301,7 +301,7 @@ export class XrplTransactionsComponent implements OnInit {
   openSignInDialog(): void {
     const dialogRef = this.matDialog.open(XummSignDialogComponent, {
       width: 'auto',
-      height: 'auto;',
+      height: 'auto;', 
       data: {xrplAccount: null}
     });
 
