@@ -14,6 +14,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { isInstalled, getPublicKey, signMessage } from "@gemwallet/api";
+import sdk from "@crossmarkio/sdk";
 
 @Component({
   selector: 'xrpl-transactions',
@@ -339,9 +340,7 @@ export class XrplTransactionsComponent implements OnInit {
                 return;
               }
 
-              fetch('https://xrpl-wallet-connect.vercel.app/api/auth/gem/checksign?signature=' + signedMessage + '&nonce=' + nonceToken, {
-                method: 'GET',
-              })
+              fetch('https://xrpl-wallet-connect.vercel.app/api/auth/gem/checksign?signature=' + signedMessage + '&nonce=' + nonceToken)
               .then(response => response.json())
               .then(data => {
                 const address = data.address;
@@ -359,10 +358,52 @@ export class XrplTransactionsComponent implements OnInit {
     });
   }
  
-  signInCrossmark(): void {
+  async signInCrossmark(): Promise<void> {
     const hashUrl = "https://xrpl-wallet-connect.vercel.app/api/auth/crossmark/hash";
-    const hashR = fetch(hashUrl);
-    const hashJson = hashR.then((response) => response.json());
+    const response = await fetch(hashUrl);
+    const hashJson = await response.json();
+    const hash = hashJson.hash;
+    const id = await sdk.methods.signInAndWait(hash);
+    console.log(id);
+    const address = id.response.data.address;
+    const pubkey = id.response.data.publicKey;
+    const signature = id.response.data.signature;
+    const checkSign = await fetch(`https://xrpl-wallet-connect.vercel.app/api/auth/crossmark/checksign?signature=${signature}&nonce=${hash}&pubkey=${pubkey}&address=${address}`);
+    const checkSignJson = await checkSign.json();
+
+    this.loadingData = true;
+    this.xrplAccount = address;
+    this.loadAccountData(false);
+  }
+
+  signInCrossmark2(): void {
+    const hashUrl = "https://xrpl-wallet-connect.vercel.app/api/auth/crossmark/hash";
+    fetch(hashUrl)
+    .then(response => response.json())
+    .then(data => {
+      const hash = data.hash;
+      sdk.methods.signInAndWait(hash)
+      .then((id) => {
+        const address = id.response.data.address;
+        const pubkey = id.response.data.publicKey;
+        const signature = id.response.data.signature;
+        fetch('https://xrpl-wallet-connect.vercel.app/api/auth/crossmark/checksign?signature=' + signature, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            "Authorization": 'Bearer ' + hash
+          },
+          body: JSON.stringify({
+            pubkey: pubkey,
+            address: address
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+        });
+      });
+    });
   }
 
   openGenericDialog(payload: GenericBackendPostRequest):void {

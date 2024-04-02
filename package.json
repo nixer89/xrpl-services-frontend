@@ -28,7 +28,7 @@
     "@angular/platform-browser": "^17.2.3",
     "@angular/platform-browser-dynamic": "^17.2.3",
     "@angular/router": "^17.2.3",
-    "@crossmarkio/sdk": "^0.3.7",
+    "@crossmarkio/sdk": "^0.3.8-b.3",
     "@ctrl/ngx-codemirror": "^7.0.0",
     "@gemwallet/api": "^3.7.0",
     "buffer": "^6.0.3",
