@@ -376,36 +376,6 @@ export class XrplTransactionsComponent implements OnInit {
     this.loadAccountData(false);
   }
 
-  signInCrossmark2(): void {
-    const hashUrl = "https://xrpl-wallet-connect.vercel.app/api/auth/crossmark/hash";
-    fetch(hashUrl)
-    .then(response => response.json())
-    .then(data => {
-      const hash = data.hash;
-      sdk.methods.signInAndWait(hash)
-      .then((id) => {
-        const address = id.response.data.address;
-        const pubkey = id.response.data.publicKey;
-        const signature = id.response.data.signature;
-        fetch('https://xrpl-wallet-connect.vercel.app/api/auth/crossmark/checksign?signature=' + signature, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            "Authorization": 'Bearer ' + hash
-          },
-          body: JSON.stringify({
-            pubkey: pubkey,
-            address: address
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-        });
-      });
-    });
-  }
-
   openGenericDialog(payload: GenericBackendPostRequest):void {
     const dialogRef = this.matDialog.open(GenericPayloadQRDialog, {
       width: 'auto',
