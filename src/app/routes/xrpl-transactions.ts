@@ -13,6 +13,8 @@ import { LocalStorageService } from '../services/local-storage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
+import { isInstalled, getPublicKey, signMessage } from "@gemwallet/api";
+import sdk from "@crossmarkio/sdk";
 
 @Component({
   selector: 'xrpl-transactions',
@@ -300,7 +302,7 @@ export class XrplTransactionsComponent implements OnInit {
   openSignInDialog(): void {
     const dialogRef = this.matDialog.open(XummSignDialogComponent, {
       width: 'auto',
-      height: 'auto;',
+      height: 'auto;', 
       data: {xrplAccount: null}
     });
 
@@ -318,6 +320,60 @@ export class XrplTransactionsComponent implements OnInit {
         this.loadAccountData(false);
       }
     });
+  }
+
+  signInGem(): void {
+    isInstalled().then((response) => {
+      if (response.result?.isInstalled) {
+        getPublicKey().then((response) => {
+          const pubkey = response.result?.publicKey;
+          const address = response.result?.address;
+          fetch('https://xrpl-wallet-connect.vercel.app/api/auth/gem/nonce?pubkey=' + pubkey + '&address=' + address)
+          .then(response => response.json())
+          .then(data => {
+            const nonceToken = data.token;
+
+            signMessage(nonceToken).then((response) => {
+              const signedMessage = response.result?.signedMessage;
+              if (!signedMessage) {
+                console.error("Failed to sign message");
+                return;
+              }
+
+              fetch('https://xrpl-wallet-connect.vercel.app/api/auth/gem/checksign?signature=' + signedMessage + '&nonce=' + nonceToken)
+              .then(response => response.json())
+              .then(data => {
+                const address = data.address;
+                this.loadingData = true;
+                this.xrplAccount = address;
+                this.loadAccountData(false);
+              });
+            });
+              
+          });
+        }).catch((error) => {
+          console.log(error);
+        });
+      }
+    });
+  }
+ 
+  async signInCrossmark(): Promise<void> {
+    const hashUrl = "https://xrpl-wallet-connect.vercel.app/api/auth/crossmark/hash";
+    const response = await fetch(hashUrl);
+    const hashJson = await response.json();
+    const hash = hashJson.hash;
+    const id = await sdk.methods.signInAndWait(hash);
+    console.log(id);
+    const address = id.response.data.address;
+    const pubkey = id.response.data.publicKey;
+    const signature = id.response.data.signature;
+    const checkSign = await fetch(`https://xrpl-wallet-connect.vercel.app/api/auth/crossmark/checksign?signature=${signature}&nonce=${hash}&pubkey=${pubkey}&address=${address}`);
+    const checkSignJson = await checkSign.json();
+
+    this.loadingData = true;
+    this.xrplAccount = address;
+    this.loadAccountData(false);
   }
 
   openGenericDialog(payload: GenericBackendPostRequest):void {

@@ -10,6 +10,12 @@
                 <button mat-raised-button class="theme-background sign-in-button" style="height: 50px; border-radius: 12px; padding: 5px 5px 5px 5px;" matTooltip="Login with XUMM to load your account data." matTooltipPosition="right" (click)="openSignInDialog()">
                     <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with XUMM">
                 </button>
+                <button mat-raised-button class="theme-background sign-in-button" style="height: 50px; border-radius: 12px; padding: 5px 5px 5px 5px;" matTooltip="Login with Gem to load your account data." matTooltipPosition="right" (click)="signInGem()">
+                    <img src="../../assets/gemSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with Gem">
+                </button>
+                <button mat-raised-button class="theme-background sign-in-button" style="height: 50px; border-radius: 12px; padding: 5px 5px 5px 5px;" matTooltip="Login with Crossmark to load your account data." matTooltipPosition="right" (click)="signInCrossmark()">
+                    <img src="../../assets/crossmarkSignIn.svg" style="width: 230px; height: 40px;"  alt="Login with Crossmark">
+                </button>
             </div>
             <div style="padding-top: 0.5em" class="floatcenter">
                 <div *ngIf="!xrplAccount" data-layout="column" data-layout-gt-md="row" data-layout-gap="0.5em">
