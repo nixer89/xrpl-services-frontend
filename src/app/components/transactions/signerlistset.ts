@@ -252,7 +252,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
     if(signerListToSend && signerListToSend.length > 0 && this.validSignerList)
       this.payload.txjson.SignerEntries = signerListToSend;
 
-    this.payload.custom_meta.instruction += "\n\n- Please check the Signer List in the XUMM App!";
+    this.payload.custom_meta.instruction += "\n\n- Please check the Signer List in the Xaman App!";
 
     this.onPayload.emit(this.payload);
   }
@@ -271,7 +271,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   deleteSignerList() {
-    
+
     this.onPayload.emit({
       txjson: {
         TransactionType: "SignerListSet",
