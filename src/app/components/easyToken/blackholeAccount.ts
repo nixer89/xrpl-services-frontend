@@ -5,7 +5,6 @@ import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import { Subject } from 'rxjs';
 import { TransactionValidation, GenericBackendPostRequest } from '../../utils/types';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
@@ -25,7 +24,6 @@ export class BlackholeAccount implements OnInit {
   constructor(
     private xummBackend: XummService,
     private matDialog: MatDialog,
-    private googleAnalytics: GoogleAnalyticsService,
     private device: DeviceDetectorService,
     private xrplWebSocket: XRPLWebsocket,
     private router: Router) { }
@@ -226,7 +224,6 @@ export class BlackholeAccount implements OnInit {
 
           //refresh amounts
           await this.loadAccountData();
-          this.googleAnalytics.analyticsEventEmitter('pay_for_blackhole', 'blackhole', 'blackhole_component');
       } else {
         this.paymentNotSuccessfull = true;
       }
@@ -236,7 +233,6 @@ export class BlackholeAccount implements OnInit {
   async loadAccountData() {
     if(this.issuerAccount) {
       this.loadingIssuerAccount = true;
-      this.googleAnalytics.analyticsEventEmitter('loading_account_data', 'blackhole', 'blackhole_component');
 
       let account_info_request:any = {
         command: "account_info",
@@ -452,7 +448,6 @@ export class BlackholeAccount implements OnInit {
 
       if(info && info.success && info.account && info.testnet == this.isTestMode) {
         this.blackholeMasterDisabled = true;
-        this.googleAnalytics.analyticsEventEmitter('account_black_hole_succeed', 'easy_token', 'easy_token_component');
       } else {
         this.blackholeMasterDisabled = false;
       }

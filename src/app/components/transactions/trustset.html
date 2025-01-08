@@ -57,7 +57,7 @@
         
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em">
           <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidTrustSet || !issuerHasDefaultRipple || !currencyExists || loadingIssuerData">
-            Send Trust Set to XUMM
+            Send Trust Set to Xaman
           </button>
           <button *ngIf="isEditMode" mat-raised-button color="secondary" (click)="cancelEdit()">
             Cancel Edit

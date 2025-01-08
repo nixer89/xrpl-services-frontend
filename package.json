@@ -1,6 +1,6 @@
 {
   "name": "xrpl-services",
-  "version": "4.9.2",
+  "version": "4.10.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --open",
@@ -48,6 +48,7 @@
     "rxjs": "^6.6.7",
     "stream-browserify": "^3.0.0",
     "tslib": "^2.3.1",
+    "vm-browserify": "^1.1.2",
     "xrpl-orderbook-reader": "^0.3.3",
     "xrpl-tagged-address-codec": "^0.2.1",
     "xumm-sdk": "^0.4.6",
@@ -61,7 +62,7 @@
     "@types/jasmine": "^3.10.2",
     "@types/jasminewd2": "^2.0.10",
     "@types/md5": "^2.3.1",
-    "@types/node": "^20.11.21",
+    "@types/node": "16.10",
     "@types/qrcode": "^1.4.1",
     "codelyzer": "^6.0.2",
     "jasmine-core": "^3.10.1",

@@ -26,7 +26,7 @@
                 <label>Please proceed with caution, as they are not affiliated with XUMM!</label>
                 <label>&nbsp;</label>
                 <label>For more information please read this tweet:</label>
-                <a href="https://twitter.com/XummWallet/status/1461225738594623488" target="_blank">@XummWallet tweet</a>
+                <a href="https://twitter.com/XummWallet/status/1461225738594623488" target="_blank">@XamanWallet tweet</a>
             </mat-card>
             <mat-card class="theme-background" *ngIf="showKyc && (!genericPayload.payload.custom_meta || !genericPayload.payload.custom_meta.blob || !genericPayload.payload.custom_meta.blob.addWarningXumm)" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">
                 <div fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
@@ -79,10 +79,10 @@
     <div *ngIf="!loading && !showError && waitingForPayment" fxLayout="column" fxLayoutGap="1.5em">
         <div *ngIf="qrLink" fxLayout="column" fxLayoutGap="0.5em" class="floatcenter">
             <span *ngIf="pushed">Push notification has been sent. If not received, scan QR code.</span>
-            <span *ngIf="!pushed">Scan QR code to show the XUMM Sign Request in your XUMM App:</span>
+            <span *ngIf="!pushed">Scan QR code to show the Xaman Sign Request in your Xaman App:</span>
             <mat-progress-spinner *ngIf="!showQR" color="primary" mode="indeterminate"></mat-progress-spinner>
             <img (load)="QRLoaded()" [src]="qrLink" width="150" height="150" style="vertical-align: middle;" alt="">
-            <span *ngIf="showQR">Alternatively click the following link: <a [href]="payloadLink">Open in XUMM</a></span>
+            <span *ngIf="showQR">Alternatively click the following link: <a [href]="payloadLink">Open in Xaman</a></span>
         </div>
         <div class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
             <span>Waiting for you to sign the request...</span>

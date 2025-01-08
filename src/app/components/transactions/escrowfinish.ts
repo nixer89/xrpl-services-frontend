@@ -1,7 +1,6 @@
 import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
 import { isValidXRPAddress } from 'src/app/utils/utils';
 
@@ -10,8 +9,6 @@ import { isValidXRPAddress } from 'src/app/utils/utils';
   templateUrl: './escrowfinish.html'
 })
 export class EscrowFinishComponent implements OnInit, OnDestroy {
-
-  constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -47,7 +44,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
 
   showEscrowSequenceSelectedStyle:boolean = false;
   escrowSequenceSelected:boolean = false;
-  showPassword:boolean = true;
+  showPassword:boolean = false;
 
   isValidEscrowFinish = false;
   validAddress = false;
@@ -108,8 +105,6 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
   }
 
   sendPayloadToXumm() {
-
-    this.googleAnalytics.analyticsEventEmitter('escrow_finish', 'sendToXumm', 'escrow_finish_component');
 
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {

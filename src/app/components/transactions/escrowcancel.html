@@ -35,7 +35,7 @@
     </form>
     <div fxLayout="row" fxLayoutAlign="start center" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowCancel">
-        Send Escrow Cancel to XUMM
+        Send Escrow Cancel to Xaman
       </button>
       <label *ngIf="!escrowOwnerInput || !validAddress">Please enter a valid XRPL address.</label>
       <label *ngIf="validAddress && ( !escrowSequenceInput || !validSequence )">Please enter a valid Escrow Sequence.</label>

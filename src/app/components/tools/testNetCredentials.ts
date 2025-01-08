@@ -3,7 +3,6 @@ import { AppService } from '../../services/app.service';
 import * as qrcode from 'qrcode';
 import * as clipboard from 'copy-to-clipboard';
 import { MatStepper } from '@angular/material/stepper';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -13,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class TestNetCredentialsComponent {
 
-  constructor(private app: AppService, private snackBar: MatSnackBar, private googleAnalytics: GoogleAnalyticsService) {}
+  constructor(private app: AppService, private snackBar: MatSnackBar) {}
 
   loading:boolean = false;
   error:string = null;
@@ -35,11 +34,11 @@ export class TestNetCredentialsComponent {
     try {
       //call ripple servers to get testnet credentials with a balance
       this.newAccount = await this.app.post("https://faucet.altnet.rippletest.net/accounts", {});
-      //this.newAccount = {"account":{"xAddress":"TVrRjmCE1twUKGbFBhdyR12pXqitZtAv6PjXB3E33Nm8hTQ","secret":"snEtbXeqo7f7Bg2oc552CV6yct4QW","classicAddress":"rUwnrWz9PnV7oFcFcpdkEjCbVUAEaZCgso","address":"rUwnrWz9PnV7oFcFcpdkEjCbVUAEaZCgso"},"amount":1000,"balance":1000};
-      //console.log("credentials: " + JSON.stringify(this.newAccount));
+      //this.newAccount = {"account":{"xAddress":"TVrRjmCE1twUKGbFBhdyR12pXqitZtAv6PjXB3E33Nm8hTQ","seed":"snEtbXeqo7f7Bg2oc552CV6yct4QW","classicAddress":"rUwnrWz9PnV7oFcFcpdkEjCbVUAEaZCgso","address":"rUwnrWz9PnV7oFcFcpdkEjCbVUAEaZCgso"},"amount":1000,"balance":1000};
+      console.log("credentials: " + JSON.stringify(this.newAccount));
 
-      if(this.newAccount)
-        this.qrCode = await qrcode.toDataURL(this.newAccount.account.secret);
+      if(this.newAccount && this.newAccount.seed)
+        this.qrCode = await qrcode.toDataURL(this.newAccount.seed);
 
       if(!this.newAccount || !this.qrCode)
         this.error = "Something went wrong. Please try again later! If the error persists, please report via twitter @XrplServices!"
@@ -53,12 +52,11 @@ export class TestNetCredentialsComponent {
 
     this.loading = false;
 
-    this.googleAnalytics.analyticsEventEmitter('test_net_account_created', 'test_net', 'test_net_component');
   }
 
   copyFamilySeed() {
-    if(this.newAccount && this.newAccount.account && this.newAccount.account.secret) {
-      clipboard(this.newAccount.account.secret);
+    if(this.newAccount && this.newAccount.seed) {
+      clipboard(this.newAccount.seed);
       this.snackBar.dismiss();
       this.snackBar.open("Family Seed copied to clipboard!", null, {panelClass: 'snackbar-success', duration: 3000, horizontalPosition: 'center', verticalPosition: 'bottom'});
     }

@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AppService } from '../../services/app.service';
 import { IssuerVerification, Token, NftIssuer } from '../../utils/types'
 import * as normalizer from 'src/app/utils/normalizers';
@@ -30,8 +29,7 @@ export class IssuedNftList implements OnInit {
     private app: AppService,
     private xummBackend: XummService,
     private deviceDetector: DeviceDetectorService,
-    private matDialog: MatDialog,
-    private googleAnalytics: GoogleAnalyticsService) {}
+    private matDialog: MatDialog) {}
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -149,8 +147,6 @@ export class IssuedNftList implements OnInit {
         if(this.datasource && this.datasource.data) {
           this.numberOfIssuedTokens = this.datasource.data.length;
         }
-
-        this.googleAnalytics.analyticsEventEmitter('issuer_list_loaded', 'issuer_list', 'issuer_list_component');
 
         this.kycTokensOnly = this.allTokens.filter(token => token.kyc);
       }

@@ -87,7 +87,7 @@
     </form>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
       <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!isValidAccountSet">
-        Send Account Settings to XUMM
+        Send Account Settings to Xaman
       </button>
       <button mat-raised-button color="warn" (click)="deleteDomain()" matTooltip="{{originalAccountInfo && originalAccountInfo.Domain ? 'Delete Domain: ' : 'Delete Domain'}}{{hexToString(originalAccountInfo && originalAccountInfo.Domain)}}" [disabled]="originalAccountInfo && !originalAccountInfo.Domain">
         Delete Domain

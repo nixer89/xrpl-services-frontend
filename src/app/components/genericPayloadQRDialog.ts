@@ -5,7 +5,6 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
 import { XummTypes} from 'xumm-sdk'
-import { GoogleAnalyticsService } from '../services/google-analytics.service';
 import { LocalStorageService } from 'angular-2-local-storage';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AppService } from "../services/app.service";
@@ -50,7 +49,6 @@ export class GenericPayloadQRDialog implements OnInit {
         private deviceDetector: DeviceDetectorService,
         public dialogRef: MatDialogRef<GenericPayloadQRDialog>,
         @Inject(MAT_DIALOG_DATA) public genericPayload: GenericBackendPostRequest,
-        private googleAnalytics: GoogleAnalyticsService,
         private localStorage: LocalStorageService,
         private overlayContainer: OverlayContainer) {
         }
@@ -154,8 +152,6 @@ export class GenericPayloadQRDialog implements OnInit {
             this.genericPayload.payload.options.forceAccount = true;
         }
 
-        if(this.genericPayload.payload.txjson.TransactionType)
-            this.googleAnalytics.analyticsEventEmitter(this.genericPayload.payload.txjson.TransactionType.toLowerCase()+'_transaction', 'sendToXummGeneric', 'generic_payload_dialog_component');
 
         let xummResponse:XummTypes.XummPostPayloadResponse;
         try {

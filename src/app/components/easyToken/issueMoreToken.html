@@ -16,8 +16,8 @@
   <mat-card fxLayout="column" fxLayoutGap="0.5em">
     <label>After you have initially created your Token, you can issue more tokens to accounts which have a TrustLine to your issuer account.</label>
     <div *ngIf="!getIssuer() || !validIssuer">
-      <button mat-button matTooltip="Sign In via XUMM." matTooltipPosition="above" (click)="signInWithIssuer()" style="padding:0px;">
-        <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
+      <button mat-button matTooltip="Sign In via Xaman." matTooltipPosition="above" (click)="signInWithIssuer()" style="padding:0px;">
+        <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via Xaman">
       </button>
       &nbsp;<label class="loading">Please sign in with the issuer account.</label>
     </div>
@@ -79,7 +79,7 @@
         </div>
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
           <button mat-raised-button color="primary" (click)="issueToken()" [disabled]="!validAddress || !validIssuer || !validCurrencyCode || !validNumberOfTokens || notEnoughLimit">
-            Send Token via XUMM
+            Send Token via Xaman
           </button>
           <button *ngIf="currencyCode" mat-raised-button (click)="clearCurrencyCode()" [disabled]="!currencyCode">
             Clear Currency Code

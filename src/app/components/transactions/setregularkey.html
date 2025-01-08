@@ -29,7 +29,7 @@
     </form>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!validAddress || (originalAccountInfo && (regularKeyInput == originalAccountInfo.Account || regularKeyInput == originalAccountInfo.RegularKey))">
-        Send Set Regular Key to XUMM
+        Send Set Regular Key to Xaman
       </button>
       <button mat-raised-button color="warn" (click)="deleteRegularKey()" matTooltip="Delete Regular Key!" [disabled]="(originalAccountInfo || signerList) && (!hasAlternativeSigningMethod() || originalAccountInfo && !originalAccountInfo.RegularKey)">
         Delete Regular Key

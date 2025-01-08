@@ -85,7 +85,6 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { AppService } from './services/app.service';
 import { XummService } from './services/xumm.service';
 import { UtilService } from './services/util.service';
-import { GoogleAnalyticsService } from './services/google-analytics.service';
 import { XRPLWebsocket } from './services/xrplWebSocket';
 
 //special
@@ -177,7 +176,6 @@ import { HighlightSearchPipe } from './utils/searchHighlight';
     AppService,
     XummService,
     UtilService,
-    GoogleAnalyticsService,
     XRPLWebsocket,
     DeviceDetectorService,
     MatMomentDateModule

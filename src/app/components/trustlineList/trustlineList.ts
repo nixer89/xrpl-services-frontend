@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import * as util from '../../utils/flagutils';
 import * as normalizer from 'src/app/utils/normalizers';
 import { AccountInfoChanged, AccountObjectsChanged, RippleState, SimpleTrustLine } from 'src/app/utils/types';
@@ -56,8 +55,6 @@ export class TrustLineList implements OnInit, OnDestroy {
 
     private trustLineAccountChangedSubscription: Subscription;
     private accountObjectsChangedSubscription: Subscription;
-
-    constructor(private googleAnalytics: GoogleAnalyticsService) {}
 
     ngOnInit() {
         this.trustLineAccountChangedSubscription = this.xrplAccountInfoChanged.subscribe(account => {
@@ -164,14 +161,12 @@ export class TrustLineList implements OnInit, OnDestroy {
     }
 
     editTrustline(trustLine: SimpleTrustLine) {
-        this.googleAnalytics.analyticsEventEmitter('trustline_edit', 'trustline_list', 'trustline_list_component');
         //console.log("trustline selected: " + JSON.stringify(trustline));
         this.trustLineEdit.emit(trustLine);
     }
 
     deleteTrustLine(trustLine: SimpleTrustLine) {
         if(trustLine.balance === 0) {
-            this.googleAnalytics.analyticsEventEmitter('trustline_delete', 'trustline_list', 'trustline_list_component');
             //console.log("trustline selected: " + JSON.stringify(trustline));
             this.trustLineDelete.emit(trustLine);
         }
@@ -183,7 +178,6 @@ export class TrustLineList implements OnInit, OnDestroy {
 
     setNoRippleFlag(trustLine: SimpleTrustLine) {
         if(!trustLine.no_ripple) {
-            this.googleAnalytics.analyticsEventEmitter('setNoRippleFlag', 'trustline_list', 'trustline_list_component');
             //console.log("trustline selected: " + JSON.stringify(trustline));
             this.disableRippling.emit(trustLine);
         }

@@ -74,7 +74,7 @@
     
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!this.signerQuorumInput || !validSignerList">
-        Send Signer List Set to XUMM
+        Send Signer List Set to Xaman
       </button>
       <button mat-raised-button color="warn" (click)="deleteSignerList()" matTooltip="Delete Signer List!" [disabled]="originalAccountInfo && (!signerListObject || !hasAlternativeSigningMethod())">
         Delete Signer List from Account

@@ -1,6 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild, AfterViewInit } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import * as normalizer from '../../utils/normalizers';
@@ -44,7 +43,7 @@ export class EscrowList implements OnInit, OnDestroy {
 
     datasource:MatTableDataSource<any> = null;
 
-    constructor(private xrplWebSocket: XRPLWebsocket, private googleAnalytics: GoogleAnalyticsService) {}
+    constructor(private xrplWebSocket: XRPLWebsocket) {}
 
     ngOnInit() {
 
@@ -155,7 +154,6 @@ export class EscrowList implements OnInit, OnDestroy {
             let message:any = await this.xrplWebSocket.getWebsocketMessage("escrowList"+this.uniqueIdentifier, txInfo, this.testMode);
 
             this.handleWebsocketMessage(message);
-            this.googleAnalytics.analyticsEventEmitter('escrow_list_selected', 'escrow_list', 'escrow_list_component');
         }
     }
 

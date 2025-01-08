@@ -3,7 +3,6 @@ import { Subscription, Observable} from 'rxjs';
 import * as md5 from 'md5';
 import * as emailValidator from 'email-validator'
 import * as flagsutil from '../../utils/flagutils';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { XummTypes } from 'xumm-sdk';
 import { AccountObjectsChanged, AccountInfoChanged } from 'src/app/utils/types';
 
@@ -19,8 +18,6 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   private ACCOUNT_FLAG_DEFAULT_RIPPLE:number = 8;
   private ACCOUNT_FLAG_DEPOSIT_AUTH:number = 9;
   
-
-  constructor(private googleAnalytics: GoogleAnalyticsService) { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -162,8 +159,6 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     //console.log("domain hex: " + this.stringToHex(this.domainInput.trim()));
     //console.log("email: " + this.emailInput);
 
-    this.googleAnalytics.analyticsEventEmitter('set_account_data', 'sendToXumm', 'account_set_component');
-
     this.payload.custom_meta = {};
     this.payload.custom_meta.instruction = "";
 
@@ -236,7 +231,6 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   }
 
   deleteDomain() {
-    this.googleAnalytics.analyticsEventEmitter('delete_domain', 'sendToXumm', 'account_set_component');
     this.payload.txjson.Domain = '';
 
     this.payload.custom_meta = {};
@@ -252,8 +246,7 @@ export class AccountSetComponent implements OnInit, OnDestroy {
   }
 
   deleteEmailHash() {
-    this.googleAnalytics.analyticsEventEmitter('delete_emailhash', 'sendToXumm', 'account_set_component');
-
+    
     this.payload.txjson.EmailHash = "00000000000000000000000000000000";
     this.payload.custom_meta = {};
     this.payload.custom_meta.instruction = "Delete Email attached to the XRPL account";

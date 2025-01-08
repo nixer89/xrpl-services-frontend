@@ -1,7 +1,6 @@
 import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { GoogleAnalyticsService } from '../../services/google-analytics.service';
 import { AccountInfoChanged, XrplAccountChanged, Token, SimpleTrustLine, XrplCurrency, AccountObjectsChanged } from 'src/app/utils/types';
 import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute } from '@angular/router';
@@ -24,8 +23,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private xrplWebSocket: XRPLWebsocket,
               private app: AppService,
-              private route: ActivatedRoute,
-              private googleAnalytics: GoogleAnalyticsService) { }
+              private route: ActivatedRoute) { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -270,8 +268,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     //console.log("sendPayloadToXumm: " + this.issuedCurrencyInput);
 
-    this.googleAnalytics.analyticsEventEmitter('trust_set', 'sendToXumm', 'trust_set_component');
-
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
         TransactionType: "TrustSet",
@@ -447,7 +443,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   onDisableRippling(trustline:SimpleTrustLine) {
     //console.log("onDisableRippling");
     //console.log("onDisableRippling: " + this.issuedCurrencyInput);
-    this.googleAnalytics.analyticsEventEmitter('trust_set', 'onDisableRippling', 'trust_set_component');
 
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
@@ -504,7 +499,6 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   deleteTrustLine(trustline: SimpleTrustLine) {
     //console.log("deleteTrustLine: " + this.issuedCurrencyInput);
-    this.googleAnalytics.analyticsEventEmitter('trust_set', 'deleteTrustLine', 'trust_set_component');
 
     let payload:XummTypes.XummPostPayloadBodyJson = {
       txjson: {
