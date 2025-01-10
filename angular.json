@@ -37,7 +37,8 @@
               "copy-to-clipboard",
               "qrcode",
               "stream-browserify",
-              "crypto-browserify"
+              "crypto-browserify",
+              "vm-browserify"
             ],
             "vendorChunk": true,
             "extractLicenses": false,

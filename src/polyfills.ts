@@ -67,4 +67,5 @@ window.Buffer = window.Buffer || require('buffer').Buffer;
 
 (window as any).process = {
     env: { DEBUG: undefined },
+    version: ""
 };

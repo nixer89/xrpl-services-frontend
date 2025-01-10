@@ -54,15 +54,17 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
     else
       this.editorOptions.theme = "default";
 
-    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(accountData => {
+    this.accountInfoChangedSubscription = this.accountInfoChanged.subscribe(async accountData => {
       //console.log("account info changed received: " + JSON.stringify(accountData));
       if(accountData) {
         this.originalAccountInfo = accountData.info;
-        this.isTestMode = accountData.mode;
-        this.loadTransactionTemplates();
       } else {
         this.originalAccountInfo = null;
       }
+
+      this.isTestMode = accountData.mode;
+      await this.loadTransactionTemplates();
+
     });
 
     this.darkModeChangedSubscription = this.localStorage.setItems$.subscribe(value => {
@@ -82,14 +84,14 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
   async loadTransactionTemplates() {
     this.loadingTemplates = true;
 
-    this.transactionTemplates = await this.utilService.getTransactionTypes(this.originalAccountInfo && this.originalAccountInfo.Account ? this.originalAccountInfo.Account : null);
+    this.transactionTemplates = await this.utilService.getTransactionTypes(this.isTestMode ? 21338 : 21337 ,this.originalAccountInfo && this.originalAccountInfo.Account ? this.originalAccountInfo.Account : null);
 
     for(let i = 0; i < this.transactionTemplates.length; i++) {
       delete this.transactionTemplates[i].codeSamples[0].Sequence;
       delete this.transactionTemplates[i].codeSamples[0].Fee;
     }
 
-    this.transactionTemplates = [{transactionType: "None", docLink: null, requiresAmendment: false, codeSamples: [{}]}].concat(this.transactionTemplates)
+    this.transactionTemplates = [{transactionType: "None", docLink: null, requiresAmendment: false, codeSamples: [{}]}].concat(this.transactionTemplates.filter(template => template.codeSamples[0].TransactionType != 'AccountDelete'));
 
     this.loadingTemplates = false;
   }

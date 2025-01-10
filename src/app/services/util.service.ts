@@ -5,8 +5,8 @@ import { AppService } from './app.service';
 export class UtilService {
     constructor(private app: AppService) {}
 
-    async getTransactionTypes(loggedInAccount?:string): Promise<any> {
-        let dirList:any[] = await this.app.get('https://api.github.com/repos/xrplf/xrpl-dev-portal/contents/content/references/protocol/transactions/types');
+    async getTransactionTypes(networkId: number, loggedInAccount?:string): Promise<any> {
+        let dirList:any[] = await this.app.get('https://api.github.com/repos/Xahau/Xahau-Docs/contents/technical/protocol-reference/transactions/transaction-types');
         let relevantFiles:any[] = dirList.filter(r => !r.name.includes('.ja.') && r.name.match(/^[a-zA-Z]+\.md$/))
 
         let sources:any[] = [];
@@ -38,7 +38,10 @@ export class UtilService {
                                     parsedTrx.Account = loggedInAccount;
                                 }
 
+                                parsedTrx.NetworkID = networkId;
+
                                 return parsedTrx;
+                                
                             } catch (e) {
                                 return s
                             }

@@ -22,7 +22,8 @@
     ],
     "paths": {
       "stream": ["node_modules/stream-browserify"],
-      "crypto": ["node_modules/crypto-browserify"]
+      "crypto": ["node_modules/crypto-browserify"],
+      "vm":     ["node_modules/vm-browserify"]
     }
   },
   "angularCompilerOptions": {
