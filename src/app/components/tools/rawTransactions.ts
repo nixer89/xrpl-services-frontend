@@ -93,6 +93,15 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
 
     this.transactionTemplates = [{transactionType: "None", docLink: null, requiresAmendment: false, codeSamples: [{}]}].concat(this.transactionTemplates.filter(template => template.codeSamples[0].TransactionType != 'AccountDelete'));
 
+    if(this.rawJsonTransaction != "{}") {
+      //reload set transaction template from newly fetched templates
+      let selectedTemplate = this.transactionTemplates.find(t => t.codeSamples[0].TransactionType === JSON.parse(this.rawJsonTransaction).TransactionType);
+      if(selectedTemplate) {
+        this.selectedTemplate = selectedTemplate;
+        this.rawJsonTransaction = JSON.stringify(this.selectedTemplate.codeSamples[0], null, '  ');
+      }
+    }
+
     this.loadingTemplates = false;
   }
 
