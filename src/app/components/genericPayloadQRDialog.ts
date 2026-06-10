@@ -5,14 +5,15 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
 import { XummTypes} from 'xumm-sdk'
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/localStorage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AppService } from "../services/app.service";
 
 @Component({
     selector: "genericPayloadQRDialog",
     templateUrl: "genericPayloadQRDialog.html",
-    styleUrls: ['./genericPayloadQRDialog.scss']
+    styleUrls: ['./genericPayloadQRDialog.scss'],
+    standalone: false
 })
 export class GenericPayloadQRDialog implements OnInit {
 

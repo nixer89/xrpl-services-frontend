@@ -1,134 +1,180 @@
 <mat-dialog-content fxFlex fxLayout="column" ngStyle.gt-xs="min-width: 20em">
-    <div *ngIf="isOverview && !loading" fxLayout="column" fxLayoutGap="1em">
-        <h3 class="floatcenter">{{genericPayload.payload.txjson.TransactionType}}</h3>
-        <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="0.8em" ngStyle.gt-xs="width: 90%;">
-            <mat-card class="theme-background" *ngIf="genericPayload.payload.custom_meta">
-                <h4>Summary:</h4>
-                <label class="break-words">{{genericPayload.payload.custom_meta.instruction}}</label>
-            </mat-card>
-            <mat-card class="warning-background" fxLayout="column" style="font-weight: bold; max-width: 500px;" *ngIf="genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm">
-                <div fxLayout="row" fxLayoutAlign="center center">
-                    <i class="material-icons" style="color: yellow; font-size: 2em;">
-                        warning
-                    </i>
-                    &nbsp;
-                    <i class="material-icons" style="color: yellow; font-size: 2em;">
-                        warning
-                    </i>
-                    &nbsp;
-                    <i class="material-icons" style="color: yellow; font-size: 2em;">
-                        warning
-                    </i>
-                </div>
-                <label>&nbsp;</label>
-                <label>This token you want to set a trustline for has 'XUMM' (or XUM) in its name but is in no way related to XUMM / XUMM Wallet or the creators of the XUMM Wallet -> XRPL Labs.</label>
-                <label>&nbsp;</label>
-                <label>Please proceed with caution, as they are not affiliated with XUMM!</label>
-                <label>&nbsp;</label>
-                <label>For more information please read this tweet:</label>
-                <a href="https://twitter.com/XummWallet/status/1461225738594623488" target="_blank">@XamanWallet tweet</a>
-            </mat-card>
-            <mat-card class="theme-background" *ngIf="showKyc && (!genericPayload.payload.custom_meta || !genericPayload.payload.custom_meta.blob || !genericPayload.payload.custom_meta.blob.addWarningXumm)" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">
-                <div fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
-                    <label><b>KYC:</b></label>
-                    <div *ngIf="!loadingKYC && !loadingKycFailed && hasKyc">
-                        <i class="material-icons" style="color: green; font-size: 1.4em;">
-                            check_circle
-                        </i>
-                    </div>
-                    <div *ngIf="!loadingKYC && !loadingKycFailed && !hasKyc">
-                        <i class="material-icons" style="color: red; font-size: 1.4em;">
-                            highlight_off
-                        </i>
-                    </div>
-                    <div *ngIf="!loadingKYC && loadingKycFailed">
-                        <label class="warning"  style="font-size:0.9em;">( KYC data of the token creator could not be loaded! )</label>
-                    </div>
-                </div>
-                <div *ngIf="!loadingKYC && !loadingKycFailed && hasKyc">
-                    <label class="loading" style="font-size:0.7em;">Disclaimer: just because an issuer completed KYC does not mean that<br>the token has any value! Please proceed with caution and do your own research!</label>
-                </div>
-                <div *ngIf="!loadingKYC && !loadingKycFailed && !hasKyc">
-                    <label class="loading" style="font-size:0.7em;">Disclaimer: the token issuer hasn’t gone through KYC yet.<br>Please proceed with caution and do your own research!</label>
-                </div>
-                <div *ngIf="loadingKYC" fxLayout="row" fxLayoutGap="0.5em">
-                    <label>Loading KYC...</label>
-                    <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
-                </div>
-
-                
-            </mat-card>
-            <mat-card class="theme-background" *ngIf="!genericPayload.payload.txjson.Memos" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">
-                <h4>Transaction Memo (optional):</h4>
-                <mat-form-field style="width: 100%;">
-                    <input matInput type="text" [(ngModel)]="memoInput" placeholder="Memo" aria-label="XRPL Transaction Memo">
-                </mat-form-field>
-            </mat-card>
-            <div *ngIf="genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm">
-                <mat-checkbox [(ngModel)]="tokenWarningAccepted" [ngClass]="(tokenWarningAccepted ? 'success': 'warning')">I understand the above warning and accept the risk.</mat-checkbox>
+  @if (isOverview && !loading) {
+    <div fxLayout="column" fxLayoutGap="1em">
+      <h3 class="floatcenter">{{genericPayload.payload.txjson.TransactionType}}</h3>
+      <div fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="0.8em" ngStyle.gt-xs="width: 90%;">
+        @if (genericPayload.payload.custom_meta) {
+          <mat-card class="theme-background">
+            <h4>Summary:</h4>
+            <label class="break-words">{{genericPayload.payload.custom_meta.instruction}}</label>
+          </mat-card>
+        }
+        @if (genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm) {
+          <mat-card class="warning-background" fxLayout="column" style="font-weight: bold; max-width: 500px;">
+            <div fxLayout="row" fxLayoutAlign="center center">
+              <i class="material-icons" style="color: yellow; font-size: 2em;">
+                warning
+              </i>
+              &nbsp;
+              <i class="material-icons" style="color: yellow; font-size: 2em;">
+                warning
+              </i>
+              &nbsp;
+              <i class="material-icons" style="color: yellow; font-size: 2em;">
+                warning
+              </i>
             </div>
-            <div fxLayout="row" fxLayoutGap="0.5em">
-                <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!tokenWarningAccepted">Confirm</button>
-                <button mat-raised-button color="warn" (click)="closeIt()">Cancel</button>
+            <label>&nbsp;</label>
+            <label>This token you want to set a trustline for has 'XUMM' (or XUM) in its name but is in no way related to XUMM / XUMM Wallet or the creators of the XUMM Wallet -> XRPL Labs.</label>
+            <label>&nbsp;</label>
+            <label>Please proceed with caution, as they are not affiliated with XUMM!</label>
+            <label>&nbsp;</label>
+            <label>For more information please read this tweet:</label>
+            <a href="https://twitter.com/XummWallet/status/1461225738594623488" target="_blank">&#64;XamanWallet tweet</a>
+          </mat-card>
+        }
+        @if (showKyc && (!genericPayload.payload.custom_meta || !genericPayload.payload.custom_meta.blob || !genericPayload.payload.custom_meta.blob.addWarningXumm)) {
+          <mat-card class="theme-background" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">
+            <div fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
+              <label><b>KYC:</b></label>
+              @if (!loadingKYC && !loadingKycFailed && hasKyc) {
+                <div>
+                  <i class="material-icons" style="color: green; font-size: 1.4em;">
+                    check_circle
+                  </i>
+                </div>
+              }
+              @if (!loadingKYC && !loadingKycFailed && !hasKyc) {
+                <div>
+                  <i class="material-icons" style="color: red; font-size: 1.4em;">
+                    highlight_off
+                  </i>
+                </div>
+              }
+              @if (!loadingKYC && loadingKycFailed) {
+                <div>
+                  <label class="warning"  style="font-size:0.9em;">( KYC data of the token creator could not be loaded! )</label>
+                </div>
+              }
             </div>
+            @if (!loadingKYC && !loadingKycFailed && hasKyc) {
+              <div>
+                <label class="loading" style="font-size:0.7em;">Disclaimer: just because an issuer completed KYC does not mean that<br>the token has any value! Please proceed with caution and do your own research!</label>
+              </div>
+            }
+            @if (!loadingKYC && !loadingKycFailed && !hasKyc) {
+              <div>
+                <label class="loading" style="font-size:0.7em;">Disclaimer: the token issuer hasn’t gone through KYC yet.<br>Please proceed with caution and do your own research!</label>
+              </div>
+            }
+            @if (loadingKYC) {
+              <div fxLayout="row" fxLayoutGap="0.5em">
+                <label>Loading KYC...</label>
+                <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+              </div>
+            }
+          </mat-card>
+        }
+        @if (!genericPayload.payload.txjson.Memos) {
+          <mat-card class="theme-background" fxLayout="column" fxLayoutGap="0.3em" style="width: 100%;">
+            <h4>Transaction Memo (optional):</h4>
+            <mat-form-field style="width: 100%;">
+              <input matInput type="text" [(ngModel)]="memoInput" placeholder="Memo" aria-label="XRPL Transaction Memo">
+            </mat-form-field>
+          </mat-card>
+        }
+        @if (genericPayload.payload.custom_meta && genericPayload.payload.custom_meta.blob && genericPayload.payload.custom_meta.blob.addWarningXumm) {
+          <div>
+            <mat-checkbox [(ngModel)]="tokenWarningAccepted" [ngClass]="(tokenWarningAccepted ? 'success': 'warning')">I understand the above warning and accept the risk.</mat-checkbox>
+          </div>
+        }
+        <div fxLayout="row" fxLayoutGap="0.5em">
+          <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!tokenWarningAccepted">Confirm</button>
+          <button mat-raised-button color="warn" (click)="closeIt()">Cancel</button>
         </div>
+      </div>
     </div>
-    <div *ngIf="loading && !showError && !waitingForPayment" fxLayout="column" class="floatcenter" style="width:300px; height: 200px;">
-        <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
+  }
+  @if (loading && !showError && !waitingForPayment) {
+    <div fxLayout="column" class="floatcenter" style="width:300px; height: 200px;">
+      <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
     </div>
-    <div *ngIf="!loading && !showError && waitingForPayment" fxLayout="column" fxLayoutGap="1.5em">
-        <div *ngIf="qrLink" fxLayout="column" fxLayoutGap="0.5em" class="floatcenter">
-            <span *ngIf="pushed">Push notification has been sent. If not received, scan QR code.</span>
-            <span *ngIf="!pushed">Scan QR code to show the Xaman Sign Request in your Xaman App:</span>
-            <mat-progress-spinner *ngIf="!showQR" color="primary" mode="indeterminate"></mat-progress-spinner>
-            <img (load)="QRLoaded()" [src]="qrLink" width="150" height="150" style="vertical-align: middle;" alt="">
-            <span *ngIf="showQR">Alternatively click the following link: <a [href]="payloadLink">Open in Xaman</a></span>
-        </div>
-        <div class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
-            <span>Waiting for you to sign the request...</span>
+  }
+  @if (!loading && !showError && waitingForPayment) {
+    <div fxLayout="column" fxLayoutGap="1.5em">
+      @if (qrLink) {
+        <div fxLayout="column" fxLayoutGap="0.5em" class="floatcenter">
+          @if (pushed) {
+            <span>Push notification has been sent. If not received, scan QR code.</span>
+          }
+          @if (!pushed) {
+            <span>Scan QR code to show the Xaman Sign Request in your Xaman App:</span>
+          }
+          @if (!showQR) {
             <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
-            <span style="flex: 1 1 auto;"></span>
+          }
+          <img (load)="QRLoaded()" [src]="qrLink" width="150" height="150" style="vertical-align: middle;" alt="">
+          @if (showQR) {
+            <span>Alternatively click the following link: <a [href]="payloadLink">Open in Xaman</a></span>
+          }
         </div>
-        <div class="floatcenter">
-            <button mat-raised-button class="theme-background" matTooltip="Cancel" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
-                <b>Cancel </b>
-                <i class="material-icons" style="color: red">
-                    cancel
-                </i>
-            </button>
-        </div>
+      }
+      <div class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
+        <span>Waiting for you to sign the request...</span>
+        <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
+        <span style="flex: 1 1 auto;"></span>
+      </div>
+      <div class="floatcenter">
+        <button mat-raised-button class="theme-background" matTooltip="Cancel" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
+          <b>Cancel </b>
+          <i class="material-icons" style="color: red">
+            cancel
+          </i>
+        </button>
+      </div>
     </div>
-    <div *ngIf="showError && !waitingForPayment && !loading" class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
-        <div *ngIf="!requestExpired && backendNotAvailable" style="color: red;">
-            {{backendErrorMessage}}
+  }
+  @if (showError && !waitingForPayment && !loading) {
+    <div class="floatcenter" fxLayout="column" fxLayoutGap="0.5em">
+      @if (!requestExpired && backendNotAvailable) {
+        <div style="color: red;">
+          {{backendErrorMessage}}
         </div>
-        <div *ngIf="!requestExpired && !backendNotAvailable" style="color: red;">
-            Sorry, your transaction could not be verified on the XRP Ledger. Please try again.
+      }
+      @if (!requestExpired && !backendNotAvailable) {
+        <div style="color: red;">
+          Sorry, your transaction could not be verified on the XRP Ledger. Please try again.
         </div>
-        <div *ngIf="requestExpired && !backendNotAvailable" style="color: red;">
-            Sorry, your request has been expired. Please reload the page and try again!
+      }
+      @if (requestExpired && !backendNotAvailable) {
+        <div style="color: red;">
+          Sorry, your request has been expired. Please reload the page and try again!
         </div>
-        <div>
-            <mat-dialog-actions>
-                <button mat-button mat-dialog-close class="theme-background" matTooltip="Close" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
-                    <b>Close </b>
-                    <i class="material-icons">
-                        cancel
-                    </i>
-                </button>
-            </mat-dialog-actions>
-        </div>
-    </div>
-
-    <div *ngIf="transactionSigned" class="floatcenter">
-        <div>
-            <i class="material-icons" style="color: green; font-size: 3em;">
-                check_circle_outline
+      }
+      <div>
+        <mat-dialog-actions>
+          <button mat-button mat-dialog-close class="theme-background" matTooltip="Close" matTooltipPosition="right" (click)="closeIt()" style="width: 120; height: 30;">
+            <b>Close </b>
+            <i class="material-icons">
+              cancel
             </i>
-        </div>
-        <div>
-            <h4 style="color: green;">Your transaction was signed and submitted.</h4>
-            Please check your transaction on the XRP Ledger.
-        </div>
+          </button>
+        </mat-dialog-actions>
+      </div>
     </div>
+  }
+
+  @if (transactionSigned) {
+    <div class="floatcenter">
+      <div>
+        <i class="material-icons" style="color: green; font-size: 3em;">
+          check_circle_outline
+        </i>
+      </div>
+      <div>
+        <h4 style="color: green;">Your transaction was signed and submitted.</h4>
+        Please check your transaction on the XRP Ledger.
+      </div>
+    </div>
+  }
 </mat-dialog-content>

@@ -12,16 +12,17 @@ import { TokenDetailsDialog } from './tokenDetailsDialog';
 import { XummService } from 'src/app/services/xumm.service';
 
 @Component({
-  selector: 'issuedNftList',
-  templateUrl: './issuedNftList.html',
-  styleUrls: ['./issuedNftList.css'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ]
+    selector: 'issuedNftList',
+    templateUrl: './issuedNftList.html',
+    styleUrls: ['./issuedNftList.css'],
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ],
+    standalone: false
 })
 export class IssuedNftList implements OnInit {
 

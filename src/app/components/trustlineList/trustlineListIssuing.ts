@@ -6,7 +6,8 @@ import { XRPLWebsocket } from '../../services/xrplWebSocket';
 @Component({
     selector: "trustlineListIssuing",
     templateUrl: "trustlineListIssuing.html",
-    styleUrls: ['./trustlineListIssuing.css']
+    styleUrls: ['./trustlineListIssuing.css'],
+    standalone: false
 })
 export class TrustLineListIssuing implements OnInit, OnDestroy {
 

@@ -5,8 +5,9 @@ import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 's
 import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
-  selector: 'escrowfinish',
-  templateUrl: './escrowfinish.html'
+    selector: 'escrowfinish',
+    templateUrl: './escrowfinish.html',
+    standalone: false
 })
 export class EscrowFinishComponent implements OnInit, OnDestroy {
 

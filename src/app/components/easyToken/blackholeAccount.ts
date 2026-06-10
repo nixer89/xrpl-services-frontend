@@ -13,8 +13,9 @@ import { XummService } from 'src/app/services/xumm.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'blackholeAccount',
-  templateUrl: './blackholeAccount.html'
+    selector: 'blackholeAccount',
+    templateUrl: './blackholeAccount.html',
+    standalone: false
 })
 export class BlackholeAccount implements OnInit {
 

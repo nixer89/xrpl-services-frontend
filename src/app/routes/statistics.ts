@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { XummService } from '../services/xumm.service';
 
 @Component({
-  selector: 'statistics',
-  templateUrl: './statistics.html',
-  styleUrls: ['./statistics.css']
+    selector: 'statistics',
+    templateUrl: './statistics.html',
+    styleUrls: ['./statistics.css'],
+    standalone: false
 })
 export class Statistics implements OnInit {
   

@@ -14,7 +14,8 @@ import { MatExpansionPanel } from "@angular/material/expansion";
 @Component({
     selector: "escrowListExecuter",
     templateUrl: "escrowListExecuter.html",
-    styleUrls: ['./escrowListExecuter.css']
+    styleUrls: ['./escrowListExecuter.css'],
+    standalone: false
 })
 export class EscrowListExecuter implements OnInit, OnDestroy {
 

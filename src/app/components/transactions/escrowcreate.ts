@@ -4,12 +4,13 @@ import { XummTypes } from 'xumm-sdk';
 import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
 import * as normalizer from '../../utils/normalizers'
 import { isValidXRPAddress } from 'src/app/utils/utils';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 
 @Component({
-  selector: 'escrowcreate',
-  templateUrl: './escrowcreate.html'
+    selector: 'escrowcreate',
+    templateUrl: './escrowcreate.html',
+    standalone: false
 })
 export class EscrowCreateComponent implements OnInit, OnDestroy{
 
@@ -62,8 +63,8 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   cancelAfterDateTime:Date;
   finishAfterDateTime:Date;
 
-  finishAfterFormCtrl:FormControl = new FormControl();
-  cancelAfterFormCtrl:FormControl = new FormControl();
+  finishAfterFormCtrl:UntypedFormControl = new UntypedFormControl();
+  cancelAfterFormCtrl:UntypedFormControl = new UntypedFormControl();
 
   cancelDateInFuture:boolean = false;
   finishDateInFuture:boolean = false;

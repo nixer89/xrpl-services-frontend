@@ -1,5 +1,3 @@
-<div class="{{darkMode ? 'dark-theme' : 'light-theme'}}">
-    <app-topbar (darkThemeChanged)="darkModeChanged($event)"></app-topbar>
-    <router-outlet></router-outlet>
-    <app-footer></app-footer>
-</div>
+<app-topbar (darkThemeChanged)="darkModeChanged($event)"></app-topbar>
+<router-outlet></router-outlet>
+<app-footer></app-footer>

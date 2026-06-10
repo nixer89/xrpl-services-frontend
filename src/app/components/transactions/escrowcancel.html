@@ -13,7 +13,7 @@
       <label class="loading">Escrow Cancel</label>
     </mat-panel-title>
     <mat-panel-description>
-     Cancel an Escrow
+      Cancel an Escrow
     </mat-panel-description>
   </mat-expansion-panel-header>
 
@@ -23,22 +23,30 @@
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;padding-top: 1em;">
       <mat-form-field>
         <input #inpescrowowner matInput name="escrowowner" matInput placeholder="XRPL address which owns the Escrow" [(ngModel)]="escrowOwnerInput" (ngModelChange)="xrplAccountChanged()">
-        <mat-hint *ngIf="escrowOwnerInput && !validAddress">Not a valid XRPL address</mat-hint>
+        @if (escrowOwnerInput && !validAddress) {
+          <mat-hint>Not a valid XRPL address</mat-hint>
+        }
       </mat-form-field>
       <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validSequence ? 'block':'none' }">
         <escrowList [escrowAccountChanged]="escrowAccountChanged.asObservable()" [escrowsChanged]="escrowsChanged.asObservable()" (escrowSequenceFound)="onEscrowSequenceFound($event)" [isCancel]="true"></escrowList>
       </div>
       <mat-form-field [ngClass]="{'changed': showEscrowSequenceSelectedStyle}">
         <input #inpescrowsequence matInput name="escrowsequence" min="0" matInput placeholder="Escrow Sequence Number" [(ngModel)]="escrowSequenceInput" (ngModelChange)="sequenceChanged()">
-        <mat-hint *ngIf="escrowSequenceInput && !validSequence">Not a valid Escrow Sequence</mat-hint>
+        @if (escrowSequenceInput && !validSequence) {
+          <mat-hint>Not a valid Escrow Sequence</mat-hint>
+        }
       </mat-form-field>
     </form>
     <div fxLayout="row" fxLayoutAlign="start center" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!isValidEscrowCancel">
         Send Escrow Cancel to Xaman
       </button>
-      <label *ngIf="!escrowOwnerInput || !validAddress">Please enter a valid XRPL address.</label>
-      <label *ngIf="validAddress && ( !escrowSequenceInput || !validSequence )">Please enter a valid Escrow Sequence.</label>
+      @if (!escrowOwnerInput || !validAddress) {
+        <label>Please enter a valid XRPL address.</label>
+      }
+      @if (validAddress && ( !escrowSequenceInput || !validSequence )) {
+        <label>Please enter a valid Escrow Sequence.</label>
+      }
     </div>
   </div>
 </mat-expansion-panel>

@@ -17,9 +17,10 @@ const codec =
 }
 
 @Component({
-  selector: 'unlChecker',
-  templateUrl: './unlChecker.html',
-  styleUrls: ['./unlChecker.css']
+    selector: 'unlChecker',
+    templateUrl: './unlChecker.html',
+    styleUrls: ['./unlChecker.css'],
+    standalone: false
 })
 export class UnlCheckerComponent {
 

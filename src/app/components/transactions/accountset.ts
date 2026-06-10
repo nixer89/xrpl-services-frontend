@@ -7,8 +7,9 @@ import { XummTypes } from 'xumm-sdk';
 import { AccountObjectsChanged, AccountInfoChanged } from 'src/app/utils/types';
 
 @Component({
-  selector: 'accountset',
-  templateUrl: './accountset.html'
+    selector: 'accountset',
+    templateUrl: './accountset.html',
+    standalone: false
 })
 export class AccountSetComponent implements OnInit, OnDestroy {
 

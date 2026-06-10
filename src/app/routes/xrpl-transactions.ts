@@ -9,14 +9,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged, AccountObjectsChanged } from '../utils/types';
 import { XummTypes } from 'xumm-sdk';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/localStorage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
-  selector: 'xrpl-transactions',
-  templateUrl: './xrpl-transactions.html',
+    selector: 'xrpl-transactions',
+    templateUrl: './xrpl-transactions.html',
+    standalone: false
 })
 export class XrplTransactionsComponent implements OnInit {
   
@@ -362,7 +363,7 @@ export class XrplTransactionsComponent implements OnInit {
         }
 
         if(trxInfo.success) {
-          this.transactionSuccessfull.next();
+          this.transactionSuccessfull.next(undefined);
 
           this.handleEscrowCreate(trxInfo);
         }

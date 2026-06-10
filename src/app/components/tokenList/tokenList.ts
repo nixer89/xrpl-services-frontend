@@ -8,7 +8,8 @@ import { XRPLWebsocket } from "src/app/services/xrplWebSocket";
 @Component({
     selector: "tokenList",
     templateUrl: "tokenList.html",
-    styleUrls: ['./tokenList.css']
+    styleUrls: ['./tokenList.css'],
+    standalone: false
 })
 export class TokenList implements OnInit, OnDestroy {
 

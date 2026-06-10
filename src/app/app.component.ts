@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from './services/localStorage.service';
 
 declare let gtag: Function;
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+    standalone: false
 })
 export class AppComponent implements OnInit {
   title = 'XRPL Services';
@@ -54,18 +55,7 @@ export class AppComponent implements OnInit {
       this.darkMode = true;
       this.localStorage.set("darkMode", this.darkMode);
     }
-    
-    var bodyStyles = document.body.style;
-    if(this.darkMode) {
-      bodyStyles.setProperty('--background-color', 'rgba(50, 50, 50)');
-      //bodyStyles.setProperty('--dialog-background', 'rgba(50, 50, 50)');
-      //bodyStyles.setProperty('--dialog-color', '#ffffff');
-    }
-    else {
-        bodyStyles.setProperty('--background-color', 'rgba(238,238,238,.5)');
-        //bodyStyles.setProperty('--dialog-background', 'rgba(238,238,238)');
-        //bodyStyles.setProperty('--dialog-color', 'rgba(0, 0, 0)');
-    }
+    this.applyThemeClass(this.darkMode);
     // always scroll to the top of the page on route change:
     this.router.events.subscribe(e => e instanceof NavigationEnd ? window.scrollTo(0,0) : null);
   }
@@ -73,17 +63,11 @@ export class AppComponent implements OnInit {
   darkModeChanged(isDarkMode:boolean) {
     //console.log(isDarkMode);
     this.darkMode = isDarkMode;
-    var bodyStyles = document.body.style;
-    if(isDarkMode) {
-        bodyStyles.setProperty('--background-color', 'rgba(50, 50, 50)');
-        //bodyStyles.setProperty('--dialog-background', 'rgba(50, 50, 50)');
-        //bodyStyles.setProperty('--dialog-color', '#ffffff');
-        
-    }
-    else {
-        bodyStyles.setProperty('--background-color', 'rgba(238,238,238,.5)');
-        //bodyStyles.setProperty('--dialog-background', 'rgba(238,238,238)');
-        //bodyStyles.setProperty('--dialog-color', 'rgba(0, 0, 0)');
-    }
+    this.applyThemeClass(isDarkMode);
+  }
+
+  private applyThemeClass(isDark:boolean) {
+    document.body.classList.remove('light-theme', 'dark-theme');
+    document.body.classList.add(isDark ? 'dark-theme' : 'light-theme');
   }
 }

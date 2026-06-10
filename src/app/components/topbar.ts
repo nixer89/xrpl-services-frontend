@@ -4,14 +4,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
 import { XummTypes } from 'xumm-sdk';
-import { LocalStorageService } from 'angular-2-local-storage'
+import { LocalStorageService } from '../services/localStorage.service'
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { TypeWriter } from '../utils/TypeWriter';
 import { XummService } from '../services/xumm.service';
 
 @Component({
-  selector: 'app-topbar',
-  templateUrl: './topbar.html'
+    selector: 'app-topbar',
+    templateUrl: './topbar.html',
+    standalone: false
 })
 export class TopbarComponent implements OnInit {
     

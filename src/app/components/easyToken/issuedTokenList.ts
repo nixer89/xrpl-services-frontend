@@ -12,16 +12,17 @@ import { TokenDetailsDialog } from './tokenDetailsDialog';
 import { XummService } from 'src/app/services/xumm.service';
 
 @Component({
-  selector: 'issuedTokenList',
-  templateUrl: './issuedTokenList.html',
-  styleUrls: ['./issuedTokenList.css'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ]
+    selector: 'issuedTokenList',
+    templateUrl: './issuedTokenList.html',
+    styleUrls: ['./issuedTokenList.css'],
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ],
+    standalone: false
 })
 export class IssuedTokenList implements OnInit {
 

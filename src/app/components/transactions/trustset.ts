@@ -11,8 +11,9 @@ import * as flagUtil from '../../utils/flagutils'
 import { AppService } from 'src/app/services/app.service';
 
 @Component({
-  selector: 'trustset',
-  templateUrl: './trustset.html'
+    selector: 'trustset',
+    templateUrl: './trustset.html',
+    standalone: false
 })
 export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 

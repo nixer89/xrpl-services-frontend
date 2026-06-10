@@ -6,8 +6,9 @@ import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
-  selector: 'transactionScheduler',
-  templateUrl: './transactionScheduler.html'
+    selector: 'transactionScheduler',
+    templateUrl: './transactionScheduler.html',
+    standalone: false
 })
 export class TransactionSchedulerComponent {
   

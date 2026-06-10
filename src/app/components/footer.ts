@@ -3,8 +3,9 @@ import packageInfo from '../../../package.json';
 import { XummService } from '../services/xumm.service';
 
 @Component({
-  selector: 'app-footer',
-  templateUrl: './footer.html'
+    selector: 'app-footer',
+    templateUrl: './footer.html',
+    standalone: false
 })
 export class FooterComponent implements OnInit {
 

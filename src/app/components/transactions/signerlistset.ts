@@ -19,9 +19,10 @@ interface SignerEntry {
 }
 
 @Component({
-  selector: 'signerlistset',
-  templateUrl: './signerlistset.html',
-  styleUrls: ['./signerlistset.css']
+    selector: 'signerlistset',
+    templateUrl: './signerlistset.html',
+    styleUrls: ['./signerlistset.css'],
+    standalone: false
 })
 export class SignerListSetComponent implements OnInit, OnDestroy {
 

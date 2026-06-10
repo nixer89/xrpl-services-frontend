@@ -12,9 +12,10 @@ interface NoRippleCheck {
 }
 
 @Component({
-  selector: 'norippleCheck',
-  templateUrl: './norippleCheck.html',
-  styleUrls: ['./norippleCheck.css']
+    selector: 'norippleCheck',
+    templateUrl: './norippleCheck.html',
+    styleUrls: ['./norippleCheck.css'],
+    standalone: false
 })
 export class NoRippleCheckComponent implements OnInit, OnDestroy {
 

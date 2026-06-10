@@ -7,15 +7,16 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged } from '../utils/types';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/localStorage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { XummTypes } from 'xumm-sdk';
 import { isValidXRPAddress } from '../utils/utils';
 
 @Component({
-  selector: 'tools',
-  templateUrl: './tools.html',
+    selector: 'tools',
+    templateUrl: './tools.html',
+    standalone: false
 })
 export class Tools implements OnInit {
   
@@ -356,7 +357,7 @@ export class Tools implements OnInit {
         }
 
         if(trxInfo.success)
-          this.transactionSuccessfull.next();
+          this.transactionSuccessfull.next(undefined);
       }
     } else {
       this.lastTrxLinkBithomp = null;

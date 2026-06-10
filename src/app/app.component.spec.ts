@@ -1,4 +1,5 @@
 import { TestBed, waitForAsync } from '@angular/core/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -7,6 +8,7 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 
@@ -16,16 +18,9 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'xrpl-services'`, () => {
+  it(`should have as title 'XRPL Services'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('xrpl-services');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('xrpl-services app is running!');
+    expect(app.title).toEqual('XRPL Services');
   });
 });

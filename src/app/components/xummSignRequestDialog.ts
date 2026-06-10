@@ -5,12 +5,13 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { XummTypes } from 'xumm-sdk';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/localStorage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
     selector: "xummSignRequestDialog",
-    templateUrl: "xummSignRequestDialog.html"
+    templateUrl: "xummSignRequestDialog.html",
+    standalone: false
 })
 export class XummSignDialogComponent implements OnInit{
 

@@ -8,23 +8,27 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "module": "es2020",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "target": "es2020",
+    "target": "ES2022",
     "typeRoots": [
       "node_modules/@types"
     ],
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "skipLibCheck": true,
     "paths": {
-      "stream": ["node_modules/stream-browserify"],
-      "crypto": ["node_modules/crypto-browserify"],
-      "vm":     ["node_modules/vm-browserify"]
-    }
+      "stream": [
+        "node_modules/stream-browserify"
+      ],
+      "crypto": [
+        "node_modules/crypto-browserify"
+      ],
+      "vm": [
+        "node_modules/vm-browserify"
+      ]
+    },
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

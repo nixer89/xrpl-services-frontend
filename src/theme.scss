@@ -1,33 +1,19 @@
 @use '@angular/material' as mat;
-@import '@angular/material/theming';
 
 @include mat.core();
 
+$brand-primary: mat.$blue-palette;
+$brand-tertiary: mat.$cyan-palette;
+
 .light-theme {
-  $primary: mat.define-palette(mat.$indigo-palette);
-  $accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-  $warn: mat.define-palette(mat.$red-palette);
-  $light-theme: mat.define-light-theme($primary, $accent, $warn);
-
-  .mat-expansion-panel {
-    background-color: rgba(238,238,238, 0.5) !important;
-  }
-
-  .mat-expansion-panel.expansion-panel-light {
-    background-color: #C0C0C0 !important;
-  }
-
-  .mat-expansion-panel-header.expantion-panel-light {
-    background-color: #C0C0C0 !important;
-  }
-
-  .mat-expansion-panel.expansion-panel-darker {
-    background-color: #A0A0A0 !important;
-  }
-
-  .mat-expansion-panel-header.expansion-panel-darker {
-    background-color: #A0A0A0 !important;
-  }
+  $light-theme: mat.define-theme((
+    color: (
+      theme-type: light,
+      primary: $brand-primary,
+      tertiary: $brand-tertiary,
+    ),
+    density: (scale: 0),
+  ));
 
   .warning-background {
     background-color: #fc1a1a !important;
@@ -50,8 +36,9 @@
     color: green
   }
 
+  /* Let Material 3 surface tokens drive backgrounds. */
   .theme-background {
-    background-color: rgba(238,238,238, 0.5) !important;
+    background-color: var(--mat-sys-surface-container) !important;
   }
 
   .snackbar-success {
@@ -63,10 +50,14 @@
 
 // Our dark theme
 .dark-theme {
-  $dark-primary: mat.define-palette(mat.$indigo-palette);
-  $dark-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400);
-  $dark-warn: mat.define-palette(mat.$red-palette);   
-  $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
+  $dark-theme: mat.define-theme((
+    color: (
+      theme-type: dark,
+      primary: $brand-primary,
+      tertiary: $brand-tertiary,
+    ),
+    density: (scale: 0),
+  ));
 
   a {
     color: #FFB300;
@@ -105,28 +96,9 @@
     color: #00B300
   }
 
-  .mat-expansion-panel {
-    background-color: rgba(50, 50, 50, 0.5) !important;
-  }
-
-  .mat-expansion-panel.expansion-panel-light {
-    background-color: #303030 !important;
-  }
-
-  .mat-expansion-panel-header.expansion-panel-light {
-    background-color: #303030 !important;
-  }
-
-  .mat-expansion-panel.expansion-panel-darker {
-    background-color: #202020 !important;
-  }
-
-  .mat-expansion-panel-header.expansion-panel-darker {
-    background-color: #202020 !important;
-  }
-
+  /* Let Material 3 surface tokens drive backgrounds. */
   .theme-background {
-    background-color:rgba(50, 50, 50, 0.5) !important;
+    background-color: var(--mat-sys-surface-container) !important;
   }
 
   .snackbar-success {

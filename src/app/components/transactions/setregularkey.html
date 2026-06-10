@@ -23,8 +23,12 @@
     <form fxLayout="column" fxLayoutGap="0.5em" style="padding-top: 1em;">
       <mat-form-field>
         <input #inpregularkey matInput name="regularkey" ngStyle.xs="font-size: 0.8em;" placeholder="XRPL address which will be able to sign transactions" [(ngModel)]="regularKeyInput" (ngModelChange)="checkChanges()">
-        <mat-hint *ngIf="regularKeyInput && !validAddress">Not a valid XRPL address</mat-hint>
-        <mat-hint *ngIf="originalAccountInfo && regularKeyInput == originalAccountInfo.Account">You cannot set the Regular Key to the same address.</mat-hint>
+        @if (regularKeyInput && !validAddress) {
+          <mat-hint>Not a valid XRPL address</mat-hint>
+        }
+        @if (originalAccountInfo && regularKeyInput == originalAccountInfo.Account) {
+          <mat-hint>You cannot set the Regular Key to the same address.</mat-hint>
+        }
       </mat-form-field>
     </form>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
@@ -35,6 +39,8 @@
         Delete Regular Key
       </button>
     </div>
-    <mat-hint *ngIf="originalAccountInfo && originalAccountInfo.RegularKey && !hasAlternativeSigningMethod()">Befor you can delete your Regular Key you have to set an alternative signing method. (Master Key or SignerList)</mat-hint>
+    @if (originalAccountInfo && originalAccountInfo.RegularKey && !hasAlternativeSigningMethod()) {
+      <mat-hint>Befor you can delete your Regular Key you have to set an alternative signing method. (Master Key or SignerList)</mat-hint>
+    }
   </div>
 </mat-expansion-panel>

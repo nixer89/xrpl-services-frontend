@@ -6,8 +6,9 @@ import { AccountInfoChanged, AccountObjectsChanged } from 'src/app/utils/types';
 import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
-  selector: 'setregularkey',
-  templateUrl: './setregularkey.html'
+    selector: 'setregularkey',
+    templateUrl: './setregularkey.html',
+    standalone: false
 })
 export class SetRegularKeyComponent implements OnInit, OnDestroy {
 

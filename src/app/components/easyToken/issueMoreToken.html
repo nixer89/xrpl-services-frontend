@@ -15,24 +15,26 @@
 
   <mat-card fxLayout="column" fxLayoutGap="0.5em">
     <label>After you have initially created your Token, you can issue more tokens to accounts which have a TrustLine to your issuer account.</label>
-    <div *ngIf="!getIssuer() || !validIssuer">
-      <button mat-button matTooltip="Sign In via Xaman." matTooltipPosition="above" (click)="signInWithIssuer()" style="padding:0px;">
-        <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via Xaman">
-      </button>
-      &nbsp;<label class="loading">Please sign in with the issuer account.</label>
-    </div>
+    @if (!getIssuer() || !validIssuer) {
+      <div>
+        <button mat-button matTooltip="Sign In via Xaman." matTooltipPosition="above" (click)="signInWithIssuer()" style="padding:0px;">
+          <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via Xaman">
+        </button>
+        &nbsp;<label class="loading">Please sign in with the issuer account.</label>
+      </div>
+    }
     <div [ngStyle]="{'display': !validIssuer ? 'none':'block' }">
       <div fxLayout="column" fxLayoutGap="0.3em">
         <label class="loading">Do you want to send your tokens on the main network or test network?</label>
         <div fxLayout="row" fxLayoutGap="0.5em">
           <mat-card class="theme-background">
             <div fxLayout="column" fxLayoutAlign="start center">
-                <label>XRPL Network</label>
-                <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
-                  <label>Main</label>&nbsp;
-                  <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkSwitched()" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
-                  <label>Test</label>
-                </div>
+              <label>XRPL Network</label>
+              <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
+                <label>Main</label>&nbsp;
+                <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" (change)="networkSwitched()" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
+                <label>Test</label>
+              </div>
             </div>
           </mat-card>
           <span style="flex: 1 1 auto;"></span>
@@ -40,51 +42,77 @@
         <form fxLayout="column" fxLayoutGap="0.3em" style="padding-top: 0.8em;">
           <mat-form-field>
             <input #inpisseraccount matInput name="isseraccount" matInput placeholder="XRPL address which issues the Token" [(ngModel)]="issuerAccount" [readonly]="true">
-            <mat-hint *ngIf="getIssuer() && !validIssuer">Not a valid XRPL address</mat-hint>
+            @if (getIssuer() && !validIssuer) {
+              <mat-hint>Not a valid XRPL address</mat-hint>
+            }
           </mat-form-field>
-        
+
           <label class="loading">Which address should the Token be sent to?</label>
           <mat-form-field>
             <input #inprecipientAccount matInput name="recipientAccount" placeholder="Token recipient account" [(ngModel)]="recipientAccountInput" (ngModelChange)="checkChangesRecipientAccount()">
-            <mat-hint *ngIf="recipientAccountInput && !validAddress">Not a valid XRP address</mat-hint>
-            <mat-hint *ngIf="recipientAccountInput && validAddress && issuerAccount.trim() === recipientAccountInput.trim()">Issuer and recipient cannot be the same!</mat-hint>
+            @if (recipientAccountInput && !validAddress) {
+              <mat-hint>Not a valid XRP address</mat-hint>
+            }
+            @if (recipientAccountInput && validAddress && issuerAccount.trim() === recipientAccountInput.trim()) {
+              <mat-hint>Issuer and recipient cannot be the same!</mat-hint>
+            }
           </mat-form-field>
 
           <div style="margin-bottom: 1em;" [ngStyle]="{'display': !validCurrencyCode ? 'block':'none' }">
             <trustlineListIssuing [issuerAccountChanged]="issuerAccountChangedSubject.asObservable()" [recipientAccountChanged]="recipientAccountChangedSubject.asObservable()" (trustLineSelected)="onTrustLineSelected($event)"></trustlineListIssuing>
           </div>
 
-          <label *ngIf="recipientToIssuerTrustLine" style="padding-top: 0.3em;" class="loading">Selected Currency Code:</label>
-          <mat-form-field *ngIf="recipientToIssuerTrustLine">
-            <input matInput name="Currency Code" [value]="getCurrencyCodeAscii(currencyCode)" [readonly]="true">
-            <mat-hint *ngIf="currencyCode && !validCurrencyCode && currencyCode === 'XRP'">You cannot issue any XRP!</mat-hint>
-          </mat-form-field>
-
-          <div *ngIf="validCurrencyCode && validAddress && loadingRecipientToIssuerTL" fxLayout="row" fxLayoutGap="0.3em">
-            <label>Checking some things...</label>
-            <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
-          </div>
-          <div *ngIf="validCurrencyCode && validAddress && !loadingRecipientToIssuerTL && recipientToIssuerTrustLine" fxLayout="column" fxLayoutGap="0.3em">
-            <label class="loading">How many more tokens you want to issue? (Max: {{getMaxIssuerTokens()}} {{getCurrencyCodeAscii(currencyCode)}})</label>
+          @if (recipientToIssuerTrustLine) {
+            <label style="padding-top: 0.3em;" class="loading">Selected Currency Code:</label>
+          }
+          @if (recipientToIssuerTrustLine) {
             <mat-form-field>
-              <input matInput name="Number of tokens" placeholder="Number of tokens" [(ngModel)]="numberOfTokens" (ngModelChange)="checkChangesNumberOfTokens()">
-              <mat-hint *ngIf="numberOfTokens && !validNumberOfTokens && !notEnoughLimit">Not a valid number. Please choose a number with a maximum of 15 decimal places!</mat-hint>
-              <mat-hint *ngIf="numberOfTokens && validNumberOfTokens && notEnoughLimit">The TrustLine from the recipient has not enough limit to send this amount. (Max: {{getMaxIssuerTokens()}} {{getCurrencyCodeAscii(currencyCode)}})</mat-hint>
+              <input matInput name="Currency Code" [value]="getCurrencyCodeAscii(currencyCode)" [readonly]="true">
+              @if (currencyCode && !validCurrencyCode && currencyCode === 'XRP') {
+                <mat-hint>You cannot issue any XRP!</mat-hint>
+              }
             </mat-form-field>
-          </div>
+          }
+
+          @if (validCurrencyCode && validAddress && loadingRecipientToIssuerTL) {
+            <div fxLayout="row" fxLayoutGap="0.3em">
+              <label>Checking some things...</label>
+              <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
+            </div>
+          }
+          @if (validCurrencyCode && validAddress && !loadingRecipientToIssuerTL && recipientToIssuerTrustLine) {
+            <div fxLayout="column" fxLayoutGap="0.3em">
+              <label class="loading">How many more tokens you want to issue? (Max: {{getMaxIssuerTokens()}} {{getCurrencyCodeAscii(currencyCode)}})</label>
+              <mat-form-field>
+                <input matInput name="Number of tokens" placeholder="Number of tokens" [(ngModel)]="numberOfTokens" (ngModelChange)="checkChangesNumberOfTokens()">
+                @if (numberOfTokens && !validNumberOfTokens && !notEnoughLimit) {
+                  <mat-hint>Not a valid number. Please choose a number with a maximum of 15 decimal places!</mat-hint>
+                }
+                @if (numberOfTokens && validNumberOfTokens && notEnoughLimit) {
+                  <mat-hint>The TrustLine from the recipient has not enough limit to send this amount. (Max: {{getMaxIssuerTokens()}} {{getCurrencyCodeAscii(currencyCode)}})</mat-hint>
+                }
+              </mat-form-field>
+            </div>
+          }
         </form>
-        <div *ngIf="(recipientToIssuerTrustLine && getMaxIssuerTokens() == 0) || (numberOfTokens && validNumberOfTokens && notEnoughLimit)" fxLayout="column" fxLayoutGap="0.3em">
-          <label>You can share the following link with the recipient to update his trustline with the limit of tokens you want to issue:</label>
-          <a href="https://xrpl.services?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}" target="_blank">https://xrpl.services?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}</a>
-        </div>
+        @if ((recipientToIssuerTrustLine && getMaxIssuerTokens() == 0) || (numberOfTokens && validNumberOfTokens && notEnoughLimit)) {
+          <div fxLayout="column" fxLayoutGap="0.3em">
+            <label>You can share the following link with the recipient to update his trustline with the limit of tokens you want to issue:</label>
+            <a href="https://xrpl.services?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}" target="_blank">https://xrpl.services?issuer={{getIssuer()}}&currency={{getCurrencyCodeAscii(currencyCode)}}&limit={{getNewLimit()}}</a>
+          </div>
+        }
         <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
           <button mat-raised-button color="primary" (click)="issueToken()" [disabled]="!validAddress || !validIssuer || !validCurrencyCode || !validNumberOfTokens || notEnoughLimit">
             Send Token via Xaman
           </button>
-          <button *ngIf="currencyCode" mat-raised-button (click)="clearCurrencyCode()" [disabled]="!currencyCode">
-            Clear Currency Code
-          </button>
-          <label *ngIf="!recipientAccountInput || !validAddress">Please enter a valid XRPL address as recipient.</label>
+          @if (currencyCode) {
+            <button mat-raised-button (click)="clearCurrencyCode()" [disabled]="!currencyCode">
+              Clear Currency Code
+            </button>
+          }
+          @if (!recipientAccountInput || !validAddress) {
+            <label>Please enter a valid XRPL address as recipient.</label>
+          }
         </div>
       </div>
     </div>

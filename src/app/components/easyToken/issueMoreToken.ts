@@ -21,8 +21,9 @@ interface TrustLine {
 }
 
 @Component({
-  selector: 'issueMoreToken',
-  templateUrl: './issueMoreToken.html',
+    selector: 'issueMoreToken',
+    templateUrl: './issueMoreToken.html',
+    standalone: false
 })
 export class IssueMoreToken implements OnInit {
 

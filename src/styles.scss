@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-@import './theme';
-@import "~codemirror/lib/codemirror";
-@import "~codemirror/theme/material-darker";
+@use './theme';
+@use "codemirror/lib/codemirror";
+@use "codemirror/theme/material-darker";
 
 html, body { 
     height: 100%;
@@ -10,7 +10,90 @@ html, body {
 body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
-    background-color: var(--background-color);
+    /* Default page background (overridden per theme below). */
+    background-color: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+}
+
+/* Give light mode a subtle tinted canvas (less "paper white"). */
+body.light-theme {
+  background-color: #f6f8ff;
+}
+
+/* Dark mode canvas should be clearly dark, not charcoal glass. */
+body.dark-theme {
+  background-color: #0b1220;
+}
+
+/* Lightweight layout utilities (replacement for deprecated Flex-Layout directives). */
+.layout-row { display: flex; flex-direction: row; }
+.layout-column { display: flex; flex-direction: column; }
+.flex { flex: 1 1 auto; min-width: 0; }
+.align-center-center { justify-content: center; align-items: center; }
+.align-start-center { justify-content: flex-start; align-items: center; }
+.align-start-start { justify-content: flex-start; align-items: flex-start; }
+.align-center-start { justify-content: center; align-items: flex-start; }
+.spacer { flex: 1 1 auto; }
+.gap-03 { gap: 0.3em; }
+.gap-05 { gap: 0.5em; }
+.gap-08 { gap: 0.8em; }
+.gap-10 { gap: 1em; }
+.gap-15 { gap: 1.5em; }
+
+/* Responsive helpers aligned to Material/typical breakpoints. */
+@media (min-width: 960px) { /* md and up */
+  .layout-column-md-row { display: flex; flex-direction: row; }
+}
+@media (max-width: 599px) { /* xs */
+  .hide-xs { display: none !important; }
+}
+@media (min-width: 600px) { /* sm+ */
+  .show-xs { display: none !important; }
+}
+
+/* Compatibility layer for leftover Angular Flex-Layout attributes.
+   This lets us remove the deprecated dependency without rewriting every template at once. */
+[fxLayout="row"] { display: flex; flex-direction: row; }
+[fxLayout="column"] { display: flex; flex-direction: column; }
+[fxFlex] { flex: 1 1 auto; min-width: 0; }
+
+[fxLayoutAlign="center center"] { display: flex; justify-content: center; align-items: center; }
+[fxLayoutAlign="start center"] { display: flex; justify-content: flex-start; align-items: center; }
+[fxLayoutAlign="start start"] { display: flex; justify-content: flex-start; align-items: flex-start; }
+
+[fxLayoutGap="0.3em"] { gap: 0.3em; }
+[fxLayoutGap="0.5em"] { gap: 0.5em; }
+[fxLayoutGap="0.8em"] { gap: 0.8em; }
+[fxLayoutGap="1em"] { gap: 1em; }
+[fxLayoutGap="1.5em"] { gap: 1.5em; }
+
+/* Breakpoint-ish behavior (approx) */
+@media (min-width: 960px) {
+  [fxLayout\.gt-md="row"] { display: flex; flex-direction: row; }
+}
+@media (max-width: 599px) {
+  [fxHide\.xs], [fxHide\.xs="true"] { display: none !important; }
+  [fxShow\.xs], [fxShow\.xs="true"] { display: initial; }
+  [fxLayout\.xs="column"] { display: flex; flex-direction: column; }
+}
+@media (min-width: 600px) {
+  [fxShow\.xs], [fxShow\.xs="true"] { display: none !important; }
+}
+
+/* Brand tokens used in the shell (topbar/footer). */
+:root {
+  --brand-blue-900: #002c85;
+  --brand-blue-800: #003297;
+}
+
+.app-shell-topbar-primary {
+  background-color: var(--brand-blue-900) !important;
+}
+
+#footer-row,
+#footer-column {
+  border-radius: 16px;
+  padding: 12px 16px;
 }
 
 a.footerlink {
@@ -18,9 +101,9 @@ a.footerlink {
 }
 
 .mat-toolbar.second-toolbar {
-    background-color: #003297 !important;
-    height: 36px;
-    font-size: 0.8em;
+    background-color: var(--brand-blue-800) !important;
+    min-height: 44px;
+    font-size: 0.9em;
 }
 
 .floatcenter {
@@ -75,8 +158,20 @@ body .snackbar-failed {
     justify-content: center;
 }
 
-.mat-card.margin-5 {
-    margin: 5px;
+mat-card.margin-5 {
+    margin: 12px;
+    border-radius: 16px;
+    background: var(--mat-sys-surface-container) !important;
+}
+
+mat-expansion-panel {
+    border-radius: 16px !important;
+    overflow: hidden;
+    background: var(--mat-sys-surface-container) !important;
+}
+
+mat-expansion-panel-header {
+    min-height: 52px;
 }
 
 .changed {

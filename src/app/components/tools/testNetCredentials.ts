@@ -6,9 +6,10 @@ import { MatStepper } from '@angular/material/stepper';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'testNetCredentials',
-  templateUrl: './testNetCredentials.html',
-  styleUrls: ['./testNetCredentials.css']
+    selector: 'testNetCredentials',
+    templateUrl: './testNetCredentials.html',
+    styleUrls: ['./testNetCredentials.css'],
+    standalone: false
 })
 export class TestNetCredentialsComponent {
 

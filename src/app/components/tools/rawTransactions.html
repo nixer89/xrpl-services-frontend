@@ -16,46 +16,66 @@
       Craft XRPL transactions
     </mat-panel-description>
   </mat-expansion-panel-header>
-  
+
   <div fxLayout="column" fxLayoutGap="0.5em">
-    <div *ngIf="loadingTemplates" fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
-      <label>Loading transaction templates... </label>
-      <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
-    </div>
-    <div *ngIf="!loadingTemplates && transactionTemplates">
-      <mat-form-field>
-        <mat-label>Select a template</mat-label>
-        <mat-select [(value)]="selectedTemplate" (valueChange)="changeTemplate()">
-          <mat-select-trigger *ngIf="selectedTemplate">
-            {{selectedTemplate.transactionType}}
-          </mat-select-trigger>
-          <mat-option *ngFor="let template of transactionTemplates" [value]="template">
-            <div fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
-              <label>{{template.transactionType}}</label>
-              <mat-icon class="warning" style="transform: scale(0.8);" *ngIf="template.requiresAmendment">build</mat-icon>
-            </div>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <div *ngIf="selectedTemplate && selectedTemplate.requiresAmendment">
-        <label class="warning">This transaction type requires an amendment which is NOT yet enabled on the XRP Ledger! This transaction won't be possible.</label>
+    @if (loadingTemplates) {
+      <div fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
+        <label>Loading transaction templates... </label>
+        <mat-progress-spinner color="primary" mode="indeterminate" diameter=25></mat-progress-spinner>
       </div>
-      <div *ngIf="selectedTemplate && selectedTemplate.docLink">
-        <a [href]="selectedTemplate.docLink" target="_blank" rel="noreferrer">{{selectedTemplate.transactionType}} documentation</a>
+    }
+    @if (!loadingTemplates && transactionTemplates) {
+      <div>
+        <mat-form-field>
+          <mat-label>Select a template</mat-label>
+          <mat-select [(value)]="selectedTemplate" (valueChange)="changeTemplate()">
+            @if (selectedTemplate) {
+              <mat-select-trigger>
+                {{selectedTemplate.transactionType}}
+              </mat-select-trigger>
+            }
+            @for (template of transactionTemplates; track template) {
+              <mat-option [value]="template">
+                <div fxLayout="row" fxLayoutGap="0.3em" fxLayoutAlign="start center">
+                  <label>{{template.transactionType}}</label>
+                  @if (template.requiresAmendment) {
+                    <mat-icon class="warning" style="transform: scale(0.8);">build</mat-icon>
+                  }
+                </div>
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        @if (selectedTemplate && selectedTemplate.requiresAmendment) {
+          <div>
+            <label class="warning">This transaction type requires an amendment which is NOT yet enabled on the XRP Ledger! This transaction won't be possible.</label>
+          </div>
+        }
+        @if (selectedTemplate && selectedTemplate.docLink) {
+          <div>
+            <a [href]="selectedTemplate.docLink" target="_blank" rel="noreferrer">{{selectedTemplate.transactionType}} documentation</a>
+          </div>
+        }
       </div>
-    </div>
+    }
 
-    <div *ngIf="mep.expanded">
-      <ngx-codemirror style="height: 600px;" [options]="editorOptions" [(ngModel)]="rawJsonTransaction" (ngModelChange)="checkJson()"></ngx-codemirror>
-    </div>
+    @if (mep.expanded) {
+      <div>
+        <ngx-codemirror style="height: 600px;" [options]="editorOptions" [(ngModel)]="rawJsonTransaction" (ngModelChange)="checkJson()"></ngx-codemirror>
+      </div>
+    }
 
-    <label *ngIf="selectedTemplate && selectedTemplate.transactionType != 'None'">We have removed the "Sequence" and "Fee" properties since Xaman will take care of this!</label>
+    @if (selectedTemplate && selectedTemplate.transactionType != 'None') {
+      <label>We have removed the "Sequence" and "Fee" properties since Xaman will take care of this!</label>
+    }
 
     <div fxLayout="row" fxLayoutAlign="start center" fxLayout.xs="column" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em" style="padding-top: 2em;">
       <button mat-raised-button color="primary" (click)="sendToXumm()" [disabled]="!isValidJson">
         Send Transaction to Xaman
       </button>
-      <label *ngIf="!isValidJson">{{errorMsg}}</label>
+      @if (!isValidJson) {
+        <label>{{errorMsg}}</label>
+      }
     </div>
   </div>
 </mat-expansion-panel>

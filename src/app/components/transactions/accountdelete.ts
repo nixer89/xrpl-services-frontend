@@ -6,8 +6,9 @@ import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
-  selector: 'accountdelete',
-  templateUrl: './accountdelete.html'
+    selector: 'accountdelete',
+    templateUrl: './accountdelete.html',
+    standalone: false
 })
 export class AccountDeleteComponent implements OnInit, OnDestroy {
 

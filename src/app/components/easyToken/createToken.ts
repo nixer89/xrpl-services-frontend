@@ -13,8 +13,9 @@ import * as normalizer from '../../utils/normalizers';
 import { isValidXRPAddress } from 'src/app/utils/utils';
 
 @Component({
-  selector: 'createToken',
-  templateUrl: './createToken.html'
+    selector: 'createToken',
+    templateUrl: './createToken.html',
+    standalone: false
 })
 export class CreateToken implements OnInit {
 

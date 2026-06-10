@@ -3,9 +3,10 @@ import { AppService } from '../services/app.service';
 import * as normalizer from 'src/app/utils/normalizers';
 
 @Component({
-  selector: 'xrpl-statistics',
-  templateUrl: './xrpl-statistics.html',
-  styleUrls: ['./xrpl-statistics.css']
+    selector: 'xrpl-statistics',
+    templateUrl: './xrpl-statistics.html',
+    styleUrls: ['./xrpl-statistics.css'],
+    standalone: false
 })
 export class XrplStatistics implements OnInit {
   

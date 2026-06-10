@@ -19,7 +19,8 @@ const lsfHighNoRipple = 0x200000;
 @Component({
     selector: "trustlineList",
     templateUrl: "trustlineList.html",
-    styleUrls: ['./trustlineList.css']
+    styleUrls: ['./trustlineList.css'],
+    standalone: false
 })
 export class TrustLineList implements OnInit, OnDestroy {
 

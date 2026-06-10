@@ -9,7 +9,8 @@ import { MatTableDataSource } from "@angular/material/table";
 @Component({
     selector: "escrowList",
     templateUrl: "escrowList.html",
-    styleUrls: ['./escrowList.css']
+    styleUrls: ['./escrowList.css'],
+    standalone: false
 })
 export class EscrowList implements OnInit, OnDestroy {
 

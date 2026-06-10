@@ -1,11 +1,12 @@
 import { Component, Inject, OnInit } from "@angular/core";
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/localStorage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
     selector: "genericDialog",
-    templateUrl: "genericDialog.html"
+    templateUrl: "genericDialog.html",
+    standalone: false
 })
 export class GenericDialogComponent implements OnInit{
 

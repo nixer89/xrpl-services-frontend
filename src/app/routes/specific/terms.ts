@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 @Component({
-  selector: 'terms',
-  templateUrl: 'terms.html'
+    selector: 'terms',
+    templateUrl: 'terms.html',
+    standalone: false
 })
 
 export class TermsComponent implements OnInit {
