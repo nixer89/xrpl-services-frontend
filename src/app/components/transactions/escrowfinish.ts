@@ -1,12 +1,14 @@
-import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
-import { isValidXRPAddress } from 'src/app/utils/utils';
+import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from '../../utils/types';
+import { isValidXRPAddress } from '../../utils/utils';
 
 @Component({
-  selector: 'escrowfinish',
-  templateUrl: './escrowfinish.html'
+    selector: 'escrowfinish',
+    templateUrl: './escrowfinish.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EscrowFinishComponent implements OnInit, OnDestroy {
 

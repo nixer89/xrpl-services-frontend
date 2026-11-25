@@ -12,14 +12,15 @@ td {
     hyphens: auto;
 }
 
-.mat-cell {
+.mat-mdc-cell {
     justify-content: center;
 }
 
-.mat-row {
+.mat-mdc-row {
     cursor: pointer;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
 .mat-chip-bithomp {
     font-size: 9px !important;
     min-height: 12px;
@@ -29,6 +30,7 @@ td {
     color: white !important;
 } 
 
+/* TODO(mdc-migration): The following rule targets internal classes of chips that may no longer apply for the MDC version. */
 .mat-chip-xrpscan {
     font-size: 9px !important;
     min-height: 12px;
@@ -241,18 +243,18 @@ td {
 
 @media (max-width:959px) {
 
-    .mat-card {
+    .mat-mdc-card {
         font-size: 12px;
     }
 
-    .mat-footer-row , .mat-row {
+    .mat-mdc-footer-row , .mat-mdc-row {
         padding-top: 0.5em;
         align-items: start;
         min-height: 14px;
         cursor: pointer;
     }
 
-    .mat-cell {
+    .mat-mdc-cell {
         padding-left: 1em;
         font-size: 12px;
     }

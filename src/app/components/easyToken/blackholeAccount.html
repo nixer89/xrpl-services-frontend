@@ -13,7 +13,7 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <mat-card fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
+  <mat-card appearance="outlined" fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
     <label>This functionality is now a Xaman xApp.</label>
     <label>Please click the link below to open the Token creator xApp:</label>
     <br/><br/>
@@ -46,13 +46,13 @@
               <ng-template matStepLabel>Select the network</ng-template>
               <label class="loading">Do you want to blackhole your account on the main network or test network?</label>
               <div fxLayout="row" fxLayoutGap="0.5em">
-                <mat-card class="theme-background">
+                <mat-card class="theme-background network-selector">
                   <div fxLayout="column" fxLayoutAlign="start center">
-                      <label>XRPL Network</label>
-                      <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
-                        <label>Main</label>&nbsp;
-                        <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
-                        <label>Test</label>
+                      <label class="network-title">XRPL Network</label>
+                      <div class="network-switch">
+                        <label [class.network-active]="!isTestMode">Main</label>
+                        <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" aria-label="Switch networks"></mat-slide-toggle>
+                        <label [class.network-active]="isTestMode">Test</label>
                       </div>
                   </div>
                 </mat-card>
@@ -79,9 +79,7 @@
           <label>You need to sign in with the account you want to lose all access for!</label>
           <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
             <div *ngIf="!getIssuer() || !validIssuer" fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="0.5em">
-              <button mat-button matTooltip="SignIn via XUMM." matTooltipPosition="above" (click)="loginForBlackhole()" style="padding:0px;">
-                <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
-              </button>
+              <xaman-button action="signin" matTooltip="Sign in with Xaman." matTooltipPosition="above" (click)="loginForBlackhole()"></xaman-button>
               <label class="loading">Sign in with the account you want to black hole!</label>
             </div>
 
@@ -157,9 +155,7 @@
           <label>You need to pay the equivalent of {{paymentAmount}} {{paymentCurrency}} with the account you want to blackhole to use this service.</label>
           <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
             <div  style="padding-top: 0.5em;" *ngIf="!paymentInitiated || paymentNotSuccessfull">
-              <button mat-button matTooltip="Pay via XUMM." matTooltipPosition="above" (click)="payForBlackhole()" style="padding:0px;">
-                <img src="../../assets/xummPay.svg" style="width: 148px; height: 40px;" alt="Pay via XUMM">
-              </button>
+              <xaman-button action="pay" matTooltip="Pay with Xaman." matTooltipPosition="above" (click)="payForBlackhole()"></xaman-button>
             </div>
 
             <mat-card *ngIf="paymentInitiated && !paymentNotSuccessfull" fxLayout="row" fxLayoutGap="0.5em" fxLayoutAlign="start center">

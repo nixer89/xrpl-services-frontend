@@ -1,13 +1,15 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
 import { XummTypes } from 'xumm-sdk';
-import { AccountInfoChanged, AccountObjectsChanged } from 'src/app/utils/types';
-import { isValidXRPAddress } from 'src/app/utils/utils';
+import { AccountInfoChanged, AccountObjectsChanged } from '../../utils/types';
+import { isValidXRPAddress } from '../../utils/utils';
 
 @Component({
-  selector: 'setregularkey',
-  templateUrl: './setregularkey.html'
+    selector: 'setregularkey',
+    templateUrl: './setregularkey.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SetRegularKeyComponent implements OnInit, OnDestroy {
 

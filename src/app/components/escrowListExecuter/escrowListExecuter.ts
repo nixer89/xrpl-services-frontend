@@ -1,20 +1,22 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy, ViewChild, ChangeDetectionStrategy } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
-import { GenericBackendPostRequest, TransactionValidation, XrplAccountChanged } from 'src/app/utils/types';
+import { GenericBackendPostRequest, TransactionValidation, XrplAccountChanged } from '../../utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import * as normalizer from '../../utils/normalizers';
 import { XummService } from '../../services/xumm.service';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
-import { isValidXRPAddress } from "src/app/utils/utils";
+import { isValidXRPAddress } from "../../utils/utils";
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatExpansionPanel } from "@angular/material/expansion";
 
 @Component({
     selector: "escrowListExecuter",
     templateUrl: "escrowListExecuter.html",
-    styleUrls: ['./escrowListExecuter.css']
+    styleUrls: ['./escrowListExecuter.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EscrowListExecuter implements OnInit, OnDestroy {
 

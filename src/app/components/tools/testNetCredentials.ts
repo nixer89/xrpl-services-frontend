@@ -1,14 +1,16 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { AppService } from '../../services/app.service';
 import * as qrcode from 'qrcode';
-import * as clipboard from 'copy-to-clipboard';
+import clipboard from 'copy-to-clipboard';
 import { MatStepper } from '@angular/material/stepper';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'testNetCredentials',
-  templateUrl: './testNetCredentials.html',
-  styleUrls: ['./testNetCredentials.css']
+    selector: 'testNetCredentials',
+    templateUrl: './testNetCredentials.html',
+    styleUrls: ['./testNetCredentials.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TestNetCredentialsComponent {
 

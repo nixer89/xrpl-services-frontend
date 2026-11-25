@@ -1,14 +1,16 @@
-import { Component, OnInit, OnDestroy, Input, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, Observable} from 'rxjs';
-import * as md5 from 'md5';
+import md5 from 'md5';
 import * as emailValidator from 'email-validator'
 import * as flagsutil from '../../utils/flagutils';
 import { XummTypes } from 'xumm-sdk';
-import { AccountObjectsChanged, AccountInfoChanged } from 'src/app/utils/types';
+import { AccountObjectsChanged, AccountInfoChanged } from '../../utils/types';
 
 @Component({
-  selector: 'accountset',
-  templateUrl: './accountset.html'
+    selector: 'accountset',
+    templateUrl: './accountset.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AccountSetComponent implements OnInit, OnDestroy {
 

@@ -1,13 +1,15 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { AccountInfoChanged } from 'src/app/utils/types';
+import { AccountInfoChanged } from '../../utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
-import { isValidXRPAddress } from 'src/app/utils/utils';
+import { isValidXRPAddress } from '../../utils/utils';
 
 @Component({
-  selector: 'accountdelete',
-  templateUrl: './accountdelete.html'
+    selector: 'accountdelete',
+    templateUrl: './accountdelete.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AccountDeleteComponent implements OnInit, OnDestroy {
 

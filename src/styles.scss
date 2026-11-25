@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
-@import './theme';
-@import "~codemirror/lib/codemirror";
-@import "~codemirror/theme/material-darker";
+@use './theme';
+@use "codemirror/lib/codemirror";
+@use "codemirror/theme/material-darker";
 
 html, body { 
     height: 100%;
@@ -41,7 +41,7 @@ a.footerlink {
     float: right;
 }
 
-.mat-button.sign-in-button {
+.mat-mdc-button.sign-in-button {
     width: 230;
     min-width: 230px;
     height: 40px;
@@ -75,7 +75,7 @@ body .snackbar-failed {
     justify-content: center;
 }
 
-.mat-card.margin-5 {
+.mat-mdc-card.margin-5 {
     margin: 5px;
 }
 
@@ -86,16 +86,18 @@ body .snackbar-failed {
     font-weight: 600;
 }
 
-.mat-hint {
+.mat-mdc-form-field-hint {
     color: #f44336 !important;
 }
 
 // adds breaks to the mat-checkboxes with long labels
+/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
 .mat-checkbox-layout {
     white-space: normal !important;
 }
 
 // rather than center the checkbox, put the checkbox in the first line
+/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
 .mat-checkbox-inner-container {
     margin-top: 3px !important;
 }
@@ -106,6 +108,13 @@ body .snackbar-failed {
 
 .CodeMirror {
     height: 400px;
+}
+
+/* Material 13 cards had 16px padding built in, the MDC cards have none. Restore it as a low-priority default
+   for content cards (cards with their own padding, and the phone rule below, still take precedence).
+   Page-level wrapper cards (.margin-5) keep no padding so the page content keeps its full width. */
+.mat-mdc-card:not(.margin-5) {
+    padding: 16px;
 }
 
 @media (max-width:599px) {
@@ -130,15 +139,46 @@ body .snackbar-failed {
         padding-top: 6px !important;
     }
 
-    .mat-card {
+    .mat-mdc-card {
         padding: 12px 8px 12px !important;
     }
 
-    .mat-dialog-container {
+    .mat-mdc-dialog-container {
         padding: 12px !important;
     }
 
     .CodeMirror {
         height: 300px;
     }
+}
+
+/* XRPL network selector (Main / Test switch) */
+.mat-mdc-card.network-selector {
+    padding: 10px 18px !important;
+    justify-content: center;
+}
+
+.network-selector .network-title {
+    font-size: 0.75em;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.network-selector .network-switch {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    margin-top: 0.4em;
+}
+
+.network-selector .network-switch label {
+    opacity: 0.55;
+    transition: opacity 150ms ease;
+}
+
+.network-selector .network-switch label.network-active {
+    opacity: 1;
+    font-weight: 500;
 }

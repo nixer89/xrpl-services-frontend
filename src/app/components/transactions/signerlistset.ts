@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
 import { XummTypes } from 'xumm-sdk';
-import { AccountInfoChanged, AccountObjectsChanged } from 'src/app/utils/types';
-import * as utils from 'src/app/utils/utils';
+import { AccountInfoChanged, AccountObjectsChanged } from '../../utils/types';
+import * as utils from '../../utils/utils';
 
 interface SignerListQuorumValidation {
   valid: boolean,
@@ -19,9 +19,11 @@ interface SignerEntry {
 }
 
 @Component({
-  selector: 'signerlistset',
-  templateUrl: './signerlistset.html',
-  styleUrls: ['./signerlistset.css']
+    selector: 'signerlistset',
+    templateUrl: './signerlistset.html',
+    styleUrls: ['./signerlistset.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SignerListSetComponent implements OnInit, OnDestroy {
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
@@ -10,11 +10,13 @@ import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
 import * as normalizer from '../../utils/normalizers';
-import { isValidXRPAddress } from 'src/app/utils/utils';
+import { isValidXRPAddress } from '../../utils/utils';
 
 @Component({
-  selector: 'createToken',
-  templateUrl: './createToken.html'
+    selector: 'createToken',
+    templateUrl: './createToken.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CreateToken implements OnInit {
 

@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AppService } from '../services/app.service';
-import * as normalizer from 'src/app/utils/normalizers';
+import * as normalizer from '../utils/normalizers';
 
 @Component({
-  selector: 'xrpl-statistics',
-  templateUrl: './xrpl-statistics.html',
-  styleUrls: ['./xrpl-statistics.css']
+    selector: 'xrpl-statistics',
+    templateUrl: './xrpl-statistics.html',
+    styleUrls: ['./xrpl-statistics.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class XrplStatistics implements OnInit {
   

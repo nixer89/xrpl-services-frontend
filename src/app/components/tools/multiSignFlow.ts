@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'multiSignFlow',
-  templateUrl: './multiSignFlow.html'
+    selector: 'multiSignFlow',
+    templateUrl: './multiSignFlow.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class MultiSignFlowComponent {
 }

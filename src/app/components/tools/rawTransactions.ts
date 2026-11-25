@@ -1,14 +1,16 @@
-import { Component, Input, Output, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { AccountInfoChanged, GenericBackendPostRequest, TransactionTemplate } from 'src/app/utils/types';
+import { AccountInfoChanged, GenericBackendPostRequest, TransactionTemplate } from '../../utils/types';
 import { XummTypes } from 'xumm-sdk';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../../services/local-storage.service';
 import { UtilService } from '../../services/util.service';
 import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
-  selector: 'rawTransactions',
-  templateUrl: './rawTransactions.html'
+    selector: 'rawTransactions',
+    templateUrl: './rawTransactions.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class RawTransactionsComponent implements OnInit, OnDestroy {
   constructor(private utilService: UtilService, private localStorage: LocalStorageService) { }

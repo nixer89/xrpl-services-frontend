@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
@@ -7,15 +7,17 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged } from '../utils/types';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/local-storage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { XummTypes } from 'xumm-sdk';
 import { isValidXRPAddress } from '../utils/utils';
 
 @Component({
-  selector: 'tools',
-  templateUrl: './tools.html',
+    selector: 'tools',
+    templateUrl: './tools.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class Tools implements OnInit {
   
@@ -29,7 +31,7 @@ export class Tools implements OnInit {
   lastTrxLinkXrplorer:string;
 
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
-  transactionSuccessfull: Subject<any> = new Subject<any>();
+  transactionSuccessfull: Subject<void> = new Subject<void>();
 
   isTestMode:boolean = false;
 

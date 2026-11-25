@@ -1,25 +1,27 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { XummService } from '../../services/xumm.service';
 import { rippleEpocheTimeToUTC } from '../../utils/normalizers';
-import { createHash } from 'crypto';
-import * as BN from 'bn.js';
+import BN from 'bn.js';
 import * as hashjs from 'hash.js';
 
 import * as rippleKeypairs from "ripple-keypairs";
+import * as rippleAddressCodec from 'ripple-address-codec';
+import elliptic from 'elliptic';
 
-const elliptic = require('elliptic');
 const ed25519 = new elliptic.eddsa('ed25519')
 const secp256k1 = new elliptic.ec('secp256k1')
 
 const codec =
 {
-    address: require('ripple-address-codec')
+    address: rippleAddressCodec
 }
 
 @Component({
-  selector: 'unlChecker',
-  templateUrl: './unlChecker.html',
-  styleUrls: ['./unlChecker.css']
+    selector: 'unlChecker',
+    templateUrl: './unlChecker.html',
+    styleUrls: ['./unlChecker.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class UnlCheckerComponent {
 
@@ -286,7 +288,7 @@ export class UnlCheckerComponent {
             let publicKey = blob.validators[idx].validation_public_key;
 
             if (publicKey.slice(0, 1) === 'n') {
-              const publicKeyBuffer = codec.address.decodeNodePublic(publicKey);
+              const publicKeyBuffer = Buffer.from(codec.address.decodeNodePublic(publicKey));
               publicKey = publicKeyBuffer.toString("hex").toUpperCase();
             }
 
@@ -303,7 +305,7 @@ export class UnlCheckerComponent {
                 //console.log("secp256k1");
                 //console.log("VALIDATOR KEY SEC")
                 signing_key = secp256k1.keyFromPublic(publicKey, 'hex');
-                const computedHash = createHash("sha512").update(parsedManifest.without_signing_fields).digest().toString("hex").slice(0, 32);
+                const computedHash = hashjs.sha512().update(parsedManifest.without_signing_fields).digest('hex').slice(0, 32);
                 this.assert(signing_key.verify(computedHash, parsedManifest.MasterSignature), "Validation manifest " + idx + " signature verification failed");
               }
             } catch(err) {

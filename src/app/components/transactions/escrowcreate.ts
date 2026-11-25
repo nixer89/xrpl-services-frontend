@@ -1,15 +1,18 @@
-import { Component, ViewChild, Output, EventEmitter, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, ViewChild, Output, EventEmitter, OnInit, OnDestroy, Input, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
+import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from '../../utils/types';
 import * as normalizer from '../../utils/normalizers'
-import { isValidXRPAddress } from 'src/app/utils/utils';
-import { FormControl } from '@angular/forms';
+import { isValidXRPAddress } from '../../utils/utils';
+import { UntypedFormControl } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 
 @Component({
-  selector: 'escrowcreate',
-  templateUrl: './escrowcreate.html'
+    selector: 'escrowcreate',
+    templateUrl: './escrowcreate.html',
+    styleUrls: ['./escrowcreate.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EscrowCreateComponent implements OnInit, OnDestroy{
 
@@ -62,8 +65,8 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
   cancelAfterDateTime:Date;
   finishAfterDateTime:Date;
 
-  finishAfterFormCtrl:FormControl = new FormControl();
-  cancelAfterFormCtrl:FormControl = new FormControl();
+  finishAfterFormCtrl:UntypedFormControl = new UntypedFormControl();
+  cancelAfterFormCtrl:UntypedFormControl = new UntypedFormControl();
 
   cancelDateInFuture:boolean = false;
   finishDateInFuture:boolean = false;

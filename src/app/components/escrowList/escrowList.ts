@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild, AfterViewInit } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild, AfterViewInit, ChangeDetectionStrategy } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
-import { AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
+import { AccountObjectsChanged, XrplAccountChanged } from '../../utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import * as normalizer from '../../utils/normalizers';
 import { MatPaginator } from '@angular/material/paginator';
@@ -9,7 +9,9 @@ import { MatTableDataSource } from "@angular/material/table";
 @Component({
     selector: "escrowList",
     templateUrl: "escrowList.html",
-    styleUrls: ['./escrowList.css']
+    styleUrls: ['./escrowList.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EscrowList implements OnInit, OnDestroy {
 

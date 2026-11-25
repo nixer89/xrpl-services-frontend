@@ -1,10 +1,10 @@
-import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subscription} from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { AccountInfoChanged, GenericBackendPostRequest } from 'src/app/utils/types';
+import { AccountInfoChanged, GenericBackendPostRequest } from '../../utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
-import { isValidXRPAddress } from 'src/app/utils/utils';
-import { AppService } from 'src/app/services/app.service';
+import { isValidXRPAddress } from '../../utils/utils';
+import { AppService } from '../../services/app.service';
 
 interface NoRippleCheck {
   problem: string,
@@ -12,9 +12,11 @@ interface NoRippleCheck {
 }
 
 @Component({
-  selector: 'norippleCheck',
-  templateUrl: './norippleCheck.html',
-  styleUrls: ['./norippleCheck.css']
+    selector: 'norippleCheck',
+    templateUrl: './norippleCheck.html',
+    styleUrls: ['./norippleCheck.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NoRippleCheckComponent implements OnInit, OnDestroy {
 

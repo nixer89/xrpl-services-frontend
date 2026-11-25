@@ -7,7 +7,7 @@ import { GenericBackendPostRequest, TransactionValidation } from '../utils/types
 export class XummService {
     constructor(private app: AppService) {}
 
-    isTestMode = false;
+    isTestMode = true;
     xrplServicesBackendURL = this.isTestMode ? 'http://localhost:4001' : 'https://api.xrpl.services';
 
     async ping(): Promise<boolean> {

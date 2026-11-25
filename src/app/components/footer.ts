@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import packageInfo from '../../../package.json';
 import { XummService } from '../services/xumm.service';
 
 @Component({
-  selector: 'app-footer',
-  templateUrl: './footer.html'
+    selector: 'app-footer',
+    templateUrl: './footer.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class FooterComponent implements OnInit {
 

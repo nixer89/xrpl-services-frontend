@@ -1,18 +1,20 @@
-import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { AccountInfoChanged, XrplAccountChanged, Token, SimpleTrustLine, XrplCurrency, AccountObjectsChanged } from 'src/app/utils/types';
+import { AccountInfoChanged, XrplAccountChanged, Token, SimpleTrustLine, XrplCurrency, AccountObjectsChanged } from '../../utils/types';
 import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
-import { isValidXRPAddress } from 'src/app/utils/utils';
-import { XRPLWebsocket } from 'src/app/services/xrplWebSocket';
+import { isValidXRPAddress } from '../../utils/utils';
+import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import * as flagUtil from '../../utils/flagutils'
-import { AppService } from 'src/app/services/app.service';
+import { AppService } from '../../services/app.service';
 
 @Component({
-  selector: 'trustset',
-  templateUrl: './trustset.html'
+    selector: 'trustset',
+    templateUrl: './trustset.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 

@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
@@ -9,14 +9,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged, AccountObjectsChanged } from '../utils/types';
 import { XummTypes } from 'xumm-sdk';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/local-storage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
-  selector: 'xrpl-transactions',
-  templateUrl: './xrpl-transactions.html',
+    selector: 'xrpl-transactions',
+    templateUrl: './xrpl-transactions.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class XrplTransactionsComponent implements OnInit {
   
@@ -32,7 +34,7 @@ export class XrplTransactionsComponent implements OnInit {
 
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
   accountObjectsChanged: Subject<AccountObjectsChanged> = new Subject<AccountObjectsChanged>();
-  transactionSuccessfull: Subject<any> = new Subject<any>();
+  transactionSuccessfull: Subject<void> = new Subject<void>();
 
   isTestMode:boolean = false;
 

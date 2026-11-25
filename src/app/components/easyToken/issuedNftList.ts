@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { AppService } from '../../services/app.service';
 import { IssuerVerification, Token, NftIssuer } from '../../utils/types'
-import * as normalizer from 'src/app/utils/normalizers';
+import * as normalizer from '../../utils/normalizers';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -9,19 +9,21 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { TokenDetailsDialog } from './tokenDetailsDialog';
-import { XummService } from 'src/app/services/xumm.service';
+import { XummService } from '../../services/xumm.service';
 
 @Component({
-  selector: 'issuedNftList',
-  templateUrl: './issuedNftList.html',
-  styleUrls: ['./issuedNftList.css'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ]
+    selector: 'issuedNftList',
+    templateUrl: './issuedNftList.html',
+    styleUrls: ['./issuedNftList.css'],
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class IssuedNftList implements OnInit {
 

@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { AppService } from '../../services/app.service';
 import { IssuerVerification, Token, TokenIssuer } from '../../utils/types'
-import * as normalizer from 'src/app/utils/normalizers';
+import * as normalizer from '../../utils/normalizers';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -9,19 +9,21 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { TokenDetailsDialog } from './tokenDetailsDialog';
-import { XummService } from 'src/app/services/xumm.service';
+import { XummService } from '../../services/xumm.service';
 
 @Component({
-  selector: 'issuedTokenList',
-  templateUrl: './issuedTokenList.html',
-  styleUrls: ['./issuedTokenList.css'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ]
+    selector: 'issuedTokenList',
+    templateUrl: './issuedTokenList.html',
+    styleUrls: ['./issuedTokenList.css'],
+    animations: [
+        trigger('detailExpand', [
+            state('collapsed', style({ height: '0px', minHeight: '0' })),
+            state('expanded', style({ height: '*' })),
+            transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+        ]),
+    ],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class IssuedTokenList implements OnInit {
 
@@ -31,20 +33,37 @@ export class IssuedTokenList implements OnInit {
     private deviceDetector: DeviceDetectorService,
     private matDialog: MatDialog) {}
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  // Setters keep the data source attached when Angular re-creates the paginator/sort header
+  // (e.g. hot module replacement during `ng serve`); otherwise the paginator would show "0 of 0".
+  private _paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: true}) set paginator(paginator: MatPaginator) {
+    this._paginator = paginator;
+    if(this.datasource && paginator)
+      this.datasource.paginator = paginator;
+  }
+  get paginator(): MatPaginator {
+    return this._paginator;
+  }
 
-  sortColumns: string[] = ['account', 'kyc', 'selfassessment', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers'];
+  private _sort: MatSort;
+  @ViewChild(MatSort, {static: true}) set sort(sort: MatSort) {
+    this._sort = sort;
+    if(this.datasource && sort)
+      this.datasource.sort = sort;
+  }
+  get sort(): MatSort {
+    return this._sort;
+  }
+
+  sortColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers'];
   
-  displayedColumns: string[] = ['account', 'kyc', 'selfassessment', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers',  'trustlinelink', 'dexlink', 'explorer'];
+  displayedColumns: string[] = ['account', 'kyc', 'username', 'currency', 'amount', 'trustlines', 'holders', 'offers',  'trustlinelink', 'dexlink', 'explorer'];
   datasource:MatTableDataSource<TokenIssuer> = null;
 
   allTokens: TokenIssuer[] = null;
   kycTokensOnly: TokenIssuer[] = null;
-  selfAssessmentOnly: TokenIssuer[] = null;
 
   showKycOnly:boolean = false;
-  showSelfAssessmentOnly:boolean = false;
 
   loading:boolean = false;
 
@@ -64,7 +83,6 @@ export class IssuedTokenList implements OnInit {
   numberOfHoldersTotal: number = 0;
   dexOffersTotal: number = 0;
   kycAccountsTotal: number = 0;
-  selfAssessmentsTotal: number = 0;
   uniqueFilteredAccount: Map<String, Number> = new Map<String, Number>();
   previousFilter: string;
 
@@ -159,7 +177,6 @@ export class IssuedTokenList implements OnInit {
         }
 
         this.kycTokensOnly = this.allTokens.filter(token => token.kyc);
-        this.selfAssessmentOnly = this.allTokens.filter(token => token && token.self_assessment && token.self_assessment.self_assessment && token.self_assessment.information)
       }
     }
 
@@ -219,8 +236,7 @@ export class IssuedTokenList implements OnInit {
                   domain: domain,
                   twitter: twitter,
                   kyc: data.kyc,
-                  created: issuedCurrency.created,
-                  self_assessment: issuedCurrency.self_assessment
+                  created: issuedCurrency.created
                 });
 
               this.uniqueFilteredAccount.set(account, 1);
@@ -231,7 +247,6 @@ export class IssuedTokenList implements OnInit {
               this.numberOfTrustlinesTotal += issuedCurrency.trustlines ? issuedCurrency.trustlines : 0;
               this.numberOfHoldersTotal += issuedCurrency.holders ? issuedCurrency.holders : 0;
               this.kycAccountsTotal += data.kyc ? 1 : 0;
-              this.selfAssessmentsTotal += issuedCurrency.self_assessment ? 1 : 0;
             });
         }
       }
@@ -270,7 +285,6 @@ export class IssuedTokenList implements OnInit {
       this.numberOfTrustlinesTotal = 0;
       this.numberOfHoldersTotal = 0;
       this.kycAccountsTotal = 0;
-      this.selfAssessmentsTotal = 0;
 
       this.previousFilter = null;
       //count everything!
@@ -283,7 +297,6 @@ export class IssuedTokenList implements OnInit {
           this.numberOfTrustlinesTotal += data.trustlines ? data.trustlines : 0;
           this.numberOfHoldersTotal += data.holders ? data.holders : 0;
           this.kycAccountsTotal += data.kyc ? 1 : 0;
-          this.selfAssessmentsTotal += data.self_assessment ? 1 : 0;
       });
 
       if (this.datasource.paginator) {
@@ -332,17 +345,8 @@ export class IssuedTokenList implements OnInit {
 
   switchTokenList() {
     if(this.datasource && this.datasource.data) {
-      if(this.showKycOnly && !this.showSelfAssessmentOnly) {
+      if(this.showKycOnly) {
         this.datasource.data = this.kycTokensOnly;
-      } else if(this.showSelfAssessmentOnly && !this.showKycOnly) {
-        this.datasource.data = this.selfAssessmentOnly;
-      } else if(this.showKycOnly && this.showSelfAssessmentOnly) {
-        let combined = [].concat(this.selfAssessmentOnly);
-
-        combined = combined.filter(token => token.kyc);
-
-        this.datasource.data = combined;
-        
       } else {
         this.datasource.data = this.allTokens;
       }

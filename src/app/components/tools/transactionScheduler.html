@@ -18,10 +18,14 @@
   </mat-expansion-panel-header>
 
   <div fxLayout="column">
-    <label class="warning" *ngIf="!originalAccountInfo || !originalAccountInfo.Account && !originalAccountInfo.account">Please use the above "Sign in with Xaman" button to load your escrows!</label>
-    <label class="warning" *ngIf="originalAccountInfo && originalAccountInfo.account">Account does not exist on the XRP Ledger {{isTestMode ? 'Testnet' : 'Mainnet'}}</label>
+    @if (!originalAccountInfo || !originalAccountInfo.Account && !originalAccountInfo.account) {
+      <label class="warning">Please use the above "Sign in with Xaman" button to load your escrows!</label>
+    }
+    @if (originalAccountInfo && originalAccountInfo.account) {
+      <label class="warning">Account does not exist on the XRP Ledger {{isTestMode ? 'Testnet' : 'Mainnet'}}</label>
+    }
   </div>
-  
+
   <div style="margin-bottom: 1em;" [ngStyle]="{'display': originalAccountInfo && originalAccountInfo.Account ? 'block':'none' }">
     <escrowListExecuter [escrowAccountChanged]="escrowAccountChanged.asObservable()"></escrowListExecuter>
   </div>

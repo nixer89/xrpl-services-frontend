@@ -1,28 +1,211 @@
-.break-words {
-    white-space: pre-wrap;
+.mat-mdc-dialog-content.sign-dialog {
+    box-sizing: border-box;
+    width: 460px;
+    max-width: 100%;
+    max-height: 85vh;
+    margin: 0;
+    padding: 20px 24px !important;
+    color: inherit;
 }
 
-.mat-dialog-content {
-    margin: 0px;
-    padding: 0px;
-}
-
 .break-words {
-    word-wrap: break-word !important;
     white-space: pre-wrap;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-
-    word-break: break-word;
-
-    -ms-hyphens: auto;
-    -moz-hyphens: auto;
-    -webkit-hyphens: auto;
+    overflow-wrap: anywhere;
     hyphens: auto;
 }
 
-@media (max-width:599px) {
-    .mat-dialog-content {
-        font-size: 0.8em;
+/* ---------- overview ---------- */
+
+.sign-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.sign-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 4px;
+    text-align: center;
+}
+
+.sign-title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.sign-subtitle {
+    font-size: 13px;
+    opacity: 0.65;
+}
+
+.sign-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background-color: rgba(128, 128, 128, 0.12);
+}
+
+.section-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.65;
+}
+
+.summary-text {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* KYC */
+
+.kyc-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.kyc-status .mat-icon {
+    flex: none;
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+}
+
+.kyc-ok .mat-icon {
+    color: #2e9e4f;
+}
+
+.kyc-missing .mat-icon {
+    color: #f0a020;
+}
+
+.kyc-note {
+    font-size: 12px;
+    line-height: 1.45;
+    opacity: 0.7;
+}
+
+/* XUMM name warning */
+
+.sign-alert {
+    background-color: rgba(235, 0, 0, 0.12);
+    border: 1px solid rgba(235, 60, 60, 0.55);
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.sign-alert p {
+    margin: 0;
+}
+
+.alert-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.alert-title .mat-icon {
+    color: #f0a020;
+}
+
+.memo-field {
+    width: 100%;
+}
+
+/* actions */
+
+.sign-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.sign-actions.centered {
+    justify-content: center;
+}
+
+/* ---------- loading / QR / result states ---------- */
+
+.sign-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 0;
+    text-align: center;
+}
+
+.state-text {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.state-title {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.qr-frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 196px;
+    height: 196px;
+    border-radius: 12px;
+    background-color: #fff;
+}
+
+.qr-frame img.qr-hidden {
+    display: none;
+}
+
+.open-link {
+    font-size: 14px;
+}
+
+.waiting {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    opacity: 0.8;
+}
+
+.state-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+}
+
+.state-error {
+    color: #e5484d;
+}
+
+.state-success {
+    color: #2e9e4f;
+}
+
+@media (max-width: 599px) {
+    .mat-mdc-dialog-content.sign-dialog {
+        width: 100%;
+        padding: 16px !important;
+    }
+
+    .sign-title {
+        font-size: 19px;
     }
 }

@@ -13,7 +13,7 @@
     </mat-panel-title>
   </mat-expansion-panel-header>
 
-  <mat-card fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
+  <mat-card appearance="outlined" fxFlex fxLayout="column" fxLayoutGap="0.2em" class="margin-5">
     <label>This functionality is now a Xaman xApp.</label>
     <label>Please click the link below to open the Token creator xApp:</label>
     <br/><br/>
@@ -69,13 +69,13 @@
               <ng-template matStepLabel>Select the network</ng-template>
               <label class="loading">Do you want to create a Token on the main network or test network?</label>
               <div fxLayout="row" fxLayoutGap="0.5em">
-                <mat-card class="theme-background">
+                <mat-card class="theme-background network-selector">
                   <div fxLayout="column" fxLayoutAlign="start center">
-                      <label>XRPL Network</label>
-                      <div fxLayout="row" fxLayoutAlign="start center" style="margin-top: 0.5em;">
-                        <label>Main</label>&nbsp;
-                        <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" aria-label="Switch networks"></mat-slide-toggle>&nbsp;
-                        <label>Test</label>
+                      <label class="network-title">XRPL Network</label>
+                      <div class="network-switch">
+                        <label [class.network-active]="!isTestMode">Main</label>
+                        <mat-slide-toggle [(ngModel)]="isTestMode" [checked]="isTestMode" aria-label="Switch networks"></mat-slide-toggle>
+                        <label [class.network-active]="isTestMode">Test</label>
                       </div>
                   </div>
                 </mat-card>
@@ -134,15 +134,11 @@
           <label>You need to pay or sign in with the account you want to create your Token from. (the 'Issuer' account)</label>
           <div *ngIf="!loadingIssuerAccount" fxLayout="column" fxLayoutGap="0.5em">
             <div  style="padding-top: 0.5em;" *ngIf="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound">
-              <button mat-button matTooltip="Pay for your Token via XUMM." matTooltipPosition="above" (click)="payForToken()" style="padding:0px;">
-                <img src="../../assets/xummPay.svg" style="width: 148px; height: 40px;" alt="Pay via XUMM">
-              </button>
+              <xaman-button action="pay" matTooltip="Pay for your Token with Xaman." matTooltipPosition="above" (click)="payForToken()"></xaman-button>
               &nbsp;<label class="warning">Make a 5 XRP payment if you haven't paid within the last 24h.</label>
             </div>
             <div *ngIf="!getIssuer() || !validIssuer || paymentNotSuccessfull || paymentNotFound">
-              <button mat-button matTooltip="SignIn via XUMM." matTooltipPosition="above" (click)="loginForToken()" style="padding:0px;">
-                <img src="../../assets/xummSignIn.svg" style="width: 230px; height: 40px;" alt="SignIn via XUMM">
-              </button>
+              <xaman-button action="signin" matTooltip="Sign in with Xaman." matTooltipPosition="above" (click)="loginForToken()"></xaman-button>
               &nbsp;<label class="loading">Sign in with the account you have paid within the last 24h.</label>
             </div>
             
