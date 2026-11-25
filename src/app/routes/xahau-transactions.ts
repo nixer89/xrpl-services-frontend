@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
@@ -9,14 +9,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged, AccountObjectsChanged } from '../utils/types';
 import { XummTypes } from 'xumm-sdk';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/local-storage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 
 @Component({
-  selector: 'xahau-transactions',
-  templateUrl: './xahau-transactions.html',
+    selector: 'xahau-transactions',
+    templateUrl: './xahau-transactions.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class XahauTransactionsComponent implements OnInit {
   
@@ -30,7 +32,7 @@ export class XahauTransactionsComponent implements OnInit {
 
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
   accountObjectsChanged: Subject<AccountObjectsChanged> = new Subject<AccountObjectsChanged>();
-  transactionSuccessfull: Subject<any> = new Subject<any>();
+  transactionSuccessfull: Subject<void> = new Subject<void>();
 
   isTestMode:boolean = false;
 
@@ -185,10 +187,13 @@ export class XahauTransactionsComponent implements OnInit {
 
     let feeSettingObject = feeSettingResult?.result?.node;
 
-    if('ReserveBase' in feeSettingObject) {
+    if(!feeSettingObject) {
+      //node did not answer with the fee settings -> keep the reserves we have
+      console.log("could not load fee settings / reserves from the node");
+    } else if('ReserveBase' in feeSettingObject) {
       this.accountReserve = feeSettingObject.ReserveBase;
       this.ownerReserve = feeSettingObject.ReserveIncrement;
-    } else {
+    } else if('ReserveBaseDrops' in feeSettingObject) {
       this.accountReserve = Number(feeSettingObject.ReserveBaseDrops);
       this.ownerReserve = Number(feeSettingObject.ReserveIncrementDrops);
     }
@@ -221,7 +226,7 @@ export class XahauTransactionsComponent implements OnInit {
           if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
             this.xrplAccount_Info = message_acc_info.result.account_data;
             if(this.xrplAccount_Info.urlgravatar)
-              this.xrplAccount_Info.urlgravatar = this.xrplAccount_Info.urlgravatar.replace('http','https');
+              this.xrplAccount_Info.urlgravatar = this.xrplAccount_Info.urlgravatar.replace(/^http:/,'https:');
             //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
             this.emitAccountInfoChanged();
           } else {

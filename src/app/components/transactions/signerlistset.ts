@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import * as flagsutil from '../../utils/flagutils';
 import { XummTypes } from 'xumm-sdk';
-import { AccountInfoChanged, AccountObjectsChanged } from 'src/app/utils/types';
-import * as utils from 'src/app/utils/utils';
+import { AccountInfoChanged, AccountObjectsChanged } from '../../utils/types';
+import * as utils from '../../utils/utils';
 
 interface SignerListQuorumValidation {
   valid: boolean,
@@ -19,13 +19,13 @@ interface SignerEntry {
 }
 
 @Component({
-  selector: 'signerlistset',
-  templateUrl: './signerlistset.html',
-  styleUrls: ['./signerlistset.css']
+    selector: 'signerlistset',
+    templateUrl: './signerlistset.html',
+    styleUrls: ['./signerlistset.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SignerListSetComponent implements OnInit, OnDestroy {
-
-  constructor() { }
 
   @Input()
   accountObjectsChanged: Observable<AccountObjectsChanged>;
@@ -201,7 +201,7 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
   }
 
   isValidInteger(weight: string): boolean {
-    return weight && weight.trim().length > 0 && !weight.includes(',') && !weight.includes('.') && weight.split('')[0] != "0" && Number.isInteger(Number.parseInt(weight));
+    return weight && weight.trim().length > 0 && !weight.includes(',') && !weight.includes('.') && weight.split('')[0] != "0" && /^\d+$/.test(weight.trim());
   }
 
   isValidXRPAddress(account: string) {
@@ -245,7 +245,8 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
     //console.log("into integer");
     this.payload.custom_meta.instruction = "- Number of signers: " + signerListToSend.length;
     
-    this.payload.txjson.SignerQuorum = this.signerQuorumInput
+    //SignerQuorum is a number in the transaction format (was sent as text)
+    this.payload.txjson.SignerQuorum = this.isValidInteger(this.signerQuorumInput) ? Number.parseInt(this.signerQuorumInput.trim()) : <any>this.signerQuorumInput;
     this.payload.custom_meta.instruction += "\n- Quorum for valid MultiSignature: " + this.signerQuorumInput;
 
     this.payload.custom_meta.instruction += "\n- Overall signer weight: " + this.overallSignerWeights;
@@ -255,7 +256,8 @@ export class SignerListSetComponent implements OnInit, OnDestroy {
 
     this.payload.custom_meta.instruction += "\n\n- Please check the Signer List in the Xaman App!";
 
-    this.onPayload.emit(this.payload);
+    //send a copy: the dialog changes the object (memo, account, options) and it must not be reused for the next try
+    this.onPayload.emit(JSON.parse(JSON.stringify(this.payload)));
   }
 
   clearInputs() {

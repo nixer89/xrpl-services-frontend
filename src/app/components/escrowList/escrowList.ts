@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild, AfterViewInit, ChangeDetectionStrategy } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
-import { AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
+import { AccountObjectsChanged, XrplAccountChanged } from '../../utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import * as normalizer from '../../utils/normalizers';
 import { MatPaginator } from '@angular/material/paginator';
@@ -9,7 +9,9 @@ import { MatTableDataSource } from "@angular/material/table";
 @Component({
     selector: "escrowList",
     templateUrl: "escrowList.html",
-    styleUrls: ['./escrowList.css']
+    styleUrls: ['./escrowList.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EscrowList implements OnInit, OnDestroy {
 
@@ -87,11 +89,8 @@ export class EscrowList implements OnInit, OnDestroy {
                 }
                 //console.timeEnd("filter: " + escrowObjects.objects.length + " | " + this.isCancel + " | " + this.isFinish)
 
-                if(this.escrowData) {
-                    this.escrowData = this.escrowData.concat(filteredList);
-                } else {
-                    this.escrowData = filteredList;
-                }
+                //every event delivers the complete list -> replace, do not append (rows were duplicated on each reload)
+                this.escrowData = filteredList;
                     
                 //if data 0 (no available escrows) -> show message "no escrows available"
                 if(this.escrowData.length == 0)
@@ -161,7 +160,7 @@ export class EscrowList implements OnInit, OnDestroy {
         if(message && message.status && message.status === 'success' && message.type && message.type === 'response') {
             if(message.result && message.result.TransactionType === 'EscrowCreate') {
                 //console.log("Sequence: " + message.result.Sequence);
-                this.escrowSequenceFound.emit({owner: message.result.Account, sequence: message.result.Sequence, condition: message.result.Condition});
+                this.escrowSequenceFound.emit({owner: message.result.Account, sequence: message.result.Sequence || message.result.TicketSequence, condition: message.result.Condition});
                 this.escrowClicked = true;
                 this.loading = false;
             }

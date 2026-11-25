@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
+import { FlexLayoutModule } from 'ngx-flexible-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutes } from './app.routes';
 
@@ -16,6 +16,7 @@ import { EasyToken } from './routes/easyToken';
 import { NftRoute } from './routes/nftRoute';
 import { TopbarComponent } from './components/topbar';
 import { FooterComponent } from './components/footer';
+import { XamanButtonComponent } from './components/xamanButton';
 import { XummSignDialogComponent } from './components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from './components/genericPayloadQRDialog';
 import { GenericDialogComponent } from './components/genericDialog';
@@ -89,97 +90,89 @@ import { XRPLWebsocket } from './services/xrplWebSocket';
 
 //special
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { LocalStorageModule } from 'angular-2-local-storage';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { HighlightSearchPipe } from './utils/searchHighlight';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    TermsComponent,
-    PrivacyComponent,
-    XahauTransactionsComponent,
-    Tools,
-    GenericBackendDefinition,
-    EasyToken,
-    NftRoute,
-    TopbarComponent,
-    FooterComponent,
-    XummSignDialogComponent,
-    GenericPayloadQRDialog,
-    GenericDialogComponent,
-    EscrowList,
-    EscrowListExecuter,
-    TokenList,
-    TrustLineList,
-    TrustLineListIssuing,
-    CreateToken,
-    IssueMoreToken,
-    IssuedTokenList,
-    AccountSetComponent,
-    EscrowCreateComponent,
-    EscrowFinishComponent,
-    EscrowCancelComponent,
-    SetRegularKeyComponent,
-    SignerListSetComponent,
-    TrustSetComponent,
-    NoRippleCheckComponent,
-    TransactionSchedulerComponent,
-    BlackholeAccount,
-    AccountDeleteComponent,
-    RawTransactionsComponent,
-    TestNetCredentialsComponent,
-    MultiSignFlowComponent,
-    HighlightSearchPipe,
-    Statistics,
-    XahauStatistics,
-    TokenDetailsDialog,
-    IssuedNftList,
-    UnlCheckerComponent,
-    NftApiBackend
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    AppRoutes,
-    FlexLayoutModule,
-    MatToolbarModule,
-    MatExpansionModule,
-    MatCardModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-    MatInputModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatNativeDateModule,
-    MatSlideToggleModule,
-    MatIconModule,
-    MatSnackBarModule,
-    MatCheckboxModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatMenuModule,
-    MatStepperModule,
-    MatSelectModule,
-    MatSortModule,
-    MatChipsModule,
-    CodemirrorModule,
-    MatDatepickerModule,
-    MatMomentDateModule,
-    //Special
-    LocalStorageModule.forRoot({ prefix: 'XahauServices', storageType: 'localStorage', notifyOptions: {setItem: true, removeItem: false} }),
-  ],
-  providers: [
-    AppService,
-    XummService,
-    UtilService,
-    XRPLWebsocket,
-    DeviceDetectorService,
-    MatMomentDateModule
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        TermsComponent,
+        PrivacyComponent,
+        XahauTransactionsComponent,
+        Tools,
+        GenericBackendDefinition,
+        EasyToken,
+        NftRoute,
+        TopbarComponent,
+        FooterComponent,
+        XamanButtonComponent,
+        XummSignDialogComponent,
+        GenericPayloadQRDialog,
+        GenericDialogComponent,
+        EscrowList,
+        EscrowListExecuter,
+        TokenList,
+        TrustLineList,
+        TrustLineListIssuing,
+        CreateToken,
+        IssueMoreToken,
+        IssuedTokenList,
+        AccountSetComponent,
+        EscrowCreateComponent,
+        EscrowFinishComponent,
+        EscrowCancelComponent,
+        SetRegularKeyComponent,
+        SignerListSetComponent,
+        TrustSetComponent,
+        NoRippleCheckComponent,
+        TransactionSchedulerComponent,
+        BlackholeAccount,
+        AccountDeleteComponent,
+        RawTransactionsComponent,
+        TestNetCredentialsComponent,
+        MultiSignFlowComponent,
+        HighlightSearchPipe,
+        Statistics,
+        XahauStatistics,
+        TokenDetailsDialog,
+        IssuedNftList,
+        UnlCheckerComponent,
+        NftApiBackend
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutes,
+        FlexLayoutModule,
+        MatToolbarModule,
+        MatExpansionModule,
+        MatCardModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatProgressSpinnerModule,
+        MatTooltipModule,
+        MatInputModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatNativeDateModule,
+        MatSlideToggleModule,
+        MatIconModule,
+        MatSnackBarModule,
+        MatCheckboxModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatMenuModule,
+        MatStepperModule,
+        MatSelectModule,
+        MatSortModule,
+        MatChipsModule,
+        CodemirrorModule,
+        MatDatepickerModule,
+        MatMomentDateModule], providers: [
+        AppService,
+        XummService,
+        UtilService,
+        XRPLWebsocket,
+        DeviceDetectorService,
+        MatMomentDateModule,
+        provideHttpClient(withXhr(), withInterceptorsFromDi())
+    ] })
 export class AppModule { }

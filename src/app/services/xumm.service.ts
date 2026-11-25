@@ -25,7 +25,6 @@ export class XummService {
 
     async submitPayload(payload:GenericBackendPostRequest): Promise<XummTypes.XummPostPayloadResponse> {
         try {
-            console.log("submitting payload: " + JSON.stringify(payload));
             return this.app.post(this.xrplServicesBackendURL+"/api/v1/platform/payload", payload);
         } catch(err) {
             //console.log("error: ");
@@ -81,7 +80,7 @@ export class XummService {
 
     async checkTimedPaymentReferer(payloadId:string, referer?:string): Promise<TransactionValidation> {
         try {
-            return this.app.get(this.xrplServicesBackendURL+"/api/v1/check/timed/payment/referer/" + payloadId + (referer ? ("?referer="+referer) : ""));
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/check/timed/payment/referer/" + payloadId + (referer ? ("?referer="+encodeURIComponent(referer)) : ""));
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }
@@ -99,7 +98,7 @@ export class XummService {
 
     async signInToValidateTimedPayment(payloadId:string, referer?:string): Promise<TransactionValidation> {
         try {
-            return this.app.get(this.xrplServicesBackendURL+"/api/v1/check/signinToValidatePayment/" + payloadId + (referer ? ("?referer="+referer) :""));
+            return this.app.get(this.xrplServicesBackendURL+"/api/v1/check/signinToValidatePayment/" + payloadId + (referer ? ("?referer="+encodeURIComponent(referer)) :""));
         } catch(err) {
             console.log(JSON.stringify(err))
             return { error: true, success: false, testnet:false }
@@ -138,7 +137,7 @@ export class XummService {
             if(!origin)
                 return this.app.get(this.xrplServicesBackendURL+"/api/v1/statistics/transactions");
             else 
-                return this.app.get(this.xrplServicesBackendURL+"/api/v1/statistics/transactions?origin="+origin);
+                return this.app.get(this.xrplServicesBackendURL+"/api/v1/statistics/transactions?origin="+encodeURIComponent(origin));
         } catch(err) {
             console.log(JSON.stringify(err))
             return null;

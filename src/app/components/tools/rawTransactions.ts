@@ -1,14 +1,16 @@
-import { Component, Input, Output, EventEmitter, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { AccountInfoChanged, GenericBackendPostRequest, TransactionTemplate } from 'src/app/utils/types';
+import { AccountInfoChanged, GenericBackendPostRequest, TransactionTemplate } from '../../utils/types';
 import { XummTypes } from 'xumm-sdk';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../../services/local-storage.service';
 import { UtilService } from '../../services/util.service';
 import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
-  selector: 'rawTransactions',
-  templateUrl: './rawTransactions.html'
+    selector: 'rawTransactions',
+    templateUrl: './rawTransactions.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class RawTransactionsComponent implements OnInit, OnDestroy {
   constructor(private utilService: UtilService, private localStorage: LocalStorageService) { }
@@ -46,6 +48,8 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
   transactionTemplates:TransactionTemplate[];
   selectedTemplate:TransactionTemplate;
   loadingTemplates:boolean = false;
+  templatesLoadedForAccount:string = null;
+  templatesLoadedForNetworkId:number = null;
 
 
   async ngOnInit() {
@@ -58,11 +62,12 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
       //console.log("account info changed received: " + JSON.stringify(accountData));
       if(accountData) {
         this.originalAccountInfo = accountData.info;
+        this.isTestMode = accountData.mode;
       } else {
         this.originalAccountInfo = null;
       }
 
-      this.isTestMode = accountData.mode;
+      //always (re)load templates: they contain the NetworkID of the selected network
       await this.loadTransactionTemplates();
 
     });
@@ -82,27 +87,52 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
   }
 
   async loadTransactionTemplates() {
+    let account:string = this.originalAccountInfo && this.originalAccountInfo.Account ? this.originalAccountInfo.Account : null;
+    let networkId:number = this.isTestMode ? 21338 : 21337;
+
+    //templates are loaded from the GitHub API (rate limited). Load them only once per account and network and not on every account event
+    if(this.transactionTemplates && this.templatesLoadedForAccount === account && this.templatesLoadedForNetworkId === networkId)
+      return;
+
     this.loadingTemplates = true;
 
-    this.transactionTemplates = await this.utilService.getTransactionTypes(this.isTestMode ? 21338 : 21337 ,this.originalAccountInfo && this.originalAccountInfo.Account ? this.originalAccountInfo.Account : null);
+    try {
+      let templates:TransactionTemplate[] = await this.utilService.getTransactionTypes(networkId, account);
 
-    for(let i = 0; i < this.transactionTemplates.length; i++) {
-      delete this.transactionTemplates[i].codeSamples[0].Sequence;
-      delete this.transactionTemplates[i].codeSamples[0].Fee;
-    }
-
-    this.transactionTemplates = [{transactionType: "None", docLink: null, requiresAmendment: false, codeSamples: [{}]}].concat(this.transactionTemplates.filter(template => template.codeSamples[0].TransactionType != 'AccountDelete'));
-
-    if(this.rawJsonTransaction != "{}") {
-      //reload set transaction template from newly fetched templates
-      let selectedTemplate = this.transactionTemplates.find(t => t.codeSamples[0].TransactionType === JSON.parse(this.rawJsonTransaction).TransactionType);
-      if(selectedTemplate) {
-        this.selectedTemplate = selectedTemplate;
-        this.rawJsonTransaction = JSON.stringify(this.selectedTemplate.codeSamples[0], null, '  ');
+      for(let i = 0; i < templates.length; i++) {
+        if(templates[i].codeSamples[0] && typeof templates[i].codeSamples[0] === 'object') {
+          delete templates[i].codeSamples[0].Sequence;
+          delete templates[i].codeSamples[0].Fee;
+        }
       }
-    }
 
-    this.loadingTemplates = false;
+      this.transactionTemplates = [{transactionType: "None", docLink: null, requiresAmendment: false, codeSamples: [{}]}].concat(templates.filter(template => !(template.codeSamples[0] && template.codeSamples[0].TransactionType == 'AccountDelete')));
+      this.templatesLoadedForAccount = account;
+      this.templatesLoadedForNetworkId = networkId;
+
+      if(this.rawJsonTransaction != "{}") {
+        try {
+          //reload set transaction template from newly fetched templates (NetworkID might have changed)
+          let currentTransactionType = JSON.parse(this.rawJsonTransaction).TransactionType;
+          let selectedTemplate = this.transactionTemplates.find(t => t.codeSamples[0] && t.codeSamples[0].TransactionType === currentTransactionType);
+          if(selectedTemplate) {
+            this.selectedTemplate = selectedTemplate;
+            this.rawJsonTransaction = JSON.stringify(this.selectedTemplate.codeSamples[0], null, '  ');
+            this.checkJson();
+          }
+        } catch(err) {
+          //current json is invalid. Keep it as it is
+        }
+      }
+    } catch(err) {
+      console.log("could not load transaction templates");
+
+      //keep the templates we already have. Otherwise offer only the empty one
+      if(!this.transactionTemplates)
+        this.transactionTemplates = [{transactionType: "None", docLink: null, requiresAmendment: false, codeSamples: [{}]}];
+    } finally {
+      this.loadingTemplates = false;
+    }
   }
 
   ngOnDestroy() {

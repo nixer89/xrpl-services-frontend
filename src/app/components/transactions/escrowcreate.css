@@ -1,0 +1,43 @@
+/* Finish After / Cancel After blocks */
+
+.mat-mdc-card.datetime-card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 16px !important;
+}
+
+.datetime-title {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* date field, time field and the clear button on one line, vertically centered */
+.datetime-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.date-field {
+    width: 220px;
+}
+
+.time-field {
+    width: 160px;
+}
+
+.datetime-card mat-hint {
+    display: block;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+@media (max-width: 599px) {
+    .date-field,
+    .time-field {
+        flex: 1 1 140px;
+        width: auto;
+    }
+}

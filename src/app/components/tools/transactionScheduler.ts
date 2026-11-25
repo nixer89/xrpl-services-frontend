@@ -1,13 +1,15 @@
-import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { AccountInfoChanged, GenericBackendPostRequest, XrplAccountChanged } from 'src/app/utils/types';
-import { isValidXRPAddress } from 'src/app/utils/utils';
+import { AccountInfoChanged, GenericBackendPostRequest, XrplAccountChanged } from '../../utils/types';
+import { isValidXRPAddress } from '../../utils/utils';
 import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
 
 @Component({
-  selector: 'transactionScheduler',
-  templateUrl: './transactionScheduler.html'
+    selector: 'transactionScheduler',
+    templateUrl: './transactionScheduler.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TransactionSchedulerComponent {
   

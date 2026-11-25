@@ -1,12 +1,14 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
-import { XrplAccountChanged, TrustLine } from 'src/app/utils/types';
+import { XrplAccountChanged, TrustLine } from '../../utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 
 @Component({
     selector: "trustlineListIssuing",
     templateUrl: "trustlineListIssuing.html",
-    styleUrls: ['./trustlineListIssuing.css']
+    styleUrls: ['./trustlineListIssuing.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrustLineListIssuing implements OnInit, OnDestroy {
 

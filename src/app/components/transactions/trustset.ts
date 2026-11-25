@@ -1,18 +1,20 @@
-import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { AccountInfoChanged, XrplAccountChanged, Token, SimpleTrustLine, XrplCurrency, AccountObjectsChanged } from 'src/app/utils/types';
+import { AccountInfoChanged, XrplAccountChanged, Token, SimpleTrustLine, XrplCurrency, AccountObjectsChanged } from '../../utils/types';
 import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
-import { isValidXRPAddress } from 'src/app/utils/utils';
-import { XRPLWebsocket } from 'src/app/services/xrplWebSocket';
+import { isValidXRPAddress } from '../../utils/utils';
+import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import * as flagUtil from '../../utils/flagutils'
-import { AppService } from 'src/app/services/app.service';
+import { AppService } from '../../services/app.service';
 
 @Component({
-  selector: 'trustset',
-  templateUrl: './trustset.html'
+    selector: 'trustset',
+    templateUrl: './trustset.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -197,6 +199,9 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.allFieldsSet = true;
 
+      //result of THIS check only. Do not keep a "true" from an earlier issuer / currency
+      let exists:boolean = false;
+
       try {
         if(!this.testMode) {
           let xrpscanResponse:any = await this.app.get("https://api.xahscan.com/api/v1/account/"+this.issuerAccountInput+"/obligations?origin=https://xahau.services")
@@ -206,7 +211,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
           if(xrpscanResponse && xrpscanResponse.length > 0) {
             for(let i = 0; i < xrpscanResponse.length; i++) {
               if(xrpscanResponse[i].currency === currencyToCheck && parseFloat(xrpscanResponse[i].value) > 0) {
-                this.currencyExists = true;
+                exists = true;
                 //console.log("currency exsists")
                 break;
               }
@@ -243,21 +248,23 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
               if(tokenList && tokenList.length > 0) {
                 for(let i = 0; i < tokenList.length; i++) {
                   if(tokenList[i] === currencyToCheck) {
-                    this.currencyExists = true;
+                    exists = true;
                     //console.log("currency exsists")
                     break;
                   }
                 }
               }
           } else {                
-            this.currencyExists = false;
+            exists = false;
           }
         }
       } catch(err) {
         console.log(err);
         //set to true in case of error!
-        this.currencyExists = true;
+        exists = true;
       }
+
+      this.currencyExists = exists;
     } else {
       this.allFieldsSet = false;
     }
@@ -305,7 +312,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if(this.selectedCurrency.currencyCodeUTF8.toLowerCase().includes("xum")) {
-      payload.custom_meta.blob = {addWarningXumm: true};
+      payload.custom_meta.blob = Object.assign({}, payload.custom_meta.blob, {addWarningXumm: true});
     }
 
     this.onPayload.emit(payload);
@@ -363,7 +370,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     if(this.limitInput) {
 
       if(!this.limitInput.includes("e")) {
-        this.validLimit = !(/[^.0-9]|\d*\.\d{16,}/.test(this.limitInput));
+        this.validLimit = !(/[^.0-9]|\d*\.\d{16,}/.test(this.limitInput)) && this.limitInput.split('.').length <= 2;
 
         if(!this.validLimit) {
           this.maxFifthteenDigits = this.limitInput.includes('.') && this.limitInput.split('.')[1].length > 15;
@@ -391,6 +398,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
           this.validLimit = false;
         }
       }
+    } else {
+      this.validLimit = false;
     }
 
     //console.log("is valid limit: " + this.validLimit);

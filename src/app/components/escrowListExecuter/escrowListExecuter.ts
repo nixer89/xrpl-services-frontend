@@ -1,19 +1,21 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy, ViewChild, ChangeDetectionStrategy } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
-import { GenericBackendPostRequest, TransactionValidation, XrplAccountChanged } from 'src/app/utils/types';
+import { GenericBackendPostRequest, TransactionValidation, XrplAccountChanged } from '../../utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
 import * as normalizer from '../../utils/normalizers';
 import { XummService } from '../../services/xumm.service';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
-import { isValidXRPAddress } from "src/app/utils/utils";
+import { isValidXRPAddress } from "../../utils/utils";
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: "escrowListExecuter",
     templateUrl: "escrowListExecuter.html",
-    styleUrls: ['./escrowListExecuter.css']
+    styleUrls: ['./escrowListExecuter.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EscrowListExecuter implements OnInit, OnDestroy {
 
@@ -98,7 +100,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
 
                     for(let i = 0; i < this.escrowData.length; i++) {
                         for(let j = 0; j < storedEscrows.length; j++) {
-                            if(this.escrowData[i].account = storedEscrows[j].account && this.escrowData[i].sequence == storedEscrows[j].sequence && this.escrowData[i].testnet == storedEscrows[j].testnet)
+                            if(this.escrowData[i].Account == storedEscrows[j].account && this.escrowData[i].sequence == storedEscrows[j].sequence && this.escrowData[i].testnet == storedEscrows[j].testnet)
                                 this.escrowData[i].autorelease = true;
                         }
 
@@ -112,6 +114,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             } catch(err) {
                 console.log("Error loading escrows");
                 this.escrowData = null;
+                this.loading = false;
             }
         }
     }
@@ -128,7 +131,8 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
         if(message && message.status && message.status === 'success' && message.type && message.type === 'response') {
             if(message.result && message.result.TransactionType === 'EscrowCreate') {
                 //console.log("Sequence: " + message.result.Sequence);
-                sequence = message.result.Sequence
+                //an EscrowCreate sent with a Ticket has "Sequence: 0". The escrow is then identified by the TicketSequence
+                sequence = message.result.Sequence || message.result.TicketSequence || null;
             }
         }
 
@@ -175,7 +179,17 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
         this.signInToDisableAutoRelease(escrow);
     }
 
+    hasValidSequence(escrow: any): boolean {
+        return escrow && Number.isInteger(escrow.sequence) && escrow.sequence > 0;
+    }
+
     payForEscrowRelease(escrow: any) {
+        //never ask for a payment if we do not know which escrow to release
+        if(!this.hasValidSequence(escrow)) {
+            this.snackBar.open("The sequence number of this escrow could not be resolved. Auto Release can not be enabled!", null, {panelClass: 'snackbar-failed', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
+            return;
+        }
+
         let genericBackendRequest:GenericBackendPostRequest = {
             options: {
                 testnet: this.isTestMode,

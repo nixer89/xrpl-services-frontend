@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../components/xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
@@ -7,15 +7,17 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { XummService } from '../services/xumm.service'
 import { GenericBackendPostRequest, TransactionValidation, AccountInfoChanged } from '../utils/types';
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/local-storage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { XRPLWebsocket } from '../services/xrplWebSocket';
 import { XummTypes } from 'xumm-sdk';
 import { isValidXRPAddress } from '../utils/utils';
 
 @Component({
-  selector: 'tools',
-  templateUrl: './tools.html',
+    selector: 'tools',
+    templateUrl: './tools.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class Tools implements OnInit {
   
@@ -27,7 +29,7 @@ export class Tools implements OnInit {
   lastTrxLinkXrpScan:string;
 
   accountInfoChanged: Subject<AccountInfoChanged> = new Subject<AccountInfoChanged>();
-  transactionSuccessfull: Subject<any> = new Subject<any>();
+  transactionSuccessfull: Subject<void> = new Subject<void>();
 
   isTestMode:boolean = false;
 
@@ -78,8 +80,9 @@ export class Tools implements OnInit {
         }
 
 
+        //stay on the tools page, otherwise the escrow validation in handlePayloadInfo() never runs
         return this.router.navigate(
-          ['/'], 
+          ['/tools'], 
           { relativeTo: this.route, queryParams: newParams, state: state }
         );
       }
@@ -225,10 +228,13 @@ export class Tools implements OnInit {
 
     let feeSettingObject = feeSettingResult?.result?.node;
 
-    if('ReserveBase' in feeSettingObject) {
+    if(!feeSettingObject) {
+      //node did not answer with the fee settings -> keep the reserves we have
+      console.log("could not load fee settings / reserves from the node");
+    } else if('ReserveBase' in feeSettingObject) {
       this.accountReserve = feeSettingObject.ReserveBase;
       this.ownerReserve = feeSettingObject.ReserveIncrement;
-    } else {
+    } else if('ReserveBaseDrops' in feeSettingObject) {
       this.accountReserve = Number(feeSettingObject.ReserveBaseDrops);
       this.ownerReserve = Number(feeSettingObject.ReserveIncrementDrops);
     }
@@ -377,7 +383,7 @@ export class Tools implements OnInit {
       genericBackendRequest.options = {
         testnet: this.isTestMode
       };
-      
+
     genericBackendRequest.options.testnet = this.isTestMode;
     genericBackendRequest.options.xrplAccount = this.xrplAccount ? this.xrplAccount : null
 
@@ -405,7 +411,7 @@ export class Tools implements OnInit {
   }
 
   logoutAccount() {
-    this.xrplAccount = this.xrplAccount_Info = this.lastTrxLinkBithomp =this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = null;
+    this.xrplAccount = this.xrplAccount_Info = this.lastTrxLinkBithomp = this.lastTrxLinkXrpScan = this.lastTrxLinkXrplOrg = null;
     this.localStorage.remove("xrplAccount");
     this.localStorage.remove("testMode");
     this.emitAccountInfoChanged();

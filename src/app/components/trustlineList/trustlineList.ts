@@ -1,8 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ViewChild, ChangeDetectionStrategy } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
 import * as util from '../../utils/flagutils';
-import * as normalizer from 'src/app/utils/normalizers';
-import { AccountInfoChanged, AccountObjectsChanged, RippleState, SimpleTrustLine } from 'src/app/utils/types';
+import * as normalizer from '../../utils/normalizers';
+import { AccountInfoChanged, AccountObjectsChanged, RippleState, SimpleTrustLine } from '../../utils/types';
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTableDataSource } from "@angular/material/table";
 
@@ -19,7 +19,9 @@ const lsfHighNoRipple = 0x200000;
 @Component({
     selector: "trustlineList",
     templateUrl: "trustlineList.html",
-    styleUrls: ['./trustlineList.css']
+    styleUrls: ['./trustlineList.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TrustLineList implements OnInit, OnDestroy {
 
@@ -55,8 +57,6 @@ export class TrustLineList implements OnInit, OnDestroy {
 
     private trustLineAccountChangedSubscription: Subscription;
     private accountObjectsChangedSubscription: Subscription;
-
-    constructor() {}
 
     ngOnInit() {
         this.trustLineAccountChangedSubscription = this.xrplAccountInfoChanged.subscribe(account => {

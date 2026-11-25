@@ -1,16 +1,18 @@
-import { Component, Inject, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, ChangeDetectionStrategy } from "@angular/core";
 import { XummService } from '../services/xumm.service';
 import { webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { XummTypes } from 'xumm-sdk';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/local-storage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 
 @Component({
     selector: "xummSignRequestDialog",
-    templateUrl: "xummSignRequestDialog.html"
+    templateUrl: "xummSignRequestDialog.html",
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class XummSignDialogComponent implements OnInit{
 
@@ -104,6 +106,7 @@ export class XummSignDialogComponent implements OnInit{
 
                 this.showError = true;
                 setTimeout(() => this.handleFailedSignIn(null), 3000);
+                return;
             }
         } catch (err) {            
             this.backendNotAvailable = true;

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
@@ -9,7 +9,7 @@ import * as normalizer from '../../utils/normalizers';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatExpansionPanel } from '@angular/material/expansion';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { isValidXRPAddress } from 'src/app/utils/utils';
+import { isValidXRPAddress } from '../../utils/utils';
 
 interface TrustLine {
   account:string,
@@ -21,8 +21,10 @@ interface TrustLine {
 }
 
 @Component({
-  selector: 'issueMoreToken',
-  templateUrl: './issueMoreToken.html',
+    selector: 'issueMoreToken',
+    templateUrl: './issueMoreToken.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class IssueMoreToken implements OnInit {
 

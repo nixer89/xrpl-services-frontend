@@ -1,18 +1,20 @@
-import { Component, OnInit, Inject } from "@angular/core";
+import { Component, OnInit, Inject, ChangeDetectionStrategy } from "@angular/core";
 import { XummService } from '../services/xumm.service';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types'
 import { XummTypes} from 'xumm-sdk'
-import { LocalStorageService } from 'angular-2-local-storage';
+import { LocalStorageService } from '../services/local-storage.service';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AppService } from "../services/app.service";
 
 @Component({
     selector: "genericPayloadQRDialog",
     templateUrl: "genericPayloadQRDialog.html",
-    styleUrls: ['./genericPayloadQRDialog.scss']
+    styleUrls: ['./genericPayloadQRDialog.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class GenericPayloadQRDialog implements OnInit {
 
@@ -154,6 +156,7 @@ export class GenericPayloadQRDialog implements OnInit {
             this.genericPayload.payload.options.signers = [this.genericPayload.options.xrplAccount];
         }
 
+        //bind the payload to the network the page is working on. Xaman then refuses to sign it on another network.
         this.genericPayload.payload.options.force_network = this.genericPayload.options.testnet ? "XAHAUTESTNET" : "XAHAU";
 
         let xummResponse:XummTypes.XummPostPayloadResponse;
@@ -281,6 +284,11 @@ export class GenericPayloadQRDialog implements OnInit {
 
     QRLoaded() {
         this.showQR = true;
+    }
+
+    get summaryText(): string {
+        const instruction = this.genericPayload?.payload?.custom_meta?.instruction;
+        return instruction ? instruction.trim() : '';
     }
 
     closeIt() {

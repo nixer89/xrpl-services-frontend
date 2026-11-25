@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
@@ -8,13 +8,15 @@ import { TransactionValidation, GenericBackendPostRequest } from '../../utils/ty
 import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
-import { isValidXRPAddress } from 'src/app/utils/utils';
-import { XummService } from 'src/app/services/xumm.service';
+import { isValidXRPAddress } from '../../utils/utils';
+import { XummService } from '../../services/xumm.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'blackholeAccount',
-  templateUrl: './blackholeAccount.html'
+    selector: 'blackholeAccount',
+    templateUrl: './blackholeAccount.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class BlackholeAccount implements OnInit {
 
@@ -218,13 +220,14 @@ export class BlackholeAccount implements OnInit {
       this.paymentInitiated = true;
 
       if(info && info.success && info.account && (!info.testnet || this.isTestMode)) {
-        if(isValidXRPAddress(info.account))
+        if(isValidXRPAddress(info.account)) {
           this.issuerAccount = info.account;
           this.validIssuer = true;
           this.paymentNotSuccessfull = false;
 
           //refresh amounts
           await this.loadAccountData();
+        }
       } else {
         this.paymentNotSuccessfull = true;
       }
@@ -328,7 +331,7 @@ export class BlackholeAccount implements OnInit {
           Account: this.getIssuer(),
           TransactionType: "Payment",
           Destination: this.recipient_account_info.Account,
-          Amount: this.getAvailableBalanceIssuer()*1000000+""
+          Amount: Math.round(this.getAvailableBalanceIssuer()*1000000)+""
         },
         custom_meta: {
           instruction: "- Sending " + this.getAvailableBalanceIssuer() + " XAH to an account of your choice.\n\n- Please sign with the ISSUER account!"
@@ -523,10 +526,13 @@ export class BlackholeAccount implements OnInit {
     
     let feeSettingObject = feeSettingResult?.result?.node;
 
-    if('ReserveBase' in feeSettingObject) {
+    if(!feeSettingObject) {
+      //node did not answer with the fee settings -> keep the reserves we have
+      console.log("could not load fee settings / reserves from the node");
+    } else if('ReserveBase' in feeSettingObject) {
       this.accountReserve = feeSettingObject.ReserveBase;
       this.ownerReserve = feeSettingObject.ReserveIncrement;
-    } else {
+    } else if('ReserveBaseDrops' in feeSettingObject) {
       this.accountReserve = Number(feeSettingObject.ReserveBaseDrops);
       this.ownerReserve = Number(feeSettingObject.ReserveIncrementDrops);
     }

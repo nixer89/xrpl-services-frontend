@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AppService } from '../services/app.service';
-import * as normalizer from 'src/app/utils/normalizers';
+import * as normalizer from '../utils/normalizers';
 
 @Component({
-  selector: 'xahau-statistics',
-  templateUrl: './xahau-statistics.html',
-  styleUrls: ['./xahau-statistics.css']
+    selector: 'xahau-statistics',
+    templateUrl: './xahau-statistics.html',
+    styleUrls: ['./xahau-statistics.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class XahauStatistics implements OnInit {
   

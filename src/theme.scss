@@ -1,13 +1,14 @@
 @use '@angular/material' as mat;
-@import '@angular/material/theming';
 
-@include mat.core();
+@include mat.all-component-typographies();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 .light-theme {
-  $primary: mat.define-palette(mat.$indigo-palette);
-  $accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-  $warn: mat.define-palette(mat.$red-palette);
-  $light-theme: mat.define-light-theme($primary, $accent, $warn);
+  $primary: mat.m2-define-palette(mat.$m2-indigo-palette);
+  $accent: mat.m2-define-palette(mat.$m2-pink-palette, A200, A100, A400);
+  $warn: mat.m2-define-palette(mat.$m2-red-palette);
+  $light-theme: mat.m2-define-light-theme((color: (primary: $primary, accent: $accent, warn: $warn), typography: mat.m2-define-typography-config(), density: 0));
 
   .mat-expansion-panel {
     background-color: rgba(238,238,238, 0.5) !important;
@@ -63,10 +64,10 @@
 
 // Our dark theme
 .dark-theme {
-  $dark-primary: mat.define-palette(mat.$indigo-palette);
-  $dark-accent: mat.define-palette(mat.$amber-palette, A200, A100, A400);
-  $dark-warn: mat.define-palette(mat.$red-palette);   
-  $dark-theme: mat.define-dark-theme($dark-primary, $dark-accent, $dark-warn);
+  $dark-primary: mat.m2-define-palette(mat.$m2-indigo-palette);
+  $dark-accent: mat.m2-define-palette(mat.$m2-amber-palette, A200, A100, A400);
+  $dark-warn: mat.m2-define-palette(mat.$m2-red-palette);   
+  $dark-theme: mat.m2-define-dark-theme((color: (primary: $dark-primary, accent: $dark-accent, warn: $dark-warn), typography: mat.m2-define-typography-config(), density: 0));
 
   a {
     color: #FFB300;
@@ -78,10 +79,6 @@
 
   a:active {
     color: #FF8F00;
-  }
-
-  .mat-form-field.mat-focused .mat-form-field-label {
-    color: rgba(255, 255, 255, 0.7) !important;
   }
 
   .warning-background {
@@ -132,10 +129,30 @@
   .snackbar-success {
     background-color: #303030 !important;
   }
-
-  .mat-option.mat-selected:not(.mat-option-disabled) {
+  /* TODO(mdc-migration): The following rule targets internal classes of option that may no longer apply for the MDC version.*/
+  .mat-mdc-option.mat-selected:not(.mat-option-disabled) {
     color: #FF8F00 !important
   }
 
   @include mat.all-component-themes($dark-theme);
+}
+// Material 13 cards set the text color themselves; the MDC-based components no longer do.
+// Inherit the theme's text color from the theme wrapper so plain text stays readable in both themes.
+.light-theme,
+.dark-theme {
+  color: var(--mat-app-text-color);
+}
+
+// Dark theme: the indigo primary color is hard to see on the dark background.
+// Focused form fields and dropdowns use the amber accent instead (label, underline/outline, caret, select arrow).
+// Declared after the theme mixins so these values win over the generated ones.
+.dark-theme {
+  --mat-form-field-filled-focus-label-text-color: #FFB300;
+  --mat-form-field-filled-focus-active-indicator-color: #FFB300;
+  --mat-form-field-filled-caret-color: #FFB300;
+  --mat-form-field-outlined-focus-label-text-color: #FFB300;
+  --mat-form-field-outlined-focus-outline-color: #FFB300;
+  --mat-form-field-outlined-caret-color: #FFB300;
+  --mat-form-field-focus-select-arrow-color: #FFB300;
+  --mat-select-focused-arrow-color: #FFB300;
 }

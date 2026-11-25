@@ -1,14 +1,16 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { AppService } from '../../services/app.service';
 import * as qrcode from 'qrcode';
-import * as clipboard from 'copy-to-clipboard';
+import clipboard from 'copy-to-clipboard';
 import { MatStepper } from '@angular/material/stepper';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'testNetCredentials',
-  templateUrl: './testNetCredentials.html',
-  styleUrls: ['./testNetCredentials.css']
+    selector: 'testNetCredentials',
+    templateUrl: './testNetCredentials.html',
+    styleUrls: ['./testNetCredentials.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TestNetCredentialsComponent {
 
@@ -32,13 +34,17 @@ export class TestNetCredentialsComponent {
     this.error = null;
 
     try {
-      //call ripple servers to get testnet credentials with a balance
+      //call the Xahau testnet faucet to get testnet credentials with a balance
       this.newAccount = await this.app.post("https://xahau-test.net/accounts", {});
       //this.newAccount = {"account":{"xAddress":"TVrRjmCE1twUKGbFBhdyR12pXqitZtAv6PjXB3E33Nm8hTQ","secret":"snEtbXeqo7f7Bg2oc552CV6yct4QW","classicAddress":"rUwnrWz9PnV7oFcFcpdkEjCbVUAEaZCgso","address":"rUwnrWz9PnV7oFcFcpdkEjCbVUAEaZCgso"},"amount":1000,"balance":1000};
       //console.log("credentials: " + JSON.stringify(this.newAccount));
 
-      if(this.newAccount)
-        this.qrCode = await qrcode.toDataURL(this.newAccount.account.secret);
+      //the Xahau faucet returns the family seed as "account.secret", newer faucets as top level "seed". Normalize to "seed"
+      if(this.newAccount && !this.newAccount.seed && this.newAccount.account && this.newAccount.account.secret)
+        this.newAccount.seed = this.newAccount.account.secret;
+
+      if(this.newAccount && this.newAccount.seed)
+        this.qrCode = await qrcode.toDataURL(this.newAccount.seed);
 
       if(!this.newAccount || !this.qrCode)
         this.error = "Something went wrong. Please try again later! If the error persists, please report via twitter @XahauServices!"
@@ -51,11 +57,12 @@ export class TestNetCredentialsComponent {
     }
 
     this.loading = false;
+
   }
 
   copyFamilySeed() {
-    if(this.newAccount && this.newAccount.account && this.newAccount.account.secret) {
-      clipboard(this.newAccount.account.secret);
+    if(this.newAccount && this.newAccount.seed) {
+      clipboard(this.newAccount.seed);
       this.snackBar.dismiss();
       this.snackBar.open("Family Seed copied to clipboard!", null, {panelClass: 'snackbar-success', duration: 3000, horizontalPosition: 'center', verticalPosition: 'bottom'});
     }

@@ -1,10 +1,10 @@
-import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subscription} from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { AccountInfoChanged, GenericBackendPostRequest } from 'src/app/utils/types';
+import { AccountInfoChanged, GenericBackendPostRequest } from '../../utils/types';
 import { XRPLWebsocket } from '../../services/xrplWebSocket';
-import { isValidXRPAddress } from 'src/app/utils/utils';
-import { AppService } from 'src/app/services/app.service';
+import { isValidXRPAddress } from '../../utils/utils';
+import { AppService } from '../../services/app.service';
 
 interface NoRippleCheck {
   problem: string,
@@ -12,9 +12,11 @@ interface NoRippleCheck {
 }
 
 @Component({
-  selector: 'norippleCheck',
-  templateUrl: './norippleCheck.html',
-  styleUrls: ['./norippleCheck.css']
+    selector: 'norippleCheck',
+    templateUrl: './norippleCheck.html',
+    styleUrls: ['./norippleCheck.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class NoRippleCheckComponent implements OnInit, OnDestroy {
 
@@ -90,12 +92,16 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
         if(xrpscanResponse && xrpscanResponse.length > 0) {
             this.obligations = xrpscanResponse;
             this.isGateway = true;
+
         } else {                
             this.isGateway = false;
             this.obligations = null;
         }
       } catch(err) {
           console.log(err);
+          //do not keep the result of an earlier account
+          this.isGateway = false;
+          this.obligations = null;
       }
 
       let noripple_check_command:any = {
@@ -126,8 +132,8 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
         for(let i = 0; i < problems.length; i++) {
           if(transactions[i] && transactions[i].Account === this.xrplAccountInput.trim() && transactions[i].TransactionType === 'TrustSet'
               && transactions[i].Flags == 262144 && transactions[i].LimitAmount.issuer != this.xrplAccountInput.trim()) {
-                //skip entry
-                break;
+                //skip entry (only this one, not all following problems)
+                continue;
           }
 
           if(problems[i] === "You appear to have set your default ripple flag even though you are not a gateway. This is not recommended unless you are experimenting"

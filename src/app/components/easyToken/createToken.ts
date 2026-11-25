@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { XummSignDialogComponent } from '../xummSignRequestDialog';
 import { GenericPayloadQRDialog } from '../genericPayloadQRDialog';
@@ -10,11 +10,13 @@ import * as flagUtil from '../../utils/flagutils';
 import { DeviceDetectorService } from 'ngx-device-detector';
 import { MatStepper } from '@angular/material/stepper';
 import * as normalizer from '../../utils/normalizers';
-import { isValidXRPAddress } from 'src/app/utils/utils';
+import { isValidXRPAddress } from '../../utils/utils';
 
 @Component({
-  selector: 'createToken',
-  templateUrl: './createToken.html'
+    selector: 'createToken',
+    templateUrl: './createToken.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class CreateToken implements OnInit {
 
@@ -111,12 +113,13 @@ export class CreateToken implements OnInit {
       //console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
       if(info && info.success && info.account && (!info.testnet || this.isTestMode)) {
-        if(isValidXRPAddress(info.account))
+        if(isValidXRPAddress(info.account)) {
           this.issuerAccount = info.account;
           this.validIssuer = true;
           this.paymentNotSuccessfull = false;
           this.paymentNotFound = false;
           await this.loadAccountData();
+        }
       } else {
         this.paymentNotSuccessfull = true;
         this.paymentNotFound = false;
@@ -321,8 +324,8 @@ export class CreateToken implements OnInit {
             currency: normalizer.getCurrencyCodeForXRPL(this.currencyCode),
             issuer: this.issuerAccount.trim(),
             value: normalizer.tokenNormalizer(this.limit.toString())
-          },
-          Flags: 131072
+          }
+          //no Flags here! 131072 is "NoRipple" on a TrustSet but "tfPartialPayment" on a Payment
         },
         custom_meta: {
           instruction: "- Issuing " + this.limit + " " + this.currencyCode + " to: " + this.recipientAddress + "\n\n- Please sign with the ISSUER account!"

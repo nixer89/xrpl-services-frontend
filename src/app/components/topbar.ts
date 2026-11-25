@@ -1,17 +1,19 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { GenericPayloadQRDialog } from '../components/genericPayloadQRDialog';
 import { GenericBackendPostRequest, TransactionValidation } from '../utils/types';
 import { XummTypes } from 'xumm-sdk';
-import { LocalStorageService } from 'angular-2-local-storage'
+import { LocalStorageService } from '../services/local-storage.service'
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { TypeWriter } from '../utils/TypeWriter';
 import { XummService } from '../services/xumm.service';
 
 @Component({
-  selector: 'app-topbar',
-  templateUrl: './topbar.html'
+    selector: 'app-topbar',
+    templateUrl: './topbar.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TopbarComponent implements OnInit {
     
@@ -84,8 +86,8 @@ export class TopbarComponent implements OnInit {
   openGenericDialog(xummPayload: XummTypes.XummPostPayloadBodyJson):void {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
-        xrplAccount: this.localStorage.get("xrplAccount"),
         testnet: false,
+        xrplAccount: this.localStorage.get("xrplAccount"),
         referer: 'abcde'
       },
       payload: xummPayload

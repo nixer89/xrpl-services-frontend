@@ -1,16 +1,16 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
-import { isValidXRPAddress } from 'src/app/utils/utils';
+import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from '../../utils/types';
+import { isValidXRPAddress } from '../../utils/utils';
 
 @Component({
-  selector: 'escrowcancel',
-  templateUrl: './escrowcancel.html'
+    selector: 'escrowcancel',
+    templateUrl: './escrowcancel.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EscrowCancelComponent implements OnInit, OnDestroy {
-
-  constructor() { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;

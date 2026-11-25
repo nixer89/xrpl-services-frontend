@@ -1,14 +1,16 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, ChangeDetectionStrategy } from "@angular/core";
 import { Observable, Subscription } from 'rxjs';
-import { XrplAccountChanged, Token } from 'src/app/utils/types';
-import * as normalizer from 'src/app/utils/normalizers';
-import { AppService } from "src/app/services/app.service";
-import { XRPLWebsocket } from "src/app/services/xrplWebSocket";
+import { XrplAccountChanged, Token } from '../../utils/types';
+import * as normalizer from '../../utils/normalizers';
+import { AppService } from "../../services/app.service";
+import { XRPLWebsocket } from "../../services/xrplWebSocket";
 
 @Component({
     selector: "tokenList",
     templateUrl: "tokenList.html",
-    styleUrls: ['./tokenList.css']
+    styleUrls: ['./tokenList.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TokenList implements OnInit, OnDestroy {
 

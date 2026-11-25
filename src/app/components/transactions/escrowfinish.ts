@@ -1,16 +1,16 @@
-import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, Output, EventEmitter, Input, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { Observable, Subscription, Subject } from 'rxjs';
 import { XummTypes } from 'xumm-sdk';
-import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from 'src/app/utils/types';
-import { isValidXRPAddress } from 'src/app/utils/utils';
+import { AccountInfoChanged, AccountObjectsChanged, XrplAccountChanged } from '../../utils/types';
+import { isValidXRPAddress } from '../../utils/utils';
 
 @Component({
-  selector: 'escrowfinish',
-  templateUrl: './escrowfinish.html'
+    selector: 'escrowfinish',
+    templateUrl: './escrowfinish.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EscrowFinishComponent implements OnInit, OnDestroy {
-
-  constructor() { }
 
   @Input()
   accountInfoChanged: Observable<AccountInfoChanged>;
@@ -46,7 +46,7 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
 
   showEscrowSequenceSelectedStyle:boolean = false;
   escrowSequenceSelected:boolean = false;
-  showPassword:boolean = true;
+  showPassword:boolean = false;
 
   isValidEscrowFinish = false;
   validAddress = false;
@@ -126,7 +126,8 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
       payload.custom_meta.instruction += "\n- Escrow Sequence: " + this.escrowSequenceInput;
     }
 
-    if(this.validCondition) {
+    //only add the password if the selected escrow has a condition (the field is hidden otherwise)
+    if(this.showPassword && this.validCondition) {
       let fulfillment_bytes:Buffer = Buffer.from(this.passwordInput.trim(), 'utf-8');
 
       import('five-bells-condition').then( cryptoCondition => {
@@ -233,6 +234,10 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     
     this.escrowSequenceSelected = true;
     this.showPassword = escrowInfo.condition;
+
+    //do not keep a password typed for another escrow
+    if(!this.showPassword)
+      this.passwordInput = null;
     
     this.checkChanges();
 

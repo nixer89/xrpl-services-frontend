@@ -1,32 +1,232 @@
-
-table {
-    width: auto;
+.statistics-page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
 }
 
-td {
-    word-wrap: break-word !important;
-    white-space: unset !important;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
+/* ---------- page header ---------- */
 
-    word-break: break-word;
-
-    -ms-hyphens: auto;
-    -moz-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px 24px;
+    padding: 4px 4px 0;
 }
 
-@media (max-width:599px) {
+.page-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 500;
+}
 
-    .mat-footer-row , .mat-row {
-        padding-top: 0.5em;
-        align-items: start;
-        min-height: 24px;
-        cursor: pointer;
+.page-subtitle {
+    font-size: 13px;
+    opacity: 0.7;
+}
+
+.grand-total {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.grand-total-value {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+.grand-total-label {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.stats-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 48px 0;
+}
+
+/* ---------- cards ---------- */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    align-items: start;
+    gap: 16px;
+}
+
+.mat-mdc-card.stats-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 0;
+    padding: 16px 18px !important;
+    border-radius: 14px;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.card-icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background-color: rgba(128, 128, 128, 0.16);
+}
+
+.card-heading {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.card-since {
+    font-size: 12px;
+    opacity: 0.65;
+}
+
+.card-total {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.card-total-value {
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+.card-total-label {
+    font-size: 11px;
+    opacity: 0.65;
+}
+
+/* escrow auto release info */
+
+.escrow-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background-color: rgba(128, 128, 128, 0.1);
+}
+
+.escrow-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.escrow-label {
+    font-size: 11px;
+    opacity: 0.65;
+}
+
+.escrow-value {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* transaction type list with share bars */
+
+.trx-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.trx-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.trx-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.trx-count {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+
+.trx-bar {
+    height: 6px;
+    overflow: hidden;
+    border-radius: 3px;
+    background-color: rgba(128, 128, 128, 0.2);
+}
+
+.trx-bar-fill {
+    height: 100%;
+    min-width: 2px;
+    border-radius: 3px;
+    background-color: #3f51b5;
+}
+
+:host-context(.dark-theme) .trx-bar-fill {
+    background-color: #FFB300;
+}
+
+:host-context(.dark-theme) .card-icon {
+    color: #FFB300;
+}
+
+:host-context(.light-theme) .card-icon {
+    color: #3f51b5;
+}
+
+.stats-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    opacity: 0.75;
+}
+
+@media (max-width: 599px) {
+    .statistics-page {
+        padding: 8px;
     }
 
-    .mat-cell {
-        padding-left: 1em;
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .page-title {
+        font-size: 20px;
+    }
+
+    .grand-total {
+        align-items: flex-start;
     }
 }

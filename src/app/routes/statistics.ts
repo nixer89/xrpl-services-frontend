@@ -1,10 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { XummService } from '../services/xumm.service';
 
+interface StatisticsRow {
+  name: string;
+  number: number;
+  share: number; // percent of the section total, 0-100
+}
+
+interface StatisticsSection {
+  title: string;
+  icon: string;
+  description: string;
+  since: string;
+  total: number;
+  rows: StatisticsRow[];
+  showEscrowInfo?: boolean;
+}
+
 @Component({
-  selector: 'statistics',
-  templateUrl: './statistics.html',
-  styleUrls: ['./statistics.css']
+    selector: 'statistics',
+    templateUrl: './statistics.html',
+    styleUrls: ['./statistics.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class Statistics implements OnInit {
   
@@ -42,7 +60,8 @@ export class Statistics implements OnInit {
     promises.push(this.xummApi.getTransactionStatistics("https://tokentrasher-xapp.xahau.services"));
 
 
-    let results = await Promise.all(promises);
+    // a single failing request must not block the whole page: treat it as "no data" for that section
+    let results = await Promise.all(promises.map(promise => Promise.resolve(promise).catch(() => null)));
 
     let statsWeb = results[0];
     let statsEscrow = results[1];
@@ -53,16 +72,45 @@ export class Statistics implements OnInit {
     let statsNFT = results[6];
     let statsTrasher = results[7];
 
-    this.calculateStats(statsWeb, this.statisticsWeb, this.totalTransactionsWeb);
-    this.calculateStats(statsEscrow, this.statisticsEscrow, this.totalTransactionsEscrow);
-    this.calculateStats(statsToken, this.statisticsToken, this.totalTransactionsToken);
-    this.calculateStats(statsNFT, this.statisticsNFT, this.totalTransactionsNFT);
-    this.calculateStats(statsTrasher, this.statisticsTokenTrasher, this.totalTransactionsTokenTrasher);
+    this.totalTransactionsWeb = this.calculateStats(statsWeb, this.statisticsWeb, this.totalTransactionsWeb);
+    this.totalTransactionsEscrow = this.calculateStats(statsEscrow, this.statisticsEscrow, this.totalTransactionsEscrow);
+    this.totalTransactionsToken = this.calculateStats(statsToken, this.statisticsToken, this.totalTransactionsToken);
+    this.totalTransactionsNFT = this.calculateStats(statsNFT, this.statisticsNFT, this.totalTransactionsNFT);
+    this.totalTransactionsTokenTrasher = this.calculateStats(statsTrasher, this.statisticsTokenTrasher, this.totalTransactionsTokenTrasher);
+
+    this.sections = [
+      this.buildSection('Xahau.Services Website', 'language', 'Transactions executed through this website', 'March 23rd 2021', this.statisticsWeb, this.totalTransactionsWeb),
+      this.buildSection('Token Trasher xApp', 'delete_sweep', "Transactions executed through the xApp 'Token Trasher'", 'February 15th 2022', this.statisticsTokenTrasher, this.totalTransactionsTokenTrasher),
+      this.buildSection('Token Creator xApp', 'toll', "Transactions executed through the xApp 'Token creator'", 'April 21st 2021', this.statisticsToken, this.totalTransactionsToken),
+      { ...this.buildSection('Escrow Creator xApp', 'lock_clock', "Transactions executed through the xApp 'Escrow creator'", 'April 21st 2021', this.statisticsEscrow, this.totalTransactionsEscrow), showEscrowInfo: true },
+      this.buildSection('NFT Creator xApp', 'image', "Transactions executed through the xApp 'NFT creator'", 'July 10th 2021', this.statisticsNFT, this.totalTransactionsNFT),
+    ];
+
+    this.grandTotal = this.sections.reduce((sum, section) => sum + (section.total || 0), 0);
 
     this.loading = false;
   }
 
-  calculateStats(apiResult: any, statsArray: any[], totalTransaction: number) {
+  sections: StatisticsSection[] = [];
+  grandTotal: number = 0;
+
+  private buildSection(title: string, icon: string, description: string, since: string, stats: any[], total: number): StatisticsSection {
+    const rows: StatisticsRow[] = (stats || [])
+      .filter(stat => !String(stat.name).startsWith('Overall'))
+      .map(stat => ({
+        name: stat.name,
+        number: stat.number,
+        share: total > 0 ? (stat.number / total) * 100 : 0
+      }));
+
+    return { title, icon, description, since, total, rows };
+  }
+
+  get hasEscrowInfo(): boolean {
+    return !!(this.escrowNextRelease && this.escrowLastRelease && this.escrowCurrentCount);
+  }
+
+  calculateStats(apiResult: any, statsArray: any[], totalTransaction: number): number {
     if(apiResult) {
       //console.log("received stats: " + JSON.stringify(apiResult));
       for(let trx in apiResult) {
@@ -86,6 +134,8 @@ export class Statistics implements OnInit {
 
       //console.log("constructed stats array: " + JSON.stringify(statsArray));
     }
+
+    return totalTransaction;
   }
 
   resolveTransactionName(deliveredName: string) {
