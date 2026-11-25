@@ -22,9 +22,12 @@ export class UtilService {
         for(let i = 0; i < sources.length; i++) {
             let source:string = sources[i];
 
-            if(source.split(`\n`)?.join(' ')?.match(/```.+?```/gm)) {
+            let heading:string[] = source.match(/^# ([a-zA-Z]+)/gm);
+
+            //skip files without a "# TransactionType" heading instead of failing the whole list
+            if(heading && heading.length > 0 && source.split(`\n`)?.join(' ')?.match(/```.+?```/gm)) {
                 result.push({
-                    transactionType: source.match(/^# ([a-zA-Z]+)/gm)[0].slice(2),
+                    transactionType: heading[0].slice(2),
                     docLink: 'https://xrpl.org/' + relevantFiles[i].name.split('.')[0] + '.html',
                     requiresAmendment: source.match(/^(_\(Requires the).*(:not_enabled:.\).)$/gm) != null,
                     codeSamples: source.split(`\n`).join(' ').match(/```.+?```/gm)

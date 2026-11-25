@@ -35,6 +35,7 @@ export class NftApiBackend {
   openGenericDialog(xummPayload: XummTypes.XummPostPayloadBodyJson):void {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: false,
         xrplAccount: this.localStorage.get("xrplAccount"),
         referer: 'abcde'
       },

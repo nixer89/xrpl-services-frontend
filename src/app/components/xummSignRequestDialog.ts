@@ -58,6 +58,7 @@ export class XummSignDialogComponent implements OnInit{
         //setting up xumm payload and waiting for websocket
         let backendPayload:GenericBackendPostRequest = {
             options: {
+                testnet: this.data.testnet,
                 web: this.deviceDetector.isDesktop(),
                 referer: refererURL,
                 signinToValidate: true
@@ -104,6 +105,7 @@ export class XummSignDialogComponent implements OnInit{
 
                 this.showError = true;
                 setTimeout(() => this.handleFailedSignIn(null), 3000);
+                return;
             }
         } catch (err) {            
             this.backendNotAvailable = true;

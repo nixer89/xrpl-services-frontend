@@ -28,6 +28,7 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
   @ViewChild('mep', {static: true}) mep: MatExpansionPanel;
 
   originalAccountInfo:any = null;
+  isTestMode:boolean = false;
   isValidJson:boolean = false;
   errorMsg:string;
   
@@ -45,6 +46,7 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
   transactionTemplates:TransactionTemplate[];
   selectedTemplate:TransactionTemplate;
   loadingTemplates:boolean = false;
+  templatesLoadedForAccount:string = null;
 
 
   async ngOnInit() {
@@ -57,6 +59,7 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
       //console.log("account info changed received: " + JSON.stringify(accountData));
       if(accountData) {
         this.originalAccountInfo = accountData.info;
+        this.isTestMode = accountData.mode;
         this.loadTransactionTemplates();
       } else {
         this.originalAccountInfo = null;
@@ -78,18 +81,35 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
   }
 
   async loadTransactionTemplates() {
+    let account:string = this.originalAccountInfo && this.originalAccountInfo.Account ? this.originalAccountInfo.Account : null;
+
+    //templates are loaded from the GitHub API (rate limited). Load them only once per account and not on every account event
+    if(this.transactionTemplates && this.templatesLoadedForAccount === account)
+      return;
+
     this.loadingTemplates = true;
 
-    this.transactionTemplates = await this.utilService.getTransactionTypes(this.originalAccountInfo && this.originalAccountInfo.Account ? this.originalAccountInfo.Account : null);
+    try {
+      let templates:TransactionTemplate[] = await this.utilService.getTransactionTypes(account);
 
-    for(let i = 0; i < this.transactionTemplates.length; i++) {
-      delete this.transactionTemplates[i].codeSamples[0].Sequence;
-      delete this.transactionTemplates[i].codeSamples[0].Fee;
+      for(let i = 0; i < templates.length; i++) {
+        if(templates[i].codeSamples[0] && typeof templates[i].codeSamples[0] === 'object') {
+          delete templates[i].codeSamples[0].Sequence;
+          delete templates[i].codeSamples[0].Fee;
+        }
+      }
+
+      this.transactionTemplates = [{transactionType: "None", docLink: null, requiresAmendment: false, codeSamples: [{}]}].concat(templates)
+      this.templatesLoadedForAccount = account;
+    } catch(err) {
+      console.log("could not load transaction templates");
+
+      //keep the templates we already have. Otherwise offer only the empty one
+      if(!this.transactionTemplates)
+        this.transactionTemplates = [{transactionType: "None", docLink: null, requiresAmendment: false, codeSamples: [{}]}];
+    } finally {
+      this.loadingTemplates = false;
     }
-
-    this.transactionTemplates = [{transactionType: "None", docLink: null, requiresAmendment: false, codeSamples: [{}]}].concat(this.transactionTemplates)
-
-    this.loadingTemplates = false;
   }
 
   ngOnDestroy() {
@@ -123,7 +143,7 @@ export class RawTransactionsComponent implements OnInit, OnDestroy {
         
       }
     }
-    this.onPayload.next({options: {isRawTrx: true}, payload: payload});
+    this.onPayload.next({options: {testnet: this.isTestMode, isRawTrx: true}, payload: payload});
   }
 
   changeTemplate() {

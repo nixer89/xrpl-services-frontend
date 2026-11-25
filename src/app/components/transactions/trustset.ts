@@ -198,6 +198,9 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
       this.allFieldsSet = true;
 
+      //result of THIS check only. Do not keep a "true" from an earlier issuer / currency
+      let exists:boolean = false;
+
       try {
         if(!this.testMode) {
           let xrpscanResponse:any = await this.app.get("https://api.xrpscan.com/api/v1/account/"+this.issuerAccountInput+"/obligations?origin=https://xrpl.services")
@@ -207,7 +210,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
           if(xrpscanResponse && xrpscanResponse.length > 0) {
             for(let i = 0; i < xrpscanResponse.length; i++) {
               if(xrpscanResponse[i].currency === currencyToCheck && parseFloat(xrpscanResponse[i].value) > 0) {
-                this.currencyExists = true;
+                exists = true;
                 //console.log("currency exsists")
                 break;
               }
@@ -244,21 +247,23 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
               if(tokenList && tokenList.length > 0) {
                 for(let i = 0; i < tokenList.length; i++) {
                   if(tokenList[i] === currencyToCheck) {
-                    this.currencyExists = true;
+                    exists = true;
                     //console.log("currency exsists")
                     break;
                   }
                 }
               }
           } else {                
-            this.currencyExists = false;
+            exists = false;
           }
         }
       } catch(err) {
         console.log(err);
         //set to true in case of error!
-        this.currencyExists = true;
+        exists = true;
       }
+
+      this.currencyExists = exists;
     } else {
       this.allFieldsSet = false;
     }
@@ -306,7 +311,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     if(this.selectedCurrency.currencyCodeUTF8.toLowerCase().includes("xum")) {
-      payload.custom_meta.blob = {addWarningXumm: true};
+      payload.custom_meta.blob = Object.assign({}, payload.custom_meta.blob, {addWarningXumm: true});
     }
 
     this.onPayload.emit(payload);
@@ -364,7 +369,7 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
     if(this.limitInput) {
 
       if(!this.limitInput.includes("e")) {
-        this.validLimit = !(/[^.0-9]|\d*\.\d{16,}/.test(this.limitInput));
+        this.validLimit = !(/[^.0-9]|\d*\.\d{16,}/.test(this.limitInput)) && this.limitInput.split('.').length <= 2;
 
         if(!this.validLimit) {
           this.maxFifthteenDigits = this.limitInput.includes('.') && this.limitInput.split('.')[1].length > 15;
@@ -392,6 +397,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
           this.validLimit = false;
         }
       }
+    } else {
+      this.validLimit = false;
     }
 
     //console.log("is valid limit: " + this.validLimit);

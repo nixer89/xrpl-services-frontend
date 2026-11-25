@@ -189,6 +189,7 @@ export class BlackholeAccount implements OnInit {
   payForBlackhole() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         xrplAccount: this.getIssuer()
       },
       payload: {
@@ -217,13 +218,14 @@ export class BlackholeAccount implements OnInit {
       this.paymentInitiated = true;
 
       if(info && info.success && info.account && (!info.testnet || this.isTestMode)) {
-        if(isValidXRPAddress(info.account))
+        if(isValidXRPAddress(info.account)) {
           this.issuerAccount = info.account;
           this.validIssuer = true;
           this.paymentNotSuccessfull = false;
 
           //refresh amounts
           await this.loadAccountData();
+        }
       } else {
         this.paymentNotSuccessfull = true;
       }
@@ -318,6 +320,7 @@ export class BlackholeAccount implements OnInit {
   sendRemainingXRP() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },
@@ -326,7 +329,7 @@ export class BlackholeAccount implements OnInit {
           Account: this.getIssuer(),
           TransactionType: "Payment",
           Destination: this.recipient_account_info.Account,
-          Amount: this.getAvailableBalanceIssuer()*1000000+""
+          Amount: Math.round(this.getAvailableBalanceIssuer()*1000000)+""
         },
         custom_meta: {
           instruction: "- Sending " + this.getAvailableBalanceIssuer() + " XRP to an account of your choice.\n\n- Please sign with the ISSUER account!"
@@ -351,6 +354,7 @@ export class BlackholeAccount implements OnInit {
   disallowIncomingXrp() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },
@@ -387,6 +391,7 @@ export class BlackholeAccount implements OnInit {
   setBlackholeAddress() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },
@@ -423,6 +428,7 @@ export class BlackholeAccount implements OnInit {
   disableMasterKeyForIssuer() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         xrplAccount: this.getIssuer()
       },
       payload: {
@@ -459,6 +465,7 @@ export class BlackholeAccount implements OnInit {
 
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         xrplAccount: this.getIssuer()
       },
       payload: {
@@ -517,10 +524,13 @@ export class BlackholeAccount implements OnInit {
     
     let feeSettingObject = feeSettingResult?.result?.node;
 
-    if('ReserveBase' in feeSettingObject) {
+    if(!feeSettingObject) {
+      //node did not answer with the fee settings -> keep the reserves we have
+      console.log("could not load fee settings / reserves from the node");
+    } else if('ReserveBase' in feeSettingObject) {
       this.accountReserve = feeSettingObject.ReserveBase;
       this.ownerReserve = feeSettingObject.ReserveIncrement;
-    } else {
+    } else if('ReserveBaseDrops' in feeSettingObject) {
       this.accountReserve = Number(feeSettingObject.ReserveBaseDrops);
       this.ownerReserve = Number(feeSettingObject.ReserveIncrementDrops);
     }

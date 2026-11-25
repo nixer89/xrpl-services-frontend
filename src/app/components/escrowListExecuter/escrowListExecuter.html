@@ -94,7 +94,7 @@
                     <mat-cell *matCellDef="let escrow">
                         <span  fxLayout="row">
                             <label fxShow.xs fxHide><b>Action:</b>&nbsp;</label>
-                            <button *ngIf="!escrow.autorelease" mat-raised-button color="primary" matTooltip="Enable automatic release for this Escrow." matTooltipPosition="above" (click)="enableAutoFinish(escrow)" style="padding:0px;">
+                            <button *ngIf="!escrow.autorelease" mat-raised-button color="primary" matTooltip="Enable automatic release for this Escrow." matTooltipPosition="above" (click)="enableAutoFinish(escrow)" [disabled]="!hasValidSequence(escrow)" style="padding:0px;">
                                 Enable
                             </button>
                             <button *ngIf="escrow.autorelease" mat-raised-button color="warn" matTooltip="Disable automatic release for this Escrow." matTooltipPosition="above" (click)="disableAutoFinish(escrow)" style="padding:0px;">

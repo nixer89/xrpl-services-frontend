@@ -207,6 +207,7 @@ export class IssueMoreToken implements OnInit {
   issueToken() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },

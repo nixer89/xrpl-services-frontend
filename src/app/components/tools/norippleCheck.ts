@@ -97,6 +97,9 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
         }
       } catch(err) {
           console.log(err);
+          //do not keep the result of an earlier account
+          this.isGateway = false;
+          this.obligations = null;
       }
 
       let noripple_check_command:any = {
@@ -127,8 +130,8 @@ export class NoRippleCheckComponent implements OnInit, OnDestroy {
         for(let i = 0; i < problems.length; i++) {
           if(transactions[i] && transactions[i].Account === this.xrplAccountInput.trim() && transactions[i].TransactionType === 'TrustSet'
               && transactions[i].Flags == 262144 && transactions[i].LimitAmount.issuer != this.xrplAccountInput.trim()) {
-                //skip entry
-                break;
+                //skip entry (only this one, not all following problems)
+                continue;
           }
 
           if(problems[i] === "You appear to have set your default ripple flag even though you are not a gateway. This is not recommended unless you are experimenting"

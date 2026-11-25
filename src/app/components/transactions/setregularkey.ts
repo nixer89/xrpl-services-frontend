@@ -87,7 +87,8 @@ export class SetRegularKeyComponent implements OnInit, OnDestroy {
       this.payload.custom_meta.instruction = "Set RegularKey to: " + this.regularKeyInput.trim();
     }
 
-    this.onPayload.emit(this.payload);
+    //send a copy: the dialog changes the object (memo, account, options) and it must not be reused for the next try
+    this.onPayload.emit(JSON.parse(JSON.stringify(this.payload)));
   }
 
   checkChanges() {   

@@ -55,10 +55,10 @@
     </div>
     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start" fxLayoutGap="0.5em">
       <div fxLayout="column">
-        <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!checkBoxHint || !validDestinationAddress || loadingDestinationAccount || !destinationAccountExists || (destinationTagInput && !validTag) || (originalAccountInfo && (originalAccountInfo.error || (destinationTagInput && destinationTagInput.trim() === originalAccountInfo.Account)))">
+        <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!checkBoxHint || !validDestinationAddress || loadingDestinationAccount || !destinationAccountExists || (destinationTagInput && !validTag) || (originalAccountInfo && (originalAccountInfo.error || (destinationAccountInput && destinationAccountInput.trim() === originalAccountInfo.Account)))">
           Send Account Delete to Xaman
         </button>
-        <mat-hint *ngIf="!checkBoxHint && validDestinationAddress && !loadingDestinationAccount && destinationAccountExists && (!destinationTagInput || validTag) && (!originalAccountInfo || (originalAccountInfo && (!originalAccountInfo.error && (!destinationTagInput || destinationTagInput.trim() != originalAccountInfo.Account))))">Please confirm the checkbox above.</mat-hint>
+        <mat-hint *ngIf="!checkBoxHint && validDestinationAddress && !loadingDestinationAccount && destinationAccountExists && (!destinationTagInput || validTag) && (!originalAccountInfo || (originalAccountInfo && (!originalAccountInfo.error && (!destinationAccountInput || destinationAccountInput.trim() != originalAccountInfo.Account))))">Please confirm the checkbox above.</mat-hint>
       </div>
     </div>
   </div>

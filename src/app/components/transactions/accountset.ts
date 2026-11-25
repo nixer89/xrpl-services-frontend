@@ -156,19 +156,19 @@ export class AccountSetComponent implements OnInit, OnDestroy {
     //console.log("sending to xumm");
     //console.log("originalAccountInfo: " + JSON.stringify(this.originalAccountInfo));
     //console.log("domain: " + this.domainInput);
-    //console.log("domain hex: " + this.stringToHex(this.domainInput.trim()));
+    //console.log("domain hex: " + this.stringToHex(this.domainInput.trim().toLowerCase()));
     //console.log("email: " + this.emailInput);
 
     this.payload.custom_meta = {};
     this.payload.custom_meta.instruction = "";
 
-    if(this.domainInput && this.validDomain && (!this.originalAccountInfo || this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain)) {
-      this.payload.txjson.Domain = this.stringToHex(this.domainInput.trim());
-      this.payload.custom_meta.instruction += "- Set Domain to '"+this.domainInput.trim()+"'\n"
+    if(this.domainInput && this.validDomain && (!this.originalAccountInfo || this.stringToHex(this.domainInput.trim().toLowerCase()) != this.originalAccountInfo.Domain)) {
+      this.payload.txjson.Domain = this.stringToHex(this.domainInput.trim().toLowerCase());
+      this.payload.custom_meta.instruction += "- Set Domain to '"+this.domainInput.trim().toLowerCase()+"'\n"
     }
 
-    if(this.emailInput && this.validEmail && (!this.originalAccountInfo || md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash)) {
-      this.payload.txjson.EmailHash = md5(this.emailInput.trim()).toUpperCase();
+    if(this.emailInput && this.validEmail && (!this.originalAccountInfo || md5(this.emailInput.trim().toLowerCase()).toUpperCase() != this.originalAccountInfo.EmailHash)) {
+      this.payload.txjson.EmailHash = md5(this.emailInput.trim().toLowerCase()).toUpperCase();
       this.payload.custom_meta.instruction += "- Set Email to '"+this.emailInput.trim()+"'\n"
     }
 
@@ -257,10 +257,10 @@ export class AccountSetComponent implements OnInit, OnDestroy {
 
   checkChanges() {
 
-    this.domainChangeDetected = this.domainInput != null && this.domainInput.trim().length > 0 && (!this.originalAccountInfo || (!this.originalAccountInfo.Domain || (this.stringToHex(this.domainInput.trim()) != this.originalAccountInfo.Domain)));
+    this.domainChangeDetected = this.domainInput != null && this.domainInput.trim().length > 0 && (!this.originalAccountInfo || (!this.originalAccountInfo.Domain || (this.stringToHex(this.domainInput.trim().toLowerCase()) != this.originalAccountInfo.Domain)));
     this.validDomain = !this.domainChangeDetected || this.domainInput && this.domainInput.trim().length > 0;
 
-    this.emailChangeDetected = this.emailInput != null && this.emailInput.trim().length > 0 && (!this.originalAccountInfo || (md5(this.emailInput.trim()).toUpperCase() != this.originalAccountInfo.EmailHash));
+    this.emailChangeDetected = this.emailInput != null && this.emailInput.trim().length > 0 && (!this.originalAccountInfo || (md5(this.emailInput.trim().toLowerCase()).toUpperCase() != this.originalAccountInfo.EmailHash));
     this.validEmail = !this.emailChangeDetected || emailValidator.validate(this.emailInput);
 
     if((!this.originalAccountInfo || !this.originalAccountInfo.Flags || this.originalAccountInfo.Flags == 0) && this.requireDestTagInput)

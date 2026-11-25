@@ -111,12 +111,13 @@ export class CreateToken implements OnInit {
       //console.log('The generic dialog was closed: ' + JSON.stringify(info));
 
       if(info && info.success && info.account && (!info.testnet || this.isTestMode)) {
-        if(isValidXRPAddress(info.account))
+        if(isValidXRPAddress(info.account)) {
           this.issuerAccount = info.account;
           this.validIssuer = true;
           this.paymentNotSuccessfull = false;
           this.paymentNotFound = false;
           await this.loadAccountData();
+        }
       } else {
         this.paymentNotSuccessfull = true;
         this.paymentNotFound = false;
@@ -216,6 +217,7 @@ export class CreateToken implements OnInit {
   sendDefaultRipple() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         xrplAccount: this.issuerAccount
       },
       payload: {
@@ -268,6 +270,7 @@ export class CreateToken implements OnInit {
   setTrustline() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         xrplAccount: null
       },
       payload: {
@@ -307,6 +310,7 @@ export class CreateToken implements OnInit {
   issueToken() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.issuerAccount
       },
@@ -318,8 +322,8 @@ export class CreateToken implements OnInit {
             currency: normalizer.getCurrencyCodeForXRPL(this.currencyCode),
             issuer: this.issuerAccount.trim(),
             value: normalizer.tokenNormalizer(this.limit.toString())
-          },
-          Flags: 131072
+          }
+          //no Flags here! 131072 is "NoRipple" on a TrustSet but "tfPartialPayment" on a Payment
         },
         custom_meta: {
           instruction: "- Issuing " + this.limit + " " + this.currencyCode + " to: " + this.recipientAddress + "\n\n- Please sign with the ISSUER account!"
@@ -347,6 +351,7 @@ export class CreateToken implements OnInit {
   disallowIncomingXrp() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },
@@ -382,6 +387,7 @@ export class CreateToken implements OnInit {
   setBlackholeAddress() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },
@@ -417,6 +423,7 @@ export class CreateToken implements OnInit {
   disableMasterKeyForIssuer() {
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         issuing: true,
         xrplAccount: this.getIssuer()
       },

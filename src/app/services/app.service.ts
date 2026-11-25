@@ -44,8 +44,8 @@ export class AppService {
 
     private handleError(error: any): Promise<string> {
         console.error('An error occurred', JSON.stringify(error)); // XXX for debugging purposes
-        if (!error.status) error.message = "Sorry, it cannot be reached.";
-        let errmsg: string = error.error.message || error.message || error;
+        if (error && !error.status) error.message = "Sorry, it cannot be reached.";
+        let errmsg: string = error?.error?.message || error?.message || error;
         
         return Promise.reject(errmsg);
     }

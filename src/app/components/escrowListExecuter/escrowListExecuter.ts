@@ -99,7 +99,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
 
                     for(let i = 0; i < this.escrowData.length; i++) {
                         for(let j = 0; j < storedEscrows.length; j++) {
-                            if(this.escrowData[i].account = storedEscrows[j].account && this.escrowData[i].sequence == storedEscrows[j].sequence && this.escrowData[i].testnet == storedEscrows[j].testnet)
+                            if(this.escrowData[i].Account == storedEscrows[j].account && this.escrowData[i].sequence == storedEscrows[j].sequence && this.escrowData[i].testnet == storedEscrows[j].testnet)
                                 this.escrowData[i].autorelease = true;
                         }
 
@@ -113,6 +113,7 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
             } catch(err) {
                 console.log("Error loading escrows");
                 this.escrowData = null;
+                this.loading = false;
             }
         }
     }
@@ -129,7 +130,8 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
         if(message && message.status && message.status === 'success' && message.type && message.type === 'response') {
             if(message.result && message.result.TransactionType === 'EscrowCreate') {
                 //console.log("Sequence: " + message.result.Sequence);
-                sequence = message.result.Sequence
+                //an EscrowCreate sent with a Ticket has "Sequence: 0". The escrow is then identified by the TicketSequence
+                sequence = message.result.Sequence || message.result.TicketSequence || null;
             }
         }
 
@@ -176,9 +178,20 @@ export class EscrowListExecuter implements OnInit, OnDestroy {
         this.signInToDisableAutoRelease(escrow);
     }
 
+    hasValidSequence(escrow: any): boolean {
+        return escrow && Number.isInteger(escrow.sequence) && escrow.sequence > 0;
+    }
+
     payForEscrowRelease(escrow: any) {
+        //never ask for a payment if we do not know which escrow to release
+        if(!this.hasValidSequence(escrow)) {
+            this.snackBar.open("The sequence number of this escrow could not be resolved. Auto Release can not be enabled!", null, {panelClass: 'snackbar-failed', duration: 10000, horizontalPosition: 'center', verticalPosition: 'top'});
+            return;
+        }
+
         let genericBackendRequest:GenericBackendPostRequest = {
             options: {
+                testnet: this.isTestMode,
                 xrplAccount: escrow.Account
             },
             payload: {

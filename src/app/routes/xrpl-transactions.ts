@@ -187,10 +187,13 @@ export class XrplTransactionsComponent implements OnInit {
 
     let feeSettingObject = feeSettingResult?.result?.node;
 
-    if('ReserveBase' in feeSettingObject) {
+    if(!feeSettingObject) {
+      //node did not answer with the fee settings -> keep the reserves we have
+      console.log("could not load fee settings / reserves from the node");
+    } else if('ReserveBase' in feeSettingObject) {
       this.accountReserve = feeSettingObject.ReserveBase;
       this.ownerReserve = feeSettingObject.ReserveIncrement;
-    } else {
+    } else if('ReserveBaseDrops' in feeSettingObject) {
       this.accountReserve = Number(feeSettingObject.ReserveBaseDrops);
       this.ownerReserve = Number(feeSettingObject.ReserveIncrementDrops);
     }
@@ -223,7 +226,7 @@ export class XrplTransactionsComponent implements OnInit {
           if(message_acc_info.status === 'success' && message_acc_info.result && message_acc_info.result.account_data) {
             this.xrplAccount_Info = message_acc_info.result.account_data;
             if(this.xrplAccount_Info.urlgravatar)
-              this.xrplAccount_Info.urlgravatar = this.xrplAccount_Info.urlgravatar.replace('http','https');
+              this.xrplAccount_Info.urlgravatar = this.xrplAccount_Info.urlgravatar.replace(/^http:/,'https:');
             //console.log("xrplAccount_Info: " + JSON.stringify(this.xrplAccount_Info));
             this.emitAccountInfoChanged();
           } else {
@@ -464,6 +467,7 @@ export class XrplTransactionsComponent implements OnInit {
     //console.log("received payload: " + JSON.stringify(payload));
     let genericBackendRequest:GenericBackendPostRequest = {
       options: {
+        testnet: this.isTestMode,
         xrplAccount: this.xrplAccount ? this.xrplAccount : null
       },
       payload: xummPayload

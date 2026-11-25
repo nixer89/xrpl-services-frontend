@@ -80,8 +80,9 @@ export class Tools implements OnInit {
         }
 
 
+        //stay on the tools page, otherwise the escrow validation in handlePayloadInfo() never runs
         return this.router.navigate(
-          ['/'], 
+          ['/tools'], 
           { relativeTo: this.route, queryParams: newParams, state: state }
         );
       }
@@ -227,10 +228,13 @@ export class Tools implements OnInit {
 
     let feeSettingObject = feeSettingResult?.result?.node;
 
-    if('ReserveBase' in feeSettingObject) {
+    if(!feeSettingObject) {
+      //node did not answer with the fee settings -> keep the reserves we have
+      console.log("could not load fee settings / reserves from the node");
+    } else if('ReserveBase' in feeSettingObject) {
       this.accountReserve = feeSettingObject.ReserveBase;
       this.ownerReserve = feeSettingObject.ReserveIncrement;
-    } else {
+    } else if('ReserveBaseDrops' in feeSettingObject) {
       this.accountReserve = Number(feeSettingObject.ReserveBaseDrops);
       this.ownerReserve = Number(feeSettingObject.ReserveIncrementDrops);
     }
@@ -379,8 +383,11 @@ export class Tools implements OnInit {
     //console.log("received payload: " + JSON.stringify(payload));
 
     if(!genericBackendRequest.options)
-      genericBackendRequest.options = {};
-      
+      genericBackendRequest.options = {
+        testnet: this.isTestMode
+      };
+
+    genericBackendRequest.options.testnet = this.isTestMode;
     genericBackendRequest.options.xrplAccount = this.xrplAccount ? this.xrplAccount : null
 
     this.openGenericDialog(genericBackendRequest);

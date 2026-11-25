@@ -119,7 +119,9 @@ export class GenericPayloadQRDialog implements OnInit {
         this.genericPayload.payload.options.expire = 5;
 
         if(!this.genericPayload.options)
-            this.genericPayload.options = {};
+            this.genericPayload.options = {
+                testnet: false
+            };
 
         this.genericPayload.options.web = this.deviceDetector.isDesktop();
 
@@ -152,6 +154,9 @@ export class GenericPayloadQRDialog implements OnInit {
             this.genericPayload.payload.options.forceAccount = true;
         }
 
+        //bind the payload to the network the page is working on. Xaman then refuses to sign it on another network.
+        //(cast: old xumm-sdk typings do not know "force_network")
+        (this.genericPayload.payload.options as any).force_network = this.genericPayload.options.testnet ? "TESTNET" : "MAINNET";
 
         let xummResponse:XummTypes.XummPostPayloadResponse;
         try {

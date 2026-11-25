@@ -153,6 +153,8 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     
     if(this.finishAfterDateTime)
       this.escrowYears = this.finishAfterDateTime.getFullYear() - (new Date()).getFullYear();
+    else
+      this.escrowYears = 0;
 
     if(this.cancelAfterFormCtrl && this.cancelAfterFormCtrl.value && this.cancelafterTimeInput) {
       this.cancelAfterDateTime = new Date(this.cancelAfterFormCtrl.value.format("yyyy-MM-DD") + "T" + this.cancelafterTimeInput.trim());    
@@ -169,7 +171,8 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       this.cancelDateBeforeFinishDate = false;
 
     if(this.amountInput) {
-      this.validAmount = !(/[^.0-9]|\d*\.\d{7,}/.test(this.amountInput));
+      //only one dot and max 6 decimals -> can be converted to drops exactly
+      this.validAmount = normalizer.xrpToDrops(this.amountInput) != null;
 
       if(!this.validAmount) {
         this.maxSixDigits = this.amountInput.includes('.') && this.amountInput.split('.')[1].length > 6;
@@ -210,6 +213,10 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
       if(this.cancelDateBeforeFinishDate || this.cancelDateInFuture || this.finishDateInFuture)
         this.isValidEscrow = false
     }
+
+    //"cancelDateInFuture" is true when the cancel date is in the PAST. Never valid, also not for password only escrows
+    if(this.isValidEscrow && this.validCancelAfter && this.cancelDateInFuture)
+      this.isValidEscrow = false;
 
     //console.log("isValidEscrow: " + this.isValidEscrow);
   }
@@ -253,16 +260,18 @@ export class EscrowCreateComponent implements OnInit, OnDestroy{
     }
 
     if(this.escrowYears > 10) {
-      xummPayload.custom_meta.instruction += "ATTENTION: Your XRP will be inaccessible for " + this.escrowYears + "years!\n\n";
+      xummPayload.custom_meta.instruction += "ATTENTION: Your XRP will be inaccessible for " + this.escrowYears + " years!\n\n";
     }
 
-    if(this.destinationInput && this.destinationInput.trim().length>0 && isValidXRPAddress(this.destinationInput)) {
+    if(this.destinationInput && this.destinationInput.trim().length>0 && isValidXRPAddress(this.destinationInput.trim())) {
       xummPayload.txjson.Destination = this.destinationInput.trim();
       xummPayload.custom_meta.instruction += "- Escrow Destination: " + this.destinationInput.trim();
     }
 
-    if(this.amountInput && parseFloat(this.amountInput) >= 0.000001) {
-      xummPayload.txjson.Amount = parseFloat(this.amountInput)*1000000+"";
+    let amountInDrops:string = normalizer.xrpToDrops(this.amountInput);
+
+    if(this.amountInput && amountInDrops && parseFloat(this.amountInput) >= 0.000001) {
+      xummPayload.txjson.Amount = amountInDrops;
       xummPayload.custom_meta.instruction += "\n- Escrow Amount: " + this.amountInput;
     }
  

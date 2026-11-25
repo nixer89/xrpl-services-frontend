@@ -222,8 +222,10 @@ export class AccountDeleteComponent implements OnInit, OnDestroy {
   async checkChanges() {   
     this.validDestinationAddress = this.destinationAccountInput && this.destinationAccountInput.trim().length > 0 && isValidXRPAddress(this.destinationAccountInput.trim());
 
-    if(this.lastKnownDestinationAccount != this.destinationAccountInput.trim()) {
-      this.lastKnownDestinationAccount = this.destinationAccountInput.trim()
+    let destinationAccount:string = this.destinationAccountInput ? this.destinationAccountInput.trim() : null;
+
+    if(this.lastKnownDestinationAccount != destinationAccount) {
+      this.lastKnownDestinationAccount = destinationAccount;
       await this.checkDestinationAccountExists();
     }
 

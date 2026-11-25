@@ -53,16 +53,16 @@ export class Statistics implements OnInit {
     let statsNFT = results[6];
     let statsTrasher = results[7];
 
-    this.calculateStats(statsWeb, this.statisticsWeb, this.totalTransactionsWeb);
-    this.calculateStats(statsEscrow, this.statisticsEscrow, this.totalTransactionsEscrow);
-    this.calculateStats(statsToken, this.statisticsToken, this.totalTransactionsToken);
-    this.calculateStats(statsNFT, this.statisticsNFT, this.totalTransactionsNFT);
-    this.calculateStats(statsTrasher, this.statisticsTokenTrasher, this.totalTransactionsTokenTrasher);
+    this.totalTransactionsWeb = this.calculateStats(statsWeb, this.statisticsWeb, this.totalTransactionsWeb);
+    this.totalTransactionsEscrow = this.calculateStats(statsEscrow, this.statisticsEscrow, this.totalTransactionsEscrow);
+    this.totalTransactionsToken = this.calculateStats(statsToken, this.statisticsToken, this.totalTransactionsToken);
+    this.totalTransactionsNFT = this.calculateStats(statsNFT, this.statisticsNFT, this.totalTransactionsNFT);
+    this.totalTransactionsTokenTrasher = this.calculateStats(statsTrasher, this.statisticsTokenTrasher, this.totalTransactionsTokenTrasher);
 
     this.loading = false;
   }
 
-  calculateStats(apiResult: any, statsArray: any[], totalTransaction: number) {
+  calculateStats(apiResult: any, statsArray: any[], totalTransaction: number): number {
     if(apiResult) {
       //console.log("received stats: " + JSON.stringify(apiResult));
       for(let trx in apiResult) {
@@ -86,6 +86,8 @@ export class Statistics implements OnInit {
 
       //console.log("constructed stats array: " + JSON.stringify(statsArray));
     }
+
+    return totalTransaction;
   }
 
   resolveTransactionName(deliveredName: string) {

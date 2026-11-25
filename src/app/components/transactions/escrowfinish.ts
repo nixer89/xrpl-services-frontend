@@ -124,7 +124,8 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
       payload.custom_meta.instruction += "\n- Escrow Sequence: " + this.escrowSequenceInput;
     }
 
-    if(this.validCondition) {
+    //only add the password if the selected escrow has a condition (the field is hidden otherwise)
+    if(this.showPassword && this.validCondition) {
       let fulfillment_bytes:Buffer = Buffer.from(this.passwordInput.trim(), 'utf-8');
 
       import('five-bells-condition').then( cryptoCondition => {
@@ -231,6 +232,10 @@ export class EscrowFinishComponent implements OnInit, OnDestroy {
     
     this.escrowSequenceSelected = true;
     this.showPassword = escrowInfo.condition;
+
+    //do not keep a password typed for another escrow
+    if(!this.showPassword)
+      this.passwordInput = null;
     
     this.checkChanges();
 

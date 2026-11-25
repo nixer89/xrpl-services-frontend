@@ -82,7 +82,8 @@ export function getCurrencyCodeForXRPL(currencyCode: string): string {
 
         if(currency && currency.length > 3) {
 
-            if(!isHex(currency))
+            //only a full 160 bit code (40 hex chars) is taken as hex. Everything else is a readable name ("CAFE", "DEAD", "12345") and gets encoded.
+            if(!(currency.length == 40 && isHex(currency)))
                 currency = Buffer.from(currency, 'utf-8').toString('hex');
 
             while(currency.length < 40)
@@ -96,6 +97,24 @@ export function getCurrencyCodeForXRPL(currencyCode: string): string {
     }
 
     return returnString;
+}
+
+/**
+ * Converts an XRP amount given as text ("8.2") into drops ("8200000") without floating point arithmetic.
+ * Returns null if the text is not a plain decimal number with at most 6 decimals.
+ */
+export function xrpToDrops(xrpAmount: string): string {
+    if(typeof xrpAmount !== 'string' || !/^(\d+(\.\d{0,6})?|\.\d{1,6})$/.test(xrpAmount))
+        return null;
+
+    let parts:string[] = xrpAmount.split('.');
+    let fraction:string = parts.length > 1 ? parts[1] : "";
+
+    while(fraction.length < 6)
+        fraction += "0";
+
+    //remove leading zeros but keep at least one digit
+    return ((parts[0] || "0") + fraction).replace(/^0+(?=\d)/, '');
 }
 
 export function rippleEpocheTimeToUTC(rippleEpocheTime: number): number {
