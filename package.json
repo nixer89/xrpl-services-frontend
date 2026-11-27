@@ -1,6 +1,6 @@
 {
   "name": "xahau-services",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4211 --open",

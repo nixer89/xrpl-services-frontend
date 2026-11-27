@@ -75,12 +75,11 @@
           </div>
           @if (allFieldsSet && validAddress && (!currencyExists || !issuerHasDefaultRipple)) {
             <div>
-              <label>&nbsp;</label>
               <mat-checkbox [(ngModel)]="ignoreWarning" [ngClass]="(ignoreWarning ? 'success': 'warning')">I understand the above warning and accept the risk. I want to continue setting the Trustline and ignore all warnings and risks.</mat-checkbox>
             </div>
           }
           <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center" fxLayoutAlign.xs="start start"  fxLayoutGap="0.5em">
-            <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="(!isValidTrustSet || !issuerHasDefaultRipple || !currencyExists || loadingIssuerData) && !ignoreWarning">
+            <button mat-raised-button color="primary" (click)="sendPayloadToXumm()" [disabled]="!fieldsValid || loadingIssuerData || ((!issuerHasDefaultRipple || !currencyExists) && !ignoreWarning)">
               Send Trust Set to Xaman
             </button>
             @if (isEditMode) {

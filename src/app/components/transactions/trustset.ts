@@ -75,7 +75,12 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
   loadingIssuerData:boolean = false;
   issuerHasDefaultRipple:boolean = false;
   currencyExists:boolean = false;
-  ignoreWarning:boolean = false
+  //user accepted the "unknown currency" / "no DefaultRipple" warning for the current issuer + currency + network
+  ignoreWarning:boolean = false;
+  ignoreWarningFor:string = null;
+
+  //all input fields are valid (independent of the issuer warnings)
+  fieldsValid:boolean = false;
 
   allFieldsSet:boolean = false;
 
@@ -311,7 +316,8 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
       payload.custom_meta.blob = {noSignIn: isDirectLink};
     }
 
-    if(this.selectedCurrency.currencyCodeUTF8.toLowerCase().includes("xum")) {
+    let currencyName:string = this.selectedCurrency.currencyCodeUTF8.toLowerCase();
+    if(currencyName.includes("xum") || currencyName.includes("xaman")) {
       payload.custom_meta.blob = Object.assign({}, payload.custom_meta.blob, {addWarningXumm: true});
     }
 
@@ -416,7 +422,15 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
     await this.checkCurrencyExists();
 
-    this.isValidTrustSet = this.validAddress && this.validCurrency && this.validLimit && this.issuerHasDefaultRipple && this.currencyExists;
+    this.fieldsValid = this.validAddress && this.validCurrency && this.validLimit;
+    this.isValidTrustSet = this.fieldsValid && this.issuerHasDefaultRipple && this.currencyExists;
+
+    //an accepted warning only applies to the issuer + currency + network it was accepted for
+    let warningContext = (this.issuerAccountInput ? this.issuerAccountInput.trim() : '') + '|' + (this.selectedCurrency ? this.selectedCurrency.currencyCode : '') + '|' + this.testMode;
+    if(warningContext != this.ignoreWarningFor) {
+      this.ignoreWarning = false;
+      this.ignoreWarningFor = warningContext;
+    }
 
     this.loadingIssuerData = false;
 
@@ -429,7 +443,9 @@ export class TrustSetComponent implements OnInit, OnDestroy, AfterViewInit {
 
   clearInputs() {
     this.issuerAccountInput = this.selectedCurrency = this.limitInput = null;
-    this.isValidTrustSet = this.validAddress = this.validCurrency = this.validLimit = false;
+    this.isValidTrustSet = this.fieldsValid = this.validAddress = this.validCurrency = this.validLimit = false;
+    this.ignoreWarning = false;
+    this.ignoreWarningFor = null;
     this.lastKnownAddress = null;
     this.isEditMode = false;
     

@@ -198,8 +198,8 @@ export class XahauTransactionsComponent implements OnInit {
       this.ownerReserve = Number(feeSettingObject.ReserveIncrementDrops);
     }
 
-    console.log("resolved accountReserve: " + this.accountReserve/1000000);
-    console.log("resolved ownerReserve: " + this.ownerReserve/1000000);
+    //console.log("resolved accountReserve: " + this.accountReserve/1000000);
+    //console.log("resolved ownerReserve: " + this.ownerReserve/1000000);
 
     this.emitAccountInfoChanged();
   }
