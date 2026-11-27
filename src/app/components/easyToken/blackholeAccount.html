@@ -59,8 +59,8 @@
                 <span style="flex: 1 1 auto;"></span>
               </div>
               <label class="warning" *ngIf="isTestMode">If you want to blackhole on the test net, the {{paymentAmount}} {{paymentCurrency}} payment can be done on the test net as well!</label>
-              <label class="success" *ngIf="isTestMode">Make sure your XUMM app is connected to the TEST network!</label>
-              <label class="success" *ngIf="!isTestMode">Make sure your XUMM app is connected to the MAIN network!</label>
+              <label class="success" *ngIf="isTestMode">Make sure your Xaman app is connected to the TEST network!</label>
+              <label class="success" *ngIf="!isTestMode">Make sure your Xaman app is connected to the MAIN network!</label>
             </div>
             <span style="flex: 1 1 auto;"></span>
           </div>
@@ -122,7 +122,7 @@
               <label *ngIf="recipient_account_info && recipient_account_info.account">{{recipient_account_info.account}}</label>
   
               <div fxLayoutAlign="start center" style="padding-top: 0.5em;">
-                <button mat-raised-button color="primary" (click)="signInWithRecipientAccount()" [disabled]="loadingIssuerAccount">{{recipient_account_info && (recipient_account_info.Account || recipient_account_info.account) ? 'Change Account' : 'Choose from XUMM' }}</button>
+                <button mat-raised-button color="primary" (click)="signInWithRecipientAccount()" [disabled]="loadingIssuerAccount">{{recipient_account_info && (recipient_account_info.Account || recipient_account_info.account) ? 'Change Account' : 'Choose from Xaman' }}</button>
               </div>
             </div>
   

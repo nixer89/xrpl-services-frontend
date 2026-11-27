@@ -2,8 +2,6 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { LocalStorageService } from './services/local-storage.service';
 
-declare let gtag: Function;
-
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -15,19 +13,7 @@ export class AppComponent implements OnInit {
   title = 'XRPL Services';
   darkMode:boolean;
 
-  constructor(private router: Router, private localStorage: LocalStorageService) {
-    this.router.events.subscribe(event => {
-      if(event instanceof NavigationEnd) {
-          let path = (event.urlAfterRedirects.includes('?') ? event.urlAfterRedirects.substring(0, event.urlAfterRedirects.indexOf('?')) : event.urlAfterRedirects);
-          gtag('config', 'UA-159404162-1', 
-                {
-                  'page_title': this.getPageTitle(path),
-                  'page_path': path
-                }
-              );
-       }
-    });
-  }
+  constructor(private router: Router, private localStorage: LocalStorageService) { }
 
   getPageTitle(page_path:string): string {
     let title = "XRP Ledger Services";

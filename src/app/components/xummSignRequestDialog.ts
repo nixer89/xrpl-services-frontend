@@ -81,7 +81,7 @@ export class XummSignDialogComponent implements OnInit{
         if(this.data.xrplAccount) {
             backendPayload.options.xrplAccount = this.data.xrplAccount;
             backendPayload.payload.txjson.Account = this.data.xrplAccount;
-            (backendPayload.payload.options as { forceAccount?: boolean }).forceAccount = true;
+            backendPayload.payload.options.signers = [this.data.xrplAccount];
         }
 
         if(this.data.instruction) {

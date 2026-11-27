@@ -153,12 +153,11 @@ export class GenericPayloadQRDialog implements OnInit {
         //set account and force it
         if(this.genericPayload.options.xrplAccount) {
             this.genericPayload.payload.txjson.Account = this.genericPayload.options.xrplAccount;
-            (this.genericPayload.payload.options as { forceAccount?: boolean }).forceAccount = true;
+            this.genericPayload.payload.options.signers = [this.genericPayload.options.xrplAccount];
         }
 
         //bind the payload to the network the page is working on. Xaman then refuses to sign it on another network.
-        //(cast: old xumm-sdk typings do not know "force_network")
-        (this.genericPayload.payload.options as any).force_network = this.genericPayload.options.testnet ? "TESTNET" : "MAINNET";
+        this.genericPayload.payload.options.force_network = this.genericPayload.options.testnet ? "TESTNET" : "MAINNET";
 
         let xummResponse:XummTypes.XummPostPayloadResponse;
         try {
